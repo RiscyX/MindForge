@@ -1,0 +1,327 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2025-12-02 20:07+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ./templates/Users/index.php:8
+#: ./templates/Users/view.php:14
+msgid "New User"
+msgstr ""
+
+#: ./templates/Users/index.php:9
+msgid "Users"
+msgstr ""
+
+#: ./templates/Users/index.php:14
+#: ./templates/Users/view.php:38
+#: ./templates/Users/view.php:68
+#: ./templates/Users/view.php:112
+#: ./templates/Users/view.php:158
+#: ./templates/Users/view.php:212
+#: ./templates/Users/view.php:264
+msgid "Id"
+msgstr ""
+
+#: ./templates/Users/index.php:15
+#: ./templates/Users/view.php:22
+msgid "Email"
+msgstr ""
+
+#: ./templates/Users/index.php:16
+#: ./templates/Users/view.php:26
+msgid "Password Hash"
+msgstr ""
+
+#: ./templates/Users/index.php:17
+#: ./templates/Users/view.php:30
+msgid "Role"
+msgstr ""
+
+#: ./templates/Users/index.php:18
+#: ./templates/Users/view.php:54
+msgid "Is Active"
+msgstr ""
+
+#: ./templates/Users/index.php:19
+#: ./templates/Users/view.php:58
+msgid "Is Blocked"
+msgstr ""
+
+#: ./templates/Users/index.php:20
+#: ./templates/Users/view.php:42
+msgid "Last Login At"
+msgstr ""
+
+#: ./templates/Users/index.php:21
+#: ./templates/Users/view.php:46
+#: ./templates/Users/view.php:75
+#: ./templates/Users/view.php:120
+#: ./templates/Users/view.php:170
+#: ./templates/Users/view.php:223
+#: ./templates/Users/view.php:270
+msgid "Created At"
+msgstr ""
+
+#: ./templates/Users/index.php:22
+#: ./templates/Users/view.php:50
+msgid "Updated At"
+msgstr ""
+
+#: ./templates/Users/index.php:23
+#: ./templates/Users/view.php:34
+msgid "Avatar Url"
+msgstr ""
+
+#: ./templates/Users/index.php:24
+#: ./templates/Users/view.php:10
+#: ./templates/Users/view.php:76
+#: ./templates/Users/view.php:121
+#: ./templates/Users/view.php:171
+#: ./templates/Users/view.php:224
+#: ./templates/Users/view.php:271
+msgid "Actions"
+msgstr ""
+
+#: ./templates/Users/index.php:41
+#: ./templates/Users/view.php:89
+#: ./templates/Users/view.php:135
+#: ./templates/Users/view.php:189
+#: ./templates/Users/view.php:241
+#: ./templates/Users/view.php:283
+msgid "View"
+msgstr ""
+
+#: ./templates/Users/index.php:42
+#: ./templates/Users/view.php:90
+#: ./templates/Users/view.php:136
+#: ./templates/Users/view.php:190
+#: ./templates/Users/view.php:242
+#: ./templates/Users/view.php:284
+msgid "Edit"
+msgstr ""
+
+#: ./templates/Users/index.php:44
+#: ./templates/Users/view.php:92
+#: ./templates/Users/view.php:138
+#: ./templates/Users/view.php:192
+#: ./templates/Users/view.php:244
+#: ./templates/Users/view.php:286
+msgid "Delete"
+msgstr ""
+
+#: ./templates/Users/index.php:48
+#: ./templates/Users/view.php:12
+#: ./templates/Users/view.php:96
+#: ./templates/Users/view.php:142
+#: ./templates/Users/view.php:196
+#: ./templates/Users/view.php:248
+#: ./templates/Users/view.php:290
+msgid "Are you sure you want to delete # {0}?"
+msgstr ""
+
+#: ./templates/Users/index.php:59
+msgid "first"
+msgstr ""
+
+#: ./templates/Users/index.php:60
+msgid "previous"
+msgstr ""
+
+#: ./templates/Users/index.php:62
+msgid "next"
+msgstr ""
+
+#: ./templates/Users/index.php:63
+msgid "last"
+msgstr ""
+
+#: ./templates/Users/index.php:65
+msgid "Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total"
+msgstr ""
+
+#: ./templates/Users/view.php:11
+msgid "Edit User"
+msgstr ""
+
+#: ./templates/Users/view.php:12
+msgid "Delete User"
+msgstr ""
+
+#: ./templates/Users/view.php:13
+msgid "List Users"
+msgstr ""
+
+#: ./templates/Users/view.php:55
+#: ./templates/Users/view.php:59
+msgid "Yes"
+msgstr ""
+
+#: ./templates/Users/view.php:55
+#: ./templates/Users/view.php:59
+msgid "No"
+msgstr ""
+
+#: ./templates/Users/view.php:63
+msgid "Related Activity Logs"
+msgstr ""
+
+#: ./templates/Users/view.php:69
+#: ./templates/Users/view.php:113
+#: ./templates/Users/view.php:159
+#: ./templates/Users/view.php:213
+#: ./templates/Users/view.php:265
+msgid "User Id"
+msgstr ""
+
+#: ./templates/Users/view.php:70
+msgid "Action"
+msgstr ""
+
+#: ./templates/Users/view.php:71
+msgid "Entity Type"
+msgstr ""
+
+#: ./templates/Users/view.php:72
+msgid "Entity Id"
+msgstr ""
+
+#: ./templates/Users/view.php:73
+#: ./templates/Users/view.php:160
+msgid "Ip Address"
+msgstr ""
+
+#: ./templates/Users/view.php:74
+#: ./templates/Users/view.php:161
+msgid "User Agent"
+msgstr ""
+
+#: ./templates/Users/view.php:107
+msgid "Related Ai Requests"
+msgstr ""
+
+#: ./templates/Users/view.php:114
+#: ./templates/Users/view.php:214
+msgid "Test Id"
+msgstr ""
+
+#: ./templates/Users/view.php:115
+#: ./templates/Users/view.php:217
+msgid "Language Id"
+msgstr ""
+
+#: ./templates/Users/view.php:116
+#: ./templates/Users/view.php:267
+msgid "Type"
+msgstr ""
+
+#: ./templates/Users/view.php:117
+msgid "Input Payload"
+msgstr ""
+
+#: ./templates/Users/view.php:118
+msgid "Output Payload"
+msgstr ""
+
+#: ./templates/Users/view.php:119
+msgid "Status"
+msgstr ""
+
+#: ./templates/Users/view.php:153
+msgid "Related Device Logs"
+msgstr ""
+
+#: ./templates/Users/view.php:162
+msgid "Is Mobile"
+msgstr ""
+
+#: ./templates/Users/view.php:163
+msgid "Is Tablet"
+msgstr ""
+
+#: ./templates/Users/view.php:164
+msgid "Is Desktop"
+msgstr ""
+
+#: ./templates/Users/view.php:165
+msgid "Os"
+msgstr ""
+
+#: ./templates/Users/view.php:166
+msgid "Browser"
+msgstr ""
+
+#: ./templates/Users/view.php:167
+msgid "Country"
+msgstr ""
+
+#: ./templates/Users/view.php:168
+msgid "City"
+msgstr ""
+
+#: ./templates/Users/view.php:169
+msgid "Extra Info"
+msgstr ""
+
+#: ./templates/Users/view.php:207
+msgid "Related Test Attempts"
+msgstr ""
+
+#: ./templates/Users/view.php:215
+msgid "Category Id"
+msgstr ""
+
+#: ./templates/Users/view.php:216
+msgid "Difficulty Id"
+msgstr ""
+
+#: ./templates/Users/view.php:218
+msgid "Started At"
+msgstr ""
+
+#: ./templates/Users/view.php:219
+msgid "Finished At"
+msgstr ""
+
+#: ./templates/Users/view.php:220
+msgid "Score"
+msgstr ""
+
+#: ./templates/Users/view.php:221
+msgid "Total Questions"
+msgstr ""
+
+#: ./templates/Users/view.php:222
+msgid "Correct Answers"
+msgstr ""
+
+#: ./templates/Users/view.php:259
+msgid "Related User Tokens"
+msgstr ""
+
+#: ./templates/Users/view.php:266
+msgid "Token"
+msgstr ""
+
+#: ./templates/Users/view.php:268
+msgid "Expires At"
+msgstr ""
+
+#: ./templates/Users/view.php:269
+msgid "Used At"
+msgstr ""
+
+#: ./templates/layout/error.php:36
+msgid "Back"
+msgstr ""
+
