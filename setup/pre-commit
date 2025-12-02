@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Find staged PHP files under src/
+STAGED_PHP_SRC_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^src/.*\.php$')
+
+if [ -z "$STAGED_PHP_SRC_FILES" ]; then
+  exit 0
+fi
+
+echo "Running PHPCS on staged PHP files in /src..."
+vendor/bin/phpcs --standard=CakePHP -s --report=full $STAGED_PHP_SRC_FILES
+PHPCS_RESULT=$?
+
+if [ $PHPCS_RESULT -eq 0 ]; then
+  echo "PHPCS: All good."
+  exit 0
+fi
+
+echo ""
+echo "PHPCS found issues."
+printf "Run automatic fix with PHPCBF? (y/n): "
+read ANSWER
+
+if [ "$ANSWER" = "y" ]; then
+  vendor/bin/phpcbf $STAGED_PHP_SRC_FILES
+  git add $STAGED_PHP_SRC_FILES
+  echo "PHPCBF applied. Commit again."
+  exit 1
+else
+  echo "Commit aborted. Fix code style manually or run vendor/bin/phpcbf."
+  exit 1
+fi
