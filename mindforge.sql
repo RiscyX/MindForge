@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 02, 2025 at 07:38 PM
+-- Generation Time: Dec 02, 2025 at 10:14 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `MindForge`
+-- Database: `mindforge`
 --
 
 -- --------------------------------------------------------
@@ -65,7 +65,7 @@ CREATE TABLE `ai_requests` (
 CREATE TABLE `answers` (
   `id` int(10) UNSIGNED NOT NULL,
   `question_id` int(10) UNSIGNED NOT NULL,
-  `content` text NOT NULL,
+  `source_type` enum('human','ai') NOT NULL DEFAULT 'human',
   `is_correct` tinyint(1) NOT NULL DEFAULT 0,
   `position` int(10) UNSIGNED DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
@@ -96,12 +96,25 @@ CREATE TABLE `answer_translations` (
 
 CREATE TABLE `categories` (
   `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `slug` varchar(120) NOT NULL,
-  `description` text DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category_translations`
+--
+
+CREATE TABLE `category_translations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `category_id` int(10) UNSIGNED NOT NULL,
+  `language_id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(120) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -158,11 +171,9 @@ CREATE TABLE `languages` (
 
 CREATE TABLE `questions` (
   `id` int(10) UNSIGNED NOT NULL,
-  `test_id` int(10) UNSIGNED NOT NULL,
+  `test_id` int(10) UNSIGNED DEFAULT NULL,
   `category_id` int(10) UNSIGNED NOT NULL,
   `difficulty_id` int(10) UNSIGNED DEFAULT NULL,
-  `content` text NOT NULL,
-  `explanation` text DEFAULT NULL,
   `source_type` enum('human','ai') NOT NULL DEFAULT 'human',
   `created_by` int(10) UNSIGNED DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
@@ -208,11 +219,8 @@ CREATE TABLE `roles` (
 
 CREATE TABLE `tests` (
   `id` int(10) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
   `category_id` int(10) UNSIGNED NOT NULL,
   `difficulty_id` int(10) UNSIGNED DEFAULT NULL,
-  `description` text DEFAULT NULL,
   `number_of_questions` int(10) UNSIGNED DEFAULT NULL,
   `is_public` tinyint(1) NOT NULL DEFAULT 1,
   `created_by` int(10) UNSIGNED DEFAULT NULL,
@@ -267,6 +275,9 @@ CREATE TABLE `test_translations` (
   `id` int(10) UNSIGNED NOT NULL,
   `test_id` int(10) UNSIGNED NOT NULL,
   `language_id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
   `translator_id` int(10) UNSIGNED DEFAULT NULL,
   `is_complete` tinyint(1) NOT NULL DEFAULT 0,
   `translated_at` datetime DEFAULT NULL,
@@ -283,6 +294,7 @@ CREATE TABLE `test_translations` (
 CREATE TABLE `users` (
   `id` int(10) UNSIGNED NOT NULL,
   `email` varchar(190) NOT NULL,
+  `avatar_url` varchar(255) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role_id` int(10) UNSIGNED NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 0,
@@ -290,6 +302,19 @@ CREATE TABLE `users` (
   `last_login_at` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_favorite_categories`
+--
+
+CREATE TABLE `user_favorite_categories` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `category_id` int(10) UNSIGNED NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -350,8 +375,16 @@ ALTER TABLE `answer_translations`
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `category_translations`
+--
+ALTER TABLE `category_translations`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_categories_slug` (`slug`);
+  ADD UNIQUE KEY `uq_cat_trans_cat_lang` (`category_id`,`language_id`),
+  ADD UNIQUE KEY `uq_cat_trans_slug` (`slug`),
+  ADD KEY `idx_cat_trans_lang` (`language_id`);
 
 --
 -- Indexes for table `device_logs`
@@ -407,7 +440,6 @@ ALTER TABLE `roles`
 --
 ALTER TABLE `tests`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_tests_slug` (`slug`),
   ADD KEY `idx_tests_category_id` (`category_id`),
   ADD KEY `idx_tests_difficulty_id` (`difficulty_id`),
   ADD KEY `idx_tests_created_by` (`created_by`);
@@ -437,8 +469,9 @@ ALTER TABLE `test_attempt_answers`
 --
 ALTER TABLE `test_translations`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_test_translations_test_lang` (`test_id`,`language_id`),
-  ADD KEY `idx_test_translations_translator` (`translator_id`),
+  ADD UNIQUE KEY `uq_test_trans_test_lang` (`test_id`,`language_id`),
+  ADD UNIQUE KEY `uq_test_trans_slug` (`slug`),
+  ADD KEY `idx_test_trans_translator` (`translator_id`),
   ADD KEY `fk_test_translations_languages` (`language_id`);
 
 --
@@ -448,6 +481,14 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_users_email` (`email`),
   ADD KEY `idx_users_role_id` (`role_id`);
+
+--
+-- Indexes for table `user_favorite_categories`
+--
+ALTER TABLE `user_favorite_categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_user_cat_fav` (`user_id`,`category_id`),
+  ADD KEY `idx_fav_cat_category` (`category_id`);
 
 --
 -- Indexes for table `user_tokens`
@@ -490,6 +531,12 @@ ALTER TABLE `answer_translations`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `category_translations`
+--
+ALTER TABLE `category_translations`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -559,6 +606,12 @@ ALTER TABLE `users`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `user_favorite_categories`
+--
+ALTER TABLE `user_favorite_categories`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `user_tokens`
 --
 ALTER TABLE `user_tokens`
@@ -595,6 +648,13 @@ ALTER TABLE `answer_translations`
   ADD CONSTRAINT `fk_answer_translations_answers` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_answer_translations_languages` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_answer_translations_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `category_translations`
+--
+ALTER TABLE `category_translations`
+  ADD CONSTRAINT `fk_cat_trans_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cat_trans_language` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `device_logs`
@@ -658,6 +718,13 @@ ALTER TABLE `test_translations`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `fk_users_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_favorite_categories`
+--
+ALTER TABLE `user_favorite_categories`
+  ADD CONSTRAINT `fk_fav_cat_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_fav_cat_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_tokens`
