@@ -1,0 +1,146 @@
+:root {
+    --mf-bg: #05060a;
+    --mf-panel: rgba(255, 255, 255, 0.03);
+    --mf-panel-border: rgba(255, 255, 255, 0.08);
+    --mf-muted: rgba(255, 255, 255, 0.6);
+}
+
+.mf-auth {
+    min-height: 100vh;
+    background: radial-gradient(900px circle at 15% 35%, rgba(77, 120, 255, 0.12), transparent 55%),
+        radial-gradient(900px circle at 85% 65%, rgba(169, 99, 255, 0.10), transparent 60%),
+        var(--mf-bg);
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.mf-auth a {
+    text-decoration: none;
+}
+
+.mf-auth .mf-brand {
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.mf-auth .mf-left {
+    padding: 3rem 2.5rem;
+}
+
+.mf-auth .mf-left .mf-tagline {
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+.mf-auth .mf-left .mf-subtitle {
+    color: var(--mf-muted);
+    max-width: 36rem;
+}
+
+.mf-auth .mf-orb {
+    width: min(520px, 100%);
+    aspect-ratio: 1 / 1;
+    border-radius: 999px;
+    position: relative;
+    margin: 2.5rem 0 2rem;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.04), transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(255, 198, 77, 0.08), transparent 58%);
+    border: 1px solid rgba(120, 200, 255, 0.25);
+    overflow: hidden;
+}
+
+.mf-auth .mf-orb::before {
+    content: "";
+    position: absolute;
+    inset: 12%;
+    border-radius: 999px;
+    border: 1px solid rgba(120, 200, 255, 0.12);
+}
+
+.mf-auth .mf-orb::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        conic-gradient(from 190deg, rgba(255, 206, 102, 0.0) 0deg, rgba(255, 206, 102, 0.55) 70deg, rgba(255, 206, 102, 0.05) 160deg, rgba(255, 206, 102, 0.45) 240deg, rgba(255, 206, 102, 0.0) 360deg);
+    filter: blur(0.4px);
+    opacity: 0.45;
+    mix-blend-mode: screen;
+    transform: rotate(10deg);
+}
+
+.mf-auth .mf-right {
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mf-auth .mf-card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--mf-panel);
+    border: 1px solid var(--mf-panel-border);
+    border-radius: 1rem;
+    padding: 2.25rem;
+    backdrop-filter: blur(10px);
+}
+
+.mf-auth .form-label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.mf-auth .form-control {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.10);
+    color: rgba(255, 255, 255, 0.92);
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.65rem;
+}
+
+.mf-auth .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.mf-auth .form-control:focus {
+    border-color: rgba(121, 134, 255, 0.55);
+    box-shadow: 0 0 0 0.25rem rgba(121, 134, 255, 0.12);
+}
+
+.mf-auth .btn-primary {
+    border-radius: 0.65rem;
+    padding: 0.85rem 1rem;
+}
+
+.mf-auth .mf-muted {
+    color: var(--mf-muted);
+}
+
+.mf-auth .mf-strength {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.mf-auth .mf-strength > div {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    transition: width 140ms ease, background-color 140ms ease;
+}
+
+@media (max-width: 991.98px) {
+    .mf-auth .mf-left {
+        padding: 2.25rem 1.5rem;
+    }
+
+    .mf-auth .mf-right {
+        padding: 1.5rem;
+    }
+
+    .mf-auth .mf-card {
+        padding: 1.5rem;
+    }
+}

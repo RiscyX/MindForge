@@ -10,7 +10,7 @@ class AuthController extends AppController
      */
     public function login(): void
     {
-        $this->viewBuilder()->setLayout('default');
+        $this->viewBuilder()->setLayout('auth');
     }
 
     /**
@@ -18,6 +18,6 @@ class AuthController extends AppController
      */
     public function register(): void
     {
-        $this->viewBuilder()->setLayout('default');
+        $this->viewBuilder()->setLayout('auth');
     }
 }
