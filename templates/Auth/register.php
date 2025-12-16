@@ -6,19 +6,21 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
 
 <div class="container-fluid min-vh-100">
     <div class="row g-0 min-vh-100 align-items-stretch">
-        <div class="col-12 col-lg-6 d-flex flex-column mf-left p-5">
-            <div class="flex-grow-1 d-flex flex-column justify-content-center">
+        <div class="col-12 col-lg-6 d-none d-lg-flex flex-column mf-left p-5">
+            <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center">
                 <div class="mf-orb" aria-hidden="true"></div>
 
-                <h1 class="display-5 mf-tagline mb-3"><?= __('Unlock Your Potential.') ?></h1>
-                <p class="mf-subtitle mb-0">
-                    <?= __('AI-powered learning and testing, designed to help you master any subject faster and smarter.') ?>
-                </p>
+                <div class="w-100" style="max-width: 36rem;">
+                    <h1 class="display-5 mf-tagline mb-3"><?= __('Unlock Your Potential.') ?></h1>
+                    <p class="mf-subtitle mb-0">
+                        <?= __('AI-powered learning and testing, designed to help you master any subject faster and smarter.') ?>
+                    </p>
+                </div>
             </div>
         </div>
 
-        <div class="col-12 col-lg-6 mf-right d-flex align-items-center justify-content-center p-4 p-lg-5">
-            <div class="mf-card p-4 p-md-5">
+        <div class="col-12 col-lg-6 mf-right d-flex align-items-start align-items-lg-center justify-content-center p-3 p-sm-4 p-lg-5">
+            <div class="mf-card p-4 p-sm-5">
                 <h2 class="mb-1"><?= __('Create an Account') ?></h2>
                 <p class="mf-muted mb-4"><?= __('Start your journey with MindForge today.') ?></p>
 

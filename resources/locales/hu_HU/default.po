@@ -15,6 +15,70 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: ./templates/Auth/register.php:2
+msgid "Register"
+msgstr "Regisztráció"
+
+#: ./templates/Auth/register.php:14
+msgid "Unlock Your Potential."
+msgstr "Hozd ki magadból a maximumot."
+
+#: ./templates/Auth/register.php:16
+msgid "AI-powered learning and testing, designed to help you master any subject faster and smarter."
+msgstr "MI-alapú tanulás és tesztelés, hogy gyorsabban és okosabban sajátíts el bármilyen témát."
+
+#: ./templates/Auth/register.php:24
+msgid "Create an Account"
+msgstr "Fiók létrehozása"
+
+#: ./templates/Auth/register.php:25
+msgid "Start your journey with MindForge today."
+msgstr "Kezdd el az utad a MindForge-dzsal még ma."
+
+#: ./templates/Auth/register.php:29
+msgid "Email Address"
+msgstr "E-mail cím"
+
+#: ./templates/Auth/register.php:40
+msgid "Please enter a valid email address."
+msgstr "Kérlek, adj meg egy érvényes e-mail címet."
+
+#: ./templates/Auth/register.php:45
+msgid "Password"
+msgstr "Jelszó"
+
+#: ./templates/Auth/register.php:51
+msgid "Create a strong password"
+msgstr "Adj meg egy erős jelszót"
+
+#: ./templates/Auth/register.php:64
+msgid "Password must be at least 8 characters."
+msgstr "A jelszónak legalább 8 karakter hosszúnak kell lennie."
+
+#: ./templates/Auth/register.php:69
+msgid "Confirm Password"
+msgstr "Jelszó megerősítése"
+
+#: ./templates/Auth/register.php:75
+msgid "Confirm your password"
+msgstr "Erősítsd meg a jelszót"
+
+#: ./templates/Auth/register.php:80
+msgid "Passwords do not match."
+msgstr "A jelszavak nem egyeznek."
+
+#: ./templates/Auth/register.php:84
+msgid "Sign Up"
+msgstr "Regisztráció"
+
+#: ./templates/Auth/register.php:87
+msgid "Already have an account?"
+msgstr "Van már fiókod?"
+
+#: ./templates/Auth/register.php:88
+msgid "Log In"
+msgstr "Bejelentkezés"
+
 #: ./templates/Users/index.php:8
 #: ./templates/Users/view.php:14
 msgid "New User"
