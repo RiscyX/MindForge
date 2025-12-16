@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CakePHP 5.2.9\n"
-"POT-Creation-Date: 2025-12-02 20:07+0000\n"
+"POT-Creation-Date: 2025-12-16 20:07+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"

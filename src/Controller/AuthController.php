@@ -7,6 +7,7 @@ use App\Model\Entity\Role;
 use App\Service\UserTokensService;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
+use Cake\I18n\I18n;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\Routing\Router;
@@ -74,8 +75,12 @@ class AuthController extends AppController
                 $tokenService = new UserTokensService($userTokensTable);
                 $token = $tokenService->createActivationToken($user);
 
+                $lang = $this->request->getParam('lang', 'en');
                 $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
-                $activationUrl = $baseUrl . '/activation?token=' . urlencode($token);
+                $activationUrl = $baseUrl . '/' . $lang . '/confirm?token=' . urlencode($token);
+
+                // Set locale for email
+                $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
 
                 try {
                     $mailer = new Mailer('default');
@@ -84,13 +89,14 @@ class AuthController extends AppController
                         ->setTo($user->email)
                         ->setEmailFormat('both')
                         ->setSubject(__('Activate your MindForge account'))
-                        ->deliver(
-                            sprintf(
-                                "%s\n\n%s",
-                                __('Please activate your account using the link below:'),
-                                $activationUrl,
-                            ),
-                        );
+                        ->setViewVars(['activationUrl' => $activationUrl])
+                        ->viewBuilder()
+                            ->setTemplate('activation');
+
+                    // Set locale in the mailer's renderer
+                    I18n::setLocale($locale);
+
+                    $mailer->deliver();
 
                     Log::info('Activation email sent to: ' . $user->email);
                     $this->Flash->success(__('Check your email to activate your account.'));
@@ -103,7 +109,7 @@ class AuthController extends AppController
                      but email failed. Activation link: {0}', $activationUrl));
                 }
 
-                return $this->redirect('/');
+                return $this->redirect(['action' => 'login', 'lang' => $lang]);
             }
 
             $this->Flash->error(__('Registration failed.'));
@@ -112,5 +118,44 @@ class AuthController extends AppController
         $this->set(compact('user'));
 
         return null;
+    }
+
+    /**
+     * Confirm user account activation via token.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function confirm(): ?Response
+    {
+        $token = (string)$this->request->getQuery('token');
+        $lang = $this->request->getParam('lang', 'en');
+
+        /** @var \App\Model\Table\UserTokensTable $userTokensTable */
+        $userTokensTable = $this->fetchTable('UserTokens');
+
+        $tokenService = new UserTokensService($userTokensTable);
+        $userToken = $tokenService->validateActivationToken($token);
+
+        if ($userToken === null) {
+            $this->Flash->error(__('Invalid or expired activation token.'));
+
+            return $this->redirect(['action' => 'login', 'lang' => $lang]);
+        }
+
+        /** @var \App\Model\Table\UsersTable $usersTable */
+        $usersTable = $this->fetchTable('Users');
+
+        $user = $userToken->user;
+        $user->is_active = true;
+
+        if ($usersTable->save($user) && $tokenService->markTokenAsUsed($userToken)) {
+            $this->Flash->success(__('Your account has been activated. You can now log in.'));
+
+            return $this->redirect(['action' => 'login', 'lang' => $lang]);
+        }
+
+        $this->Flash->error(__('Failed to activate your account. Please try again.'));
+
+        return $this->redirect(['action' => 'login', 'lang' => $lang]);
     }
 }

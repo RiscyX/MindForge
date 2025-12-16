@@ -70,4 +70,16 @@ class PagesController extends AppController
             throw new NotFoundException();
         }
     }
+
+    /**
+     * Redirects to the default language home page.
+     *
+     * @return \Cake\Http\Response
+     */
+    public function redirectToDefaultLanguage(): Response
+    {
+        $baseUrl = rtrim((string)env('BASE_URL', '/'), '/');
+
+        return $this->response->withLocation($baseUrl . '/en/');
+    }
 }

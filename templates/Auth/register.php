@@ -25,7 +25,7 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
                 <p class="mf-muted mb-4"><?= __('Start your journey with MindForge today.') ?></p>
 
                 <?= $this->Form->create($user, [
-                    'url' => ['controller' => 'Auth', 'action' => 'register'],
+                    'url' => ['controller' => 'Auth', 'action' => 'register', 'lang' => $lang ?? 'en'],
                     'class' => 'needs-validation',
                     'novalidate' => true,
                     'data-mf-register-form' => true,
@@ -94,7 +94,7 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
 
                     <div class="text-center mt-3 mf-muted">
                         <?= __('Already have an account?') ?>
-                        <a href="<?= $this->Url->build('/login') ?>" class="link-primary"><?= __('Log In') ?></a>
+                        <a href="<?= env('BASE_URL') . '/' . ($lang ?? 'en') ?>/login" class="link-primary"><?= __('Log In') ?></a>
                     </div>
                 <?= $this->Form->end() ?>
             </div>
