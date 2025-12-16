@@ -103,7 +103,6 @@ return function (RouteBuilder $routes): void {
     $routes->prefix('Admin', ['path' => '/admin'], function (RouteBuilder $builder): void {
         $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index']);
         $builder->connect('/vezerlopult', ['controller' => 'Dashboard', 'action' => 'index']);
-        $builder->connect('/vezérlőpult', ['controller' => 'Dashboard', 'action' => 'index']);
         $builder->fallbacks();
     });
 
