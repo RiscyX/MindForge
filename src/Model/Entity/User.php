@@ -40,6 +40,7 @@ class User extends Entity
     protected array $_accessible = [
         'email' => true,
         'avatar_url' => true,
+        'password' => true,
         'password_hash' => true,
         'role_id' => true,
         'is_active' => true,
@@ -54,4 +55,31 @@ class User extends Entity
         'test_attempts' => true,
         'user_tokens' => true,
     ];
+
+    /**
+     * Hidden fields from serialization (JSON, array export).
+     *
+     * @var list<string>
+     */
+    protected array $_hidden = [
+        'password_hash',
+    ];
+
+    /**
+     * Hashes the password and stores it in password_hash.
+     *
+     * Uses PHP's native password_hash() with PASSWORD_DEFAULT (bcrypt).
+     * This is compatible with CakePHP's Authentication plugin DefaultPasswordHasher.
+     *
+     * @param string|null $password The plain text password.
+     * @return string|null Always returns null to avoid storing plain password.
+     */
+    protected function _setPassword(?string $password): ?string
+    {
+        if ($password !== null && strlen($password) > 0) {
+            $this->password_hash = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        return null; // Don't store the plain password
+    }
 }

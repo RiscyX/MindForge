@@ -46,6 +46,15 @@ class UsersTable extends Table
         $this->setDisplayField('email');
         $this->setPrimaryKey('id');
 
+        $this->addBehavior('Timestamp', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created_at' => 'new',
+                    'updated_at' => 'always',
+                ],
+            ],
+        ]);
+
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER',
@@ -93,10 +102,15 @@ class UsersTable extends Table
             ->allowEmptyString('avatar_url');
 
         $validator
+            ->scalar('password')
+            ->minLength('password', 8, __('Password must be at least 8 characters.'))
+            ->requirePresence('password', 'create')
+            ->notEmptyString('password');
+
+        $validator
             ->scalar('password_hash')
             ->maxLength('password_hash', 255)
-            ->requirePresence('password_hash', 'create')
-            ->notEmptyString('password_hash');
+            ->allowEmptyString('password_hash');
 
         $validator
             ->nonNegativeInteger('role_id')

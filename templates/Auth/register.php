@@ -24,16 +24,23 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
                 <h2 class="mb-1"><?= __('Create an Account') ?></h2>
                 <p class="mf-muted mb-4"><?= __('Start your journey with MindForge today.') ?></p>
 
-                <form data-mf-register-form class="needs-validation" novalidate>
+                <?= $this->Form->create($user, [
+                    'url' => ['controller' => 'Auth', 'action' => 'register'],
+                    'class' => 'needs-validation',
+                    'novalidate' => true,
+                    'data-mf-register-form' => true,
+                ]) ?>
                     <div class="mb-3">
                         <label class="form-label" for="email"><?= __('Email Address') ?></label>
                         <input
                             id="email"
                             data-mf-email
+                            name="email"
                             type="email"
                             class="form-control"
                             placeholder="you@example.com"
                             autocomplete="email"
+                            value="<?= h($user->email ?? '') ?>"
                             required
                         />
                         <div class="invalid-feedback">
@@ -46,6 +53,7 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
                         <input
                             id="password"
                             data-mf-password
+                            name="password"
                             type="password"
                             class="form-control"
                             placeholder="<?= h(__('Create a strong password')) ?>"
@@ -70,6 +78,7 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
                         <input
                             id="confirmPassword"
                             data-mf-confirm
+                            name="password_confirm"
                             type="password"
                             class="form-control"
                             placeholder="<?= h(__('Confirm your password')) ?>"
@@ -87,7 +96,7 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
                         <?= __('Already have an account?') ?>
                         <a href="<?= $this->Url->build('/login') ?>" class="link-primary"><?= __('Log In') ?></a>
                     </div>
-                </form>
+                <?= $this->Form->end() ?>
             </div>
         </div>
     </div>
