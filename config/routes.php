@@ -57,6 +57,16 @@ return function (RouteBuilder $routes): void {
          */
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
+        // Base routes
+        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
+        $builder->connect('/register', ['controller' => 'Auth', 'action' => 'register']);
+        $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
+
+        // HU aliases (2-language project)
+        $builder->connect('/bejelentkezes', ['controller' => 'Auth', 'action' => 'login']);
+        $builder->connect('/regisztracio', ['controller' => 'Auth', 'action' => 'register']);
+        $builder->connect('/vezerlopult', ['controller' => 'Dashboard', 'action' => 'index']);
+
         /*
          * ...and connect the rest of 'Pages' controller's URLs.
          */
@@ -86,6 +96,13 @@ return function (RouteBuilder $routes): void {
          * It is NOT recommended to use fallback routes after your initial prototyping phase!
          * See https://book.cakephp.org/5/en/development/routing.html#fallbacks-method for more information
          */
+        $builder->fallbacks();
+    });
+
+    // Admin prefix: /admin/*
+    $routes->prefix('Admin', ['path' => '/admin'], function (RouteBuilder $builder): void {
+        $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index']);
+        $builder->connect('/vezerlopult', ['controller' => 'Dashboard', 'action' => 'index']);
         $builder->fallbacks();
     });
 
