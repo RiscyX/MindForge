@@ -1,391 +1,495 @@
-hu_HU
-
 # Hungarian translation of CakePHP Application
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2025-12-02 20:07+0000\n"
-"PO-Revision-Date: 2025-12-02 20:15+0000\n"
+"POT-Creation-Date: 2025-12-16 20:54+0000\n"
+"PO-Revision-Date: 2025-12-16 21:10+0000\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Hungarian <EMAIL@ADDRESS>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ./templates/Auth/register.php:2
-msgid "Register"
-msgstr "Regisztráció"
+#: templates/Admin/Dashboard/index.php:2 templates/Admin/Dashboard/index.php:5
+msgid "Admin Dashboard"
+msgstr "Admin vezérlőpult"
 
-#: ./templates/Auth/register.php:14
+#: templates/Admin/Dashboard/index.php:6 templates/Dashboard/index.php:6
+msgid "Placeholder page (routing task A1-09)."
+msgstr "Helykitöltő oldal (routing feladat A1-09)."
+
+#: templates/Auth/login.php:2
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: templates/Auth/login.php:14 templates/Auth/register.php:14
 msgid "Unlock Your Potential."
 msgstr "Hozd ki magadból a maximumot."
 
-#: ./templates/Auth/register.php:16
-msgid "AI-powered learning and testing, designed to help you master any subject faster and smarter."
-msgstr "MI-alapú tanulás és tesztelés, hogy gyorsabban és okosabban sajátíts el bármilyen témát."
+#: templates/Auth/login.php:16 templates/Auth/register.php:16
+msgid ""
+"AI-powered learning and testing, designed to help you master any subject "
+"faster and smarter."
+msgstr ""
+"MI-alapú tanulás és tesztelés, hogy gyorsabban és okosabban sajátíts el "
+"bármilyen témát."
 
-#: ./templates/Auth/register.php:24
-msgid "Create an Account"
-msgstr "Fiók létrehozása"
+#: templates/Auth/login.php:24
+msgid "Welcome Back"
+msgstr "Üdv újra"
 
-#: ./templates/Auth/register.php:25
-msgid "Start your journey with MindForge today."
-msgstr "Kezdd el az utad a MindForge-dzsal még ma."
+#: templates/Auth/login.php:25
+msgid "Log in to continue your journey."
+msgstr "Jelentkezz be, hogy folytasd az utad."
 
-#: ./templates/Auth/register.php:29
+#: templates/Auth/login.php:34 templates/Auth/register.php:34
 msgid "Email Address"
 msgstr "E-mail cím"
 
-#: ./templates/Auth/register.php:40
+#: templates/Auth/login.php:46 templates/Auth/register.php:47
 msgid "Please enter a valid email address."
 msgstr "Kérlek, adj meg egy érvényes e-mail címet."
 
-#: ./templates/Auth/register.php:45
+#: templates/Auth/login.php:51 templates/Auth/register.php:52
 msgid "Password"
 msgstr "Jelszó"
 
-#: ./templates/Auth/register.php:51
-msgid "Create a strong password"
-msgstr "Adj meg egy erős jelszót"
+#: templates/Auth/login.php:58
+msgid "Enter your password"
+msgstr "Add meg a jelszavad"
 
-#: ./templates/Auth/register.php:64
-msgid "Password must be at least 8 characters."
-msgstr "A jelszónak legalább 8 karakter hosszúnak kell lennie."
+#: templates/Auth/login.php:63
+msgid "Please enter your password."
+msgstr "Kérlek, add meg a jelszavad."
 
-#: ./templates/Auth/register.php:69
-msgid "Confirm Password"
-msgstr "Jelszó megerősítése"
-
-#: ./templates/Auth/register.php:75
-msgid "Confirm your password"
-msgstr "Erősítsd meg a jelszót"
-
-#: ./templates/Auth/register.php:80
-msgid "Passwords do not match."
-msgstr "A jelszavak nem egyeznek."
-
-#: ./templates/Auth/register.php:84
-msgid "Sign Up"
-msgstr "Regisztráció"
-
-#: ./templates/Auth/register.php:87
-msgid "Already have an account?"
-msgstr "Van már fiókod?"
-
-#: ./templates/Auth/register.php:88
+#: templates/Auth/login.php:67 templates/Auth/register.php:97
 msgid "Log In"
 msgstr "Bejelentkezés"
 
-#: ./templates/Users/index.php:8
-#: ./templates/Users/view.php:14
-msgid "New User"
-msgstr "Új felhasználó"
+#: templates/Auth/login.php:70
+msgid "Don't have an account?"
+msgstr "Nincs még fiókod?"
 
-#: ./templates/Users/index.php:9
-msgid "Users"
-msgstr "Felhasználók"
+#: templates/Auth/login.php:71 templates/Auth/register.php:93
+msgid "Sign Up"
+msgstr "Regisztráció"
 
-#: ./templates/Users/index.php:14
-#: ./templates/Users/view.php:38
-#: ./templates/Users/view.php:68
-#: ./templates/Users/view.php:112
-#: ./templates/Users/view.php:158
-#: ./templates/Users/view.php:212
-#: ./templates/Users/view.php:264
-msgid "Id"
-msgstr "Azonosító"
+#: templates/Auth/register.php:2
+msgid "Register"
+msgstr "Regisztráció"
 
-#: ./templates/Users/index.php:15
-#: ./templates/Users/view.php:22
-msgid "Email"
-msgstr "E-mail"
+#: templates/Auth/register.php:24
+msgid "Create an Account"
+msgstr "Fiók létrehozása"
 
-#: ./templates/Users/index.php:16
-#: ./templates/Users/view.php:26
-msgid "Password Hash"
-msgstr "Jelszó hash"
+#: templates/Auth/register.php:25
+msgid "Start your journey with MindForge today."
+msgstr "Kezdd el az utad a MindForge-dzsal még ma."
 
-#: ./templates/Users/index.php:17
-#: ./templates/Users/view.php:30
-msgid "Role"
-msgstr "Szerepkör"
+#: templates/Auth/register.php:59
+msgid "Create a strong password"
+msgstr "Hozz létre egy erős jelszót"
 
-#: ./templates/Users/index.php:18
-#: ./templates/Users/view.php:54
-msgid "Is Active"
-msgstr "Aktív"
+#: templates/Auth/register.php:72 src/Model/Table/UsersTable.php:106
+msgid "Password must be at least 8 characters."
+msgstr "A jelszónak legalább 8 karakter hosszúnak kell lennie."
 
-#: ./templates/Users/index.php:19
-#: ./templates/Users/view.php:58
-msgid "Is Blocked"
-msgstr "Blokkolva"
+#: templates/Auth/register.php:77
+msgid "Confirm Password"
+msgstr "Jelszó megerősítése"
 
-#: ./templates/Users/index.php:20
-#: ./templates/Users/view.php:42
-msgid "Last Login At"
-msgstr "Utolsó bejelentkezés ideje"
+#: templates/Auth/register.php:84
+msgid "Confirm your password"
+msgstr "Erősítsd meg a jelszót"
 
-#: ./templates/Users/index.php:21
-#: ./templates/Users/view.php:46
-#: ./templates/Users/view.php:75
-#: ./templates/Users/view.php:120
-#: ./templates/Users/view.php:170
-#: ./templates/Users/view.php:223
-#: ./templates/Users/view.php:270
-msgid "Created At"
-msgstr "Létrehozva ekkor"
+#: templates/Auth/register.php:89 src/Controller/AuthController.php:59
+msgid "Passwords do not match."
+msgstr "A jelszavak nem egyeznek."
 
-#: ./templates/Users/index.php:22
-#: ./templates/Users/view.php:50
-msgid "Updated At"
-msgstr "Frissítve ekkor"
+#: templates/Auth/register.php:96
+msgid "Already have an account?"
+msgstr "Van már fiókod?"
 
-#: ./templates/Users/index.php:23
-#: ./templates/Users/view.php:34
-msgid "Avatar Url"
-msgstr "Profilkép URL"
+#: templates/Dashboard/index.php:2 templates/Dashboard/index.php:5
+msgid "Dashboard"
+msgstr "Vezérlőpult"
 
-#: ./templates/Users/index.php:24
-#: ./templates/Users/view.php:10
-#: ./templates/Users/view.php:76
-#: ./templates/Users/view.php:121
-#: ./templates/Users/view.php:171
-#: ./templates/Users/view.php:224
-#: ./templates/Users/view.php:271
+#: templates/Roles/add.php:10 templates/Roles/edit.php:10
+#: templates/Roles/index.php:17 templates/Roles/view.php:10
+#: templates/Roles/view.php:50 templates/UserTokens/add.php:11
+#: templates/UserTokens/edit.php:11 templates/UserTokens/index.php:20
+#: templates/UserTokens/view.php:10 templates/Users/add.php:11
+#: templates/Users/edit.php:11 templates/Users/index.php:25
+#: templates/Users/view.php:10 templates/Users/view.php:76
+#: templates/Users/view.php:121 templates/Users/view.php:171
+#: templates/Users/view.php:224 templates/Users/view.php:271
 msgid "Actions"
 msgstr "Műveletek"
 
-#: ./templates/Users/index.php:41
-#: ./templates/Users/view.php:89
-#: ./templates/Users/view.php:135
-#: ./templates/Users/view.php:189
-#: ./templates/Users/view.php:241
-#: ./templates/Users/view.php:283
-msgid "View"
-msgstr "Megtekintés"
+#: templates/Roles/add.php:11 templates/Roles/edit.php:16
+#: templates/Roles/view.php:13
+msgid "List Roles"
+msgstr "Szerepkörök listája"
 
-#: ./templates/Users/index.php:42
-#: ./templates/Users/view.php:90
-#: ./templates/Users/view.php:136
-#: ./templates/Users/view.php:190
-#: ./templates/Users/view.php:242
-#: ./templates/Users/view.php:284
-msgid "Edit"
-msgstr "Szerkesztés"
+#: templates/Roles/add.php:18
+msgid "Add Role"
+msgstr "Szerepkör hozzáadása"
 
-#: ./templates/Users/index.php:44
-#: ./templates/Users/view.php:92
-#: ./templates/Users/view.php:138
-#: ./templates/Users/view.php:192
-#: ./templates/Users/view.php:244
-#: ./templates/Users/view.php:286
+#: templates/Roles/add.php:24 templates/Roles/edit.php:29
+#: templates/UserTokens/add.php:29 templates/UserTokens/edit.php:34
+#: templates/Users/add.php:32 templates/Users/edit.php:37
+msgid "Submit"
+msgstr "Mentés"
+
+#: templates/Roles/edit.php:12 templates/Roles/index.php:30
+#: templates/Roles/view.php:68 templates/UserTokens/edit.php:13
+#: templates/UserTokens/index.php:36 templates/Users/edit.php:13
+#: templates/Users/index.php:45 templates/Users/view.php:92
+#: templates/Users/view.php:138 templates/Users/view.php:192
+#: templates/Users/view.php:244 templates/Users/view.php:286
 msgid "Delete"
 msgstr "Törlés"
 
-#: ./templates/Users/index.php:48
-#: ./templates/Users/view.php:12
-#: ./templates/Users/view.php:96
-#: ./templates/Users/view.php:142
-#: ./templates/Users/view.php:196
-#: ./templates/Users/view.php:248
-#: ./templates/Users/view.php:290
+#: templates/Roles/edit.php:14 templates/Roles/index.php:34
+#: templates/Roles/view.php:12 templates/Roles/view.php:72
+#: templates/UserTokens/edit.php:15 templates/UserTokens/index.php:40
+#: templates/UserTokens/view.php:12 templates/Users/edit.php:15
+#: templates/Users/index.php:49 templates/Users/view.php:12
+#: templates/Users/view.php:96 templates/Users/view.php:142
+#: templates/Users/view.php:196 templates/Users/view.php:248
+#: templates/Users/view.php:290
 msgid "Are you sure you want to delete # {0}?"
 msgstr "Biztosan törölni szeretnéd a(z) # {0} elemet?"
 
-#: ./templates/Users/index.php:59
+#: templates/Roles/edit.php:23 templates/Roles/view.php:11
+msgid "Edit Role"
+msgstr "Szerepkör szerkesztése"
+
+#: templates/Roles/index.php:8 templates/Roles/view.php:14
+msgid "New Role"
+msgstr "Új szerepkör"
+
+#: templates/Roles/index.php:9
+msgid "Roles"
+msgstr "Szerepkörök"
+
+#: templates/Roles/index.php:27 templates/Roles/view.php:65
+#: templates/UserTokens/index.php:33 templates/Users/index.php:42
+#: templates/Users/view.php:89 templates/Users/view.php:135
+#: templates/Users/view.php:189 templates/Users/view.php:241
+#: templates/Users/view.php:283
+msgid "View"
+msgstr "Megtekintés"
+
+#: templates/Roles/index.php:28 templates/Roles/view.php:66
+#: templates/UserTokens/index.php:34 templates/Users/index.php:43
+#: templates/Users/view.php:90 templates/Users/view.php:136
+#: templates/Users/view.php:190 templates/Users/view.php:242
+#: templates/Users/view.php:284
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: templates/Roles/index.php:45 templates/UserTokens/index.php:51
+#: templates/Users/index.php:60
 msgid "first"
 msgstr "első"
 
-#: ./templates/Users/index.php:60
+#: templates/Roles/index.php:46 templates/UserTokens/index.php:52
+#: templates/Users/index.php:61
 msgid "previous"
 msgstr "előző"
 
-#: ./templates/Users/index.php:62
+#: templates/Roles/index.php:48 templates/UserTokens/index.php:54
+#: templates/Users/index.php:63
 msgid "next"
 msgstr "következő"
 
-#: ./templates/Users/index.php:63
+#: templates/Roles/index.php:49 templates/UserTokens/index.php:55
+#: templates/Users/index.php:64
 msgid "last"
 msgstr "utolsó"
 
-#: ./templates/Users/index.php:65
-msgid "Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total"
-msgstr "{{page}} / {{pages}} oldal, {{current}} rekord a(z) összesen {{count}} közül"
+#: templates/Roles/index.php:51 templates/UserTokens/index.php:57
+#: templates/Users/index.php:66
+msgid ""
+"Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} "
+"total"
+msgstr ""
+"{{page}} / {{pages}} oldal, {{current}} rekord a(z) összesen {{count}} közül"
 
-#: ./templates/Users/view.php:11
-msgid "Edit User"
-msgstr "Felhasználó szerkesztése"
+#: templates/Roles/view.php:12
+msgid "Delete Role"
+msgstr "Szerepkör törlése"
 
-#: ./templates/Users/view.php:12
-msgid "Delete User"
-msgstr "Felhasználó törlése"
+#: templates/Roles/view.php:22
+msgid "Name"
+msgstr "Név"
 
-#: ./templates/Users/view.php:13
-msgid "List Users"
-msgstr "Felhasználók listája"
+#: templates/Roles/view.php:26
+msgid "Description"
+msgstr "Leírás"
 
-#: ./templates/Users/view.php:55
-#: ./templates/Users/view.php:59
-msgid "Yes"
-msgstr "Igen"
+#: templates/Roles/view.php:30 templates/Roles/view.php:40
+#: templates/UserTokens/view.php:30 templates/Users/index.php:15
+#: templates/Users/view.php:38 templates/Users/view.php:68
+#: templates/Users/view.php:112 templates/Users/view.php:158
+#: templates/Users/view.php:212 templates/Users/view.php:264
+msgid "Id"
+msgstr "Azonosító"
 
-#: ./templates/Users/view.php:55
-#: ./templates/Users/view.php:59
-msgid "No"
-msgstr "Nem"
+#: templates/Roles/view.php:35
+msgid "Related Users"
+msgstr "Kapcsolódó felhasználók"
 
-#: ./templates/Users/view.php:63
-msgid "Related Activity Logs"
-msgstr "Kapcsolódó aktivitásnaplók"
+#: templates/Roles/view.php:41 templates/Users/index.php:16
+#: templates/Users/view.php:22
+msgid "Email"
+msgstr "E-mail"
 
-#: ./templates/Users/view.php:69
-#: ./templates/Users/view.php:113
-#: ./templates/Users/view.php:159
-#: ./templates/Users/view.php:213
-#: ./templates/Users/view.php:265
-msgid "User Id"
-msgstr "Felhasználó azonosító"
+#: templates/Roles/view.php:42 templates/Users/index.php:24
+#: templates/Users/view.php:34
+msgid "Avatar Url"
+msgstr "Profilkép URL"
 
-#: ./templates/Users/view.php:70
-msgid "Action"
-msgstr "Művelet"
+#: templates/Roles/view.php:43 templates/Users/index.php:17
+#: templates/Users/view.php:26
+msgid "Password Hash"
+msgstr "Jelszó hash"
 
-#: ./templates/Users/view.php:71
-msgid "Entity Type"
-msgstr "Entitás típusa"
+#: templates/Roles/view.php:44
+msgid "Role Id"
+msgstr "Szerepkör azonosító"
 
-#: ./templates/Users/view.php:72
-msgid "Entity Id"
-msgstr "Entitás azonosító"
+#: templates/Roles/view.php:45 templates/Users/index.php:19
+#: templates/Users/view.php:54
+msgid "Is Active"
+msgstr "Aktív"
 
-#: ./templates/Users/view.php:73
-#: ./templates/Users/view.php:160
-msgid "Ip Address"
-msgstr "IP-cím"
+#: templates/Roles/view.php:46 templates/Users/index.php:20
+#: templates/Users/view.php:58
+msgid "Is Blocked"
+msgstr "Blokkolva"
 
-#: ./templates/Users/view.php:74
-#: ./templates/Users/view.php:161
-msgid "User Agent"
-msgstr "User agent"
+#: templates/Roles/view.php:47 templates/Users/index.php:21
+#: templates/Users/view.php:42
+msgid "Last Login At"
+msgstr "Utolsó bejelentkezés ideje"
 
-#: ./templates/Users/view.php:107
-msgid "Related Ai Requests"
-msgstr "Kapcsolódó AI kérések"
+#: templates/Roles/view.php:48 templates/UserTokens/view.php:42
+#: templates/Users/index.php:22 templates/Users/view.php:46
+#: templates/Users/view.php:75 templates/Users/view.php:120
+#: templates/Users/view.php:170 templates/Users/view.php:223
+#: templates/Users/view.php:270
+msgid "Created At"
+msgstr "Létrehozva"
 
-#: ./templates/Users/view.php:114
-#: ./templates/Users/view.php:214
-msgid "Test Id"
-msgstr "Teszt azonosító"
+#: templates/Roles/view.php:49 templates/Users/index.php:23
+#: templates/Users/view.php:50
+msgid "Updated At"
+msgstr "Frissítve"
 
-#: ./templates/Users/view.php:115
-#: ./templates/Users/view.php:217
-msgid "Language Id"
-msgstr "Nyelv azonosító"
+#: templates/UserTokens/add.php:12 templates/UserTokens/edit.php:17
+#: templates/UserTokens/view.php:13
+msgid "List User Tokens"
+msgstr "Felhasználói tokenek listája"
 
-#: ./templates/Users/view.php:116
-#: ./templates/Users/view.php:267
+#: templates/UserTokens/add.php:19
+msgid "Add User Token"
+msgstr "Felhasználói token hozzáadása"
+
+#: templates/UserTokens/edit.php:24 templates/UserTokens/view.php:11
+msgid "Edit User Token"
+msgstr "Felhasználói token szerkesztése"
+
+#: templates/UserTokens/index.php:8 templates/UserTokens/view.php:14
+msgid "New User Token"
+msgstr "Új felhasználói token"
+
+#: templates/UserTokens/index.php:9
+msgid "User Tokens"
+msgstr "Felhasználói tokenek"
+
+#: templates/UserTokens/view.php:12
+msgid "Delete User Token"
+msgstr "Felhasználói token törlése"
+
+#: templates/UserTokens/view.php:22
+msgid "User"
+msgstr "Felhasználó"
+
+#: templates/UserTokens/view.php:26 templates/Users/view.php:116
+#: templates/Users/view.php:267
 msgid "Type"
 msgstr "Típus"
 
-#: ./templates/Users/view.php:117
-msgid "Input Payload"
-msgstr "Bemeneti payload"
-
-#: ./templates/Users/view.php:118
-msgid "Output Payload"
-msgstr "Kimeneti payload"
-
-#: ./templates/Users/view.php:119
-msgid "Status"
-msgstr "Státusz"
-
-#: ./templates/Users/view.php:153
-msgid "Related Device Logs"
-msgstr "Kapcsolódó eszköznaplók"
-
-#: ./templates/Users/view.php:162
-msgid "Is Mobile"
-msgstr "Mobil"
-
-#: ./templates/Users/view.php:163
-msgid "Is Tablet"
-msgstr "Tablet"
-
-#: ./templates/Users/view.php:164
-msgid "Is Desktop"
-msgstr "Asztali gép"
-
-#: ./templates/Users/view.php:165
-msgid "Os"
-msgstr "Operációs rendszer"
-
-#: ./templates/Users/view.php:166
-msgid "Browser"
-msgstr "Böngésző"
-
-#: ./templates/Users/view.php:167
-msgid "Country"
-msgstr "Ország"
-
-#: ./templates/Users/view.php:168
-msgid "City"
-msgstr "Város"
-
-#: ./templates/Users/view.php:169
-msgid "Extra Info"
-msgstr "További információ"
-
-#: ./templates/Users/view.php:207
-msgid "Related Test Attempts"
-msgstr "Kapcsolódó tesztkísérletek"
-
-#: ./templates/Users/view.php:215
-msgid "Category Id"
-msgstr "Kategória azonosító"
-
-#: ./templates/Users/view.php:216
-msgid "Difficulty Id"
-msgstr "Nehézség azonosító"
-
-#: ./templates/Users/view.php:218
-msgid "Started At"
-msgstr "Kezdés ideje"
-
-#: ./templates/Users/view.php:219
-msgid "Finished At"
-msgstr "Befejezés ideje"
-
-#: ./templates/Users/view.php:220
-msgid "Score"
-msgstr "Pontszám"
-
-#: ./templates/Users/view.php:221
-msgid "Total Questions"
-msgstr "Összes kérdés"
-
-#: ./templates/Users/view.php:222
-msgid "Correct Answers"
-msgstr "Helyes válaszok"
-
-#: ./templates/Users/view.php:259
-msgid "Related User Tokens"
-msgstr "Kapcsolódó felhasználói tokenek"
-
-#: ./templates/Users/view.php:266
-msgid "Token"
-msgstr "Token"
-
-#: ./templates/Users/view.php:268
+#: templates/UserTokens/view.php:34 templates/Users/view.php:268
 msgid "Expires At"
-msgstr "Lejárat ideje"
+msgstr "Lejárat"
 
-#: ./templates/Users/view.php:269
+#: templates/UserTokens/view.php:38 templates/Users/view.php:269
 msgid "Used At"
-msgstr "Felhasználva ekkor"
+msgstr "Felhasználva"
 
-#: ./templates/layout/error.php:36
+#: templates/Users/add.php:12 templates/Users/edit.php:17
+#: templates/Users/view.php:13
+msgid "List Users"
+msgstr "Felhasználók listája"
+
+#: templates/Users/add.php:19
+msgid "Add User"
+msgstr "Felhasználó hozzáadása"
+
+#: templates/Users/edit.php:24 templates/Users/view.php:11
+msgid "Edit User"
+msgstr "Felhasználó szerkesztése"
+
+#: templates/Users/index.php:6 templates/Users/index.php:10
+msgid "Users"
+msgstr "Felhasználók"
+
+#: templates/Users/index.php:9 templates/Users/view.php:14
+msgid "New User"
+msgstr "Új felhasználó"
+
+#: templates/Users/index.php:18 templates/Users/view.php:30
+msgid "Role"
+msgstr "Szerepkör"
+
+#: templates/Users/view.php:12
+msgid "Delete User"
+msgstr "Felhasználó törlése"
+
+#: templates/Users/view.php:55 templates/Users/view.php:59
+msgid "Yes"
+msgstr "Igen"
+
+#: templates/Users/view.php:55 templates/Users/view.php:59
+msgid "No"
+msgstr "Nem"
+
+#: templates/email/html/activation.php:39 templates/email/text/activation.php:9
+msgid "Welcome to MindForge!"
+msgstr "Üdv a MindForge-ban!"
+
+#: templates/email/html/activation.php:49
+msgid ""
+"Thank you for registering. Please click the button below to activate your "
+"account:"
+msgstr ""
+"Köszönjük a regisztrációt. Kérjük, kattints az alábbi gombra a fiókod "
+"aktiválásához:"
+
+#: templates/email/html/activation.php:63
+msgid "Activate My Account"
+msgstr "Fiókom aktiválása"
+
+#: templates/email/html/activation.php:76
+msgid "Or copy and paste this link into your browser:"
+msgstr "Vagy másold ki és illeszd be ezt a linket a böngésződbe:"
+
+#: templates/email/html/activation.php:90
+#: templates/email/text/activation.php:15
+msgid "This link will expire in 4 hours."
+msgstr "Ez a link 4 óra múlva lejár."
+
+#: templates/email/html/activation.php:99
+#: templates/email/text/activation.php:17
+msgid "If you did not create an account, please ignore this email."
+msgstr "Ha nem te hoztad létre a fiókot, kérjük, hagyd figyelmen kívül ezt az e-mailt."
+
+#: templates/email/text/activation.php:11
+msgid ""
+"Thank you for registering. Please click the link below to activate your "
+"account:"
+msgstr ""
+"Köszönjük a regisztrációt. Kérjük, kattints az alábbi linkre a fiókod "
+"aktiválásához:"
+
+#: templates/layout/error.php:36
 msgid "Back"
 msgstr "Vissza"
+
+#: src/Controller/AuthController.php:91
+msgid "Activate your MindForge account"
+msgstr "Aktiváld a MindForge fiókodat"
+
+#: src/Controller/AuthController.php:102
+msgid "Check your email to activate your account."
+msgstr "Ellenőrizd az e-mailjeidet a fiók aktiválásához."
+
+#: src/Controller/AuthController.php:108
+msgid ""
+"Registration successful\n"
+"                     but email failed. Activation link: {0}"
+msgstr ""
+"A regisztráció sikeres, de az e-mail küldése sikertelen volt.\n"
+"Aktiváló link: {0}"
+
+#: src/Controller/AuthController.php:115
+msgid "Registration failed."
+msgstr "A regisztráció sikertelen."
+
+#: src/Controller/AuthController.php:140
+msgid "Invalid or expired activation token."
+msgstr "Érvénytelen vagy lejárt aktiváló token."
+
+#: src/Controller/AuthController.php:152
+msgid "Your account has been activated. You can now log in."
+msgstr "A fiókod aktiválva lett. Most már be tudsz jelentkezni."
+
+#: src/Controller/AuthController.php:157
+msgid "Failed to activate your account. Please try again."
+msgstr "A fiók aktiválása sikertelen. Kérjük, próbáld újra."
+
+#: src/Controller/RolesController.php:52 src/Controller/RolesController.php:74
+msgid "The role has been saved."
+msgstr "A szerepkör el lett mentve."
+
+#: src/Controller/RolesController.php:56 src/Controller/RolesController.php:78
+msgid "The role could not be saved. Please, try again."
+msgstr "A szerepkört nem sikerült elmenteni. Próbáld újra."
+
+#: src/Controller/RolesController.php:95
+msgid "The role has been deleted."
+msgstr "A szerepkör törölve lett."
+
+#: src/Controller/RolesController.php:97
+msgid "The role could not be deleted. Please, try again."
+msgstr "A szerepkör törlése sikertelen. Próbáld újra."
+
+#: src/Controller/UserTokensController.php:53
+#: src/Controller/UserTokensController.php:76
+msgid "The user token has been saved."
+msgstr "A felhasználói token el lett mentve."
+
+#: src/Controller/UserTokensController.php:57
+#: src/Controller/UserTokensController.php:80
+msgid "The user token could not be saved. Please, try again."
+msgstr "A felhasználói tokent nem sikerült elmenteni. Próbáld újra."
+
+#: src/Controller/UserTokensController.php:98
+msgid "The user token has been deleted."
+msgstr "A felhasználói token törölve lett."
+
+#: src/Controller/UserTokensController.php:100
+msgid "The user token could not be deleted. Please, try again."
+msgstr "A felhasználói token törlése sikertelen. Próbáld újra."
+
+#: src/Controller/UsersController.php:54 src/Controller/UsersController.php:77
+msgid "The user has been saved."
+msgstr "A felhasználó el lett mentve."
+
+#: src/Controller/UsersController.php:58 src/Controller/UsersController.php:81
+msgid "The user could not be saved. Please, try again."
+msgstr "A felhasználót nem sikerült elmenteni. Próbáld újra."
+
+#: src/Controller/UsersController.php:99
+msgid "The user has been deleted."
+msgstr "A felhasználó törölve lett."
+
+#: src/Controller/UsersController.php:101
+msgid "The user could not be deleted. Please, try again."
+msgstr "A felhasználó törlése sikertelen. Próbáld újra."

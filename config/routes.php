@@ -30,79 +30,60 @@ use Cake\Routing\RouteBuilder;
  * if required.
  */
 return function (RouteBuilder $routes): void {
-    /*
-     * The default class to use for all routes
-     *
-     * The following route classes are supplied with CakePHP and are appropriate
-     * to set as the default:
-     *
-     * - Route
-     * - InflectedRoute
-     * - DashedRoute
-     *
-     * If no call is made to `Router::defaultRouteClass()`, the class used is
-     * `Route` (`Cake\Routing\Route\Route`)
-     *
-     * Note that `Route` does not do any inflections on URLs which will result in
-     * inconsistently cased URLs when used with `{plugin}`, `{controller}` and
-     * `{action}` markers.
-     */
     $routes->setRouteClass(DashedRoute::class);
 
+    // Root redirect to default language
     $routes->scope('/', function (RouteBuilder $builder): void {
-        /*
-         * Here, we are connecting '/' (base path) to a controller called 'Pages',
-         * its action called 'display', and we pass a param to select the view file
-         * to use (in this case, templates/Pages/home.php)...
-         */
-        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
+        $builder->connect('/', ['controller' => 'Pages', 'action' => 'redirectToDefaultLanguage']);
+    });
 
-        // Base routes
-        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login']);
-        $builder->connect('/register', ['controller' => 'Auth', 'action' => 'register']);
-        $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index']);
+    // Language-prefixed routes: /en/* and /hu/*
+    $routes->scope('/{lang}', function (RouteBuilder $builder): void {
+        // Set pattern for lang parameter
+        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home'])
+            ->setPatterns(['lang' => 'en|hu']);
 
-        // HU aliases (2-language project)
-        $builder->connect('/bejelentkezes', ['controller' => 'Auth', 'action' => 'login']);
-        $builder->connect('/regisztracio', ['controller' => 'Auth', 'action' => 'register']);
-        $builder->connect('/vezerlopult', ['controller' => 'Dashboard', 'action' => 'index']);
+        // Auth routes
+        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/register', ['controller' => 'Auth', 'action' => 'register'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/logout', ['controller' => 'Auth', 'action' => 'logout'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/activation', ['controller' => 'Auth', 'action' => 'activation'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/confirm', ['controller' => 'Auth', 'action' => 'confirm'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/forgot-password', ['controller' => 'Auth', 'action' => 'forgotPassword'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/reset-password', ['controller' => 'Auth', 'action' => 'resetPassword'])
+            ->setPatterns(['lang' => 'en|hu']);
 
-        /*
-         * ...and connect the rest of 'Pages' controller's URLs.
-         */
-        $builder->connect('/pages/*', 'Pages::display');
+        // Dashboard
+        $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
 
-        $builder->connect('/users', ['controller' => 'Users', 'action' => 'index']);
-        $builder->connect('/felhasznalok', ['controller' => 'Users', 'action' => 'index']);
-
-        $builder->connect('/users/:id', ['controller' => 'Users', 'action' => 'view'])
+        // Users
+        $builder->connect('/users', ['controller' => 'Users', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/users/{id}', ['controller' => 'Users', 'action' => 'view'])
             ->setPass(['id'])
-            ->setPatterns(['id' => '\d+']);
+            ->setPatterns(['lang' => 'en|hu', 'id' => '\d+']);
 
-        $builder->connect('/felhasznalok/:id', ['controller' => 'Users', 'action' => 'view'])
-            ->setPass(['id'])
-            ->setPatterns(['id' => '\d+']);
+        // Pages
+        $builder->connect('/pages/*', 'Pages::display')
+            ->setPatterns(['lang' => 'en|hu']);
 
-        /*
-         * Connect catchall routes for all controllers.
-         *
-         * The `fallbacks` method is a shortcut for
-         *
-         * ```
-         * $builder->connect('/{controller}', ['action' => 'index']);
-         * $builder->connect('/{controller}/{action}/*', []);
-         * ```
-         *
-         * It is NOT recommended to use fallback routes after your initial prototyping phase!
-         * See https://book.cakephp.org/5/en/development/routing.html#fallbacks-method for more information
-         */
+        // Fallback routes for this scope
         $builder->fallbacks();
     });
 
-    // Admin prefix: /admin/*
-    $routes->prefix('Admin', ['path' => '/admin'], function (RouteBuilder $builder): void {
-        $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index']);
-        $builder->connect('/vezerlopult', ['controller' => 'Dashboard', 'action' => 'index']);
+    // Admin prefix: /{lang}/admin/*
+    $routes->scope('/{lang}/admin', ['prefix' => 'Admin'], function (RouteBuilder $builder): void {
+        $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
         $builder->fallbacks();
     });
 

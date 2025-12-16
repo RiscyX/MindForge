@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2025-12-16 16:48+0000\n"
+"POT-Creation-Date: 2025-12-16 20:54+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -14,86 +14,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ./src/Controller/RolesController.php:52
-#: ./src/Controller/RolesController.php:74
-msgid "The role has been saved."
-msgstr ""
-
-#: ./src/Controller/RolesController.php:56
-#: ./src/Controller/RolesController.php:78
-msgid "The role could not be saved. Please, try again."
-msgstr ""
-
-#: ./src/Controller/RolesController.php:95
-msgid "The role has been deleted."
-msgstr ""
-
-#: ./src/Controller/RolesController.php:97
-msgid "The role could not be deleted. Please, try again."
-msgstr ""
-
-#: ./src/Controller/UserTokensController.php:53
-#: ./src/Controller/UserTokensController.php:76
-msgid "The user token has been saved."
-msgstr ""
-
-#: ./src/Controller/UserTokensController.php:57
-#: ./src/Controller/UserTokensController.php:80
-msgid "The user token could not be saved. Please, try again."
-msgstr ""
-
-#: ./src/Controller/UserTokensController.php:98
-msgid "The user token has been deleted."
-msgstr ""
-
-#: ./src/Controller/UserTokensController.php:100
-msgid "The user token could not be deleted. Please, try again."
-msgstr ""
-
-#: ./src/Controller/UsersController.php:54
-#: ./src/Controller/UsersController.php:77
-msgid "The user has been saved."
-msgstr ""
-
-#: ./src/Controller/UsersController.php:58
-#: ./src/Controller/UsersController.php:81
-msgid "The user could not be saved. Please, try again."
-msgstr ""
-
-#: ./src/Controller/UsersController.php:99
-msgid "The user has been deleted."
-msgstr ""
-
-#: ./src/Controller/UsersController.php:101
-msgid "The user could not be deleted. Please, try again."
-msgstr ""
-
 #: ./templates/Admin/Dashboard/index.php:2
 #: ./templates/Admin/Dashboard/index.php:5
 msgid "Admin Dashboard"
 msgstr ""
 
 #: ./templates/Admin/Dashboard/index.php:6
-#: ./templates/Auth/login.php:6
 #: ./templates/Dashboard/index.php:6
 msgid "Placeholder page (routing task A1-09)."
 msgstr ""
 
 #: ./templates/Auth/login.php:2
-#: ./templates/Auth/login.php:5
 msgid "Login"
 msgstr ""
 
-#: ./templates/Auth/register.php:2
-msgid "Register"
-msgstr ""
-
+#: ./templates/Auth/login.php:14
 #: ./templates/Auth/register.php:14
 msgid "Unlock Your Potential."
 msgstr ""
 
+#: ./templates/Auth/login.php:16
 #: ./templates/Auth/register.php:16
 msgid "AI-powered learning and testing, designed to help you master any subject faster and smarter."
+msgstr ""
+
+#: ./templates/Auth/login.php:24
+msgid "Welcome Back"
+msgstr ""
+
+#: ./templates/Auth/login.php:25
+msgid "Log in to continue your journey."
+msgstr ""
+
+#: ./templates/Auth/login.php:34
+#: ./templates/Auth/register.php:34
+msgid "Email Address"
+msgstr ""
+
+#: ./templates/Auth/login.php:46
+#: ./templates/Auth/register.php:47
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: ./templates/Auth/login.php:51
+#: ./templates/Auth/register.php:52
+msgid "Password"
+msgstr ""
+
+#: ./templates/Auth/login.php:58
+msgid "Enter your password"
+msgstr ""
+
+#: ./templates/Auth/login.php:63
+msgid "Please enter your password."
+msgstr ""
+
+#: ./templates/Auth/login.php:67
+#: ./templates/Auth/register.php:97
+msgid "Log In"
+msgstr ""
+
+#: ./templates/Auth/login.php:70
+msgid "Don't have an account?"
+msgstr ""
+
+#: ./templates/Auth/login.php:71
+#: ./templates/Auth/register.php:93
+msgid "Sign Up"
+msgstr ""
+
+#: ./templates/Auth/register.php:2
+msgid "Register"
 msgstr ""
 
 #: ./templates/Auth/register.php:24
@@ -104,48 +95,30 @@ msgstr ""
 msgid "Start your journey with MindForge today."
 msgstr ""
 
-#: ./templates/Auth/register.php:29
-msgid "Email Address"
-msgstr ""
-
-#: ./templates/Auth/register.php:40
-msgid "Please enter a valid email address."
-msgstr ""
-
-#: ./templates/Auth/register.php:45
-msgid "Password"
-msgstr ""
-
-#: ./templates/Auth/register.php:51
+#: ./templates/Auth/register.php:59
 msgid "Create a strong password"
 msgstr ""
 
-#: ./templates/Auth/register.php:64
+#: ./templates/Auth/register.php:72
+#: ./src/Model/Table/UsersTable.php:106
 msgid "Password must be at least 8 characters."
 msgstr ""
 
-#: ./templates/Auth/register.php:69
+#: ./templates/Auth/register.php:77
 msgid "Confirm Password"
 msgstr ""
 
-#: ./templates/Auth/register.php:75
+#: ./templates/Auth/register.php:84
 msgid "Confirm your password"
 msgstr ""
 
-#: ./templates/Auth/register.php:80
+#: ./templates/Auth/register.php:89
+#: ./src/Controller/AuthController.php:59
 msgid "Passwords do not match."
 msgstr ""
 
-#: ./templates/Auth/register.php:84
-msgid "Sign Up"
-msgstr ""
-
-#: ./templates/Auth/register.php:87
+#: ./templates/Auth/register.php:96
 msgid "Already have an account?"
-msgstr ""
-
-#: ./templates/Auth/register.php:88
-msgid "Log In"
 msgstr ""
 
 #: ./templates/Dashboard/index.php:2
@@ -609,20 +582,120 @@ msgstr ""
 msgid "Token"
 msgstr ""
 
+#: ./templates/email/html/activation.php:39
+#: ./templates/email/text/activation.php:9
+msgid "Welcome to MindForge!"
+msgstr ""
+
+#: ./templates/email/html/activation.php:49
+msgid "Thank you for registering. Please click the button below to activate your account:"
+msgstr ""
+
+#: ./templates/email/html/activation.php:63
+msgid "Activate My Account"
+msgstr ""
+
+#: ./templates/email/html/activation.php:76
+msgid "Or copy and paste this link into your browser:"
+msgstr ""
+
+#: ./templates/email/html/activation.php:90
+#: ./templates/email/text/activation.php:15
+msgid "This link will expire in 4 hours."
+msgstr ""
+
+#: ./templates/email/html/activation.php:99
+#: ./templates/email/text/activation.php:17
+msgid "If you did not create an account, please ignore this email."
+msgstr ""
+
+#: ./templates/email/text/activation.php:11
+msgid "Thank you for registering. Please click the link below to activate your account:"
+msgstr ""
+
 #: ./templates/layout/error.php:36
 msgid "Back"
 msgstr ""
 
-#: ./templates/Error/error400.php:24
-#: ./templates/Error/error500.php:34
-msgid "Error"
+#: ./src/Controller/AuthController.php:91
+msgid "Activate your MindForge account"
 msgstr ""
 
-#: ./templates/Error/error400.php:25
-msgid "The requested address {0} was not found on this server."
+#: ./src/Controller/AuthController.php:102
+msgid "Check your email to activate your account."
 msgstr ""
 
-#: ./templates/Error/error500.php:32
-msgid "An Internal Error Has Occurred."
+#: ./src/Controller/AuthController.php:108
+msgid "Registration successful\n                     but email failed. Activation link: {0}"
+msgstr ""
+
+#: ./src/Controller/AuthController.php:115
+msgid "Registration failed."
+msgstr ""
+
+#: ./src/Controller/AuthController.php:140
+msgid "Invalid or expired activation token."
+msgstr ""
+
+#: ./src/Controller/AuthController.php:152
+msgid "Your account has been activated. You can now log in."
+msgstr ""
+
+#: ./src/Controller/AuthController.php:157
+msgid "Failed to activate your account. Please try again."
+msgstr ""
+
+#: ./src/Controller/RolesController.php:52
+#: ./src/Controller/RolesController.php:74
+msgid "The role has been saved."
+msgstr ""
+
+#: ./src/Controller/RolesController.php:56
+#: ./src/Controller/RolesController.php:78
+msgid "The role could not be saved. Please, try again."
+msgstr ""
+
+#: ./src/Controller/RolesController.php:95
+msgid "The role has been deleted."
+msgstr ""
+
+#: ./src/Controller/RolesController.php:97
+msgid "The role could not be deleted. Please, try again."
+msgstr ""
+
+#: ./src/Controller/UserTokensController.php:53
+#: ./src/Controller/UserTokensController.php:76
+msgid "The user token has been saved."
+msgstr ""
+
+#: ./src/Controller/UserTokensController.php:57
+#: ./src/Controller/UserTokensController.php:80
+msgid "The user token could not be saved. Please, try again."
+msgstr ""
+
+#: ./src/Controller/UserTokensController.php:98
+msgid "The user token has been deleted."
+msgstr ""
+
+#: ./src/Controller/UserTokensController.php:100
+msgid "The user token could not be deleted. Please, try again."
+msgstr ""
+
+#: ./src/Controller/UsersController.php:54
+#: ./src/Controller/UsersController.php:77
+msgid "The user has been saved."
+msgstr ""
+
+#: ./src/Controller/UsersController.php:58
+#: ./src/Controller/UsersController.php:81
+msgid "The user could not be saved. Please, try again."
+msgstr ""
+
+#: ./src/Controller/UsersController.php:99
+msgid "The user has been deleted."
+msgstr ""
+
+#: ./src/Controller/UsersController.php:101
+msgid "The user could not be deleted. Please, try again."
 msgstr ""
 

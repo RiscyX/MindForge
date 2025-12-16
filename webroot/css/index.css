@@ -129,6 +129,78 @@
     transition: width 140ms ease, background-color 140ms ease;
 }
 
+
+/* Navbar Styling */
+.mf-navbar {
+    background: rgba(var(--mf-text-rgb), 0.03);
+    border-bottom: 1px solid rgba(var(--mf-text-rgb), 0.10);
+    backdrop-filter: blur(10px);
+    padding: 0.75rem 0;
+}
+
+.mf-navbar .navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--mf-text);
+    letter-spacing: 0.2px;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.mf-navbar .navbar-brand .mf-logo {
+    height: 3.2rem;
+    width: auto;
+    object-fit: contain;
+}
+
+.mf-navbar .navbar-brand:hover {
+    color: var(--mf-primary);
+}
+
+.mf-navbar .nav-link {
+    color: rgba(var(--mf-text-rgb), 0.78);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    margin: 0 0.25rem;
+}
+
+.mf-navbar .nav-link:hover {
+    color: var(--mf-text);
+    background: rgba(var(--mf-text-rgb), 0.05);
+}
+
+.mf-navbar .nav-link.active {
+    color: var(--mf-primary);
+    background: rgba(var(--mf-primary-rgb), 0.12);
+}
+
+.mf-navbar .navbar-toggler {
+    border-color: rgba(var(--mf-text-rgb), 0.12);
+    padding: 0.5rem 0.75rem;
+}
+
+.mf-navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--mf-primary-rgb), 0.14);
+}
+
+.mf-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(234, 233, 252, 0.78)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
 @media (max-width: 991.98px) {
-    /* Spacing is handled via Bootstrap utility classes in templates. */
+    .mf-navbar .navbar-collapse {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(var(--mf-text-rgb), 0.10);
+    }
+
+    .mf-navbar .nav-link {
+        padding: 0.75rem 1rem;
+        margin: 0.25rem 0;
+    }
 }
