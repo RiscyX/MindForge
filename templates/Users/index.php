@@ -3,8 +3,9 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\User> $users
  */
+$this->assign('title', __('Users'));
 ?>
-<div class="users index content">
+<div class="users index content bg-dark">
     <?= $this->Html->link(__('New User'), ['action' => 'add'], ['class' => 'button float-right']) ?>
     <h3><?= __('Users') ?></h3>
     <div class="table-responsive">
