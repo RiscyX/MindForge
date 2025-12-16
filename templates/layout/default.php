@@ -18,7 +18,7 @@ use Cake\I18n\I18n;
 $cakeDescription = 'MindForge';
 ?>
 <!DOCTYPE html>
-<html data-bs-theme="dark" lang="<?= I18n::getLocale() == 'hu_HU' ? 'hu' : 'en';?>">
+<html data-bs-theme="light" lang="<?= I18n::getLocale() == 'hu_HU' ? 'hu' : 'en';?>">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
