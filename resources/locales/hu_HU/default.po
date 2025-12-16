@@ -79,6 +79,26 @@ msgstr "Van már fiókod?"
 msgid "Log In"
 msgstr "Bejelentkezés"
 
+#: ./templates/Auth/login.php:1
+msgid "Welcome Back"
+msgstr "Üdv újra"
+
+#: ./templates/Auth/login.php:1
+msgid "Log in to continue your journey."
+msgstr "Jelentkezz be, hogy folytasd az utad."
+
+#: ./templates/Auth/login.php:1
+msgid "Enter your password"
+msgstr "Add meg a jelszavad"
+
+#: ./templates/Auth/login.php:1
+msgid "Please enter your password."
+msgstr "Kérlek, add meg a jelszavad."
+
+#: ./templates/Auth/login.php:1
+msgid "Don't have an account?"
+msgstr "Nincs még fiókod?"
+
 #: ./templates/Users/index.php:8
 #: ./templates/Users/view.php:14
 msgid "New User"
