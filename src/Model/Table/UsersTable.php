@@ -62,6 +62,12 @@ class UsersTable extends Table
         $this->hasMany('TestAttempts', [
             'foreignKey' => 'user_id',
         ]);
+        $this->hasMany('UserFavoriteCategories', [
+            'foreignKey' => 'user_id',
+        ]);
+        $this->hasMany('UserFavoriteTests', [
+            'foreignKey' => 'user_id',
+        ]);
         $this->hasMany('UserTokens', [
             'foreignKey' => 'user_id',
         ]);
@@ -80,6 +86,11 @@ class UsersTable extends Table
             ->requirePresence('email', 'create')
             ->notEmptyString('email')
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+
+        $validator
+            ->scalar('avatar_url')
+            ->maxLength('avatar_url', 255)
+            ->allowEmptyString('avatar_url');
 
         $validator
             ->scalar('password_hash')
@@ -110,12 +121,6 @@ class UsersTable extends Table
         $validator
             ->dateTime('updated_at')
             ->notEmptyDateTime('updated_at');
-
-        $validator
-            ->scalar('avatar_url')
-            ->maxLength('avatar_url', 255)
-            ->requirePresence('avatar_url', 'create')
-            ->notEmptyString('avatar_url');
 
         return $validator;
     }

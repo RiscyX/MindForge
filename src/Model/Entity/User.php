@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $email
+ * @property string|null $avatar_url
  * @property string $password_hash
  * @property int $role_id
  * @property bool $is_active
@@ -17,7 +18,6 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime|null $last_login_at
  * @property \Cake\I18n\DateTime $created_at
  * @property \Cake\I18n\DateTime $updated_at
- * @property string $avatar_url
  *
  * @property \App\Model\Entity\Role $role
  * @property \App\Model\Entity\ActivityLog[] $activity_logs
@@ -39,6 +39,7 @@ class User extends Entity
      */
     protected array $_accessible = [
         'email' => true,
+        'avatar_url' => true,
         'password_hash' => true,
         'role_id' => true,
         'is_active' => true,
@@ -46,7 +47,6 @@ class User extends Entity
         'last_login_at' => true,
         'created_at' => true,
         'updated_at' => true,
-        'avatar_url' => true,
         'role' => true,
         'activity_logs' => true,
         'ai_requests' => true,
