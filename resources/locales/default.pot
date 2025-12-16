@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2025-12-02 20:07+0000\n"
+"POT-Creation-Date: 2025-12-16 16:48+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -14,76 +14,157 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ./templates/Users/index.php:8
-#: ./templates/Users/view.php:14
-msgid "New User"
+#: ./src/Controller/RolesController.php:52
+#: ./src/Controller/RolesController.php:74
+msgid "The role has been saved."
 msgstr ""
 
-#: ./templates/Users/index.php:9
-msgid "Users"
+#: ./src/Controller/RolesController.php:56
+#: ./src/Controller/RolesController.php:78
+msgid "The role could not be saved. Please, try again."
 msgstr ""
 
-#: ./templates/Users/index.php:14
-#: ./templates/Users/view.php:38
-#: ./templates/Users/view.php:68
-#: ./templates/Users/view.php:112
-#: ./templates/Users/view.php:158
-#: ./templates/Users/view.php:212
-#: ./templates/Users/view.php:264
-msgid "Id"
+#: ./src/Controller/RolesController.php:95
+msgid "The role has been deleted."
 msgstr ""
 
-#: ./templates/Users/index.php:15
-#: ./templates/Users/view.php:22
-msgid "Email"
+#: ./src/Controller/RolesController.php:97
+msgid "The role could not be deleted. Please, try again."
 msgstr ""
 
-#: ./templates/Users/index.php:16
-#: ./templates/Users/view.php:26
-msgid "Password Hash"
+#: ./src/Controller/UserTokensController.php:53
+#: ./src/Controller/UserTokensController.php:76
+msgid "The user token has been saved."
 msgstr ""
 
-#: ./templates/Users/index.php:17
-#: ./templates/Users/view.php:30
-msgid "Role"
+#: ./src/Controller/UserTokensController.php:57
+#: ./src/Controller/UserTokensController.php:80
+msgid "The user token could not be saved. Please, try again."
 msgstr ""
 
-#: ./templates/Users/index.php:18
-#: ./templates/Users/view.php:54
-msgid "Is Active"
+#: ./src/Controller/UserTokensController.php:98
+msgid "The user token has been deleted."
 msgstr ""
 
-#: ./templates/Users/index.php:19
-#: ./templates/Users/view.php:58
-msgid "Is Blocked"
+#: ./src/Controller/UserTokensController.php:100
+msgid "The user token could not be deleted. Please, try again."
 msgstr ""
 
-#: ./templates/Users/index.php:20
-#: ./templates/Users/view.php:42
-msgid "Last Login At"
+#: ./src/Controller/UsersController.php:54
+#: ./src/Controller/UsersController.php:77
+msgid "The user has been saved."
 msgstr ""
 
-#: ./templates/Users/index.php:21
-#: ./templates/Users/view.php:46
-#: ./templates/Users/view.php:75
-#: ./templates/Users/view.php:120
-#: ./templates/Users/view.php:170
-#: ./templates/Users/view.php:223
-#: ./templates/Users/view.php:270
-msgid "Created At"
+#: ./src/Controller/UsersController.php:58
+#: ./src/Controller/UsersController.php:81
+msgid "The user could not be saved. Please, try again."
 msgstr ""
 
-#: ./templates/Users/index.php:22
-#: ./templates/Users/view.php:50
-msgid "Updated At"
+#: ./src/Controller/UsersController.php:99
+msgid "The user has been deleted."
 msgstr ""
 
-#: ./templates/Users/index.php:23
-#: ./templates/Users/view.php:34
-msgid "Avatar Url"
+#: ./src/Controller/UsersController.php:101
+msgid "The user could not be deleted. Please, try again."
 msgstr ""
 
-#: ./templates/Users/index.php:24
+#: ./templates/Admin/Dashboard/index.php:2
+#: ./templates/Admin/Dashboard/index.php:5
+msgid "Admin Dashboard"
+msgstr ""
+
+#: ./templates/Admin/Dashboard/index.php:6
+#: ./templates/Auth/login.php:6
+#: ./templates/Dashboard/index.php:6
+msgid "Placeholder page (routing task A1-09)."
+msgstr ""
+
+#: ./templates/Auth/login.php:2
+#: ./templates/Auth/login.php:5
+msgid "Login"
+msgstr ""
+
+#: ./templates/Auth/register.php:2
+msgid "Register"
+msgstr ""
+
+#: ./templates/Auth/register.php:14
+msgid "Unlock Your Potential."
+msgstr ""
+
+#: ./templates/Auth/register.php:16
+msgid "AI-powered learning and testing, designed to help you master any subject faster and smarter."
+msgstr ""
+
+#: ./templates/Auth/register.php:24
+msgid "Create an Account"
+msgstr ""
+
+#: ./templates/Auth/register.php:25
+msgid "Start your journey with MindForge today."
+msgstr ""
+
+#: ./templates/Auth/register.php:29
+msgid "Email Address"
+msgstr ""
+
+#: ./templates/Auth/register.php:40
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: ./templates/Auth/register.php:45
+msgid "Password"
+msgstr ""
+
+#: ./templates/Auth/register.php:51
+msgid "Create a strong password"
+msgstr ""
+
+#: ./templates/Auth/register.php:64
+msgid "Password must be at least 8 characters."
+msgstr ""
+
+#: ./templates/Auth/register.php:69
+msgid "Confirm Password"
+msgstr ""
+
+#: ./templates/Auth/register.php:75
+msgid "Confirm your password"
+msgstr ""
+
+#: ./templates/Auth/register.php:80
+msgid "Passwords do not match."
+msgstr ""
+
+#: ./templates/Auth/register.php:84
+msgid "Sign Up"
+msgstr ""
+
+#: ./templates/Auth/register.php:87
+msgid "Already have an account?"
+msgstr ""
+
+#: ./templates/Auth/register.php:88
+msgid "Log In"
+msgstr ""
+
+#: ./templates/Dashboard/index.php:2
+#: ./templates/Dashboard/index.php:5
+msgid "Dashboard"
+msgstr ""
+
+#: ./templates/Roles/add.php:10
+#: ./templates/Roles/edit.php:10
+#: ./templates/Roles/index.php:17
+#: ./templates/Roles/view.php:10
+#: ./templates/Roles/view.php:50
+#: ./templates/UserTokens/add.php:11
+#: ./templates/UserTokens/edit.php:11
+#: ./templates/UserTokens/index.php:20
+#: ./templates/UserTokens/view.php:10
+#: ./templates/Users/add.php:11
+#: ./templates/Users/edit.php:11
+#: ./templates/Users/index.php:25
 #: ./templates/Users/view.php:10
 #: ./templates/Users/view.php:76
 #: ./templates/Users/view.php:121
@@ -93,25 +174,32 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: ./templates/Users/index.php:41
-#: ./templates/Users/view.php:89
-#: ./templates/Users/view.php:135
-#: ./templates/Users/view.php:189
-#: ./templates/Users/view.php:241
-#: ./templates/Users/view.php:283
-msgid "View"
+#: ./templates/Roles/add.php:11
+#: ./templates/Roles/edit.php:16
+#: ./templates/Roles/view.php:13
+msgid "List Roles"
 msgstr ""
 
-#: ./templates/Users/index.php:42
-#: ./templates/Users/view.php:90
-#: ./templates/Users/view.php:136
-#: ./templates/Users/view.php:190
-#: ./templates/Users/view.php:242
-#: ./templates/Users/view.php:284
-msgid "Edit"
+#: ./templates/Roles/add.php:18
+msgid "Add Role"
 msgstr ""
 
-#: ./templates/Users/index.php:44
+#: ./templates/Roles/add.php:24
+#: ./templates/Roles/edit.php:29
+#: ./templates/UserTokens/add.php:29
+#: ./templates/UserTokens/edit.php:34
+#: ./templates/Users/add.php:32
+#: ./templates/Users/edit.php:37
+msgid "Submit"
+msgstr ""
+
+#: ./templates/Roles/edit.php:12
+#: ./templates/Roles/index.php:30
+#: ./templates/Roles/view.php:68
+#: ./templates/UserTokens/edit.php:13
+#: ./templates/UserTokens/index.php:36
+#: ./templates/Users/edit.php:13
+#: ./templates/Users/index.php:45
 #: ./templates/Users/view.php:92
 #: ./templates/Users/view.php:138
 #: ./templates/Users/view.php:192
@@ -120,7 +208,15 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ./templates/Users/index.php:48
+#: ./templates/Roles/edit.php:14
+#: ./templates/Roles/index.php:34
+#: ./templates/Roles/view.php:12
+#: ./templates/Roles/view.php:72
+#: ./templates/UserTokens/edit.php:15
+#: ./templates/UserTokens/index.php:40
+#: ./templates/UserTokens/view.php:12
+#: ./templates/Users/edit.php:15
+#: ./templates/Users/index.php:49
 #: ./templates/Users/view.php:12
 #: ./templates/Users/view.php:96
 #: ./templates/Users/view.php:142
@@ -130,36 +226,241 @@ msgstr ""
 msgid "Are you sure you want to delete # {0}?"
 msgstr ""
 
-#: ./templates/Users/index.php:59
+#: ./templates/Roles/edit.php:23
+#: ./templates/Roles/view.php:11
+msgid "Edit Role"
+msgstr ""
+
+#: ./templates/Roles/index.php:8
+#: ./templates/Roles/view.php:14
+msgid "New Role"
+msgstr ""
+
+#: ./templates/Roles/index.php:9
+msgid "Roles"
+msgstr ""
+
+#: ./templates/Roles/index.php:27
+#: ./templates/Roles/view.php:65
+#: ./templates/UserTokens/index.php:33
+#: ./templates/Users/index.php:42
+#: ./templates/Users/view.php:89
+#: ./templates/Users/view.php:135
+#: ./templates/Users/view.php:189
+#: ./templates/Users/view.php:241
+#: ./templates/Users/view.php:283
+msgid "View"
+msgstr ""
+
+#: ./templates/Roles/index.php:28
+#: ./templates/Roles/view.php:66
+#: ./templates/UserTokens/index.php:34
+#: ./templates/Users/index.php:43
+#: ./templates/Users/view.php:90
+#: ./templates/Users/view.php:136
+#: ./templates/Users/view.php:190
+#: ./templates/Users/view.php:242
+#: ./templates/Users/view.php:284
+msgid "Edit"
+msgstr ""
+
+#: ./templates/Roles/index.php:45
+#: ./templates/UserTokens/index.php:51
+#: ./templates/Users/index.php:60
 msgid "first"
 msgstr ""
 
-#: ./templates/Users/index.php:60
+#: ./templates/Roles/index.php:46
+#: ./templates/UserTokens/index.php:52
+#: ./templates/Users/index.php:61
 msgid "previous"
 msgstr ""
 
-#: ./templates/Users/index.php:62
+#: ./templates/Roles/index.php:48
+#: ./templates/UserTokens/index.php:54
+#: ./templates/Users/index.php:63
 msgid "next"
 msgstr ""
 
-#: ./templates/Users/index.php:63
+#: ./templates/Roles/index.php:49
+#: ./templates/UserTokens/index.php:55
+#: ./templates/Users/index.php:64
 msgid "last"
 msgstr ""
 
-#: ./templates/Users/index.php:65
+#: ./templates/Roles/index.php:51
+#: ./templates/UserTokens/index.php:57
+#: ./templates/Users/index.php:66
 msgid "Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total"
 msgstr ""
 
+#: ./templates/Roles/view.php:12
+msgid "Delete Role"
+msgstr ""
+
+#: ./templates/Roles/view.php:22
+msgid "Name"
+msgstr ""
+
+#: ./templates/Roles/view.php:26
+msgid "Description"
+msgstr ""
+
+#: ./templates/Roles/view.php:30
+#: ./templates/Roles/view.php:40
+#: ./templates/UserTokens/view.php:30
+#: ./templates/Users/index.php:15
+#: ./templates/Users/view.php:38
+#: ./templates/Users/view.php:68
+#: ./templates/Users/view.php:112
+#: ./templates/Users/view.php:158
+#: ./templates/Users/view.php:212
+#: ./templates/Users/view.php:264
+msgid "Id"
+msgstr ""
+
+#: ./templates/Roles/view.php:35
+msgid "Related Users"
+msgstr ""
+
+#: ./templates/Roles/view.php:41
+#: ./templates/Users/index.php:16
+#: ./templates/Users/view.php:22
+msgid "Email"
+msgstr ""
+
+#: ./templates/Roles/view.php:42
+#: ./templates/Users/index.php:24
+#: ./templates/Users/view.php:34
+msgid "Avatar Url"
+msgstr ""
+
+#: ./templates/Roles/view.php:43
+#: ./templates/Users/index.php:17
+#: ./templates/Users/view.php:26
+msgid "Password Hash"
+msgstr ""
+
+#: ./templates/Roles/view.php:44
+msgid "Role Id"
+msgstr ""
+
+#: ./templates/Roles/view.php:45
+#: ./templates/Users/index.php:19
+#: ./templates/Users/view.php:54
+msgid "Is Active"
+msgstr ""
+
+#: ./templates/Roles/view.php:46
+#: ./templates/Users/index.php:20
+#: ./templates/Users/view.php:58
+msgid "Is Blocked"
+msgstr ""
+
+#: ./templates/Roles/view.php:47
+#: ./templates/Users/index.php:21
+#: ./templates/Users/view.php:42
+msgid "Last Login At"
+msgstr ""
+
+#: ./templates/Roles/view.php:48
+#: ./templates/UserTokens/view.php:42
+#: ./templates/Users/index.php:22
+#: ./templates/Users/view.php:46
+#: ./templates/Users/view.php:75
+#: ./templates/Users/view.php:120
+#: ./templates/Users/view.php:170
+#: ./templates/Users/view.php:223
+#: ./templates/Users/view.php:270
+msgid "Created At"
+msgstr ""
+
+#: ./templates/Roles/view.php:49
+#: ./templates/Users/index.php:23
+#: ./templates/Users/view.php:50
+msgid "Updated At"
+msgstr ""
+
+#: ./templates/UserTokens/add.php:12
+#: ./templates/UserTokens/edit.php:17
+#: ./templates/UserTokens/view.php:13
+msgid "List User Tokens"
+msgstr ""
+
+#: ./templates/UserTokens/add.php:19
+msgid "Add User Token"
+msgstr ""
+
+#: ./templates/UserTokens/edit.php:24
+#: ./templates/UserTokens/view.php:11
+msgid "Edit User Token"
+msgstr ""
+
+#: ./templates/UserTokens/index.php:8
+#: ./templates/UserTokens/view.php:14
+msgid "New User Token"
+msgstr ""
+
+#: ./templates/UserTokens/index.php:9
+msgid "User Tokens"
+msgstr ""
+
+#: ./templates/UserTokens/view.php:12
+msgid "Delete User Token"
+msgstr ""
+
+#: ./templates/UserTokens/view.php:22
+msgid "User"
+msgstr ""
+
+#: ./templates/UserTokens/view.php:26
+#: ./templates/Users/view.php:116
+#: ./templates/Users/view.php:267
+msgid "Type"
+msgstr ""
+
+#: ./templates/UserTokens/view.php:34
+#: ./templates/Users/view.php:268
+msgid "Expires At"
+msgstr ""
+
+#: ./templates/UserTokens/view.php:38
+#: ./templates/Users/view.php:269
+msgid "Used At"
+msgstr ""
+
+#: ./templates/Users/add.php:12
+#: ./templates/Users/edit.php:17
+#: ./templates/Users/view.php:13
+msgid "List Users"
+msgstr ""
+
+#: ./templates/Users/add.php:19
+msgid "Add User"
+msgstr ""
+
+#: ./templates/Users/edit.php:24
 #: ./templates/Users/view.php:11
 msgid "Edit User"
 msgstr ""
 
-#: ./templates/Users/view.php:12
-msgid "Delete User"
+#: ./templates/Users/index.php:6
+#: ./templates/Users/index.php:10
+msgid "Users"
 msgstr ""
 
-#: ./templates/Users/view.php:13
-msgid "List Users"
+#: ./templates/Users/index.php:9
+#: ./templates/Users/view.php:14
+msgid "New User"
+msgstr ""
+
+#: ./templates/Users/index.php:18
+#: ./templates/Users/view.php:30
+msgid "Role"
+msgstr ""
+
+#: ./templates/Users/view.php:12
+msgid "Delete User"
 msgstr ""
 
 #: ./templates/Users/view.php:55
@@ -218,11 +519,6 @@ msgstr ""
 #: ./templates/Users/view.php:115
 #: ./templates/Users/view.php:217
 msgid "Language Id"
-msgstr ""
-
-#: ./templates/Users/view.php:116
-#: ./templates/Users/view.php:267
-msgid "Type"
 msgstr ""
 
 #: ./templates/Users/view.php:117
@@ -313,15 +609,20 @@ msgstr ""
 msgid "Token"
 msgstr ""
 
-#: ./templates/Users/view.php:268
-msgid "Expires At"
-msgstr ""
-
-#: ./templates/Users/view.php:269
-msgid "Used At"
-msgstr ""
-
 #: ./templates/layout/error.php:36
 msgid "Back"
+msgstr ""
+
+#: ./templates/Error/error400.php:24
+#: ./templates/Error/error500.php:34
+msgid "Error"
+msgstr ""
+
+#: ./templates/Error/error400.php:25
+msgid "The requested address {0} was not found on this server."
+msgstr ""
+
+#: ./templates/Error/error500.php:32
+msgid "An Internal Error Has Occurred."
 msgstr ""
 

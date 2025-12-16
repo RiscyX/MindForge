@@ -1,0 +1,134 @@
+/* MindForge Bootstrap theme tokens
+ * colors=eae9fc-010104-575ddb-5b5b6b-ffffff
+ * text, bg, primary, secondary, accent
+ * font=Solway
+ */
+
+:root {
+    --mf-text: #eae9fc;
+    --mf-bg: #010104;
+    --mf-primary: #575ddb;
+    --mf-secondary: #5b5b6b;
+    --mf-accent: #ffffff;
+
+    --mf-primary-rgb: 87, 93, 219;
+    --mf-secondary-rgb: 91, 91, 107;
+    --mf-text-rgb: 234, 233, 252;
+    --mf-bg-rgb: 1, 1, 4;
+
+    --mf-font: 'Solway', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+    /* Bootstrap variable overrides */
+    --bs-body-font-family: var(--mf-font);
+    --bs-body-color: var(--mf-text);
+    --bs-body-color-rgb: var(--mf-text-rgb);
+    --bs-body-bg: var(--mf-bg);
+    --bs-body-bg-rgb: var(--mf-bg-rgb);
+
+    --bs-primary: var(--mf-primary);
+    --bs-primary-rgb: var(--mf-primary-rgb);
+
+    --bs-secondary: var(--mf-secondary);
+    --bs-secondary-rgb: var(--mf-secondary-rgb);
+
+    --bs-link-color: var(--mf-primary);
+    --bs-link-hover-color: rgba(var(--mf-primary-rgb), 0.85);
+
+    --bs-border-color: rgba(234, 233, 252, 0.14);
+    --bs-border-color-translucent: rgba(234, 233, 252, 0.12);
+}
+
+/* Auth/register page styling (moved from auth.css into index.css) */
+.mf-auth {
+    min-height: 100vh;
+    background:
+        radial-gradient(900px circle at 15% 35%, rgba(var(--mf-primary-rgb), 0.16), transparent 55%),
+        radial-gradient(900px circle at 85% 65%, rgba(var(--mf-secondary-rgb), 0.14), transparent 60%),
+        var(--mf-bg);
+    color: var(--mf-text);
+    font-family: var(--mf-font);
+}
+
+.mf-auth a {
+    text-decoration: none;
+}
+
+.mf-auth .mf-brand {
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.mf-auth .mf-left .mf-tagline {
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+.mf-auth .mf-left .mf-subtitle {
+    color: rgba(var(--mf-text-rgb), 0.60);
+    max-width: 36rem;
+}
+
+.mf-auth .mf-card {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(var(--mf-text-rgb), 0.03);
+    border: 1px solid rgba(var(--mf-text-rgb), 0.10);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.mf-auth .form-label {
+    font-size: 0.9rem;
+    color: rgba(var(--mf-text-rgb), 0.78);
+}
+
+.mf-auth .form-control {
+    background: rgba(var(--mf-text-rgb), 0.04);
+    border-color: rgba(var(--mf-text-rgb), 0.12);
+    color: rgba(var(--mf-text-rgb), 0.92);
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.65rem;
+}
+
+.mf-auth .form-control::placeholder {
+    color: rgba(var(--mf-text-rgb), 0.35);
+}
+
+.mf-auth .form-control:focus {
+    border-color: rgba(var(--mf-primary-rgb), 0.75);
+    box-shadow: 0 0 0 0.25rem rgba(var(--mf-primary-rgb), 0.14);
+}
+
+.mf-auth .btn-primary {
+    border-radius: 0.65rem;
+    padding: 0.85rem 1rem;
+    background-color: var(--mf-primary);
+    border-color: rgba(var(--mf-primary-rgb), 0.90);
+}
+
+.mf-auth .btn-primary:hover {
+    background-color: rgba(var(--mf-primary-rgb), 0.90);
+    border-color: rgba(var(--mf-primary-rgb), 1);
+}
+
+.mf-auth .mf-muted {
+    color: rgba(var(--mf-text-rgb), 0.60);
+}
+
+.mf-auth .mf-strength {
+    height: 6px;
+    background: rgba(var(--mf-text-rgb), 0.10);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.mf-auth .mf-strength > div {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    transition: width 140ms ease, background-color 140ms ease;
+}
+
+@media (max-width: 991.98px) {
+    /* Spacing is handled via Bootstrap utility classes in templates. */
+}
