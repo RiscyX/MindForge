@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 
 /**
  * User Entity
@@ -77,7 +78,7 @@ class User extends Entity
     protected function _setPassword(?string $password): ?string
     {
         if ($password !== null && strlen($password) > 0) {
-            $this->password_hash = password_hash($password, PASSWORD_DEFAULT);
+            $this->password_hash = (new DefaultPasswordHasher())->hash($password);
         }
 
         return null; // Don't store the plain password

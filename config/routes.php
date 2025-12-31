@@ -39,53 +39,40 @@ return function (RouteBuilder $routes): void {
 
     // Language-prefixed routes: /en/* and /hu/*
     $routes->scope('/{lang}', function (RouteBuilder $builder): void {
-        // Set pattern for lang parameter
+
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home'])
             ->setPatterns(['lang' => 'en|hu']);
 
-        // Auth routes
-        $builder->connect('/login', ['controller' => 'Auth', 'action' => 'login'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/register', ['controller' => 'Auth', 'action' => 'register'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/logout', ['controller' => 'Auth', 'action' => 'logout'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/activation', ['controller' => 'Auth', 'action' => 'activation'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/confirm', ['controller' => 'Auth', 'action' => 'confirm'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/forgot-password', ['controller' => 'Auth', 'action' => 'forgotPassword'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/reset-password', ['controller' => 'Auth', 'action' => 'resetPassword'])
+        $builder->connect('/login', ['controller' => 'Users', 'action' => 'login'])
             ->setPatterns(['lang' => 'en|hu']);
 
-        // Dashboard
+        $builder->connect('/register', ['controller' => 'Users', 'action' => 'register'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/logout', ['controller' => 'Users', 'action' => 'logout'])
+            ->setPatterns(['lang' => 'en|hu']);
+
         $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
             ->setPatterns(['lang' => 'en|hu']);
 
-        // Users
-        $builder->connect('/users', ['controller' => 'Users', 'action' => 'index'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/users/{id}', ['controller' => 'Users', 'action' => 'view'])
-            ->setPass(['id'])
-            ->setPatterns(['lang' => 'en|hu', 'id' => '\d+']);
-
-        // Pages
         $builder->connect('/pages/*', 'Pages::display')
             ->setPatterns(['lang' => 'en|hu']);
 
-        // Fallback routes for this scope
         $builder->fallbacks();
     });
 
     // Admin prefix: /{lang}/admin/*
-    $routes->scope('/{lang}/admin', ['prefix' => 'Admin'], function (RouteBuilder $builder): void {
-        $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
-            ->setPatterns(['lang' => 'en|hu']);
-        $builder->fallbacks();
-    });
+    $routes->scope(
+        '/{lang}/admin',
+        ['prefix' => 'Admin', 'lang' => 'en|hu'],
+        function (RouteBuilder $builder): void {
+            $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index'])
+                ->setPatterns(['lang' => 'en|hu']);
+            $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
+                ->setPatterns(['lang' => 'en|hu']);
+            $builder->fallbacks();
+        },
+    );
 
     /*
      * If you need a different set of middleware or none at all,
