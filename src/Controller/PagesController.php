@@ -78,8 +78,11 @@ class PagesController extends AppController
      */
     public function redirectToDefaultLanguage(): Response
     {
-        $baseUrl = rtrim((string)env('BASE_URL', '/'), '/');
-
-        return $this->response->withLocation($baseUrl . '/en/');
+        return $this->redirect([
+            'controller' => 'Pages',
+            'action' => 'display',
+            'home',
+            'lang' => 'en',
+        ]);
     }
 }

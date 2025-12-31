@@ -12,7 +12,7 @@ $this->Html->script('login.js?v=1', ['block' => 'script']);
                 <p class="mf-muted mb-4"><?= __('Log in to continue your journey.') ?></p>
 
                 <?= $this->Form->create(null, [
-                    'url' => ['controller' => 'Auth', 'action' => 'login', 'lang' => $lang ?? 'en'],
+                    'url' => ['controller' => 'Users', 'action' => 'login', 'lang' => $lang ?? 'en'],
                     'class' => 'needs-validation',
                     'novalidate' => true,
                     'data-mf-login-form' => true,
@@ -55,7 +55,7 @@ $this->Html->script('login.js?v=1', ['block' => 'script']);
 
                     <div class="text-center mt-3 mf-muted">
                         <?= __('Don\'t have an account?') ?>
-                        <a href="<?= env('BASE_URL') . '/' . ($lang ?? 'en') ?>/register" class="link-primary"><?= __('Sign Up') ?></a>
+                        <a href="<?= env('BASE_URL') . 'login.php/' . ($lang ?? 'en') ?>/register" class="link-primary"><?= __('Sign Up') ?></a>
                     </div>
                 <?= $this->Form->end() ?>
             </div>
