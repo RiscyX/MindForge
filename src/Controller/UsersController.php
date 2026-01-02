@@ -5,14 +5,17 @@ namespace App\Controller;
 
 use App\Model\Entity\Role;
 use App\Service\UserTokensService;
+use Authentication\IdentityInterface;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
+use Cake\Http\Client;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
 use Cake\I18n\I18n;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\Routing\Router;
+use Detection\MobileDetect;
 use Exception;
 use function Cake\Core\env;
 
@@ -169,6 +172,16 @@ class UsersController extends AppController
             $user->updated_at = FrozenTime::now();
 
             if ($usersTable->save($user)) {
+                // Log registration activity
+                $activityLogsTable = $this->fetchTable('ActivityLogs');
+                $log = $activityLogsTable->newEntity([
+                    'user_id' => $user->id,
+                    'action' => 'registration',
+                    'ip_address' => (string)$this->request->clientIp(),
+                    'user_agent' => (string)$this->request->getHeaderLine('User-Agent'),
+                ]);
+                $activityLogsTable->save($log);
+
                 /** @var \App\Model\Table\UserTokensTable $userTokensTable */
                 $userTokensTable = $this->fetchTable('UserTokens');
 
@@ -272,6 +285,9 @@ class UsersController extends AppController
             if (!$this->rateLimitAllow($ip)) {
                 $this->Flash->error(__('Too many login attempts. Please try again in a minute.'));
 
+                $email = (string)$this->request->getData('email');
+                $this->logLoginFailure($email, 'rate_limit');
+
                 return $this->redirect($this->request->getRequestTarget());
             }
         }
@@ -296,10 +312,15 @@ class UsersController extends AppController
                     $ip = (string)$this->request->clientIp();
                     $this->rateLimitHit($ip);
 
+                    $this->logLoginFailure($user->email, 'inactive_or_blocked');
+
                     $this->Flash->error(__('Invalid email or password.'));
 
                     return null; // render login
                 }
+
+                // Successful login logic
+                $this->logLogin($user);
             }
 
             // Success: clear rate limit counter for this IP
@@ -323,6 +344,9 @@ class UsersController extends AppController
             $ip = (string)$this->request->clientIp();
             $this->rateLimitHit($ip);
 
+            $email = (string)$this->request->getData('email');
+            $this->logLoginFailure($email, 'invalid_credentials');
+
             $this->Flash->error(__('Invalid email or password.'));
         }
 
@@ -335,6 +359,11 @@ class UsersController extends AppController
     public function logout(): Response
     {
         $this->request->allowMethod(['post', 'get']); // if you want GET logout; POST-only is stricter
+
+        $user = $this->Authentication->getIdentity();
+        if ($user) {
+            $this->logLogout($user);
+        }
 
         $this->Authentication->logout();
 
@@ -475,6 +504,134 @@ class UsersController extends AppController
         $this->Flash->error(__('Failed to reset password. Please try again.'));
 
         return null;
+    }
+
+    /**
+     * Log successful login and device info.
+     *
+     * @param \Authentication\IdentityInterface $user
+     * @return void
+     */
+    private function logLogin(IdentityInterface $user): void
+    {
+        $ip = (string)$this->request->clientIp();
+        $userAgent = (string)$this->request->getHeaderLine('User-Agent');
+        $userId = $user->getIdentifier();
+
+        // Update last_login_at
+        $usersTable = $this->fetchTable('Users');
+        $userEntity = $usersTable->get($userId);
+        $userEntity->last_login_at = FrozenTime::now();
+        $usersTable->save($userEntity);
+
+        // Activity Log
+        $activityLogsTable = $this->fetchTable('ActivityLogs');
+        $log = $activityLogsTable->newEntity([
+            'user_id' => $userId,
+            'action' => 'login',
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+        ]);
+        $activityLogsTable->save($log);
+
+        // Device Log
+        $detect = new MobileDetect();
+        $detect->setUserAgent($userAgent);
+
+        $deviceType = 2; // Desktop
+        if ($detect->isMobile() && !$detect->isTablet()) {
+            $deviceType = 0; // Mobile
+        } elseif ($detect->isTablet()) {
+            $deviceType = 1; // Tablet
+        }
+
+        // IP Lookup via iplocate.io
+        $country = null;
+        $city = null;
+
+        try {
+            $http = new Client();
+
+            $apiKey = env('IPLOCATE_API_KEY', null);
+            $url = 'https://www.iplocate.io/api/lookup/' . $ip;
+            if ($apiKey) {
+                $url .= '?apikey=' . $apiKey;
+            }
+
+            $response = $http->get($url);
+            if ($response->isOk()) {
+                $json = $response->getJson();
+                $country = $json['country'] ?? null;
+                $city = $json['city'] ?? null;
+            }
+        } catch (Exception $e) {
+            Log::error('IP lookup failed: ' . $e->getMessage());
+        }
+
+        $deviceLogsTable = $this->fetchTable('DeviceLogs');
+        $deviceLog = $deviceLogsTable->newEntity([
+            'user_id' => $userId,
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+            'device_type' => $deviceType,
+            'country' => $country,
+            'city' => $city,
+        ]);
+
+        $deviceLogsTable->save($deviceLog);
+    }
+
+    /**
+     * Log logout action.
+     *
+     * @param \Authentication\IdentityInterface $user
+     * @return void
+     */
+    private function logLogout(IdentityInterface $user): void
+    {
+        $ip = (string)$this->request->clientIp();
+        $userAgent = (string)$this->request->getHeaderLine('User-Agent');
+        $userId = $user->getIdentifier();
+
+        $activityLogsTable = $this->fetchTable('ActivityLogs');
+        $log = $activityLogsTable->newEmptyEntity();
+        $log->user_id = $userId;
+        $log->action = 'logout';
+        $log->ip_address = $ip;
+        $log->user_agent = $userAgent;
+        $activityLogsTable->save($log);
+    }
+
+    /**
+     * Log failed login attempt.
+     *
+     * @param string|null $email
+     * @param string $reason
+     * @return void
+     */
+    private function logLoginFailure(?string $email, string $reason): void
+    {
+        $ip = (string)$this->request->clientIp();
+        $userAgent = (string)$this->request->getHeaderLine('User-Agent');
+
+        $userId = null;
+        if ($email) {
+            // We might already have the user in login(), but to keep this method self-contained:
+            $user = $this->fetchTable('Users')->find()->where(['email' => $email])->first();
+            if ($user) {
+                $userId = $user->id;
+            }
+        }
+
+        $activityLogsTable = $this->fetchTable('ActivityLogs');
+        $log = $activityLogsTable->newEntity([
+            'user_id' => $userId,
+            'action' => substr('login_failed: ' . $reason, 0, 100),
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+        ]);
+
+        $activityLogsTable->save($log);
     }
 
     /**
