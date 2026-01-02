@@ -141,6 +141,8 @@
     border-bottom: 1px solid rgba(var(--mf-text-rgb), 0.10);
     backdrop-filter: blur(10px);
     padding: 0.75rem 0;
+    position: relative;
+    z-index: 1040;
 }
 
 .mf-navbar .navbar-brand {
@@ -199,9 +201,49 @@
 
 @media (max-width: 991.98px) {
     .mf-navbar .navbar-collapse {
-        margin-top: 1rem;
-        padding-top: 1rem;
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1040;
+
+        /* Keep the exact same look as the navbar (no color/opacity tweaks). */
+        background: rgba(var(--mf-text-rgb), 0.03);
+        backdrop-filter: blur(10px);
         border-top: 1px solid rgba(var(--mf-text-rgb), 0.10);
+        border-bottom: 1px solid rgba(var(--mf-text-rgb), 0.10);
+
+        overflow: hidden;
+
+        /* replaces the old mt/pt so it doesn't push content */
+        margin-top: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .mf-navbar.mf-nav-open .navbar-collapse {
+        display: block;
+        animation: mfNavIn 260ms ease both;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .mf-navbar.mf-nav-closing .navbar-collapse {
+        display: block;
+        animation: mfNavOut 260ms ease both;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
+    @keyframes mfNavIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes mfNavOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-6px); }
     }
 
     .mf-navbar .nav-link {

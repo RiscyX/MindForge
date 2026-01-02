@@ -29,7 +29,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
 
 
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
-    <?= $this->Html->css('index.css?v=3') ?>
+    <?= $this->Html->css('index.css?v=6') ?>
 
     <?php if ($isAuthPage) : ?>
         <script>document.documentElement.classList.add('mf-auth-js');</script>

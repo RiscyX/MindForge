@@ -15,7 +15,7 @@ $isAdmin = $isLoggedIn
 
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-dark mf-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark mf-navbar" data-mf-navbar>
     <div class="container-fluid px-3 px-lg-5">
         <!-- Brand -->
         <a class="navbar-brand mf-brand" href="<?=env('BASE_URL') . '/' . h($lang) ?>">
@@ -26,12 +26,12 @@ $isAdmin = $isLoggedIn
         </a>
 
         <!-- Hamburger Toggle -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="<?= __('Toggle navigation') ?>">
+        <button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false" aria-label="<?= __('Toggle navigation') ?>" data-mf-navbar-toggle>
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- Navbar Links -->
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="navbar-collapse" id="navbarNav" data-mf-navbar-menu>
             <ul class="navbar-nav ms-auto">
                 <?php if (!$isLoggedIn) : ?>
                     <!-- Guest -->
@@ -87,3 +87,83 @@ $isAdmin = $isLoggedIn
         </div>
     </div>
 </nav>
+
+<script>
+(() => {
+    const nav = document.querySelector('[data-mf-navbar]');
+    if (!nav) return;
+
+    const toggle = nav.querySelector('[data-mf-navbar-toggle]');
+    const menu = nav.querySelector('[data-mf-navbar-menu]');
+    if (!toggle || !menu) return;
+
+    const OPEN_CLASS = 'mf-nav-open';
+    const CLOSING_CLASS = 'mf-nav-closing';
+    const MOBILE_QUERY = '(max-width: 991.98px)';
+    const isMobile = () => window.matchMedia(MOBILE_QUERY).matches;
+
+    const DURATION_MS = 260;
+    let closeTimer = null;
+
+    const setExpanded = (expanded) => {
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    };
+
+    const close = () => {
+        if (!nav.classList.contains(OPEN_CLASS)) return;
+
+        nav.classList.remove(OPEN_CLASS);
+        nav.classList.add(CLOSING_CLASS);
+        setExpanded(false);
+
+        if (closeTimer) {
+            window.clearTimeout(closeTimer);
+        }
+        closeTimer = window.setTimeout(() => {
+            nav.classList.remove(CLOSING_CLASS);
+            closeTimer = null;
+        }, DURATION_MS);
+    };
+
+    const open = () => {
+        if (nav.classList.contains(OPEN_CLASS)) return;
+        nav.classList.remove(CLOSING_CLASS);
+        nav.classList.add(OPEN_CLASS);
+        setExpanded(true);
+    };
+
+    toggle.addEventListener('click', () => {
+        if (!isMobile()) return;
+        if (nav.classList.contains(OPEN_CLASS)) close();
+        else open();
+    });
+
+    // Close when a link inside the menu is clicked.
+    menu.addEventListener('click', (event) => {
+        const a = event.target.closest('a');
+        if (!a) return;
+        close();
+    });
+
+    // Close on outside click (mobile only)
+    document.addEventListener('click', (event) => {
+        if (!isMobile()) return;
+        if (!nav.classList.contains(OPEN_CLASS)) return;
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        if (nav.contains(target)) return;
+        close();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        close();
+    });
+
+    // Reset on desktop
+    window.addEventListener('resize', () => {
+        if (!isMobile()) close();
+    });
+})();
+</script>
