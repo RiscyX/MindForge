@@ -40,13 +40,18 @@
 
 /* Auth/register page styling (moved from auth.css into index.css) */
 .mf-auth {
-    min-height: 100vh;
     background:
         radial-gradient(900px circle at 15% 35%, rgba(var(--mf-primary-rgb), 0.16), transparent 55%),
         radial-gradient(900px circle at 85% 65%, rgba(var(--mf-secondary-rgb), 0.14), transparent 60%),
         var(--mf-bg);
     color: var(--mf-text);
     font-family: var(--mf-font);
+    overflow: hidden;
+}
+
+.mf-auth > main {
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .mf-auth a {
