@@ -14,9 +14,11 @@ use Cake\I18n\FrozenTime;
 use Cake\I18n\I18n;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\Routing\Router;
 use Detection\MobileDetect;
 use Exception;
+use Throwable;
 use function Cake\Core\env;
 
 /**
@@ -147,90 +149,110 @@ class UsersController extends AppController
 
         $user = $usersTable->newEmptyEntity();
 
-        if ($this->request->is('post')) {
-            $user = $usersTable->patchEntity(
-                $user,
-                $this->request->getData(),
-                ['fields' => ['email', 'password', 'password_confirm']],
-            );
+        if (!$this->request->is('post')) {
+            $this->set(compact('user'));
 
-            // Basic password confirmation check (front-end also validates)
-            $password = (string)$this->request->getData('password');
-            $passwordConfirm = (string)$this->request->getData('password_confirm');
-
-            if ($password === '' || $passwordConfirm === '' || $password !== $passwordConfirm) {
-                $this->Flash->error(__('Passwords do not match.'));
-                $this->set(compact('user'));
-
-                return null;
-            }
-
-            $user->is_active = false;
-            $user->is_blocked = false;
-            $user->role_id = Role::USER;
-            $user->created_at = FrozenTime::now();
-            $user->updated_at = FrozenTime::now();
-
-            if ($usersTable->save($user)) {
-                // Log registration activity
-                $activityLogsTable = $this->fetchTable('ActivityLogs');
-                $log = $activityLogsTable->newEntity([
-                    'user_id' => $user->id,
-                    'action' => 'registration',
-                    'ip_address' => (string)$this->request->clientIp(),
-                    'user_agent' => (string)$this->request->getHeaderLine('User-Agent'),
-                ]);
-                $activityLogsTable->save($log);
-
-                /** @var \App\Model\Table\UserTokensTable $userTokensTable */
-                $userTokensTable = $this->fetchTable('UserTokens');
-
-                $tokenService = new UserTokensService($userTokensTable);
-                $token = $tokenService->createActivationToken($user);
-
-                $lang = $this->request->getParam('lang', 'en');
-                $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
-                $activationUrl = $baseUrl . '/' . $lang . '/confirm?token=' . urlencode($token);
-
-                // Set locale for email
-                $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
-
-                try {
-                    $mailer = new Mailer('default');
-                    $mailer
-                        ->setFrom([env('EMAIL_FROM', 'no-reply@mindforge.local') => 'MindForge'])
-                        ->setTo($user->email)
-                        ->setEmailFormat('both')
-                        ->setSubject(__('Activate your MindForge account'))
-                        ->setViewVars(['activationUrl' => $activationUrl])
-                        ->viewBuilder()
-                        ->setTemplate('activation');
-
-                    // Set locale in the mailer's renderer
-                    I18n::setLocale($locale);
-
-                    $mailer->deliver();
-
-                    Log::info('Activation email sent to: ' . $user->email);
-                    $this->Flash->success(__('Check your email to activate your account.'));
-                } catch (Exception $e) {
-                    // Email failed but registration succeeded - log for debugging
-                    Log::error('Failed to send activation email to ' . $user->email . ': ' . $e->getMessage());
-
-                    // Still show success, user can request resend later
-                    $this->Flash->warning(__('Registration successful
-                     but email failed. Activation link: {0}', $activationUrl));
-                }
-
-                return $this->redirect(['action' => 'login', 'lang' => $lang]);
-            }
-
-            $this->Flash->error(__('Registration failed.'));
+            return null;
         }
 
-        $this->set(compact('user'));
+        $user = $usersTable->patchEntity(
+            $user,
+            $this->request->getData(),
+            [
+                'fields' => ['email', 'password', 'password_confirm'],
+            ],
+        );
 
-        return null;
+        // Basic password confirmation check (front-end also validates)
+        $password = (string)$this->request->getData('password');
+        $passwordConfirm = (string)$this->request->getData('password_confirm');
+
+        if ($password === '' || $passwordConfirm === '' || $password !== $passwordConfirm) {
+            $this->Flash->error(__('Passwords do not match.'));
+            $this->set(compact('user'));
+
+            return null;
+        }
+
+        // Set server-controlled fields (never trust client)
+        $user->is_active = false;
+        $user->is_blocked = false;
+        $user->role_id = Role::USER;
+
+        // Only set timestamps if you actually use these columns and don't have Timestamp behavior
+        $now = FrozenTime::now();
+        $user->created_at = $now;
+        $user->updated_at = $now;
+
+        try {
+            $usersTable->saveOrFail($user);
+
+            // Log registration activity
+            $activityLogsTable = $this->fetchTable('ActivityLogs');
+            $log = $activityLogsTable->newEntity([
+                'user_id' => $user->id,
+                'action' => 'registration',
+                'ip_address' => (string)$this->request->clientIp(),
+                'user_agent' => (string)$this->request->getHeaderLine('User-Agent'),
+            ]);
+            $activityLogsTable->save($log);
+        } catch (PersistenceFailedException $e) {
+            $errors = $e->getEntity()->getErrors();
+            Log::error('Registration failed (validation/rules): ' . json_encode($errors));
+            $this->Flash->error(__('Registration failed.'));
+            $this->set(compact('user'));
+
+            return null;
+        } catch (Throwable $e) {
+            Log::error('Registration failed (exception): ' . $e->getMessage());
+            $this->Flash->error(__('Registration failed.'));
+            $this->set(compact('user'));
+
+            return null;
+        }
+
+        /** @var \App\Model\Table\UserTokensTable $userTokensTable */
+        $userTokensTable = $this->fetchTable('UserTokens');
+
+        $tokenService = new UserTokensService($userTokensTable);
+        $token = $tokenService->createActivationToken($user);
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
+        $activationUrl = $baseUrl . '/' . $lang . '/confirm?token=' . urlencode($token);
+
+        $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
+
+        $previousLocale = I18n::getLocale();
+        try {
+            I18n::setLocale($locale);
+
+            $mailer = new Mailer('default');
+            $mailer
+                ->setFrom([env('EMAIL_FROM', 'no-reply@mindforge.local') => 'MindForge'])
+                ->setTo((string)$user->email)
+                ->setEmailFormat('both')
+                ->setSubject(__('Activate your MindForge account'))
+                ->setViewVars(['activationUrl' => $activationUrl]);
+
+            $mailer->viewBuilder()->setTemplate('activation');
+
+            $mailer->deliver();
+
+            Log::info('Activation email sent to: ' . $user->email);
+            $this->Flash->success(__('Check your email to activate your account.'));
+        } catch (Throwable $e) {
+            Log::error('Failed to send activation email to ' . $user->email . ': ' . $e->getMessage());
+
+            // Registration succeeded, only email failed
+            $this->Flash->warning(
+                __('Registration successful but email failed. Activation link: {0}', $activationUrl),
+            );
+        } finally {
+            I18n::setLocale($previousLocale);
+        }
+
+        return $this->redirect(['action' => 'login', 'lang' => $lang]);
     }
 
     /**
