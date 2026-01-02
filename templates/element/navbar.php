@@ -102,8 +102,30 @@ $isAdmin = $isLoggedIn
     const MOBILE_QUERY = '(max-width: 991.98px)';
     const isMobile = () => window.matchMedia(MOBILE_QUERY).matches;
 
+    const main = document.querySelector('main');
+
     const DURATION_MS = 260;
     let closeTimer = null;
+
+    const updateMainOffset = () => {
+        if (!main) {
+            return;
+        }
+
+        if (!isMobile()) {
+            main.style.paddingTop = '';
+            return;
+        }
+
+        const menuVisible = nav.classList.contains(OPEN_CLASS) || nav.classList.contains(CLOSING_CLASS);
+        if (!menuVisible) {
+            main.style.paddingTop = '';
+            return;
+        }
+
+        const height = Math.ceil(menu.getBoundingClientRect().height);
+        main.style.paddingTop = height > 0 ? `${height}px` : '';
+    };
 
     const setExpanded = (expanded) => {
         toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
@@ -116,11 +138,14 @@ $isAdmin = $isLoggedIn
         nav.classList.add(CLOSING_CLASS);
         setExpanded(false);
 
+        updateMainOffset();
+
         if (closeTimer) {
             window.clearTimeout(closeTimer);
         }
         closeTimer = window.setTimeout(() => {
             nav.classList.remove(CLOSING_CLASS);
+            updateMainOffset();
             closeTimer = null;
         }, DURATION_MS);
     };
@@ -130,6 +155,8 @@ $isAdmin = $isLoggedIn
         nav.classList.remove(CLOSING_CLASS);
         nav.classList.add(OPEN_CLASS);
         setExpanded(true);
+
+        window.requestAnimationFrame(updateMainOffset);
     };
 
     toggle.addEventListener('click', () => {
@@ -164,6 +191,7 @@ $isAdmin = $isLoggedIn
     // Reset on desktop
     window.addEventListener('resize', () => {
         if (!isMobile()) close();
+        updateMainOffset();
     });
 })();
 </script>

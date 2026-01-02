@@ -29,7 +29,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
 
 
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
-    <?= $this->Html->css('index.css?v=6') ?>
+    <?= $this->Html->css('index.css?v=7') ?>
 
     <?php if ($isAuthPage) : ?>
         <script>document.documentElement.classList.add('mf-auth-js');</script>
@@ -42,9 +42,12 @@ $isAuthPage = $request->getParam('controller') === 'Users'
 <body class="mf-auth d-flex flex-column min-vh-100<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
     <?= $this->element('navbar') ?>
     <main class="flex-grow-1 d-flex flex-column">
-        <?= $this->Flash->render() ?>
         <?= $this->fetch('content') ?>
     </main>
+
+    <div class="mf-flash-stack" data-mf-flash-stack>
+        <?= $this->Flash->render() ?>
+    </div>
 
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js') ?>
     <?php if ($isAuthPage) : ?>
