@@ -242,7 +242,11 @@ class UsersController extends AppController
             Log::info('Activation email sent to: ' . $user->email);
             $this->Flash->success(__('Check your email to activate your account.'));
         } catch (Throwable $e) {
-            Log::error('Failed to send activation email to ' . $user->email . ': ' . $e->getMessage());
+            Log::error('Mail failed', [
+                'class' => get_class($e),
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+            ]);
 
             // Registration succeeded, only email failed
             $this->Flash->warning(
