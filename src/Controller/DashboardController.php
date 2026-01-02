@@ -8,6 +8,13 @@ use Psr\Http\Message\ResponseInterface;
 
 class DashboardController extends AppController
 {
+    /**
+     * Dashboard index.
+     *
+     * Admin users are redirected to the admin dashboard.
+     *
+     * @return \Psr\Http\Message\ResponseInterface|null Redirects for admins, renders view otherwise.
+     */
     public function index(): ?ResponseInterface
     {
         $identity = $this->request->getAttribute('identity');

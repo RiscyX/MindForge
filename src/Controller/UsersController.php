@@ -351,6 +351,15 @@ class UsersController extends AppController
 
             $lang = $this->request->getParam('lang', 'en');
 
+            if ($user && (int)$user->get('role_id') === Role::ADMIN) {
+                return $this->redirect([
+                    'prefix' => 'Admin',
+                    'controller' => 'Dashboard',
+                    'action' => 'index',
+                    'lang' => $lang,
+                ]);
+            }
+
             $redirect = $this->request->getQuery('redirect', [
                 'controller' => 'Pages',
                 'action' => 'display',
