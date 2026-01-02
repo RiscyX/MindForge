@@ -58,6 +58,9 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/pages/*', 'Pages::display')
             ->setPatterns(['lang' => 'en|hu']);
 
+        $builder->connect('/confirm', ['controller' => 'Users', 'action' => 'confirm'])
+            ->setPatterns(['lang' => 'en|hu']);
+
         $builder->fallbacks();
     });
 
