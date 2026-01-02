@@ -9,6 +9,7 @@ $cakeDescription = 'MindForge';
 $request = $this->getRequest();
 $isAuthPage = $request->getParam('controller') === 'Users'
     && in_array($request->getParam('action'), ['login', 'register', 'forgotPassword', 'resetPassword'], true);
+$isAdminPage = $request->getParam('prefix') === 'Admin';
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="<?= I18n::getLocale() === 'hu_HU' ? 'hu' : 'en'; ?>">
@@ -40,7 +41,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     <?= $this->fetch('css') ?>
 </head>
 <body class="mf-auth d-flex flex-column min-vh-100<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
-    <?= $this->element('navbar') ?>
+    <?= $isAdminPage ? $this->element('admin_navbar') : $this->element('navbar') ?>
     <main class="flex-grow-1 d-flex flex-column">
         <?= $this->fetch('content') ?>
     </main>
