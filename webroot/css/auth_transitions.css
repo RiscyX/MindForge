@@ -1,0 +1,49 @@
+/* Auth page transitions (login/register/forgot/reset)
+   Kept separate from index.css by request.
+*/
+
+/* On some browsers the root element is the scroll container.
+    This prevents the tiny "micro-scroll" during fade-in.
+*/
+html.mf-auth-js {
+     overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mf-auth-js .mf-auth-page main {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* Start hidden ONLY when JS is enabled (html.mf-auth-js is added early in <head>). */
+.mf-auth-js .mf-auth-page main {
+    opacity: 0;
+    transform: translateY(6px);
+    overflow: hidden; /* prevents scroll during the initial hidden state */
+    scrollbar-gutter: stable;
+}
+
+/* Ready (fade-in) state. */
+.mf-auth-js .mf-auth-page main.mf-auth-ready {
+    opacity: 1;
+    transform: none;
+    transition: opacity 1000ms ease, transform 1000ms ease;
+}
+
+/* Enable scrolling only AFTER the enter animation completes (JS adds this). */
+.mf-auth-js .mf-auth-page main.mf-auth-scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Leave (fade-out) state. */
+.mf-auth-js .mf-auth-page main.mf-auth-leave {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 1000ms ease, transform 1000ms ease;
+    overflow: hidden;
+    pointer-events: none;
+}

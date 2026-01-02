@@ -42,6 +42,43 @@ class UserTokensService
     }
 
     /**
+     * Create a password reset token for a user.
+     *
+     * Also invalidates any previously issued (unused) password reset tokens for the same user.
+     *
+     * @param \App\Model\Entity\User $user
+     * @return string
+     */
+    public function createPasswordResetToken(User $user): string
+    {
+        $tokens = $this->userTokens;
+
+        // Invalidate previous unused reset tokens for this user
+        $tokens->updateAll(
+            ['used_at' => FrozenTime::now()],
+            [
+                'user_id' => $user->id,
+                'type' => 'password_reset',
+                'used_at IS' => null,
+            ],
+        );
+
+        $tokenValue = bin2hex(random_bytes(32));
+
+        $entity = $tokens->newEntity([
+            'user_id' => $user->id,
+            'type' => 'password_reset',
+            'token' => $tokenValue,
+            'expires_at' => FrozenTime::now()->addHours(1),
+            'used_at' => null,
+        ]);
+
+        $tokens->saveOrFail($entity);
+
+        return $tokenValue;
+    }
+
+    /**
      * Validate an activation token and return the associated user token entity.
      *
      * @param string $token The token value to validate.
@@ -58,6 +95,32 @@ class UserTokensService
             ->where([
                 'token' => $token,
                 'type' => 'activate',
+                'used_at IS' => null,
+                'expires_at >' => FrozenTime::now(),
+            ])
+            ->contain(['Users'])
+            ->first();
+
+        return $userToken;
+    }
+
+    /**
+     * Validate a password reset token and return the associated user token entity.
+     *
+     * @param string $token
+     * @return \App\Model\Entity\UserToken|null
+     */
+    public function validatePasswordResetToken(string $token): ?UserToken
+    {
+        if ($token === '') {
+            return null;
+        }
+
+        /** @var \App\Model\Entity\UserToken|null $userToken */
+        $userToken = $this->userTokens->find()
+            ->where([
+                'token' => $token,
+                'type' => 'password_reset',
                 'used_at IS' => null,
                 'expires_at >' => FrozenTime::now(),
             ])

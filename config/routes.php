@@ -52,6 +52,12 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/logout', ['controller' => 'Users', 'action' => 'logout'])
             ->setPatterns(['lang' => 'en|hu']);
 
+        $builder->connect('/forgot-password', ['controller' => 'Users', 'action' => 'forgotPassword'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/reset-password', ['controller' => 'Users', 'action' => 'resetPassword'])
+            ->setPatterns(['lang' => 'en|hu']);
+
         $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
             ->setPatterns(['lang' => 'en|hu']);
 

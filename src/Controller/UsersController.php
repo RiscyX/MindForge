@@ -14,6 +14,7 @@ use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\Routing\Router;
 use Exception;
+use function Cake\Core\env;
 
 /**
  * Users Controller
@@ -346,6 +347,134 @@ class UsersController extends AppController
         $lang = $this->request->getParam('lang', 'en');
 
         return $this->redirect(['controller' => 'Users', 'action' => 'login', 'lang' => $lang]);
+    }
+
+    /**
+     * Forgot password: request a password reset email.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function forgotPassword(): ?Response
+    {
+        $this->request->allowMethod(['get', 'post']);
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $this->set(compact('lang'));
+
+        if (!$this->request->is('post')) {
+            return null;
+        }
+
+        $email = trim((string)$this->request->getData('email'));
+
+        // Always show the same response to avoid account enumeration.
+        $genericSuccess = __('If the email exists in our system, we sent a password reset link.');
+
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->Flash->success($genericSuccess);
+
+            return $this->redirect(['action' => 'login', 'lang' => $lang]);
+        }
+
+        /** @var \App\Model\Entity\User|null $user */
+        $user = $this->fetchTable('Users')->find()
+            ->where(['email' => $email])
+            ->first();
+
+        if (!$user) {
+            $this->Flash->success($genericSuccess);
+
+            return $this->redirect(['action' => 'login', 'lang' => $lang]);
+        }
+
+        /** @var \App\Model\Table\UserTokensTable $userTokensTable */
+        $userTokensTable = $this->fetchTable('UserTokens');
+        $tokenService = new UserTokensService($userTokensTable);
+        $token = $tokenService->createPasswordResetToken($user);
+
+        $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
+        $resetUrl = $baseUrl . '/' . $lang . '/reset-password?token=' . urlencode($token);
+
+        $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
+
+        try {
+            $mailer = new Mailer('default');
+            $mailer
+                ->setFrom([env('EMAIL_FROM', 'no-reply@mindforge.local') => 'MindForge'])
+                ->setTo($user->email)
+                ->setEmailFormat('both')
+                ->setSubject(__('Reset your MindForge password'))
+                ->setViewVars(['resetUrl' => $resetUrl])
+                ->viewBuilder()
+                ->setTemplate('password_reset');
+
+            I18n::setLocale($locale);
+
+            $mailer->deliver();
+            Log::info('Password reset email sent to: ' . $user->email);
+        } catch (Exception $e) {
+            Log::error('Failed to send password reset email to ' . $email . ': ' . $e->getMessage());
+            // Intentionally do not reveal details to user.
+        }
+
+        $this->Flash->success($genericSuccess);
+
+        return $this->redirect(['action' => 'login', 'lang' => $lang]);
+    }
+
+    /**
+     * Reset password: validate token and set a new password.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function resetPassword(): ?Response
+    {
+        $this->request->allowMethod(['get', 'post']);
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $token = (string)$this->request->getQuery('token');
+
+        /** @var \App\Model\Table\UserTokensTable $userTokensTable */
+        $userTokensTable = $this->fetchTable('UserTokens');
+        $tokenService = new UserTokensService($userTokensTable);
+        $userToken = $tokenService->validatePasswordResetToken($token);
+
+        if ($userToken === null) {
+            $this->Flash->error(__('Invalid or expired reset token.'));
+
+            return $this->redirect(['action' => 'forgotPassword', 'lang' => $lang]);
+        }
+
+        $user = $userToken->user;
+        $this->set(compact('lang', 'token'));
+
+        if (!$this->request->is('post')) {
+            return null;
+        }
+
+        $password = (string)$this->request->getData('password');
+        $passwordConfirm = (string)$this->request->getData('password_confirm');
+
+        if ($password === '' || $passwordConfirm === '' || $password !== $passwordConfirm) {
+            $this->Flash->error(__('Passwords do not match.'));
+
+            return null;
+        }
+
+        /** @var \App\Model\Table\UsersTable $usersTable */
+        $usersTable = $this->fetchTable('Users');
+
+        $usersTable->patchEntity($user, ['password' => $password], ['fields' => ['password']]);
+
+        if ($usersTable->save($user) && $tokenService->markTokenAsUsed($userToken)) {
+            $this->Flash->success(__('Your password has been reset. You can now log in.'));
+
+            return $this->redirect(['action' => 'login', 'lang' => $lang]);
+        }
+
+        $this->Flash->error(__('Failed to reset password. Please try again.'));
+
+        return null;
     }
 
     /**

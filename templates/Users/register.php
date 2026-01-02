@@ -4,8 +4,8 @@ $this->assign('title', __('Register'));
 $this->Html->script('register.js?v=2', ['block' => 'script']);
 ?>
 
-<div class="container-fluid min-vh-100">
-    <div class="row g-0 min-vh-100 align-items-stretch">
+<div class="container-fluid p-0 flex-grow-1 d-flex">
+    <div class="row g-0 flex-grow-1 w-100 align-items-stretch">
         <div class="col-12 col-lg-6 d-none d-lg-flex flex-column mf-left p-5">
             <div class="flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center">
                 <div class="mf-orb" aria-hidden="true"></div>
@@ -19,8 +19,8 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
             </div>
         </div>
 
-        <div class="col-12 col-lg-6 mf-right d-flex align-items-start align-items-lg-center justify-content-center p-3 p-sm-4 p-lg-5">
-            <div class="mf-card p-4 p-sm-5">
+        <div class="col-12 col-lg-6 mf-right d-flex align-items-start align-items-lg-center justify-content-center px-3 px-sm-4 px-lg-5 py-3 py-sm-4 py-lg-4">
+            <div class="mf-card px-4 py-4 px-sm-5 py-sm-4">
                 <h2 class="mb-1"><?= __('Create an Account') ?></h2>
                 <p class="mf-muted mb-4"><?= __('Start your journey with MindForge today.') ?></p>
 
@@ -94,7 +94,7 @@ $this->Html->script('register.js?v=2', ['block' => 'script']);
 
                     <div class="text-center mt-3 mf-muted">
                         <?= __('Already have an account?') ?>
-                        <a href="<?= env('BASE_URL') . 'register.php/' . ($lang ?? 'en') ?>/login" class="link-primary"><?= __('Log In') ?></a>
+                        <a href="<?= $this->Url->build(['lang' => $lang ?? 'en', 'controller' => 'Users', 'action' => 'login']) ?>" class="link-primary"><?= __('Log In') ?></a>
                     </div>
                 <?= $this->Form->end() ?>
             </div>

@@ -5,6 +5,10 @@
 use Cake\I18n\I18n;
 
 $cakeDescription = 'MindForge';
+
+$request = $this->getRequest();
+$isAuthPage = $request->getParam('controller') === 'Users'
+    && in_array($request->getParam('action'), ['login', 'register', 'forgotPassword', 'resetPassword'], true);
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="<?= I18n::getLocale() === 'hu_HU' ? 'hu' : 'en'; ?>">
@@ -27,15 +31,25 @@ $cakeDescription = 'MindForge';
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
     <?= $this->Html->css('index.css?v=3') ?>
 
+    <?php if ($isAuthPage) : ?>
+        <script>document.documentElement.classList.add('mf-auth-js');</script>
+        <?= $this->Html->css('auth_transitions.css?v=1') ?>
+    <?php endif; ?>
+
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
 </head>
-<body class="mf-auth">
+<body class="mf-auth d-flex flex-column min-vh-100<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
     <?= $this->element('navbar') ?>
-    <?= $this->Flash->render() ?>
-    <?= $this->fetch('content') ?>
+    <main class="flex-grow-1 d-flex flex-column">
+        <?= $this->Flash->render() ?>
+        <?= $this->fetch('content') ?>
+    </main>
 
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js') ?>
+    <?php if ($isAuthPage) : ?>
+        <?= $this->Html->script('auth_transitions.js?v=1') ?>
+    <?php endif; ?>
     <?= $this->fetch('script') ?>
 </body>
 </html>

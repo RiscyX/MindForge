@@ -4,8 +4,8 @@ $this->assign('title', __('Login'));
 $this->Html->script('login.js?v=1', ['block' => 'script']);
 ?>
 
-<div class="container-fluid min-vh-100">
-    <div class="row g-0 min-vh-100 align-items-stretch">
+<div class="container-fluid p-0 flex-grow-1 d-flex">
+    <div class="row g-0 flex-grow-1 w-100 align-items-stretch">
         <div class="col-12 col-lg-6 mf-right d-flex align-items-start align-items-lg-center justify-content-center p-3 p-sm-4 p-lg-5">
             <div class="mf-card p-4 p-sm-5">
                 <h2 class="mb-1"><?= __('Welcome Back') ?></h2>
@@ -35,7 +35,12 @@ $this->Html->script('login.js?v=1', ['block' => 'script']);
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label" for="password"><?= __('Password') ?></label>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <label class="form-label mb-0" for="password"><?= __('Password') ?></label>
+                            <a class="link-primary small" href="<?= $this->Url->build(['lang' => $lang ?? 'en', 'controller' => 'Users', 'action' => 'forgotPassword']) ?>">
+                                <?= __('Forgot password?') ?>
+                            </a>
+                        </div>
                         <input
                             id="password"
                             data-mf-password
@@ -55,7 +60,7 @@ $this->Html->script('login.js?v=1', ['block' => 'script']);
 
                     <div class="text-center mt-3 mf-muted">
                         <?= __('Don\'t have an account?') ?>
-                        <a href="<?= env('BASE_URL') . 'login.php/' . ($lang ?? 'en') ?>/register" class="link-primary"><?= __('Sign Up') ?></a>
+                        <a href="<?= $this->Url->build(['lang' => $lang ?? 'en', 'controller' => 'Users', 'action' => 'register']) ?>" class="link-primary"><?= __('Sign Up') ?></a>
                     </div>
                 <?= $this->Form->end() ?>
             </div>
