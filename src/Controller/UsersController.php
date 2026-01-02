@@ -5,15 +5,20 @@ namespace App\Controller;
 
 use App\Model\Entity\Role;
 use App\Service\UserTokensService;
+use Authentication\IdentityInterface;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
+use Cake\Http\Client;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
 use Cake\I18n\I18n;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\Routing\Router;
+use Detection\MobileDetect;
 use Exception;
+use Throwable;
 use function Cake\Core\env;
 
 /**
@@ -144,80 +149,110 @@ class UsersController extends AppController
 
         $user = $usersTable->newEmptyEntity();
 
-        if ($this->request->is('post')) {
-            $user = $usersTable->patchEntity(
-                $user,
-                $this->request->getData(),
-                ['fields' => ['email', 'password', 'password_confirm']],
-            );
+        if (!$this->request->is('post')) {
+            $this->set(compact('user'));
 
-            // Basic password confirmation check (front-end also validates)
-            $password = (string)$this->request->getData('password');
-            $passwordConfirm = (string)$this->request->getData('password_confirm');
-
-            if ($password === '' || $passwordConfirm === '' || $password !== $passwordConfirm) {
-                $this->Flash->error(__('Passwords do not match.'));
-                $this->set(compact('user'));
-
-                return null;
-            }
-
-            $user->is_active = false;
-            $user->is_blocked = false;
-            $user->role_id = Role::USER;
-            $user->created_at = FrozenTime::now();
-            $user->updated_at = FrozenTime::now();
-
-            if ($usersTable->save($user)) {
-                /** @var \App\Model\Table\UserTokensTable $userTokensTable */
-                $userTokensTable = $this->fetchTable('UserTokens');
-
-                $tokenService = new UserTokensService($userTokensTable);
-                $token = $tokenService->createActivationToken($user);
-
-                $lang = $this->request->getParam('lang', 'en');
-                $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
-                $activationUrl = $baseUrl . '/' . $lang . '/confirm?token=' . urlencode($token);
-
-                // Set locale for email
-                $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
-
-                try {
-                    $mailer = new Mailer('default');
-                    $mailer
-                        ->setFrom([env('EMAIL_FROM', 'no-reply@mindforge.local') => 'MindForge'])
-                        ->setTo($user->email)
-                        ->setEmailFormat('both')
-                        ->setSubject(__('Activate your MindForge account'))
-                        ->setViewVars(['activationUrl' => $activationUrl])
-                        ->viewBuilder()
-                        ->setTemplate('activation');
-
-                    // Set locale in the mailer's renderer
-                    I18n::setLocale($locale);
-
-                    $mailer->deliver();
-
-                    Log::info('Activation email sent to: ' . $user->email);
-                    $this->Flash->success(__('Check your email to activate your account.'));
-                } catch (Exception $e) {
-                    // Email failed but registration succeeded - log for debugging
-                    Log::error('Failed to send activation email to ' . $user->email . ': ' . $e->getMessage());
-
-                    // Still show success, user can request resend later
-                    $this->Flash->warning(__('Registration successful
-                     but email failed. Activation link: {0}', $activationUrl));
-                }
-
-                return $this->redirect(['action' => 'login', 'lang' => $lang]);
-            }
-
-            $this->Flash->error(__('Registration failed.'));
+            return null;
         }
 
-        $this->set(compact('user'));
+        $user = $usersTable->patchEntity(
+            $user,
+            $this->request->getData(),
+            [
+                'fields' => ['email', 'password', 'password_confirm'],
+            ],
+        );
 
-        return null;
+        // Basic password confirmation check (front-end also validates)
+        $password = (string)$this->request->getData('password');
+        $passwordConfirm = (string)$this->request->getData('password_confirm');
+
+        if ($password === '' || $passwordConfirm === '' || $password !== $passwordConfirm) {
+            $this->Flash->error(__('Passwords do not match.'));
+            $this->set(compact('user'));
+
+            return null;
+        }
+
+        // Set server-controlled fields (never trust client)
+        $user->is_active = false;
+        $user->is_blocked = false;
+        $user->role_id = Role::USER;
+
+        // Only set timestamps if you actually use these columns and don't have Timestamp behavior
+        $now = FrozenTime::now();
+        $user->created_at = $now;
+        $user->updated_at = $now;
+
+        try {
+            $usersTable->saveOrFail($user);
+
+            // Log registration activity
+            $activityLogsTable = $this->fetchTable('ActivityLogs');
+            $log = $activityLogsTable->newEntity([
+                'user_id' => $user->id,
+                'action' => 'registration',
+                'ip_address' => (string)$this->request->clientIp(),
+                'user_agent' => (string)$this->request->getHeaderLine('User-Agent'),
+            ]);
+            $activityLogsTable->save($log);
+        } catch (PersistenceFailedException $e) {
+            $errors = $e->getEntity()->getErrors();
+            Log::error('Registration failed (validation/rules): ' . json_encode($errors));
+            $this->Flash->error(__('Registration failed.'));
+            $this->set(compact('user'));
+
+            return null;
+        } catch (Throwable $e) {
+            Log::error('Registration failed (exception): ' . $e->getMessage());
+            $this->Flash->error(__('Registration failed.'));
+            $this->set(compact('user'));
+
+            return null;
+        }
+
+        /** @var \App\Model\Table\UserTokensTable $userTokensTable */
+        $userTokensTable = $this->fetchTable('UserTokens');
+
+        $tokenService = new UserTokensService($userTokensTable);
+        $token = $tokenService->createActivationToken($user);
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
+        $activationUrl = $baseUrl . '/' . $lang . '/confirm?token=' . urlencode($token);
+
+        $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
+
+        $previousLocale = I18n::getLocale();
+        try {
+            I18n::setLocale($locale);
+
+            $mailer = new Mailer('default');
+            $mailer
+                ->setFrom([env('EMAIL_FROM', 'no-reply@mindforge.local') => 'MindForge'])
+                ->setTo((string)$user->email)
+                ->setEmailFormat('both')
+                ->setSubject(__('Activate your MindForge account'))
+                ->setViewVars(['activationUrl' => $activationUrl]);
+
+            $mailer->viewBuilder()->setTemplate('activation');
+
+            $mailer->deliver();
+
+            Log::info('Activation email sent to: ' . $user->email);
+            $this->Flash->success(__('Check your email to activate your account.'));
+        } catch (Throwable $e) {
+            Log::error('Failed to send activation email to ' . $user->email . ': ' . $e->getMessage());
+
+            // Registration succeeded, only email failed
+            $this->Flash->warning(
+                __('Registration successful but email failed. Activation link: {0}', $activationUrl),
+            );
+        } finally {
+            I18n::setLocale($previousLocale);
+        }
+
+        return $this->redirect(['action' => 'login', 'lang' => $lang]);
     }
 
     /**
@@ -272,6 +307,9 @@ class UsersController extends AppController
             if (!$this->rateLimitAllow($ip)) {
                 $this->Flash->error(__('Too many login attempts. Please try again in a minute.'));
 
+                $email = (string)$this->request->getData('email');
+                $this->logLoginFailure($email, 'rate_limit');
+
                 return $this->redirect($this->request->getRequestTarget());
             }
         }
@@ -296,10 +334,15 @@ class UsersController extends AppController
                     $ip = (string)$this->request->clientIp();
                     $this->rateLimitHit($ip);
 
+                    $this->logLoginFailure($user->email, 'inactive_or_blocked');
+
                     $this->Flash->error(__('Invalid email or password.'));
 
                     return null; // render login
                 }
+
+                // Successful login logic
+                $this->logLogin($user);
             }
 
             // Success: clear rate limit counter for this IP
@@ -323,6 +366,9 @@ class UsersController extends AppController
             $ip = (string)$this->request->clientIp();
             $this->rateLimitHit($ip);
 
+            $email = (string)$this->request->getData('email');
+            $this->logLoginFailure($email, 'invalid_credentials');
+
             $this->Flash->error(__('Invalid email or password.'));
         }
 
@@ -335,6 +381,11 @@ class UsersController extends AppController
     public function logout(): Response
     {
         $this->request->allowMethod(['post', 'get']); // if you want GET logout; POST-only is stricter
+
+        $user = $this->Authentication->getIdentity();
+        if ($user) {
+            $this->logLogout($user);
+        }
 
         $this->Authentication->logout();
 
@@ -475,6 +526,134 @@ class UsersController extends AppController
         $this->Flash->error(__('Failed to reset password. Please try again.'));
 
         return null;
+    }
+
+    /**
+     * Log successful login and device info.
+     *
+     * @param \Authentication\IdentityInterface $user
+     * @return void
+     */
+    private function logLogin(IdentityInterface $user): void
+    {
+        $ip = (string)$this->request->clientIp();
+        $userAgent = (string)$this->request->getHeaderLine('User-Agent');
+        $userId = $user->getIdentifier();
+
+        // Update last_login_at
+        $usersTable = $this->fetchTable('Users');
+        $userEntity = $usersTable->get($userId);
+        $userEntity->last_login_at = FrozenTime::now();
+        $usersTable->save($userEntity);
+
+        // Activity Log
+        $activityLogsTable = $this->fetchTable('ActivityLogs');
+        $log = $activityLogsTable->newEntity([
+            'user_id' => $userId,
+            'action' => 'login',
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+        ]);
+        $activityLogsTable->save($log);
+
+        // Device Log
+        $detect = new MobileDetect();
+        $detect->setUserAgent($userAgent);
+
+        $deviceType = 2; // Desktop
+        if ($detect->isMobile() && !$detect->isTablet()) {
+            $deviceType = 0; // Mobile
+        } elseif ($detect->isTablet()) {
+            $deviceType = 1; // Tablet
+        }
+
+        // IP Lookup via iplocate.io
+        $country = null;
+        $city = null;
+
+        try {
+            $http = new Client();
+
+            $apiKey = env('IPLOCATE_API_KEY', null);
+            $url = 'https://www.iplocate.io/api/lookup/' . $ip;
+            if ($apiKey) {
+                $url .= '?apikey=' . $apiKey;
+            }
+
+            $response = $http->get($url);
+            if ($response->isOk()) {
+                $json = $response->getJson();
+                $country = $json['country'] ?? null;
+                $city = $json['city'] ?? null;
+            }
+        } catch (Exception $e) {
+            Log::error('IP lookup failed: ' . $e->getMessage());
+        }
+
+        $deviceLogsTable = $this->fetchTable('DeviceLogs');
+        $deviceLog = $deviceLogsTable->newEntity([
+            'user_id' => $userId,
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+            'device_type' => $deviceType,
+            'country' => $country,
+            'city' => $city,
+        ]);
+
+        $deviceLogsTable->save($deviceLog);
+    }
+
+    /**
+     * Log logout action.
+     *
+     * @param \Authentication\IdentityInterface $user
+     * @return void
+     */
+    private function logLogout(IdentityInterface $user): void
+    {
+        $ip = (string)$this->request->clientIp();
+        $userAgent = (string)$this->request->getHeaderLine('User-Agent');
+        $userId = $user->getIdentifier();
+
+        $activityLogsTable = $this->fetchTable('ActivityLogs');
+        $log = $activityLogsTable->newEmptyEntity();
+        $log->user_id = $userId;
+        $log->action = 'logout';
+        $log->ip_address = $ip;
+        $log->user_agent = $userAgent;
+        $activityLogsTable->save($log);
+    }
+
+    /**
+     * Log failed login attempt.
+     *
+     * @param string|null $email
+     * @param string $reason
+     * @return void
+     */
+    private function logLoginFailure(?string $email, string $reason): void
+    {
+        $ip = (string)$this->request->clientIp();
+        $userAgent = (string)$this->request->getHeaderLine('User-Agent');
+
+        $userId = null;
+        if ($email) {
+            // We might already have the user in login(), but to keep this method self-contained:
+            $user = $this->fetchTable('Users')->find()->where(['email' => $email])->first();
+            if ($user) {
+                $userId = $user->id;
+            }
+        }
+
+        $activityLogsTable = $this->fetchTable('ActivityLogs');
+        $log = $activityLogsTable->newEntity([
+            'user_id' => $userId,
+            'action' => substr('login_failed: ' . $reason, 0, 100),
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+        ]);
+
+        $activityLogsTable->save($log);
     }
 
     /**

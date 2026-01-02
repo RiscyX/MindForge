@@ -1,0 +1,45 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Model\Entity;
+
+use Cake\ORM\Entity;
+
+/**
+ * DeviceLog Entity
+ *
+ * @property int $id
+ * @property int|null $user_id
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property int $device_type
+ * @property string|null $country
+ * @property string|null $city
+ * @property string|null $extra_info
+ * @property \Cake\I18n\DateTime $created_at
+ *
+ * @property \App\Model\Entity\User $user
+ */
+class DeviceLog extends Entity
+{
+    /**
+     * Fields that can be mass assigned using newEntity() or patchEntity().
+     *
+     * Note that when '*' is set to true, this allows all unspecified fields to
+     * be mass assigned. For security purposes, it is advised to set '*' to false
+     * (or remove it), and explicitly make individual fields accessible as needed.
+     *
+     * @var array<string, bool>
+     */
+    protected array $_accessible = [
+        'user_id' => true,
+        'ip_address' => true,
+        'user_agent' => true,
+        'device_type' => true,
+        'country' => true,
+        'city' => true,
+        'extra_info' => true,
+        'created_at' => true,
+        'user' => true,
+    ];
+}

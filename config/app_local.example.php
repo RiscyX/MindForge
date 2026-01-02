@@ -94,4 +94,11 @@ return [
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
+
+    /*
+     * Iplocate API configuration
+     */
+    'Iplocate' => [
+        'api_key' => env('IPLOCATE_API_KEY', null),
+    ],
 ];
