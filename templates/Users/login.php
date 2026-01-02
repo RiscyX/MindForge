@@ -6,7 +6,7 @@ $this->Html->script('login.js?v=1', ['block' => 'script']);
 
 <div class="container-fluid p-0 flex-grow-1 d-flex">
     <div class="row g-0 flex-grow-1 w-100 align-items-stretch">
-        <div class="col-12 col-lg-6 mf-right d-flex align-items-start align-items-lg-center justify-content-center p-3 p-sm-4 p-lg-5">
+        <div class="col-12 col-lg-6 mf-right d-flex align-items-center align-items-lg-center justify-content-center px-3 px-sm-4 px-lg-5 py-2 py-sm-3 py-lg-5">
             <div class="mf-card p-4 p-sm-5">
                 <h2 class="mb-1"><?= __('Welcome Back') ?></h2>
                 <p class="mf-muted mb-4"><?= __('Log in to continue your journey.') ?></p>
