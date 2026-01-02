@@ -96,6 +96,15 @@ return [
     ],
 
     /*
+     * Email delivery profiles
+     */
+    'Email' => [
+        'default' => [
+            'from' => env('EMAIL_FROM', 'mindforge@localhost'),
+        ],
+    ],
+
+    /*
      * Iplocate API configuration
      */
     'Iplocate' => [
