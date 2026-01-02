@@ -223,7 +223,7 @@ class UsersController extends AppController
 
         $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
 
-        $previousLocale = I18n::getLocale();
+        //$previousLocale = I18n::getLocale();
         try {
             I18n::setLocale($locale);
 
@@ -242,18 +242,13 @@ class UsersController extends AppController
             Log::info('Activation email sent to: ' . $user->email);
             $this->Flash->success(__('Check your email to activate your account.'));
         } catch (Throwable $e) {
-            Log::error('Mail failed', [
-                'class' => get_class($e),
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-            ]);
-
-            // Registration succeeded, only email failed
-            $this->Flash->warning(
-                __('Registration successful but email failed. Activation link: {0}', $activationUrl),
-            );
-        } finally {
-            I18n::setLocale($previousLocale);
+            Log::error(sprintf(
+                'Mail failed | class=%s | code=%s | message=%s',
+                get_class($e),
+                (string)$e->getCode(),
+                (string)$e->getMessage(),
+            ));
+            throw $e;
         }
 
         return $this->redirect(['action' => 'login', 'lang' => $lang]);
