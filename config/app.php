@@ -215,9 +215,9 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => SmtpTransport::class,
-            'host' => env('EMAIL_HOST', 'smtp.gmail.com'),
-            'port' => (int)env('EMAIL_PORT', 587),
+            'className' => 'Smtp',
+            'host' => env('EMAIL_HOST', 'localhost'),
+            'port' => (int)env('EMAIL_PORT', 25),
             'timeout' => 30,
             'username' => env('EMAIL_USERNAME', ''),
             'password' => env('EMAIL_PASSWORD', ''),
