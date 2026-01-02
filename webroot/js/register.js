@@ -132,7 +132,9 @@
 
         if (!form.checkValidity()) {
             event.preventDefault();
-            event.stopPropagation();
+            if (typeof form.reportValidity === 'function') {
+                form.reportValidity();
+            }
         }
 
         form.classList.add('was-validated');

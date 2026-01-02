@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2025-12-16 20:54+0000\n"
-"PO-Revision-Date: 2025-12-16 21:15+0000\n"
+"POT-Creation-Date: 2026-01-02 18:29+0000\n"
+"PO-Revision-Date: 2026-01-02 18:35+0000\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -625,6 +625,120 @@ msgstr "The user has been deleted."
 #: src/Controller/UsersController.php:101
 msgid "The user could not be deleted. Please, try again."
 msgstr "The user could not be deleted. Please, try again."
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "An AI-powered platform built to help you learn smarter, test faster, and improve continuously."
+msgstr "An AI-powered platform built to help you learn smarter, test faster, and improve continuously."
+
+msgid "Are you sure you want to log out?"
+msgstr "Are you sure you want to log out?"
+
+msgid "Back to login"
+msgstr "Back to login"
+
+msgid "Build knowledge. Test understanding. Improve."
+msgstr "Build knowledge. Test understanding. Improve."
+
+msgid "Choose a strong password for your account."
+msgstr "Choose a strong password for your account."
+
+msgid "Create Account"
+msgstr "Create Account"
+
+msgid "Create and take intelligent tests"
+msgstr "Create and take intelligent tests"
+
+msgid "Enter your email and we'll send you a reset link."
+msgstr "Enter your email and we'll send you a reset link."
+
+msgid "Failed to reset password. Please try again."
+msgstr "Failed to reset password. Please try again."
+
+msgid "Forgot Password"
+msgstr "Forgot Password"
+
+msgid "Forgot password?"
+msgstr "Forgot password?"
+
+msgid "Forgot your password?"
+msgstr "Forgot your password?"
+
+msgid "If the email exists in our system, we sent a password reset link."
+msgstr "If the email exists in our system, we sent a password reset link."
+
+msgid "If you did not request this, you can safely ignore this email."
+msgstr "If you did not request this, you can safely ignore this email."
+
+msgid "Invalid email or password."
+msgstr "Invalid email or password."
+
+msgid "Invalid or expired reset token."
+msgstr "Invalid or expired reset token."
+
+msgid "Learn with AI-assisted feedback"
+msgstr "Learn with AI-assisted feedback"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "MindForge"
+msgstr "MindForge"
+
+msgid "MindForge combines structured testing with AI to help you focus on what actually matters."
+msgstr "MindForge combines structured testing with AI to help you focus on what actually matters."
+
+msgid "New Password"
+msgstr "New Password"
+
+msgid "Registration successful but email failed. Activation link: {0}"
+msgstr "Registration successful but email failed. Activation link: {0}"
+
+msgid "Reset Password"
+msgstr "Reset Password"
+
+msgid "Reset your MindForge password"
+msgstr "Reset your MindForge password"
+
+msgid "Reset your password"
+msgstr "Reset your password"
+
+msgid "Send Reset Link"
+msgstr "Send Reset Link"
+
+msgid "Set a New Password"
+msgstr "Set a New Password"
+
+msgid "Toggle navigation"
+msgstr "Toggle navigation"
+
+msgid "Too many login attempts. Please try again in a minute."
+msgstr "Too many login attempts. Please try again in a minute."
+
+msgid "Track your progress over time"
+msgstr "Track your progress over time"
+
+msgid "Update Password"
+msgstr "Update Password"
+
+msgid "Use the link below to set a new password:"
+msgstr "Use the link below to set a new password:"
+
+msgid "Welcome to MindForge"
+msgstr "Welcome to MindForge"
+
+msgid "You are now logged out."
+msgstr "You are now logged out."
+
+msgid "You requested a password reset for your MindForge account."
+msgstr "You requested a password reset for your MindForge account."
+
+msgid "You requested a password reset for your MindForge account. Click the button below to set a new password:"
+msgstr "You requested a password reset for your MindForge account. Click the button below to set a new password:"
+
+msgid "Your password has been reset. You can now log in."
+msgstr "Your password has been reset. You can now log in."
 
 #~ msgid "Please activate your account using the link below:"
 #~ msgstr "Please activate your account using the link below:"

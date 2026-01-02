@@ -8,4 +8,13 @@ if (!isset($params['escape']) || $params['escape'] !== false) {
     $message = h($message);
 }
 ?>
-<div class="message warning" onclick="this.classList.add('hidden');"><?= $message ?></div>
+<?php
+$flashClass = 'mf-flash';
+if (!empty($params['class'])) {
+    $flashClass .= ' ' . $params['class'];
+}
+?>
+
+<div class="<?= h($flashClass) ?>" data-mf-flash role="alert" onclick="this.remove();">
+    <div class="mf-flash__message"><?= $message ?></div>
+</div>

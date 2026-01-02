@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2025-12-16 20:54+0000\n"
-"PO-Revision-Date: 2025-12-16 21:10+0000\n"
+"POT-Creation-Date: 2026-01-02 18:29+0000\n"
+"PO-Revision-Date: 2026-01-02 18:35+0000\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Hungarian <EMAIL@ADDRESS>\n"
 "Language: hu_HU\n"
@@ -493,3 +493,213 @@ msgstr "A felhasználó törölve lett."
 #: src/Controller/UsersController.php:101
 msgid "The user could not be deleted. Please, try again."
 msgstr "A felhasználó törlése sikertelen. Próbáld újra."
+
+msgid "Action"
+msgstr "Művelet"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "An AI-powered platform built to help you learn smarter, test faster, and improve continuously."
+msgstr "Egy MI-alapú platform, amely segít okosabban tanulni, gyorsabban tesztelni és folyamatosan fejlődni."
+
+msgid "Are you sure you want to log out?"
+msgstr "Biztosan ki szeretnél jelentkezni?"
+
+msgid "Back to login"
+msgstr "Vissza a bejelentkezéshez"
+
+msgid "Browser"
+msgstr "Böngésző"
+
+msgid "Build knowledge. Test understanding. Improve."
+msgstr "Építs tudást. Teszteld a megértést. Fejlődj."
+
+msgid "Category Id"
+msgstr "Kategória azonosító"
+
+msgid "Choose a strong password for your account."
+msgstr "Válassz erős jelszót a fiókodhoz."
+
+msgid "City"
+msgstr "Város"
+
+msgid "Correct Answers"
+msgstr "Helyes válaszok"
+
+msgid "Country"
+msgstr "Ország"
+
+msgid "Create Account"
+msgstr "Fiók létrehozása"
+
+msgid "Create and take intelligent tests"
+msgstr "Intelligens tesztek készítése és kitöltése"
+
+msgid "Difficulty Id"
+msgstr "Nehézség azonosító"
+
+msgid "Enter your email and we'll send you a reset link."
+msgstr "Add meg az e-mail címed, és küldünk egy visszaállítási linket."
+
+msgid "Entity Id"
+msgstr "Entitás azonosító"
+
+msgid "Entity Type"
+msgstr "Entitás típus"
+
+msgid "Extra Info"
+msgstr "Extra információ"
+
+msgid "Failed to reset password. Please try again."
+msgstr "A jelszó visszaállítása sikertelen. Kérlek, próbáld újra."
+
+msgid "Finished At"
+msgstr "Befejezve"
+
+msgid "Forgot Password"
+msgstr "Elfelejtett jelszó"
+
+msgid "Forgot password?"
+msgstr "Elfelejtetted a jelszavad?"
+
+msgid "Forgot your password?"
+msgstr "Elfelejtetted a jelszavad?"
+
+msgid "If the email exists in our system, we sent a password reset link."
+msgstr "Ha az e-mail cím létezik a rendszerünkben, elküldtük a jelszó-visszaállítási linket."
+
+msgid "If you did not request this, you can safely ignore this email."
+msgstr "Ha nem te kérted, nyugodtan figyelmen kívül hagyhatod ezt az e-mailt."
+
+msgid "Input Payload"
+msgstr "Bemeneti payload"
+
+msgid "Invalid email or password."
+msgstr "Érvénytelen e-mail vagy jelszó."
+
+msgid "Invalid or expired reset token."
+msgstr "Érvénytelen vagy lejárt visszaállító token."
+
+msgid "Ip Address"
+msgstr "IP-cím"
+
+msgid "Is Desktop"
+msgstr "Asztali"
+
+msgid "Is Mobile"
+msgstr "Mobil"
+
+msgid "Is Tablet"
+msgstr "Tablet"
+
+msgid "Language Id"
+msgstr "Nyelv azonosító"
+
+msgid "Learn with AI-assisted feedback"
+msgstr "Tanulj MI-támogatott visszajelzésekkel"
+
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+msgid "MindForge"
+msgstr "MindForge"
+
+msgid "MindForge combines structured testing with AI to help you focus on what actually matters."
+msgstr "A MindForge a strukturált tesztelést MI-vel ötvözi, hogy arra fókuszálj, ami igazán számít."
+
+msgid "New Password"
+msgstr "Új jelszó"
+
+msgid "Os"
+msgstr "Operációs rendszer"
+
+msgid "Output Payload"
+msgstr "Kimeneti payload"
+
+msgid "Registration successful but email failed. Activation link: {0}"
+msgstr "A regisztráció sikeres, de az e-mail küldése meghiúsult. Aktiváló link: {0}"
+
+msgid "Related Activity Logs"
+msgstr "Kapcsolódó aktivitási naplók"
+
+msgid "Related Ai Requests"
+msgstr "Kapcsolódó MI-kérések"
+
+msgid "Related Device Logs"
+msgstr "Kapcsolódó eszköznaplók"
+
+msgid "Related Test Attempts"
+msgstr "Kapcsolódó tesztpróbálkozások"
+
+msgid "Related User Tokens"
+msgstr "Kapcsolódó felhasználói tokenek"
+
+msgid "Reset Password"
+msgstr "Jelszó visszaállítása"
+
+msgid "Reset your MindForge password"
+msgstr "MindForge jelszó visszaállítása"
+
+msgid "Reset your password"
+msgstr "Jelszó visszaállítása"
+
+msgid "Score"
+msgstr "Pontszám"
+
+msgid "Send Reset Link"
+msgstr "Visszaállítási link küldése"
+
+msgid "Set a New Password"
+msgstr "Új jelszó beállítása"
+
+msgid "Started At"
+msgstr "Kezdve"
+
+msgid "Status"
+msgstr "Állapot"
+
+msgid "Test Id"
+msgstr "Teszt azonosító"
+
+msgid "Toggle navigation"
+msgstr "Navigáció megnyitása"
+
+msgid "Token"
+msgstr "Token"
+
+msgid "Too many login attempts. Please try again in a minute."
+msgstr "Túl sok bejelentkezési kísérlet. Próbáld újra egy perc múlva."
+
+msgid "Total Questions"
+msgstr "Összes kérdés"
+
+msgid "Track your progress over time"
+msgstr "Kövesd nyomon a fejlődésed"
+
+msgid "Update Password"
+msgstr "Jelszó frissítése"
+
+msgid "Use the link below to set a new password:"
+msgstr "Használd az alábbi linket új jelszó beállításához:"
+
+msgid "User Agent"
+msgstr "User agent"
+
+msgid "User Id"
+msgstr "Felhasználó azonosító"
+
+msgid "Welcome to MindForge"
+msgstr "Üdvözlünk a MindForge-ban"
+
+msgid "You are now logged out."
+msgstr "Sikeresen kijelentkeztél."
+
+msgid "You requested a password reset for your MindForge account."
+msgstr "Jelszó-visszaállítást kértél a MindForge fiókodhoz."
+
+msgid "You requested a password reset for your MindForge account. Click the button below to set a new password:"
+msgstr "Jelszó-visszaállítást kértél a MindForge fiókodhoz. Kattints az alábbi gombra új jelszó beállításához:"
+
+msgid "Your password has been reset. You can now log in."
+msgstr "A jelszavadat visszaállítottuk. Most már bejelentkezhetsz."

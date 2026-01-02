@@ -134,6 +134,44 @@
     transition: width 140ms ease, background-color 140ms ease;
 }
 
+/* Flash messages (fixed, non-layout-shifting) */
+.mf-flash-stack {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 1060;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: min(420px, calc(100vw - 2rem));
+    pointer-events: none;
+}
+
+.mf-flash {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: var(--bs-danger);
+    font-weight: 500;
+    line-height: 1.25;
+    cursor: pointer;
+}
+
+.mf-flash__message {
+    flex: 1;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 991.98px) {
+    .mf-flash-stack {
+        left: 1rem;
+        right: 1rem;
+        max-width: none;
+    }
+}
+
 
 /* Navbar Styling */
 .mf-navbar {
