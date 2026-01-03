@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AppController as BaseAppController;
 use App\Model\Entity\Role;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
 
-class AppController extends \App\Controller\AppController
+class AppController extends BaseAppController
 {
     /**
      * @param \Cake\Event\EventInterface $event
