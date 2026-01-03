@@ -26,8 +26,7 @@ class DeviceLogsFixture extends TestFixture
                 'device_type' => 1,
                 'country' => 'Lorem ipsum dolor sit amet',
                 'city' => 'Lorem ipsum dolor sit amet',
-                'extra_info' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'created_at' => '2026-01-02 17:12:38',
+                'created_at' => '2026-01-03 10:15:45',
             ],
         ];
         parent::init();

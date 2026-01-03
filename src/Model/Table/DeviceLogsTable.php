@@ -41,14 +41,6 @@ class DeviceLogsTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
-        $this->addBehavior('Timestamp', [
-            'events' => [
-                'Model.beforeSave' => [
-                    'created_at' => 'new',
-                ],
-            ],
-        ]);
-
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
         ]);
@@ -88,11 +80,6 @@ class DeviceLogsTable extends Table
             ->scalar('city')
             ->maxLength('city', 100)
             ->allowEmptyString('city');
-
-        $validator
-            ->scalar('extra_info')
-            ->maxLength('extra_info', 4294967295)
-            ->allowEmptyString('extra_info');
 
         $validator
             ->dateTime('created_at')

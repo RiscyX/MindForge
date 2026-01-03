@@ -11,8 +11,6 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int|null $user_id
  * @property string $action
- * @property string|null $entity_type
- * @property int|null $entity_id
  * @property string|null $ip_address
  * @property string|null $user_agent
  * @property \Cake\I18n\DateTime $created_at
@@ -33,8 +31,6 @@ class ActivityLog extends Entity
     protected array $_accessible = [
         'user_id' => true,
         'action' => true,
-        'entity_type' => true,
-        'entity_id' => true,
         'ip_address' => true,
         'user_agent' => true,
         'created_at' => true,
