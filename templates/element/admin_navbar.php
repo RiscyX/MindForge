@@ -36,6 +36,9 @@ $roleLabel = $isAdmin ? __('Super Admin') : __('Admin');
             </div>
 
             <?php if ($isLoggedIn) : ?>
+                <a href="<?= $this->Url->build(['prefix' => false, 'controller' => 'Users', 'action' => 'profile', 'lang' => $lang]) ?>" class="btn btn-sm btn-outline-light me-2">
+                    <?= __('My Profile') ?>
+                </a>
                 <?= $this->Form->postLink(
                     __('Logout'),
                     ['controller' => 'Users', 'action' => 'logout', 'lang' => $lang],

@@ -4,9 +4,10 @@
  * @var iterable<\App\Model\Entity\User> $users
  */
 $this->assign('title', __('Users'));
+$lang = $this->request->getParam('lang', 'en');
 ?>
 <div class="users index content bg-dark">
-    <?= $this->Html->link(__('New User'), ['action' => 'add'], ['class' => 'button float-right']) ?>
+    <?= $this->Html->link(__('New User'), ['action' => 'add', 'lang' => $lang], ['class' => 'button float-right']) ?>
     <h3><?= __('Users') ?></h3>
     <div class="table-responsive">
         <table>
@@ -31,7 +32,7 @@ $this->assign('title', __('Users'));
                     <td><?= $this->Number->format($user->id) ?></td>
                     <td><?= h($user->email) ?></td>
                     <td><?= h($user->password_hash) ?></td>
-                    <td><?= $user->hasValue('role') ? $this->Html->link($user->role->name, ['controller' => 'Roles', 'action' => 'view', $user->role->id]) : '' ?></td>
+                    <td><?= $user->hasValue('role') ? $this->Html->link($user->role->name, ['controller' => 'Roles', 'action' => 'view', $user->role->id, 'lang' => $lang]) : '' ?></td>
                     <td><?= h($user->is_active) ?></td>
                     <td><?= h($user->is_blocked) ?></td>
                     <td><?= h($user->last_login_at) ?></td>
@@ -39,11 +40,11 @@ $this->assign('title', __('Users'));
                     <td><?= h($user->updated_at) ?></td>
                     <td><?= h($user->avatar_url) ?></td>
                     <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $user->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id]) ?>
+                        <?= $this->Html->link(__('View'), ['action' => 'view', $user->id, 'lang' => $lang]) ?>
+                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id, 'lang' => $lang]) ?>
                         <?= $this->Form->postLink(
                             __('Delete'),
-                            ['action' => 'delete', $user->id],
+                            ['action' => 'delete', $user->id, 'lang' => $lang],
                             [
                                 'method' => 'delete',
                                 'confirm' => __('Are you sure you want to delete # {0}?', $user->id),

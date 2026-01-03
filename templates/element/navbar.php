@@ -72,6 +72,13 @@ $isAdmin = $isLoggedIn
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link<?= $currentAction === 'profile' && $this->request->getParam('controller') === 'Users' ? ' active' : '' ?>"
+                           href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'profile', 'lang' => $lang]) ?>">
+                            <?= __('My Profile') ?>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <?= $this->Form->postLink(
                             __('Logout'),
                             ['controller' => 'Users', 'action' => 'logout', 'lang' => $lang],

@@ -82,6 +82,27 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/confirm', ['controller' => 'Users', 'action' => 'confirm'])
             ->setPatterns(['lang' => 'en|hu']);
 
+        $builder->connect('/profile', ['controller' => 'Users', 'action' => 'profile'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/profile-edit', ['controller' => 'Users', 'action' => 'profileEdit'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/users', ['controller' => 'Users', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/users/view/*', ['controller' => 'Users', 'action' => 'view'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/users/edit/*', ['controller' => 'Users', 'action' => 'edit'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/users/add', ['controller' => 'Users', 'action' => 'add'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/users/delete/*', ['controller' => 'Users', 'action' => 'delete'])
+            ->setPatterns(['lang' => 'en|hu']);
+
         $builder->fallbacks();
     });
 

@@ -6,16 +6,25 @@
  */
 
 $lang = $this->request->getParam('lang', 'en');
+$identity = $this->request->getAttribute('identity');
+$username = $identity ? $identity->get('username') : '';
 
 $this->assign('title', __('MindForge'));
 ?>
 
 <div class="container-fluid min-vh-100">
     <div class="row g-0 min-vh-100 align-items-stretch">
-
         <!-- LEFT / CONTENT -->
         <div class="col-12 col-lg-6 mf-right d-flex align-items-start align-items-lg-center justify-content-center p-3 p-sm-4 p-lg-5">
             <div class="mf-card p-4 p-sm-5 w-100" style="max-width: 36rem;">
+                <?php if ($identity && trim((string)$username) === ''): ?>
+                    <div class="alert alert-warning mb-4 d-inline-block">
+                        <?= __('Set up your username on the {0} link.', [
+                            $this->Html->link(__('profile'), ['controller' => 'Users', 'action' => 'profile', 'lang' => $lang])
+                        ]) ?>
+                    </div>
+                <?php endif; ?>
+
                 <h1 class="mb-2"><?= __('Welcome to MindForge') ?></h1>
                 <p class="mf-muted mb-4">
                     <?= __('An AI-powered platform built to help you learn smarter, test faster, and improve continuously.') ?>
