@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -13,13 +14,23 @@ use Cake\Http\Response;
 class CategoriesController extends AppController
 {
     /**
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null|void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setLayout('admin');
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $query = $this->Categories->find();
+        $query = $this->Categories->find()->contain(['CategoryTranslations' => ['Languages']]);
         $categories = $this->paginate($query);
 
         $this->set(compact('categories'));
@@ -47,16 +58,28 @@ class CategoriesController extends AppController
     public function add()
     {
         $category = $this->Categories->newEmptyEntity();
+        $languages = $this->fetchTable('Languages')->find('all');
+
         if ($this->request->is('post')) {
-            $category = $this->Categories->patchEntity($category, $this->request->getData());
+            $category = $this->Categories->patchEntity($category, $this->request->getData(), [
+                'associated' => ['CategoryTranslations'],
+            ]);
             if ($this->Categories->save($category)) {
                 $this->Flash->success(__('The category has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The category could not be saved. Please, try again.'));
+        } else {
+            $translations = [];
+            foreach ($languages as $language) {
+                $t = $this->Categories->CategoryTranslations->newEmptyEntity();
+                $t->language_id = $language->id;
+                $translations[] = $t;
+            }
+            $category->category_translations = $translations;
         }
-        $this->set(compact('category'));
+        $this->set(compact('category', 'languages'));
     }
 
     /**
@@ -68,17 +91,38 @@ class CategoriesController extends AppController
      */
     public function edit(?string $id = null)
     {
-        $category = $this->Categories->get($id, contain: []);
+        $category = $this->Categories->get($id, contain: ['CategoryTranslations']);
+        $languages = $this->fetchTable('Languages')->find('all');
+
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $category = $this->Categories->patchEntity($category, $this->request->getData());
+            $category = $this->Categories->patchEntity($category, $this->request->getData(), [
+                'associated' => ['CategoryTranslations'],
+            ]);
             if ($this->Categories->save($category)) {
                 $this->Flash->success(__('The category has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The category could not be saved. Please, try again.'));
+        } else {
+            $existing = [];
+            foreach ($category->category_translations as $t) {
+                $existing[$t->language_id] = $t;
+            }
+
+            $completeTranslations = [];
+            foreach ($languages as $language) {
+                if (isset($existing[$language->id])) {
+                    $completeTranslations[] = $existing[$language->id];
+                } else {
+                    $t = $this->Categories->CategoryTranslations->newEmptyEntity();
+                    $t->language_id = $language->id;
+                    $completeTranslations[] = $t;
+                }
+            }
+            $category->category_translations = $completeTranslations;
         }
-        $this->set(compact('category'));
+        $this->set(compact('category', 'languages'));
     }
 
     /**
@@ -98,6 +142,6 @@ class CategoriesController extends AppController
             $this->Flash->error(__('The category could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 }

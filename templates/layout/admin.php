@@ -33,10 +33,10 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
 </head>
-<body class="mf-auth d-flex flex-column min-vh-100<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
+<body class="mf-auth d-flex flex-column vh-100 overflow-hidden<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
     <?= $this->element('navbar') ?>
 
-    <main class="flex-grow-1 d-flex flex-column">
+    <main class="flex-grow-1 d-flex flex-column mf-admin-wrapper">
         <div class="container-fluid px-0 mf-admin-shell">
             <div class="d-flex mf-admin-layout">
                 <?= $this->element('admin_sidebar') ?>

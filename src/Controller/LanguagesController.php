@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -12,6 +13,16 @@ use Cake\Http\Response;
  */
 class LanguagesController extends AppController
 {
+    /**
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null|void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setLayout('admin');
+    }
+
     /**
      * Index method
      *
@@ -57,7 +68,7 @@ class LanguagesController extends AppController
             if ($this->Languages->save($language)) {
                 $this->Flash->success(__('The language has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The language could not be saved. Please, try again.'));
         }
@@ -79,7 +90,7 @@ class LanguagesController extends AppController
             if ($this->Languages->save($language)) {
                 $this->Flash->success(__('The language has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The language could not be saved. Please, try again.'));
         }
@@ -103,6 +114,6 @@ class LanguagesController extends AppController
             $this->Flash->error(__('The language could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 }

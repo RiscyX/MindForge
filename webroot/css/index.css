@@ -173,6 +173,10 @@
 }
 
 /* Admin dashboard */
+.mf-admin-wrapper {
+    overflow: hidden !important;
+}
+
 .mf-admin-shell {
     display: flex;
     flex: 1 1 auto;
@@ -189,6 +193,7 @@
     border-right: 1px solid rgba(var(--mf-text-rgb), 0.10);
     background: rgba(var(--mf-text-rgb), 0.02);
     backdrop-filter: blur(10px);
+    overflow-y: auto;
 }
 
 .mf-admin-sidebar__header {
@@ -234,6 +239,7 @@
 
 .mf-admin-main {
     min-width: 0;
+    overflow-y: auto;
 }
 
 .mf-admin-pill {

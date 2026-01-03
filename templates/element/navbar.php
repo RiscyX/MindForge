@@ -94,7 +94,7 @@ $isDashboardActive = $isAdmin ? $isOnAdminDashboard : $isOnUserDashboard;
                     <li class="nav-item">
                         <?= $this->Form->postLink(
                             __('Logout'),
-                            ['controller' => 'Users', 'action' => 'logout', 'lang' => $lang],
+                            ['prefix' => false, 'controller' => 'Users', 'action' => 'logout', 'lang' => $lang],
                             [
                                 'class' => 'nav-link',
                                 'confirm' => __('Are you sure you want to log out?'),

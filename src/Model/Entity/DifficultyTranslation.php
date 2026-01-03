@@ -6,17 +6,18 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Difficulty Entity
+ * DifficultyTranslation Entity
  *
  * @property int $id
+ * @property int $difficulty_id
+ * @property int $language_id
  * @property string $name
- * @property int $level
+ * @property \Cake\I18n\DateTime $created_at
  *
- * @property \App\Model\Entity\Question[] $questions
- * @property \App\Model\Entity\TestAttempt[] $test_attempts
- * @property \App\Model\Entity\Test[] $tests
+ * @property \App\Model\Entity\Difficulty $difficulty
+ * @property \App\Model\Entity\Language $language
  */
-class Difficulty extends Entity
+class DifficultyTranslation extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -28,10 +29,11 @@ class Difficulty extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'level' => true,
-        'questions' => true,
-        'test_attempts' => true,
-        'tests' => true,
-        'difficulty_translations' => true,
+        'difficulty_id' => true,
+        'language_id' => true,
+        'name' => true,
+        'created_at' => true,
+        'difficulty' => true,
+        'language' => true,
     ];
 }

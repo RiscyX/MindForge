@@ -40,9 +40,12 @@ class DifficultiesTable extends Table
         parent::initialize($config);
 
         $this->setTable('difficulties');
-        $this->setDisplayField('name');
+        $this->setDisplayField('level');
         $this->setPrimaryKey('id');
 
+        $this->hasMany('DifficultyTranslations', [
+            'foreignKey' => 'difficulty_id',
+        ]);
         $this->hasMany('Questions', [
             'foreignKey' => 'difficulty_id',
         ]);
@@ -63,13 +66,6 @@ class DifficultiesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('name')
-            ->maxLength('name', 50)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name')
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
-        $validator
             ->nonNegativeInteger('level')
             ->requirePresence('level', 'create')
             ->notEmptyString('level')
@@ -87,7 +83,6 @@ class DifficultiesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->isUnique(['name']), ['errorField' => 'name']);
         $rules->add($rules->isUnique(['level']), ['errorField' => 'level']);
 
         return $rules;
