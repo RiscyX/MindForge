@@ -85,4 +85,19 @@ class PagesController extends AppController
             'lang' => 'en',
         ]);
     }
+
+    /**
+     * Redirects to the default language admin dashboard.
+     *
+     * @return \Cake\Http\Response
+     */
+    public function redirectToAdmin(): Response
+    {
+        return $this->redirect([
+            'prefix' => 'Admin',
+            'controller' => 'Dashboard',
+            'action' => 'index',
+            'lang' => 'en',
+        ]);
+    }
 }

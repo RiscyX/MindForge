@@ -35,7 +35,22 @@ return function (RouteBuilder $routes): void {
     // Root redirect to default language
     $routes->scope('/', function (RouteBuilder $builder): void {
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'redirectToDefaultLanguage']);
+        $builder->connect('/admin', ['controller' => 'Pages', 'action' => 'redirectToAdmin']);
+        $builder->connect('/admin/dashboard', ['controller' => 'Pages', 'action' => 'redirectToAdmin']);
     });
+
+    // Admin prefix: /{lang}/admin/*
+    $routes->scope(
+        '/{lang}/admin',
+        ['prefix' => 'Admin', 'lang' => 'en|hu'],
+        function (RouteBuilder $builder): void {
+            $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index'])
+                ->setPatterns(['lang' => 'en|hu']);
+            $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
+                ->setPatterns(['lang' => 'en|hu']);
+            $builder->fallbacks();
+        },
+    );
 
     // Language-prefixed routes: /en/* and /hu/*
     $routes->scope('/{lang}', function (RouteBuilder $builder): void {
@@ -69,19 +84,6 @@ return function (RouteBuilder $routes): void {
 
         $builder->fallbacks();
     });
-
-    // Admin prefix: /{lang}/admin/*
-    $routes->scope(
-        '/{lang}/admin',
-        ['prefix' => 'Admin', 'lang' => 'en|hu'],
-        function (RouteBuilder $builder): void {
-            $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index'])
-                ->setPatterns(['lang' => 'en|hu']);
-            $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
-                ->setPatterns(['lang' => 'en|hu']);
-            $builder->fallbacks();
-        },
-    );
 
     /*
      * If you need a different set of middleware or none at all,
