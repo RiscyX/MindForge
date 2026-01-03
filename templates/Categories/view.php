@@ -8,10 +8,10 @@
     <aside class="column">
         <div class="side-nav">
             <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Category'), ['action' => 'edit', $category->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Category'), ['action' => 'delete', $category->id], ['confirm' => __('Are you sure you want to delete # {0}?', $category->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Categories'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Category'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('Edit Category'), ['action' => 'edit', $category->id, 'lang' => $lang], ['class' => 'side-nav-item']) ?>
+            <?= $this->Form->postLink(__('Delete Category'), ['action' => 'delete', $category->id, 'lang' => $lang], ['confirm' => __('Are you sure you want to delete # {0}?', $category->id), 'class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('List Categories'), ['action' => 'index', 'lang' => $lang], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('New Category'), ['action' => 'add', 'lang' => $lang], ['class' => 'side-nav-item']) ?>
         </div>
     </aside>
     <div class="column column-80">

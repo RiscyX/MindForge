@@ -76,6 +76,17 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
             ->setPatterns(['lang' => 'en|hu']);
 
+        $builder->connect('/categories', ['controller' => 'Categories', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/categories/add', ['controller' => 'Categories', 'action' => 'add'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/categories/view/*', ['controller' => 'Categories', 'action' => 'view'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/categories/edit/*', ['controller' => 'Categories', 'action' => 'edit'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/categories/delete/*', ['controller' => 'Categories', 'action' => 'delete'])
+            ->setPatterns(['lang' => 'en|hu']);
+
         $builder->connect('/pages/*', 'Pages::display')
             ->setPatterns(['lang' => 'en|hu']);
 

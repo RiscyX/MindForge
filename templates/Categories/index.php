@@ -3,9 +3,10 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\Category> $categories
  */
+$this->Paginator->options(['url' => ['lang' => $lang]]);
 ?>
 <div class="categories index content">
-    <?= $this->Html->link(__('New Category'), ['action' => 'add'], ['class' => 'button float-right']) ?>
+    <?= $this->Html->link(__('New Category'), ['action' => 'add', 'lang' => $lang], ['class' => 'button float-right']) ?>
     <h3><?= __('Categories') ?></h3>
     <div class="table-responsive">
         <table>
@@ -26,11 +27,11 @@
                     <td><?= h($category->created_at) ?></td>
                     <td><?= h($category->updated_at) ?></td>
                     <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $category->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $category->id]) ?>
+                        <?= $this->Html->link(__('View'), ['action' => 'view', $category->id, 'lang' => $lang]) ?>
+                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $category->id, 'lang' => $lang]) ?>
                         <?= $this->Form->postLink(
                             __('Delete'),
-                            ['action' => 'delete', $category->id],
+                            ['action' => 'delete', $category->id, 'lang' => $lang],
                             [
                                 'method' => 'delete',
                                 'confirm' => __('Are you sure you want to delete # {0}?', $category->id),

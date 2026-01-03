@@ -10,10 +10,10 @@
             <h4 class="heading"><?= __('Actions') ?></h4>
             <?= $this->Form->postLink(
                 __('Delete'),
-                ['action' => 'delete', $category->id],
+                ['action' => 'delete', $category->id, 'lang' => $lang],
                 ['confirm' => __('Are you sure you want to delete # {0}?', $category->id), 'class' => 'side-nav-item']
             ) ?>
-            <?= $this->Html->link(__('List Categories'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('List Categories'), ['action' => 'index', 'lang' => $lang], ['class' => 'side-nav-item']) ?>
         </div>
     </aside>
     <div class="column column-80">
