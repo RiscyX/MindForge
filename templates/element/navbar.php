@@ -18,7 +18,7 @@ $isAdmin = $isLoggedIn
 <nav class="navbar navbar-expand-lg navbar-dark mf-navbar" data-mf-navbar>
     <div class="container-fluid px-3 px-lg-5">
         <!-- Brand -->
-        <a class="navbar-brand mf-brand" href="<?=env('BASE_URL') . '/' . h($lang) ?>">
+        <a class="navbar-brand mf-brand" href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'home', 'lang' => $lang]) ?>">
             <?= $this->Html->image('favicon-128x128.png', [
                 'alt' => 'MindForge',
                 'class' => 'mf-logo',
