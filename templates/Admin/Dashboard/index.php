@@ -5,13 +5,6 @@ $this->assign('title', __('Admin Dashboard'));
 <div class="container-fluid px-0 mf-admin-shell">
     <div class="d-flex mf-admin-layout">
         <aside class="mf-admin-sidebar d-none d-lg-flex flex-column">
-            <div class="mf-admin-sidebar__header">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="fw-semibold">MindForge</span>
-                    <span class="badge text-bg-secondary"><?= __('Admin') ?></span>
-                </div>
-            </div>
-
             <div class="mf-admin-sidebar__section">
                 <div class="mf-admin-sidebar__label"><?= __('Management') ?></div>
                 <nav class="mf-admin-nav">
@@ -55,21 +48,33 @@ $this->assign('title', __('Admin Dashboard'));
 
                 <div class="row g-3 mt-3">
                     <?php
-                    $stats = [
-                        ['label' => __('Total Users'), 'value' => '12,450', 'delta' => '+12%'],
-                        ['label' => __('Active Users'), 'value' => '3,201', 'delta' => '+5%'],
-                        ['label' => __('Total Tests'), 'value' => '856', 'delta' => __('Lifetime')],
-                        ['label' => __('Questions'), 'value' => '24.9k', 'delta' => __('Across 50 langs')],
-                        ['label' => __('Today\'s Logins'), 'value' => '450', 'delta' => __('Since 00:00')],
-                        ['label' => __('AI Requests'), 'value' => '1,230', 'delta' => '+24%'],
+                    /** @var array{totalUsers:int,activeUsers:int,totalTests:int,totalQuestions:int,todaysLogins:int,aiRequests:int} $metrics */
+                    $metrics = $stats ?? [
+                        'totalUsers' => 0,
+                        'activeUsers' => 0,
+                        'totalTests' => 0,
+                        'totalQuestions' => 0,
+                        'todaysLogins' => 0,
+                        'aiRequests' => 0,
+                    ];
+
+                    $statCards = [
+                        ['label' => __('Total Users'), 'value' => number_format((int)$metrics['totalUsers']), 'delta' => ''],
+                        ['label' => __('Active Users'), 'value' => number_format((int)$metrics['activeUsers']), 'delta' => ''],
+                        ['label' => __('Total Tests'), 'value' => number_format((int)$metrics['totalTests']), 'delta' => ''],
+                        ['label' => __('Questions'), 'value' => number_format((int)$metrics['totalQuestions']), 'delta' => ''],
+                        ['label' => __('Today\'s Logins'), 'value' => number_format((int)$metrics['todaysLogins']), 'delta' => ''],
+                        ['label' => __('AI Requests'), 'value' => number_format((int)$metrics['aiRequests']), 'delta' => ''],
                     ];
                     ?>
-                    <?php foreach ($stats as $stat) : ?>
+                    <?php foreach ($statCards as $stat) : ?>
                         <div class="col-6 col-xl-2">
                             <div class="mf-admin-card p-3 h-100">
                                 <div class="mf-muted" style="font-size:0.85rem;"><?= h($stat['label']) ?></div>
                                 <div class="fw-semibold" style="font-size:1.35rem; line-height:1.15;"><?= h($stat['value']) ?></div>
-                                <div class="mf-admin-delta"><?= h($stat['delta']) ?></div>
+                                <?php if ($stat['delta'] !== '') : ?>
+                                    <div class="mf-admin-delta"><?= h($stat['delta']) ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -105,42 +110,39 @@ $this->assign('title', __('Admin Dashboard'));
                             </thead>
                             <tbody>
                                 <?php
-                                $rows = [
-                                    ['ts' => '2023-10-27 10:42:01', 'type' => 'User Login', 'user' => 'alex.johnson@example.com', 'details' => 'Logged in via Web Portal', 'status' => 'Success'],
-                                    ['ts' => '2023-10-27 10:40:55', 'type' => 'AI Generation', 'user' => 'maria.garcia@tech.co', 'details' => 'Generated Quiz: "React Basics"', 'status' => 'Success'],
-                                    ['ts' => '2023-10-27 10:38:12', 'type' => 'Failed Login', 'user' => 'unknown@ip-192.168.1.1', 'details' => 'Invalid credentials attempt', 'status' => 'Warning'],
-                                    ['ts' => '2023-10-27 10:35:00', 'type' => 'New User', 'user' => 'sarah.lee@uni.edu', 'details' => 'Registered new account', 'status' => 'Success'],
-                                    ['ts' => '2023-10-27 10:32:45', 'type' => 'API Error', 'user' => 'System', 'details' => 'OpenAI Gateway Timeout', 'status' => 'Failed'],
-                                    ['ts' => '2023-10-27 10:30:11', 'type' => 'Test Completed', 'user' => 'david.k@corp.net', 'details' => 'Completed "Cybersecurity"', 'status' => 'Success'],
-                                    ['ts' => '2023-10-27 10:25:33', 'type' => 'AI Generation', 'user' => 'teacher_01@school.org', 'details' => 'Generated Quiz: "EU Law"', 'status' => 'Success'],
-                                    ['ts' => '2023-10-27 10:22:19', 'type' => 'Settings Update', 'user' => 'admin_sys', 'details' => 'Updated global rate limits', 'status' => 'Success'],
-                                    ['ts' => '2023-10-27 10:15:05', 'type' => 'User Login', 'user' => 'jessica.m@studio.io', 'details' => 'Logged in via Mobile', 'status' => 'Success'],
-                                    ['ts' => '2023-10-27 10:10:00', 'type' => 'New User', 'user' => 'robert.b@construct.com', 'details' => 'Registered new account', 'status' => 'Success'],
-                                ];
-
                                 $badge = static function (string $status): string {
                                     return match ($status) {
                                         'Success' => 'bg-success',
-                                        'Warning' => 'bg-warning text-dark',
                                         'Failed' => 'bg-danger',
                                         default => 'bg-secondary',
                                     };
                                 };
+
+                                /** @var list<array{ts:string,type:string,user:string,details:string,status:string}> $rows */
+                                $rows = $recentEvents ?? [];
                                 ?>
 
-                                <?php foreach ($rows as $row) : ?>
+                                <?php if (!$rows) : ?>
                                     <tr>
-                                        <td class="mf-muted" style="font-size:0.9rem;"><span class="text-nowrap"><?= h($row['ts']) ?></span></td>
-                                        <td><?= h($row['type']) ?></td>
-                                        <td class="mf-muted"><?= h($row['user']) ?></td>
-                                        <td class="mf-muted" style="max-width: 420px;">
-                                            <span style="display:inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                                                <?= h($row['details']) ?>
-                                            </span>
+                                        <td colspan="5" class="mf-muted py-4">
+                                            <?= __('No events yet.') ?>
                                         </td>
-                                        <td><span class="badge <?= h($badge($row['status'])) ?>"><?= h($row['status']) ?></span></td>
                                     </tr>
-                                <?php endforeach; ?>
+                                <?php else : ?>
+                                    <?php foreach ($rows as $row) : ?>
+                                        <tr>
+                                            <td class="mf-muted" style="font-size:0.9rem;"><span class="text-nowrap"><?= h($row['ts']) ?></span></td>
+                                            <td><?= h($row['type']) ?></td>
+                                            <td class="mf-muted"><?= h($row['user']) ?></td>
+                                            <td class="mf-muted" style="max-width: 420px;">
+                                                <span style="display:inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                                    <?= h($row['details']) ?>
+                                                </span>
+                                            </td>
+                                            <td><span class="badge <?= h($badge($row['status'])) ?>"><?= h($row['status']) ?></span></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>

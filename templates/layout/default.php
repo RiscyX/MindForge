@@ -30,7 +30,7 @@ $isAdminPage = $request->getParam('prefix') === 'Admin';
 
 
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
-    <?= $this->Html->css('index.css?v=7') ?>
+    <?= $this->Html->css('index.css?v=8') ?>
 
     <?php if ($isAuthPage) : ?>
         <script>document.documentElement.classList.add('mf-auth-js');</script>
@@ -41,7 +41,7 @@ $isAdminPage = $request->getParam('prefix') === 'Admin';
     <?= $this->fetch('css') ?>
 </head>
 <body class="mf-auth d-flex flex-column min-vh-100<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
-    <?= $isAdminPage ? $this->element('admin_navbar') : $this->element('navbar') ?>
+    <?= $this->element('navbar') ?>
     <main class="flex-grow-1 d-flex flex-column">
         <?= $this->fetch('content') ?>
     </main>

@@ -174,10 +174,13 @@
 
 /* Admin dashboard */
 .mf-admin-shell {
+    display: flex;
+    flex: 1 1 auto;
     min-height: 0;
 }
 
 .mf-admin-layout {
+    flex: 1 1 auto;
     min-height: 0;
 }
 

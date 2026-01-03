@@ -22,7 +22,6 @@ $roleLabel = $isAdmin ? __('Super Admin') : __('Admin');
                     'class' => 'mf-logo',
                 ]) ?>
             </a>
-            <span class="badge text-bg-secondary"><?= __('Admin') ?></span>
         </div>
 
         <div class="d-flex align-items-center gap-3">

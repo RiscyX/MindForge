@@ -6,21 +6,32 @@ use Migrations\BaseMigration;
 class AddAvatarUrlToUsers extends BaseMigration
 {
     /**
-     * Change Method.
-     *
-     * More information on this method is available here:
-     * https://book.cakephp.org/migrations/4/en/migrations.html#the-change-method
-     *
      * @return void
      */
-    public function change(): void
+    public function up(): void
     {
         $table = $this->table('users');
-        $table->addColumn('avatar_url', 'string', [
-            'default' => null,
-            'limit' => 255,
-            'null' => false,
-        ]);
-        $table->update();
+
+        if (!$table->hasColumn('avatar_url')) {
+            $table->addColumn('avatar_url', 'string', [
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ]);
+            $table->update();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function down(): void
+    {
+        $table = $this->table('users');
+
+        if ($table->hasColumn('avatar_url')) {
+            $table->removeColumn('avatar_url');
+            $table->update();
+        }
     }
 }
