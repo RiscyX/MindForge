@@ -16,8 +16,6 @@ $lang = $this->request->getParam('lang', 'en');
                 'action' => 'index',
                 'lang' => $lang,
             ]) ?>"><?= __('Users') ?></a>
-            <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Categories') ?></a>
-            <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Users') ?></a>
             <?= $this->Html->link(__('Categories'), ['prefix' => false, 'controller' => 'Categories', 'action' => 'index', 'lang' => $lang], ['class' => 'mf-admin-nav__link']) ?>
             <?= $this->Html->link(__('Difficulties'), ['prefix' => false, 'controller' => 'Difficulties', 'action' => 'index', 'lang' => $lang], ['class' => 'mf-admin-nav__link']) ?>
             <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Tests') ?></a>
