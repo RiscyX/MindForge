@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $email
+ * @property string|null $username
  * @property string|null $avatar_url
  * @property string $password_hash
  * @property int $role_id
@@ -40,6 +41,7 @@ class User extends Entity
      */
     protected array $_accessible = [
         'email' => true,
+        'username' => true,
         'avatar_url' => true,
         'password' => true,
         'password_hash' => true,

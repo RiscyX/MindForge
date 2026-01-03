@@ -41,14 +41,6 @@ class ActivityLogsTable extends Table
         $this->setDisplayField('action');
         $this->setPrimaryKey('id');
 
-        $this->addBehavior('Timestamp', [
-            'events' => [
-                'Model.beforeSave' => [
-                    'created_at' => 'new',
-                ],
-            ],
-        ]);
-
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
         ]);
@@ -71,15 +63,6 @@ class ActivityLogsTable extends Table
             ->maxLength('action', 100)
             ->requirePresence('action', 'create')
             ->notEmptyString('action');
-
-        $validator
-            ->scalar('entity_type')
-            ->maxLength('entity_type', 100)
-            ->allowEmptyString('entity_type');
-
-        $validator
-            ->nonNegativeInteger('entity_id')
-            ->allowEmptyString('entity_id');
 
         $validator
             ->scalar('ip_address')

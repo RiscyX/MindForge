@@ -15,7 +15,6 @@ use Cake\ORM\Entity;
  * @property int $device_type
  * @property string|null $country
  * @property string|null $city
- * @property string|null $extra_info
  * @property \Cake\I18n\DateTime $created_at
  *
  * @property \App\Model\Entity\User $user
@@ -38,7 +37,6 @@ class DeviceLog extends Entity
         'device_type' => true,
         'country' => true,
         'city' => true,
-        'extra_info' => true,
         'created_at' => true,
         'user' => true,
     ];

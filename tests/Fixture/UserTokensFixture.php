@@ -23,9 +23,9 @@ class UserTokensFixture extends TestFixture
                 'user_id' => 1,
                 'token' => 'Lorem ipsum dolor sit amet',
                 'type' => 'Lorem ipsum dolor sit amet',
-                'expires_at' => '2025-12-16 14:07:51',
-                'used_at' => '2025-12-16 14:07:51',
-                'created_at' => '2025-12-16 14:07:51',
+                'expires_at' => '2026-01-03 10:15:47',
+                'used_at' => '2026-01-03 10:15:47',
+                'created_at' => '2026-01-03 10:15:47',
             ],
         ];
         parent::init();
