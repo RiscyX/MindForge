@@ -9,7 +9,6 @@ $cakeDescription = 'MindForge';
 $request = $this->getRequest();
 $isAuthPage = $request->getParam('controller') === 'Users'
     && in_array($request->getParam('action'), ['login', 'register', 'forgotPassword', 'resetPassword'], true);
-$isAdminPage = $request->getParam('prefix') === 'Admin';
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="<?= I18n::getLocale() === 'hu_HU' ? 'hu' : 'en'; ?>">
@@ -30,7 +29,7 @@ $isAdminPage = $request->getParam('prefix') === 'Admin';
 
 
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
-    <?= $this->Html->css('index.css?v=9') ?>
+    <?= $this->Html->css('index.css?v=12') ?>
 
     <?php if ($isAuthPage) : ?>
         <script>document.documentElement.classList.add('mf-auth-js');</script>

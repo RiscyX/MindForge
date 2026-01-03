@@ -10,7 +10,12 @@ $lang = $this->request->getParam('lang', 'en');
     <div class="mf-admin-sidebar__section">
         <div class="mf-admin-sidebar__label"><?= __('Management') ?></div>
         <nav class="mf-admin-nav">
-            <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Users') ?></a>
+            <a class="mf-admin-nav__link" href="<?= $this->Url->build([
+                'prefix' => 'Admin',
+                'controller' => 'Users',
+                'action' => 'index',
+                'lang' => $lang,
+            ]) ?>"><?= __('Users') ?></a>
             <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Categories') ?></a>
             <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Tests') ?></a>
             <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Questions') ?></a>
@@ -31,7 +36,7 @@ $lang = $this->request->getParam('lang', 'en');
         <?= $this->Form->postLink(
             __('Logout'),
             ['controller' => 'Users', 'action' => 'logout', 'lang' => $lang],
-            ['class' => 'mf-admin-nav__link']
+            ['class' => 'mf-admin-nav__link'],
         ) ?>
     </div>
 </aside>

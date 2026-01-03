@@ -7,11 +7,36 @@
 use App\Model\Entity\Role;
 
 $lang = $this->request->getParam('lang', 'en');
+$currentController = $this->request->getParam('controller');
+$currentPrefix = $this->request->getParam('prefix');
 $currentAction = $this->request->getParam('action');
 $identity = $this->request->getAttribute('identity');
 $isLoggedIn = $identity !== null;
 $isAdmin = $isLoggedIn
     && (int)$identity->get('role_id') === Role::ADMIN;
+
+$isOnAdminDashboard = $currentPrefix === 'Admin'
+    && $currentController === 'Dashboard'
+    && $currentAction === 'index';
+
+$isOnUserDashboard = ($currentPrefix === null || $currentPrefix === '')
+    && $currentController === 'Dashboard'
+    && $currentAction === 'index';
+
+$dashboardUrl = $isAdmin
+    ? [
+        'prefix' => 'Admin',
+        'controller' => 'Dashboard',
+        'action' => 'index',
+        'lang' => $lang,
+    ]
+    : [
+        'controller' => 'Dashboard',
+        'action' => 'index',
+        'lang' => $lang,
+    ];
+
+$isDashboardActive = $isAdmin ? $isOnAdminDashboard : $isOnUserDashboard;
 
 ?>
 
@@ -26,7 +51,8 @@ $isAdmin = $isLoggedIn
         </a>
 
         <!-- Hamburger Toggle -->
-        <button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false" aria-label="<?= __('Toggle navigation') ?>" data-mf-navbar-toggle>
+        <button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="<?= __('Toggle navigation') ?>" data-mf-navbar-toggle>
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -37,36 +63,30 @@ $isAdmin = $isLoggedIn
                     <!-- Guest -->
                     <li class="nav-item">
                         <a class="nav-link<?= $currentAction === 'login' ? ' active' : '' ?>"
-                           href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'login', 'lang' => $lang]) ?>">
+                           href="<?= $this->Url->build([
+                               'controller' => 'Users',
+                               'action' => 'login',
+                               'lang' => $lang,
+                           ]) ?>">
                             <?= __('Log In') ?>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link<?= $currentAction === 'register' ? ' active' : '' ?>"
-                           href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'register', 'lang' => $lang]) ?>">
+                           href="<?= $this->Url->build([
+                               'controller' => 'Users',
+                               'action' => 'register',
+                               'lang' => $lang,
+                           ]) ?>">
                             <?= __('Sign Up') ?>
                         </a>
                     </li>
 
                 <?php else : ?>
                     <!-- Logged in -->
-                    <?php if ($isAdmin) : ?>
-                        <li class="nav-item">
-                            <a class="nav-link<?= $this->request->getParam('prefix') === 'Admin' ? ' active' : '' ?>"
-                               href="<?= $this->Url->build([
-                                   'prefix' => 'Admin',
-                                   'controller' => 'Dashboard',
-                                   'action' => 'index',
-                                   'lang' => $lang,
-                               ]) ?>">
-                                <?= __('Admin') ?>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-
                     <li class="nav-item">
-                        <a class="nav-link<?= $currentAction === 'index' && $this->request->getParam('controller') === 'Dashboard' ? ' active' : '' ?>"
-                           href="<?= $this->Url->build(['controller' => 'Dashboard', 'action' => 'index', 'lang' => $lang]) ?>">
+                        <a class="nav-link<?= $isDashboardActive ? ' active' : '' ?>"
+                           href="<?= $this->Url->build($dashboardUrl) ?>">
                             <?= __('Dashboard') ?>
                         </a>
                     </li>
