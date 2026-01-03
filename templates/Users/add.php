@@ -4,12 +4,13 @@
  * @var \App\Model\Entity\User $user
  * @var \Cake\Collection\CollectionInterface|string[] $roles
  */
+$lang = $this->request->getParam('lang', 'en');
 ?>
 <div class="row">
     <aside class="column">
         <div class="side-nav">
             <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('List Users'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('List Users'), ['action' => 'index', 'lang' => $lang], ['class' => 'side-nav-item']) ?>
         </div>
     </aside>
     <div class="column column-80">

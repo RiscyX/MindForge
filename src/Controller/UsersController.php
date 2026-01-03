@@ -18,6 +18,7 @@ use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\Routing\Router;
 use Detection\MobileDetect;
 use Exception;
+use Laminas\Diactoros\UploadedFile;
 use Throwable;
 use function Cake\Core\env;
 
@@ -535,6 +536,80 @@ class UsersController extends AppController
         $this->Flash->error(__('Failed to reset password. Please try again.'));
 
         return null;
+    }
+
+    /**
+     * Profile method for the logged-in user.
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function profile()
+    {
+        $identity = $this->Authentication->getIdentity();
+        if (!$identity) {
+            return $this->redirect(['action' => 'login']);
+        }
+
+        $user = $this->Users->get($identity->getIdentifier());
+        $this->set(compact('user'));
+    }
+
+    /**
+     * Profile edit method for the logged-in user.
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
+     */
+    public function profileEdit()
+    {
+        $identity = $this->Authentication->getIdentity();
+        if (!$identity) {
+            return $this->redirect(['action' => 'login']);
+        }
+
+        $user = $this->Users->get($identity->getIdentifier());
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $data = $this->request->getData();
+
+            // Handle Avatar Upload
+            $avatarFile = $data['avatar_file'] ?? null;
+            if ($avatarFile instanceof UploadedFile && $avatarFile->getError() === UPLOAD_ERR_OK) {
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                $fileType = $avatarFile->getClientMediaType();
+
+                if (in_array($fileType, $allowedTypes)) {
+                    $ext = pathinfo($avatarFile->getClientFilename(), PATHINFO_EXTENSION);
+                    $filename = 'avatar_' . $user->id . '_' . time() . '.' . $ext;
+                    $targetPath = WWW_ROOT . 'img' . DS . 'avatars' . DS . $filename;
+
+                    $avatarFile->moveTo($targetPath);
+
+                    // Delete old avatar if exists and is local
+                    if ($user->avatar_url && str_contains($user->avatar_url, 'avatars/')) {
+                        $oldFile = WWW_ROOT . 'img' . DS . $user->avatar_url;
+                        if (file_exists($oldFile) && is_file($oldFile)) {
+                            unlink($oldFile);
+                        }
+                    }
+
+                    $data['avatar_url'] = 'avatars/' . $filename;
+                } else {
+                    $this->Flash->error(__('Invalid image format. Allowed: JPG, PNG, GIF, WEBP'));
+                }
+            }
+            unset($data['avatar_file']); // Remove file object from data to avoid patching issues if not handled by table
+
+            $user = $this->Users->patchEntity($user, $data);
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('Your profile has been updated.'));
+                $lang = $this->request->getParam('lang', 'en');
+
+                return $this->redirect(['action' => 'profile', 'lang' => $lang]);
+            }
+            $this->Flash->error(__('Unable to update your profile. Please try again.'));
+        }
+
+        $this->set(compact('user'));
     }
 
     /**
