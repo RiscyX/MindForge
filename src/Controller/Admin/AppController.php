@@ -11,6 +11,16 @@ use Cake\Http\Exception\ForbiddenException;
 class AppController extends BaseAppController
 {
     /**
+     * @return void
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->viewBuilder()->setLayout('admin');
+    }
+
+    /**
      * @param \Cake\Event\EventInterface $event
      * @return void
      */

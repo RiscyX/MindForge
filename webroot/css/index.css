@@ -258,9 +258,16 @@
 }
 
 .mf-admin-select {
-    background: rgba(var(--mf-text-rgb), 0.04);
+    color-scheme: dark;
+    background: rgba(var(--mf-bg-rgb), 0.65);
     border-color: rgba(var(--mf-text-rgb), 0.14);
     color: rgba(var(--mf-text-rgb), 0.92);
+}
+
+.mf-admin-select option,
+.mf-admin-select optgroup {
+    background-color: var(--mf-bg);
+    color: var(--mf-text);
 }
 
 .mf-admin-table-card {

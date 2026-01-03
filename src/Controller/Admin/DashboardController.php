@@ -12,8 +12,6 @@ class DashboardController extends AppController
      */
     public function index(): void
     {
-        $this->viewBuilder()->setLayout('default');
-
         /** @var \App\Model\Table\ActivityLogsTable $activityLogs */
         $activityLogs = $this->fetchTable('ActivityLogs');
 
