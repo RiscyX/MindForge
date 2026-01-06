@@ -4,30 +4,47 @@
  * @var \App\Model\Entity\Difficulty $difficulty
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-white"><?= __('Edit Difficulty') ?></h1>
+        <div>
             <?= $this->Form->postLink(
                 __('Delete'),
-                ['action' => 'delete', $difficulty->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $difficulty->id), 'class' => 'side-nav-item']
+                ['action' => 'delete', $difficulty->id, 'lang' => $lang],
+                ['confirm' => __('Are you sure you want to delete # {0}?', $difficulty->id), 'class' => 'btn btn-danger me-2']
             ) ?>
-            <?= $this->Html->link(__('List Difficulties'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-        </div>
-    </aside>
-    <div class="column column-80">
-        <div class="difficulties form content">
-            <?= $this->Form->create($difficulty) ?>
-            <fieldset>
-                <legend><?= __('Edit Difficulty') ?></legend>
-                <?php
-                    echo $this->Form->control('name');
-                    echo $this->Form->control('level');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+            <?= $this->Html->link(__('Back to List'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-secondary']) ?>
         </div>
     </div>
+
+    <?= $this->Form->create($difficulty) ?>
+    <div class="mb-3">
+        <?= $this->Form->control('level', ['class' => 'form-control', 'label' => ['class' => 'form-label text-white']]) ?>
+    </div>
+    
+    <div class="mb-4">
+        <h5 class="h5 text-white mb-3"><?= __('Translations') ?></h5>
+        <?php 
+            $translations = $difficulty->difficulty_translations;
+        ?>
+        <?php foreach ($languages as $i => $language): ?>
+            <div class="mb-4 border-bottom pb-3">
+                <h6 class="m-0 font-weight-bold text-primary mb-2"><?= h($language->name) ?> (<?= h($language->code) ?>)</h6>
+                <?= $this->Form->hidden("difficulty_translations.$i.language_id", ['value' => $language->id]) ?>
+                <div class="mb-3">
+                    <?= $this->Form->control("difficulty_translations.$i.name", [
+                        'class' => 'form-control', 
+                        'label' => ['class' => 'form-label text-white', 'text' => __('Name')],
+                        'required' => true,
+                        'value' => $translations[$i]->name ?? ''
+                    ]) ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="mt-4">
+        <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
+    </div>
+    <?= $this->Form->end() ?>
 </div>

@@ -27,22 +27,27 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Solway:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
     <?= $this->Html->css('index.css?v=12') ?>
-
-    <?php if ($isAuthPage) : ?>
-        <script>document.documentElement.classList.add('mf-auth-js');</script>
-        <?= $this->Html->css('auth_transitions.css?v=1') ?>
-    <?php endif; ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
 </head>
-<body class="mf-auth d-flex flex-column min-vh-100<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
+<body class="mf-auth d-flex flex-column vh-100 overflow-hidden<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
     <?= $this->element('navbar') ?>
-    <main class="flex-grow-1 d-flex flex-column">
-        <?= $this->fetch('content') ?>
+
+    <main class="flex-grow-1 d-flex flex-column mf-admin-wrapper">
+        <div class="container-fluid px-0 mf-admin-shell">
+            <div class="d-flex mf-admin-layout">
+                <?= $this->element('admin_sidebar') ?>
+
+                <section class="flex-grow-1 mf-admin-main">
+                    <div class="container-fluid px-3 px-lg-4 py-4">
+                        <?= $this->fetch('content') ?>
+                    </div>
+                </section>
+            </div>
+        </div>
     </main>
 
     <div class="mf-flash-stack" data-mf-flash-stack>
@@ -50,9 +55,6 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     </div>
 
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js') ?>
-    <?php if ($isAuthPage) : ?>
-        <?= $this->Html->script('auth_transitions.js?v=1') ?>
-    <?php endif; ?>
     <?= $this->fetch('script') ?>
 </body>
 </html>

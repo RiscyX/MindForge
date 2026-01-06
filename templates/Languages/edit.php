@@ -4,30 +4,29 @@
  * @var \App\Model\Entity\Language $language
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-white"><?= __('Edit Language') ?></h1>
+        <div>
             <?= $this->Form->postLink(
                 __('Delete'),
-                ['action' => 'delete', $language->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $language->id), 'class' => 'side-nav-item']
+                ['action' => 'delete', $language->id, 'lang' => $lang],
+                ['confirm' => __('Are you sure you want to delete # {0}?', $language->id), 'class' => 'btn btn-danger me-2']
             ) ?>
-            <?= $this->Html->link(__('List Languages'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-        </div>
-    </aside>
-    <div class="column column-80">
-        <div class="languages form content">
-            <?= $this->Form->create($language) ?>
-            <fieldset>
-                <legend><?= __('Edit Language') ?></legend>
-                <?php
-                    echo $this->Form->control('code');
-                    echo $this->Form->control('name');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+            <?= $this->Html->link(__('Back to List'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-secondary']) ?>
         </div>
     </div>
+
+    <?= $this->Form->create($language) ?>
+    <div class="mb-3">
+        <?= $this->Form->control('code', ['class' => 'form-control', 'label' => ['class' => 'form-label text-white']]) ?>
+    </div>
+    <div class="mb-3">
+        <?= $this->Form->control('name', ['class' => 'form-control', 'label' => ['class' => 'form-label text-white']]) ?>
+    </div>
+    
+    <div class="mt-4">
+        <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
+    </div>
+    <?= $this->Form->end() ?>
 </div>
