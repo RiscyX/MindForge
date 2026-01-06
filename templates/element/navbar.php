@@ -99,14 +99,13 @@ $isDashboardActive = $isAdmin ? $isOnAdminDashboard : $isOnUserDashboard;
                     </li>
 
                     <li class="nav-item">
-                        <?= $this->Form->postLink(
-                            __('Logout'),
-                            ['prefix' => false, 'controller' => 'Users', 'action' => 'logout', 'lang' => $lang],
-                            [
-                                'class' => 'nav-link',
-                                'confirm' => __('Are you sure you want to log out?'),
-                            ],
-                        ) ?>
+                        <a href="#" class="nav-link" id="mf-logout-link"><?= __('Logout') ?></a>
+                        <?= $this->Form->create(null, [
+                            'url' => ['prefix' => false, 'controller' => 'Users', 'action' => 'logout', 'lang' => $lang],
+                            'style' => 'display:none;',
+                            'id' => 'mf-logout-form',
+                        ]) ?>
+                        <?= $this->Form->end() ?>
                     </li>
                 <?php endif; ?>
             </ul>

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Model\Entity\ActivityLog;
 use App\Model\Table\ActivityLogsTable;
 use App\Model\Table\AiRequestsTable;
 use App\Model\Table\QuestionsTable;
@@ -115,13 +116,13 @@ class AdminDashboardService
      */
     private function formatEventType(string $action): string
     {
-        if ($action === 'login') {
+        if ($action === ActivityLog::TYPE_LOGIN) {
             return 'User Login';
         }
-        if ($action === 'logout') {
+        if ($action === ActivityLog::TYPE_LOGOUT) {
             return 'User Logout';
         }
-        if (str_starts_with($action, 'login_failed')) {
+        if (str_starts_with($action, ActivityLog::TYPE_LOGIN_FAILED)) {
             return 'Failed Login';
         }
 
@@ -134,10 +135,10 @@ class AdminDashboardService
      */
     private function statusFromAction(string $action): string
     {
-        if ($action === 'login' || $action === 'logout') {
+        if ($action === ActivityLog::TYPE_LOGIN || $action === ActivityLog::TYPE_LOGOUT) {
             return 'Success';
         }
-        if (str_starts_with($action, 'login_failed')) {
+        if (str_starts_with($action, ActivityLog::TYPE_LOGIN_FAILED)) {
             return 'Failed';
         }
 
@@ -151,8 +152,9 @@ class AdminDashboardService
      */
     private function detailsFromLog(string $action, string $ipAddress): string
     {
-        if (str_starts_with($action, 'login_failed:')) {
-            $reason = trim(substr($action, strlen('login_failed:')));
+        $prefix = ActivityLog::TYPE_LOGIN_FAILED . ':';
+        if (str_starts_with($action, $prefix)) {
+            $reason = trim(substr($action, strlen($prefix)));
 
             return $reason !== '' ? $reason : 'Invalid credentials';
         }

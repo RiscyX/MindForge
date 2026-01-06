@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Entity\ActivityLog;
 use App\Model\Entity\Role;
 use App\Service\UserTokensService;
 use Authentication\IdentityInterface;
@@ -634,7 +635,7 @@ class UsersController extends AppController
         $activityLogsTable = $this->fetchTable('ActivityLogs');
         $log = $activityLogsTable->newEntity([
             'user_id' => $userId,
-            'action' => 'login',
+            'action' => ActivityLog::TYPE_LOGIN,
             'ip_address' => $ip,
             'user_agent' => $userAgent,
         ]);
@@ -702,7 +703,7 @@ class UsersController extends AppController
         $activityLogsTable = $this->fetchTable('ActivityLogs');
         $log = $activityLogsTable->newEmptyEntity();
         $log->user_id = $userId;
-        $log->action = 'logout';
+        $log->action = ActivityLog::TYPE_LOGOUT;
         $log->ip_address = $ip;
         $log->user_agent = $userAgent;
         $activityLogsTable->save($log);
@@ -732,7 +733,7 @@ class UsersController extends AppController
         $activityLogsTable = $this->fetchTable('ActivityLogs');
         $log = $activityLogsTable->newEntity([
             'user_id' => $userId,
-            'action' => substr('login_failed: ' . $reason, 0, 100),
+            'action' => substr(ActivityLog::TYPE_LOGIN_FAILED . ': ' . $reason, 0, 100),
             'ip_address' => $ip,
             'user_agent' => $userAgent,
         ]);
