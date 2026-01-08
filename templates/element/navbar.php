@@ -38,6 +38,24 @@ $dashboardUrl = $isAdmin
 
 $isDashboardActive = $isAdmin ? $isOnAdminDashboard : $isOnUserDashboard;
 
+$profileUrl = $isAdmin
+    ? [
+        'prefix' => 'Admin',
+        'controller' => 'Users',
+        'action' => 'myProfile',
+        'lang' => $lang,
+    ]
+    : [
+        'prefix' => false,
+        'controller' => 'Users',
+        'action' => 'profile',
+        'lang' => $lang,
+    ];
+
+$isProfileActive = $isAdmin
+    ? ($currentPrefix === 'Admin' && $currentController === 'Users' && $currentAction === 'myProfile')
+    : (($currentPrefix === null || $currentPrefix === '') && $currentController === 'Users' && $currentAction === 'profile');
+
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark mf-navbar" data-mf-navbar>
@@ -92,8 +110,8 @@ $isDashboardActive = $isAdmin ? $isOnAdminDashboard : $isOnUserDashboard;
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link<?= $currentAction === 'profile' && $this->request->getParam('controller') === 'Users' ? ' active' : '' ?>"
-                           href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'profile', 'lang' => $lang]) ?>">
+                        <a class="nav-link<?= $isProfileActive ? ' active' : '' ?>"
+                           href="<?= $this->Url->build($profileUrl) ?>">
                             <?= __('My Profile') ?>
                         </a>
                     </li>

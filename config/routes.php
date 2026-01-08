@@ -48,6 +48,9 @@ return function (RouteBuilder $routes): void {
                 ->setPatterns(['lang' => 'en|hu']);
             $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
                 ->setPatterns(['lang' => 'en|hu']);
+
+            $builder->connect('/my-profile', ['controller' => 'Users', 'action' => 'myProfile'])
+                ->setPatterns(['lang' => 'en|hu']);
             $builder->fallbacks();
         },
     );

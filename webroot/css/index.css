@@ -283,6 +283,13 @@
     color: rgba(var(--mf-text-rgb), 0.92);
 }
 
+.mf-admin-input[type="file"] {
+    color-scheme: dark;
+    background: rgba(var(--mf-bg-rgb), 0.65) !important;
+    border-color: rgba(var(--mf-text-rgb), 0.14) !important;
+    color: rgba(var(--mf-text-rgb), 0.92) !important;
+}
+
 .mf-admin-input::placeholder {
     color: rgba(var(--mf-text-rgb), 0.40);
 }
@@ -302,29 +309,36 @@
 
 /* File input button styling (remove default white button) */
 .mf-admin-input[type="file"]::file-selector-button {
-    background: rgba(var(--mf-text-rgb), 0.03);
-    border: 1px solid rgba(var(--mf-text-rgb), 0.14);
-    color: rgba(var(--mf-text-rgb), 0.90);
+    appearance: none;
+    background: rgba(var(--mf-text-rgb), 0.03) !important;
+    border: 1px solid rgba(var(--mf-text-rgb), 0.14) !important;
+    color: rgba(var(--mf-text-rgb), 0.90) !important;
     border-radius: 0.5rem;
     padding: 0.375rem 0.75rem;
     margin-right: 0.75rem;
 }
 
 .mf-admin-input[type="file"]::file-selector-button:hover {
-    background: rgba(var(--mf-text-rgb), 0.05);
+    background: rgba(var(--mf-text-rgb), 0.03) !important;
+    border-color: rgba(var(--mf-text-rgb), 0.14) !important;
+    color: rgba(var(--mf-text-rgb), 0.90) !important;
 }
 
 .mf-admin-input[type="file"]::-webkit-file-upload-button {
-    background: rgba(var(--mf-text-rgb), 0.03);
-    border: 1px solid rgba(var(--mf-text-rgb), 0.14);
-    color: rgba(var(--mf-text-rgb), 0.90);
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(var(--mf-text-rgb), 0.03) !important;
+    border: 1px solid rgba(var(--mf-text-rgb), 0.14) !important;
+    color: rgba(var(--mf-text-rgb), 0.90) !important;
     border-radius: 0.5rem;
     padding: 0.375rem 0.75rem;
     margin-right: 0.75rem;
 }
 
 .mf-admin-input[type="file"]::-webkit-file-upload-button:hover {
-    background: rgba(var(--mf-text-rgb), 0.05);
+    background: rgba(var(--mf-text-rgb), 0.03) !important;
+    border-color: rgba(var(--mf-text-rgb), 0.14) !important;
+    color: rgba(var(--mf-text-rgb), 0.90) !important;
 }
 
 .mf-admin-form-center {
