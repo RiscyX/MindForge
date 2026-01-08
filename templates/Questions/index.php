@@ -3,69 +3,132 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\Question> $questions
  */
+
+$lang = $this->request->getParam('lang', 'en');
+
+$this->assign('title', __('Questions'));
+
+$this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
+$this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
+$this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
+$this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
 ?>
-<div class="questions index content">
-    <?= $this->Html->link(__('New Question'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Questions') ?></h3>
-    <div class="table-responsive">
-        <table>
+
+<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+    <div>
+        <h1 class="h3 mb-1"><?= __('Questions') ?></h1>
+    </div>
+</div>
+
+<br>
+
+<?= $this->element('functions/admin_list_controls', [
+    'search' => [
+        'id' => 'mfQuestionsSearch',
+        'label' => __('Search'),
+        'placeholder' => __('Search…'),
+        'maxWidth' => '400px',
+    ],
+    'limit' => [
+        'id' => 'mfQuestionsLimit',
+        'label' => __('Show'),
+        'default' => '10',
+        'options' => [
+            '10' => '10',
+            '50' => '50',
+            '100' => '100',
+            '-1' => __('All'),
+        ],
+    ],
+    'create' => [
+        'label' => __('New Question') . ' +',
+        'url' => ['action' => 'add', 'lang' => $lang],
+        'class' => 'btn btn-sm btn-primary',
+    ],
+]) ?>
+
+<div class="mf-admin-table-card mt-3">
+    <div class="mf-admin-table-scroll">
+        <table id="mfQuestionsTable" class="table table-dark table-hover mb-0 align-middle text-center">
             <thead>
                 <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
-                    <th><?= $this->Paginator->sort('test_id') ?></th>
-                    <th><?= $this->Paginator->sort('category_id') ?></th>
-                    <th><?= $this->Paginator->sort('difficulty_id') ?></th>
-                    <th><?= $this->Paginator->sort('question_type') ?></th>
-                    <th><?= $this->Paginator->sort('original_language_id') ?></th>
-                    <th><?= $this->Paginator->sort('source_type') ?></th>
-                    <th><?= $this->Paginator->sort('created_by') ?></th>
-                    <th><?= $this->Paginator->sort('is_active') ?></th>
-                    <th><?= $this->Paginator->sort('position') ?></th>
-                    <th><?= $this->Paginator->sort('created_at') ?></th>
-                    <th><?= $this->Paginator->sort('updated_at') ?></th>
-                    <th class="actions"><?= __('Actions') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('ID') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Source') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Active') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Created') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Updated') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Actions') ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($questions as $question): ?>
-                <tr>
-                    <td><?= $this->Number->format($question->id) ?></td>
-                    <td><?= $question->hasValue('test') ? $this->Html->link($question->test->id, ['controller' => 'Tests', 'action' => 'view', $question->test->id]) : '' ?></td>
-                    <td><?= $question->hasValue('category') ? $this->Html->link($question->category->id, ['controller' => 'Categories', 'action' => 'view', $question->category->id]) : '' ?></td>
-                    <td><?= $question->hasValue('difficulty') ? $this->Html->link($question->difficulty->name, ['controller' => 'Difficulties', 'action' => 'view', $question->difficulty->id]) : '' ?></td>
-                    <td><?= h($question->question_type) ?></td>
-                    <td><?= $question->hasValue('original_language') ? $this->Html->link($question->original_language->name, ['controller' => 'Languages', 'action' => 'view', $question->original_language->id]) : '' ?></td>
-                    <td><?= h($question->source_type) ?></td>
-                    <td><?= $question->created_by === null ? '' : $this->Number->format($question->created_by) ?></td>
-                    <td><?= h($question->is_active) ?></td>
-                    <td><?= $question->position === null ? '' : $this->Number->format($question->position) ?></td>
-                    <td><?= h($question->created_at) ?></td>
-                    <td><?= h($question->updated_at) ?></td>
-                    <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $question->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $question->id]) ?>
-                        <?= $this->Form->postLink(
-                            __('Delete'),
-                            ['action' => 'delete', $question->id],
-                            [
-                                'method' => 'delete',
-                                'confirm' => __('Are you sure you want to delete # {0}?', $question->id),
-                            ]
-                        ) ?>
-                    </td>
-                </tr>
+                <?php foreach ($questions as $question) : ?>
+                    <tr>
+                        <td class="mf-muted" data-order="<?= h((string)$question->id) ?>"><?= $this->Number->format($question->id) ?></td>
+                        <td class="mf-muted"><?= h((string)$question->source_type) ?></td>
+                        <td>
+                            <?php if ($question->is_active) : ?>
+                                <span class="badge bg-success"><?= __('Active') ?></span>
+                            <?php else : ?>
+                                <span class="badge bg-secondary"><?= __('Inactive') ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="mf-muted" data-order="<?= $question->created_at ? h($question->created_at->format('Y-m-d H:i:s')) : '0' ?>">
+                            <?= $question->created_at ? h($question->created_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?>
+                        </td>
+                        <td class="mf-muted" data-order="<?= $question->updated_at ? h($question->updated_at->format('Y-m-d H:i:s')) : '0' ?>">
+                            <?= $question->updated_at ? h($question->updated_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                <?= $this->Html->link(
+                                    __('View'),
+                                    ['action' => 'view', $question->id, 'lang' => $lang],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
+                                <?= $this->Html->link(
+                                    __('Edit'),
+                                    ['action' => 'edit', $question->id, 'lang' => $lang],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
+                                <?= $this->Form->postLink(
+                                    __('Delete'),
+                                    ['action' => 'delete', $question->id, 'lang' => $lang],
+                                    [
+                                        'confirm' => __('Are you sure you want to delete # {0}?', $question->id),
+                                        'class' => 'btn btn-sm btn-outline-danger',
+                                    ],
+                                ) ?>
+                            </div>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
-    </div>
 </div>
+
+<?php $this->start('script'); ?>
+<?= $this->element('functions/admin_table_operations', [
+    'config' => [
+        'tableId' => 'mfQuestionsTable',
+        'searchInputId' => 'mfQuestionsSearch',
+        'limitSelectId' => 'mfQuestionsLimit',
+        'dataTables' => [
+            'enabled' => true,
+            'searching' => true,
+            'lengthChange' => false,
+            'pageLength' => 10,
+            'order' => [[0, 'asc']],
+            'nonOrderableTargets' => [-1],
+            'nonSearchableTargets' => [2, 3, 4],
+            'dom' => 'rt<"d-flex align-items-center justify-content-between mt-2"ip>',
+        ],
+        'vanilla' => [
+            'defaultSortCol' => 0,
+            'defaultSortDir' => 'asc',
+            'excludedSortCols' => [5],
+            'searchCols' => [0, 1],
+        ],
+    ],
+]) ?>
+<?php $this->end(); ?>

@@ -54,5 +54,6 @@ $isAuthPage = $request->getParam('controller') === 'Users'
         <?= $this->Html->script('auth_transitions.js?v=1') ?>
     <?php endif; ?>
     <?= $this->fetch('script') ?>
+    <?= $this->fetch('scriptBottom') ?>
 </body>
 </html>

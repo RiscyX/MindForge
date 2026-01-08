@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -13,15 +14,28 @@ use Cake\Http\Response;
 class AnswersController extends AppController
 {
     /**
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null|void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setLayout('admin');
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $query = $this->Answers->find()
-            ->contain(['Questions']);
-        $answers = $this->paginate($query);
+        $query = $this->Answers
+            ->find()
+            ->contain(['Questions'])
+            ->orderByAsc('Answers.id');
+
+        $answers = $query->all();
 
         $this->set(compact('answers'));
     }
@@ -52,7 +66,7 @@ class AnswersController extends AppController
             if ($this->Answers->save($answer)) {
                 $this->Flash->success(__('The answer has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The answer could not be saved. Please, try again.'));
         }
@@ -75,7 +89,7 @@ class AnswersController extends AppController
             if ($this->Answers->save($answer)) {
                 $this->Flash->success(__('The answer has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The answer could not be saved. Please, try again.'));
         }
@@ -100,6 +114,6 @@ class AnswersController extends AppController
             $this->Flash->error(__('The answer could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 }

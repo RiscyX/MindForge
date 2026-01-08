@@ -16,7 +16,7 @@
     </aside>
     <div class="column column-80">
         <div class="questions view content">
-            <h3><?= h($question->question_type) ?></h3>
+            <h3><?= __('Question # {0}', $this->Number->format($question->id)) ?></h3>
             <table>
                 <tr>
                     <th><?= __('Test') ?></th>
@@ -29,14 +29,6 @@
                 <tr>
                     <th><?= __('Difficulty') ?></th>
                     <td><?= $question->hasValue('difficulty') ? $this->Html->link($question->difficulty->name, ['controller' => 'Difficulties', 'action' => 'view', $question->difficulty->id]) : '' ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Question Type') ?></th>
-                    <td><?= h($question->question_type) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Original Language') ?></th>
-                    <td><?= $question->hasValue('original_language') ? $this->Html->link($question->original_language->name, ['controller' => 'Languages', 'action' => 'view', $question->original_language->id]) : '' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Source Type') ?></th>

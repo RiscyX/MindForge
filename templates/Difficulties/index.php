@@ -3,67 +3,117 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\Difficulty> $difficulties
  */
-$this->Paginator->options(['url' => ['lang' => $lang]]);
-?>
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-white"><?= __('Difficulties') ?></h1>
-        <?= $this->Html->link(__('New Difficulty'), ['action' => 'add', 'lang' => $lang], ['class' => 'btn btn-primary']) ?>
-    </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover text-white" width="100%" cellspacing="0" style="--bs-table-bg: transparent">
+$lang = $this->request->getParam('lang', 'en');
+
+$this->assign('title', __('Difficulties'));
+
+$this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
+$this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
+$this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
+$this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
+?>
+
+<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+    <div>
+        <h1 class="h3 mb-1"><?= __('Difficulties') ?></h1>
+    </div>
+</div>
+
+<br>
+
+<?= $this->element('functions/admin_list_controls', [
+    'search' => [
+        'id' => 'mfDifficultiesSearch',
+        'label' => __('Search by name or id'),
+        'placeholder' => __('Search…'),
+        'maxWidth' => '400px',
+    ],
+    'limit' => [
+        'id' => 'mfDifficultiesLimit',
+        'label' => __('Show'),
+        'default' => '10',
+        'options' => [
+            '10' => '10',
+            '50' => '50',
+            '100' => '100',
+            '-1' => __('All'),
+        ],
+    ],
+    'create' => [
+        'label' => __('New Difficulty') . ' +',
+        'url' => ['action' => 'add', 'lang' => $lang],
+        'class' => 'btn btn-sm btn-primary',
+    ],
+]) ?>
+
+<div class="mf-admin-table-card mt-3">
+    <div class="mf-admin-table-scroll">
+        <table id="mfDifficultiesTable" class="table table-dark table-hover mb-0 align-middle text-center">
             <thead>
                 <tr>
-                    <th class="text-white"><?= $this->Paginator->sort('id') ?></th>
-                    <th class="text-white"><?= __('Names') ?></th>
-                    <th class="text-white"><?= $this->Paginator->sort('level') ?></th>
-                    <th class="actions text-end text-white"><?= __('Actions') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('ID') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Name') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Level') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Actions') ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($difficulties as $difficulty): ?>
-                <tr>
-                    <td class="text-white"><?= $this->Number->format($difficulty->id) ?></td>
-                    <td class="text-white">
-                        <?php foreach ($difficulty->difficulty_translations as $translation): ?>
-                            <?php if ($translation->hasValue('language')): ?>
-                                <div>
-                                    <span class="badge bg-secondary me-1"><?= h($translation->language->code) ?></span>
-                                    <?= h($translation->name) ?>
-                                </div>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </td>
-                    <td class="text-white"><?= $this->Number->format($difficulty->level) ?></td>
-                    <td class="actions text-end">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $difficulty->id, 'lang' => $lang], ['class' => 'btn btn-sm btn-info text-white']) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $difficulty->id, 'lang' => $lang], ['class' => 'btn btn-sm btn-warning text-white']) ?>
-                        <?= $this->Form->postLink(
-                            __('Delete'),
-                            ['action' => 'delete', $difficulty->id, 'lang' => $lang],
-                            [
-                                'confirm' => __('Are you sure you want to delete # {0}?', $difficulty->id),
-                                'class' => 'btn btn-sm btn-danger'
-                            ]
-                        ) ?>
-                    </td>
-                </tr>
+                <?php foreach ($difficulties as $difficulty) : ?>
+                    <tr>
+                        <td class="mf-muted" data-order="<?= h((string)$difficulty->id) ?>"><?= $this->Number->format($difficulty->id) ?></td>
+                        <td class="text-start"><?= h((string)$difficulty->name) ?></td>
+                        <td class="mf-muted" data-order="<?= h((string)$difficulty->level) ?>"><?= $this->Number->format($difficulty->level) ?></td>
+                        <td>
+                            <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                <?= $this->Html->link(
+                                    __('View'),
+                                    ['action' => 'view', $difficulty->id, 'lang' => $lang],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
+                                <?= $this->Html->link(
+                                    __('Edit'),
+                                    ['action' => 'edit', $difficulty->id, 'lang' => $lang],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
+                                <?= $this->Form->postLink(
+                                    __('Delete'),
+                                    ['action' => 'delete', $difficulty->id, 'lang' => $lang],
+                                    [
+                                        'confirm' => __('Are you sure you want to delete # {0}?', $difficulty->id),
+                                        'class' => 'btn btn-sm btn-outline-danger',
+                                    ],
+                                ) ?>
+                            </div>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
-    
-    <div class="d-flex justify-content-between align-items-center mt-3 text-white">
-        <div class="dataTables_info">
-            <?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?>
-        </div>
-        <ul class="pagination mb-0">
-            <?= $this->Paginator->first('<< ' . __('first'), ['class' => 'page-item', 'linkClass' => 'page-link']) ?>
-            <?= $this->Paginator->prev('< ' . __('previous'), ['class' => 'page-item', 'linkClass' => 'page-link']) ?>
-            <?= $this->Paginator->numbers(['class' => 'page-item', 'linkClass' => 'page-link']) ?>
-            <?= $this->Paginator->next(__('next') . ' >', ['class' => 'page-item', 'linkClass' => 'page-link']) ?>
-            <?= $this->Paginator->last(__('last') . ' >>', ['class' => 'page-item', 'linkClass' => 'page-link']) ?>
-        </ul>
-    </div>
 </div>
+
+<?php $this->start('script'); ?>
+<?= $this->element('functions/admin_table_operations', [
+    'config' => [
+        'tableId' => 'mfDifficultiesTable',
+        'searchInputId' => 'mfDifficultiesSearch',
+        'limitSelectId' => 'mfDifficultiesLimit',
+        'dataTables' => [
+            'enabled' => true,
+            'searching' => true,
+            'lengthChange' => false,
+            'pageLength' => 10,
+            'order' => [[0, 'asc']],
+            'nonOrderableTargets' => [-1],
+            'dom' => 'rt<"d-flex align-items-center justify-content-between mt-2"ip>',
+        ],
+        'vanilla' => [
+            'defaultSortCol' => 0,
+            'defaultSortDir' => 'asc',
+            'excludedSortCols' => [3],
+            'searchCols' => [0, 1, 2],
+        ],
+    ],
+]) ?>
+<?php $this->end(); ?>

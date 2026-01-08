@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -13,15 +14,28 @@ use Cake\Http\Response;
 class TestsController extends AppController
 {
     /**
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null|void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setLayout('admin');
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $query = $this->Tests->find()
-            ->contain(['Categories', 'Difficulties']);
-        $tests = $this->paginate($query);
+        $query = $this->Tests
+            ->find()
+            ->contain(['Categories', 'Difficulties'])
+            ->orderByAsc('Tests.id');
+
+        $tests = $query->all();
 
         $this->set(compact('tests'));
     }
@@ -59,7 +73,7 @@ class TestsController extends AppController
             if ($this->Tests->save($test)) {
                 $this->Flash->success(__('The test has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The test could not be saved. Please, try again.'));
         }
@@ -83,7 +97,7 @@ class TestsController extends AppController
             if ($this->Tests->save($test)) {
                 $this->Flash->success(__('The test has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The test could not be saved. Please, try again.'));
         }
@@ -109,6 +123,6 @@ class TestsController extends AppController
             $this->Flash->error(__('The test could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 }
