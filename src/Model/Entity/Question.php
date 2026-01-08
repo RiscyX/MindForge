@@ -12,8 +12,6 @@ use Cake\ORM\Entity;
  * @property int|null $test_id
  * @property int $category_id
  * @property int|null $difficulty_id
- * @property string $question_type
- * @property int|null $original_language_id
  * @property string $source_type
  * @property int|null $created_by
  * @property bool $is_active
@@ -24,7 +22,6 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\Test $test
  * @property \App\Model\Entity\Category $category
  * @property \App\Model\Entity\Difficulty $difficulty
- * @property \App\Model\Entity\Language $original_language
  * @property \App\Model\Entity\Answer[] $answers
  * @property \App\Model\Entity\QuestionTranslation[] $question_translations
  * @property \App\Model\Entity\TestAttemptAnswer[] $test_attempt_answers
@@ -44,8 +41,6 @@ class Question extends Entity
         'test_id' => true,
         'category_id' => true,
         'difficulty_id' => true,
-        'question_type' => true,
-        'original_language_id' => true,
         'source_type' => true,
         'created_by' => true,
         'is_active' => true,
@@ -55,7 +50,6 @@ class Question extends Entity
         'test' => true,
         'category' => true,
         'difficulty' => true,
-        'original_language' => true,
         'answers' => true,
         'question_translations' => true,
         'test_attempt_answers' => true,

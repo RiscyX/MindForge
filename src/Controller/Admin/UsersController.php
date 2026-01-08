@@ -5,13 +5,13 @@ namespace App\Controller\Admin;
 
 use App\Model\Entity\Role;
 use App\Service\UserTokensService;
-use Cake\I18n\I18n;
 use Cake\Http\Response;
+use Cake\I18n\I18n;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\Routing\Router;
-use Psr\Http\Message\UploadedFileInterface;
 use Exception;
+use Psr\Http\Message\UploadedFileInterface;
 use Throwable;
 use function Cake\Core\env;
 
@@ -80,7 +80,7 @@ class UsersController extends AppController
             }
 
             // For ban/unban, just exclude self.
-            $ids = array_values(array_filter($ids, fn ($id) => $id !== $selfId));
+            $ids = array_values(array_filter($ids, fn($id) => $id !== $selfId));
         }
 
         if (count($ids) === 0) {
@@ -163,6 +163,9 @@ class UsersController extends AppController
     public function myProfile(): ?Response
     {
         $lang = (string)$this->request->getParam('lang', 'en');
+
+        $this->viewBuilder()->setTemplatePath('Admin');
+        $this->viewBuilder()->setTemplate('my_profile');
 
         $identity = $this->request->getAttribute('identity');
         if ($identity === null) {

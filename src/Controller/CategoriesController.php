@@ -30,8 +30,12 @@ class CategoriesController extends AppController
      */
     public function index()
     {
-        $query = $this->Categories->find()->contain(['CategoryTranslations' => ['Languages']]);
-        $categories = $this->paginate($query);
+        $query = $this->Categories
+            ->find()
+            ->contain(['CategoryTranslations' => ['Languages']])
+            ->orderByAsc('Categories.id');
+
+        $categories = $query->all();
 
         $this->set(compact('categories'));
     }

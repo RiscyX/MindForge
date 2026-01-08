@@ -19,35 +19,36 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
         <h1 class="h3 mb-1"><?= __('Users') ?></h1>
     </div>
 </div>
-
-<div class="d-flex align-items-center justify-content-between gap-3 mt-4 flex-wrap">
-    <div class="d-flex align-items-center gap-2 flex-wrap flex-grow-1">
-        <label class="visually-hidden" for="mfUsersSearch"><?= __('Search by username or email') ?></label>
-        <input id="mfUsersSearch" type="search" class="form-control form-control-sm mf-admin-input flex-grow-1"
-               style="max-width:400px;" placeholder="<?= __('Search username/email…') ?>">
-    </div>
-
-    <div class="d-flex align-items-center gap-2">
-        <label class="mf-muted" for="mfUsersLimit" style="font-size:0.9rem;"><?= __('Show') ?></label>
-        <select id="mfUsersLimit" class="form-select form-select-sm mf-admin-select" style="width:auto;">
-            <option value="10" selected>10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="-1"><?= __('All') ?></option>
-        </select>
-
-        <?= $this->Html->link(
-            __('Create User') . ' +',
-            [
-                'prefix' => 'Admin',
-                'controller' => 'Users',
-                'action' => 'add',
-                'lang' => $lang,
-            ],
-            ['class' => 'btn btn-sm btn-primary'],
-        ) ?>
-    </div>
-</div>
+<br>
+<?= $this->element('functions/admin_list_controls', [
+    'search' => [
+        'id' => 'mfUsersSearch',
+        'label' => __('Search by username or email'),
+        'placeholder' => __('Search username/email…'),
+        'maxWidth' => '400px',
+    ],
+    'limit' => [
+        'id' => 'mfUsersLimit',
+        'label' => __('Show'),
+        'default' => '10',
+        'options' => [
+            '10' => '10',
+            '50' => '50',
+            '100' => '100',
+            '-1' => __('All'),
+        ],
+    ],
+    'create' => [
+        'label' => __('Create User') . ' +',
+        'url' => [
+            'prefix' => 'Admin',
+            'controller' => 'Users',
+            'action' => 'add',
+            'lang' => $lang,
+        ],
+        'class' => 'btn btn-sm btn-primary',
+    ],
+]) ?>
 
 <div class="mf-admin-table-card mt-3">
     <?= $this->Form->create(null, [
@@ -153,292 +154,69 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
     <?= $this->Form->end() ?>
 </div>
 
-<div class="d-flex align-items-center gap-3 flex-wrap mt-2">
-    <input id="mfUsersSelectAll" class="visually-hidden" type="checkbox" />
-    <a
-        id="mfUsersSelectAllLink"
-        href="#"
-        class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover"
-    >
-        <?= h('↑ ') ?><?= __('Összes bejelölése') ?>
-    </a>
-
-    <span class="mf-muted" style="font-size:0.9rem;">
-        <?= __('A kijelöltekkel végzendő művelet:') ?>
-    </span>
-
-    <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button class="btn btn-sm btn-danger" type="submit" name="bulk_action" value="ban" form="mfUsersBulkForm">
-            <?= __('Ban') ?>
-        </button>
-        <button class="btn btn-sm btn-success" type="submit" name="bulk_action" value="unban" form="mfUsersBulkForm">
-            <?= __('Unban') ?>
-        </button>
-        <button class="btn btn-sm btn-outline-danger" type="submit" name="bulk_action" value="delete" data-mf-bulk-delete form="mfUsersBulkForm">
-            <?= __('Delete') ?>
-        </button>
-    </div>
-</div>
+<?= $this->element('functions/admin_bulk_controls', [
+    'selectAll' => [
+        'checkboxId' => 'mfUsersSelectAll',
+        'linkId' => 'mfUsersSelectAllLink',
+        'text' => __('Összes bejelölése'),
+    ],
+    'bulk' => [
+        'label' => __('A kijelöltekkel végzendő művelet:'),
+        'formId' => 'mfUsersBulkForm',
+        'buttons' => [
+            [
+                'label' => __('Ban'),
+                'value' => 'ban',
+                'class' => 'btn btn-sm btn-danger',
+            ],
+            [
+                'label' => __('Unban'),
+                'value' => 'unban',
+                'class' => 'btn btn-sm btn-success',
+            ],
+            [
+                'label' => __('Delete'),
+                'value' => 'delete',
+                'class' => 'btn btn-sm btn-outline-danger',
+                'attrs' => [
+                    'data-mf-bulk-delete' => true,
+                ],
+            ],
+        ],
+    ],
+]) ?>
 
 <?php $this->start('script'); ?>
-<script>
-(() => {
-    const bulkForm = document.getElementById('mfUsersBulkForm');
-    if (bulkForm) {
-        bulkForm.addEventListener('submit', (e) => {
-            const submitter = e.submitter;
-            if (!(submitter instanceof HTMLButtonElement)) {
-                return;
-            }
-
-            const anyChecked = !!bulkForm.querySelector('.mf-user-select:checked');
-            if (!anyChecked) {
-                e.preventDefault();
-                alert('<?= h(__('Select at least one user.')) ?>');
-                return;
-            }
-
-            if (submitter.value === 'delete') {
-                const ok = confirm('<?= h(__('Are you sure you want to delete the selected users?')) ?>');
-                if (!ok) {
-                    e.preventDefault();
-                }
-            }
-        });
-    }
-
-    const tableEl = document.getElementById('mfUsersTable');
-    if (!tableEl) return;
-
-    const searchInput = document.getElementById('mfUsersSearch');
-    const limitSelect = document.getElementById('mfUsersLimit');
-    const selectAll = document.getElementById('mfUsersSelectAll');
-    const selectAllLink = document.getElementById('mfUsersSelectAllLink');
-
-    if (selectAll && selectAllLink) {
-        selectAllLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            selectAll.checked = !selectAll.checked;
-            selectAll.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-    }
-
-    const hasJQuery = typeof window.jQuery !== 'undefined';
-    const hasDataTables = hasJQuery && typeof window.jQuery.fn?.DataTable === 'function';
-
-    if (hasDataTables) {
-        const $ = window.jQuery;
-        const $table = $(tableEl);
-
-        const dt = $table.DataTable({
-            searching: true,
-            lengthChange: false,
-            pageLength: 10,
-            order: [[1, 'asc']],
-            columnDefs: [
-                { orderable: false, searchable: false, targets: [0, -1] },
-                { searchable: false, targets: [0, 3, 4, 5] },
-            ],
-            dom: 'rt<"d-flex align-items-center justify-content-between mt-2"ip>',
-        });
-
-        if (limitSelect) {
-            limitSelect.addEventListener('change', () => {
-                const len = parseInt(limitSelect.value, 10);
-                dt.page.len(Number.isFinite(len) ? len : 10).draw();
-            });
-        }
-
-        if (searchInput) {
-            searchInput.addEventListener('input', () => {
-                dt.search(searchInput.value || '').draw();
-            });
-        }
-
-        if (selectAll) {
-            selectAll.addEventListener('change', () => {
-                const checked = !!selectAll.checked;
-                const nodes = dt.rows({ page: 'current', search: 'applied' }).nodes().toArray();
-                for (const row of nodes) {
-                    const cb = row.querySelector('.mf-user-select');
-                    if (cb) cb.checked = checked;
-                }
-            });
-
-            // Keep master checkbox consistent after paging/filtering
-            dt.on('draw', () => {
-                if (!selectAll) return;
-                const nodes = dt.rows({ page: 'current', search: 'applied' }).nodes().toArray();
-                const cbs = nodes.map((row) => row.querySelector('.mf-user-select')).filter(Boolean);
-                if (cbs.length === 0) {
-                    selectAll.checked = false;
-                    selectAll.indeterminate = false;
-                    return;
-                }
-                const checkedCount = cbs.filter((cb) => cb.checked).length;
-                selectAll.checked = checkedCount === cbs.length;
-                selectAll.indeterminate = checkedCount > 0 && checkedCount < cbs.length;
-            });
-
-            tableEl.addEventListener('change', (e) => {
-                const target = e.target;
-                if (!(target instanceof HTMLInputElement)) return;
-                if (!target.classList.contains('mf-user-select')) return;
-                dt.draw(false);
-            });
-        }
-
-        return;
-    }
-
-    // Vanilla fallback (works even when CDN scripts are blocked)
-    const tbody = tableEl.tBodies[0];
-    if (!tbody) return;
-
-    const headers = Array.from(tableEl.tHead?.rows?.[0]?.cells || []);
-    const allRows = Array.from(tbody.rows);
-
-    let sortCol = 1;
-    let sortDir = 'asc';
-
-    const getCellKey = (row, colIndex) => {
-        const cell = row.cells[colIndex];
-        if (!cell) return '';
-        const order = cell.getAttribute('data-order');
-        if (order !== null) return order;
-        const txt = (cell.textContent || '').trim();
-        return txt === '-' ? '' : txt;
-    };
-
-    const applyView = () => {
-        const term = (searchInput?.value || '').trim().toLowerCase();
-
-        const filtered = allRows.filter((row) => {
-            if (term === '') return true;
-            const username = getCellKey(row, 1).toLowerCase();
-            const email = getCellKey(row, 2).toLowerCase();
-            return username.includes(term) || email.includes(term);
-        });
-
-        filtered.sort((a, b) => {
-            const ak = getCellKey(a, sortCol);
-            const bk = getCellKey(b, sortCol);
-
-            const cmp = ak.localeCompare(bk, undefined, { numeric: true, sensitivity: 'base' });
-            return sortDir === 'asc' ? cmp : -cmp;
-        });
-
-        // Re-append in sorted order
-        for (const row of filtered) {
-            tbody.appendChild(row);
-        }
-
-        // Hide rows not in filtered set
-        const visibleSet = new Set(filtered);
-        for (const row of allRows) {
-            if (!visibleSet.has(row)) {
-                row.style.display = 'none';
-            }
-        }
-
-        const limit = parseInt(limitSelect?.value || '10', 10);
-        let shown = 0;
-        for (const row of filtered) {
-            if (Number.isFinite(limit) && limit > 0 && shown >= limit) {
-                row.style.display = 'none';
-                continue;
-            }
-            row.style.display = '';
-            shown += 1;
-        }
-
-        headers.forEach((th, idx) => {
-            if (idx === headers.length - 1) {
-                th.removeAttribute('aria-sort');
-                return;
-            }
-            if (idx === sortCol) {
-                th.setAttribute('aria-sort', sortDir === 'asc' ? 'ascending' : 'descending');
-            } else {
-                th.removeAttribute('aria-sort');
-            }
-        });
-    };
-
-    headers.forEach((th, idx) => {
-        const isCheckbox = idx === 0;
-        const isActions = idx === headers.length - 1;
-        if (isCheckbox || isActions) return;
-
-        th.style.cursor = 'pointer';
-        th.addEventListener('click', () => {
-            if (sortCol === idx) {
-                sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortCol = idx;
-                sortDir = 'asc';
-            }
-            applyView();
-        });
-    });
-
-    if (searchInput) {
-        searchInput.addEventListener('input', applyView);
-    }
-    if (limitSelect) {
-        limitSelect.addEventListener('change', applyView);
-    }
-
-    if (selectAll) {
-        const syncSelectAll = () => {
-            const visibleRows = allRows.filter((row) => row.style.display !== 'none');
-            const cbs = visibleRows
-                .map((row) => row.querySelector('.mf-user-select'))
-                .filter((cb) => cb instanceof HTMLInputElement);
-
-            if (cbs.length === 0) {
-                selectAll.checked = false;
-                selectAll.indeterminate = false;
-                return;
-            }
-
-            const checkedCount = cbs.filter((cb) => cb.checked).length;
-            selectAll.checked = checkedCount === cbs.length;
-            selectAll.indeterminate = checkedCount > 0 && checkedCount < cbs.length;
-        };
-
-        selectAll.addEventListener('change', () => {
-            const checked = !!selectAll.checked;
-            const visibleRows = allRows.filter((row) => row.style.display !== 'none');
-            for (const row of visibleRows) {
-                const cb = row.querySelector('.mf-user-select');
-                if (cb instanceof HTMLInputElement) {
-                    cb.checked = checked;
-                }
-            }
-            syncSelectAll();
-        });
-
-        tableEl.addEventListener('change', (e) => {
-            const target = e.target;
-            if (!(target instanceof HTMLInputElement)) return;
-            if (!target.classList.contains('mf-user-select')) return;
-            syncSelectAll();
-        });
-
-        if (searchInput) {
-            searchInput.addEventListener('input', () => {
-                window.requestAnimationFrame(syncSelectAll);
-            });
-        }
-        if (limitSelect) {
-            limitSelect.addEventListener('change', () => {
-                window.requestAnimationFrame(syncSelectAll);
-            });
-        }
-    }
-
-    applyView();
-})();
-</script>
+<?= $this->element('functions/admin_table_operations', [
+    'config' => [
+        'tableId' => 'mfUsersTable',
+        'searchInputId' => 'mfUsersSearch',
+        'limitSelectId' => 'mfUsersLimit',
+        'bulkFormId' => 'mfUsersBulkForm',
+        'rowCheckboxSelector' => '.mf-user-select',
+        'selectAllCheckboxId' => 'mfUsersSelectAll',
+        'selectAllLinkId' => 'mfUsersSelectAllLink',
+        'strings' => [
+            'selectAtLeastOne' => (string)__('Select at least one user.'),
+            'confirmDelete' => (string)__('Are you sure you want to delete the selected users?'),
+        ],
+        'bulkDeleteValues' => ['delete'],
+        'dataTables' => [
+            'enabled' => true,
+            'searching' => true,
+            'lengthChange' => false,
+            'pageLength' => 10,
+            'order' => [[1, 'asc']],
+            'nonOrderableTargets' => [0, -1],
+            'nonSearchableTargets' => [0, 3, 4, 5],
+            'dom' => 'rt<"d-flex align-items-center justify-content-between mt-2"ip>',
+        ],
+        'vanilla' => [
+            'defaultSortCol' => 1,
+            'defaultSortDir' => 'asc',
+            'excludedSortCols' => [0, 6],
+            'searchCols' => [1, 2],
+        ],
+    ],
+]) ?>
 <?php $this->end(); ?>

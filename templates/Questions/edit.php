@@ -5,7 +5,6 @@
  * @var string[]|\Cake\Collection\CollectionInterface $tests
  * @var string[]|\Cake\Collection\CollectionInterface $categories
  * @var string[]|\Cake\Collection\CollectionInterface $difficulties
- * @var string[]|\Cake\Collection\CollectionInterface $originalLanguages
  */
 ?>
 <div class="row">
@@ -29,8 +28,6 @@
                     echo $this->Form->control('test_id', ['options' => $tests, 'empty' => true]);
                     echo $this->Form->control('category_id', ['options' => $categories]);
                     echo $this->Form->control('difficulty_id', ['options' => $difficulties, 'empty' => true]);
-                    echo $this->Form->control('question_type');
-                    echo $this->Form->control('original_language_id', ['options' => $originalLanguages, 'empty' => true]);
                     echo $this->Form->control('source_type');
                     echo $this->Form->control('created_by');
                     echo $this->Form->control('is_active');

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 
 /**
@@ -13,15 +14,28 @@ use Cake\Http\Response;
 class QuestionsController extends AppController
 {
     /**
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null|void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setLayout('admin');
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $query = $this->Questions->find()
-            ->contain(['Tests', 'Categories', 'Difficulties', 'OriginalLanguages']);
-        $questions = $this->paginate($query);
+        $query = $this->Questions
+            ->find()
+            ->contain(['Tests', 'Categories', 'Difficulties'])
+            ->orderByAsc('Questions.id');
+
+        $questions = $query->all();
 
         $this->set(compact('questions'));
     }
@@ -39,7 +53,6 @@ class QuestionsController extends AppController
                 'Tests',
                 'Categories',
                 'Difficulties',
-                'OriginalLanguages',
                 'Answers',
                 'QuestionTranslations',
                 'TestAttemptAnswers']);
@@ -59,15 +72,14 @@ class QuestionsController extends AppController
             if ($this->Questions->save($question)) {
                 $this->Flash->success(__('The question has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
         $tests = $this->Questions->Tests->find('list', limit: 200)->all();
         $categories = $this->Questions->Categories->find('list', limit: 200)->all();
         $difficulties = $this->Questions->Difficulties->find('list', limit: 200)->all();
-        $originalLanguages = $this->Questions->OriginalLanguages->find('list', limit: 200)->all();
-        $this->set(compact('question', 'tests', 'categories', 'difficulties', 'originalLanguages'));
+        $this->set(compact('question', 'tests', 'categories', 'difficulties'));
     }
 
     /**
@@ -85,15 +97,14 @@ class QuestionsController extends AppController
             if ($this->Questions->save($question)) {
                 $this->Flash->success(__('The question has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
         $tests = $this->Questions->Tests->find('list', limit: 200)->all();
         $categories = $this->Questions->Categories->find('list', limit: 200)->all();
         $difficulties = $this->Questions->Difficulties->find('list', limit: 200)->all();
-        $originalLanguages = $this->Questions->OriginalLanguages->find('list', limit: 200)->all();
-        $this->set(compact('question', 'tests', 'categories', 'difficulties', 'originalLanguages'));
+        $this->set(compact('question', 'tests', 'categories', 'difficulties'));
     }
 
     /**
@@ -113,6 +124,6 @@ class QuestionsController extends AppController
             $this->Flash->error(__('The question could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 }

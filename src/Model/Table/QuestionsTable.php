@@ -13,7 +13,6 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\TestsTable&\Cake\ORM\Association\BelongsTo $Tests
  * @property \App\Model\Table\CategoriesTable&\Cake\ORM\Association\BelongsTo $Categories
  * @property \App\Model\Table\DifficultiesTable&\Cake\ORM\Association\BelongsTo $Difficulties
- * @property \App\Model\Table\LanguagesTable&\Cake\ORM\Association\BelongsTo $OriginalLanguages
  * @property \App\Model\Table\AnswersTable&\Cake\ORM\Association\HasMany $Answers
  * @property \App\Model\Table\QuestionTranslationsTable&\Cake\ORM\Association\HasMany $QuestionTranslations
  * @property \App\Model\Table\TestAttemptAnswersTable&\Cake\ORM\Association\HasMany $TestAttemptAnswers
@@ -44,7 +43,7 @@ class QuestionsTable extends Table
         parent::initialize($config);
 
         $this->setTable('questions');
-        $this->setDisplayField('question_type');
+        $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Tests', [
@@ -56,10 +55,6 @@ class QuestionsTable extends Table
         ]);
         $this->belongsTo('Difficulties', [
             'foreignKey' => 'difficulty_id',
-        ]);
-        $this->belongsTo('OriginalLanguages', [
-            'foreignKey' => 'original_language_id',
-            'className' => 'Languages',
         ]);
         $this->hasMany('Answers', [
             'foreignKey' => 'question_id',
@@ -91,14 +86,6 @@ class QuestionsTable extends Table
         $validator
             ->nonNegativeInteger('difficulty_id')
             ->allowEmptyString('difficulty_id');
-
-        $validator
-            ->scalar('question_type')
-            ->notEmptyString('question_type');
-
-        $validator
-            ->nonNegativeInteger('original_language_id')
-            ->allowEmptyString('original_language_id');
 
         $validator
             ->scalar('source_type')
@@ -139,10 +126,6 @@ class QuestionsTable extends Table
         $rules->add($rules->existsIn(['test_id'], 'Tests'), ['errorField' => 'test_id']);
         $rules->add($rules->existsIn(['category_id'], 'Categories'), ['errorField' => 'category_id']);
         $rules->add($rules->existsIn(['difficulty_id'], 'Difficulties'), ['errorField' => 'difficulty_id']);
-        $rules->add($rules->existsIn(
-            ['original_language_id'],
-            'OriginalLanguages',
-        ), ['errorField' => 'original_language_id']);
 
         return $rules;
     }

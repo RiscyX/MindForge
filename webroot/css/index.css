@@ -232,6 +232,11 @@
     color: var(--mf-text);
 }
 
+.mf-admin-nav__link.active {
+    color: var(--mf-primary);
+    background: rgba(var(--mf-primary-rgb), 0.12);
+}
+
 .mf-admin-sidebar__footer {
     padding: 1rem 1.25rem;
     border-top: 1px solid rgba(var(--mf-text-rgb), 0.08);
