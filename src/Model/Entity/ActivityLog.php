@@ -19,6 +19,10 @@ use Cake\ORM\Entity;
  */
 class ActivityLog extends Entity
 {
+    public const TYPE_LOGIN = 'login';
+    public const TYPE_LOGOUT = 'logout';
+    public const TYPE_LOGIN_FAILED = 'login_failed';
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
