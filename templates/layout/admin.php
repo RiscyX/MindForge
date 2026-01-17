@@ -51,6 +51,14 @@ $isAuthPage = $request->getParam('controller') === 'Users'
         </div>
     </main>
 
+    <?= $this->element('functions/scroll_to_top', [
+        'config' => [
+            'scrollContainerSelector' => '.mf-admin-main',
+            'showAfterPx' => 120,
+            'zIndex' => 2000,
+        ],
+    ]) ?>
+
     <div class="mf-flash-stack" data-mf-flash-stack>
         <?= $this->Flash->render() ?>
     </div>
