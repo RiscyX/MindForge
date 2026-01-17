@@ -29,6 +29,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
 
 
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?= $this->Html->css('index.css?v=12') ?>
 
     <?php if ($isAuthPage) : ?>
@@ -42,7 +43,9 @@ $isAuthPage = $request->getParam('controller') === 'Users'
 <body class="mf-auth d-flex flex-column min-vh-100<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
     <?= $this->element('navbar') ?>
     <main class="flex-grow-1 d-flex flex-column">
-        <?= $this->fetch('content') ?>
+        <div class="container py-4 intro-y">
+            <?= $this->fetch('content') ?>
+        </div>
     </main>
 
     <div class="mf-flash-stack" data-mf-flash-stack>

@@ -22,6 +22,7 @@ class ActivityLog extends Entity
     public const TYPE_LOGIN = 'login';
     public const TYPE_LOGOUT = 'logout';
     public const TYPE_LOGIN_FAILED = 'login_failed';
+    public const TYPE_AI_GENERATED_TEST = 'ai_generated_test';
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().

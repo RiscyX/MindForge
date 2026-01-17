@@ -56,6 +56,10 @@ class QuestionsTable extends Table
         $this->belongsTo('Difficulties', [
             'foreignKey' => 'difficulty_id',
         ]);
+        $this->belongsTo('OriginalLanguages', [
+            'foreignKey' => 'original_language_id',
+            'className' => 'Languages',
+        ]);
         $this->hasMany('Answers', [
             'foreignKey' => 'question_id',
         ]);
@@ -86,6 +90,15 @@ class QuestionsTable extends Table
         $validator
             ->nonNegativeInteger('difficulty_id')
             ->allowEmptyString('difficulty_id');
+
+        $validator
+            ->scalar('question_type')
+            ->maxLength('question_type', 50)
+            ->notEmptyString('question_type');
+
+        $validator
+            ->nonNegativeInteger('original_language_id')
+            ->allowEmptyString('original_language_id');
 
         $validator
             ->scalar('source_type')
@@ -126,6 +139,13 @@ class QuestionsTable extends Table
         $rules->add($rules->existsIn(['test_id'], 'Tests'), ['errorField' => 'test_id']);
         $rules->add($rules->existsIn(['category_id'], 'Categories'), ['errorField' => 'category_id']);
         $rules->add($rules->existsIn(['difficulty_id'], 'Difficulties'), ['errorField' => 'difficulty_id']);
+        $rules->add(
+            $rules->existsIn(
+                ['original_language_id'],
+                'OriginalLanguages',
+            ),
+            ['errorField' => 'original_language_id'],
+        );
 
         return $rules;
     }

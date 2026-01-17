@@ -46,6 +46,9 @@
         var(--mf-bg);
     color: var(--mf-text);
     font-family: var(--mf-font);
+}
+
+.mf-auth-page {
     overflow: hidden;
 }
 

@@ -28,8 +28,8 @@ class Difficulty extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'name' => true,
         'level' => true,
+        'difficulty_translations' => true,
         'questions' => true,
         'test_attempts' => true,
         'tests' => true,

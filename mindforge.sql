@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 02, 2025 at 10:14 PM
+-- Generation Time: Jan 17, 2026 at 12:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,8 +31,6 @@ CREATE TABLE `activity_logs` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
   `action` varchar(100) NOT NULL,
-  `entity_type` varchar(100) DEFAULT NULL,
-  `entity_id` int(10) UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `user_agent` text DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
@@ -47,12 +45,13 @@ CREATE TABLE `activity_logs` (
 CREATE TABLE `ai_requests` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL,
-  `test_id` int(10) UNSIGNED DEFAULT NULL,
   `language_id` int(10) UNSIGNED DEFAULT NULL,
-  `type` enum('full_translation','partial_translation','question_generation','answer_generation','explanation_generation') NOT NULL DEFAULT 'full_translation',
+  `source_medium` varchar(255) DEFAULT NULL,
+  `source_reference` varchar(255) DEFAULT NULL,
+  `type` varchar(100) NOT NULL,
   `input_payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`input_payload`)),
   `output_payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`output_payload`)),
-  `status` enum('success','failed') NOT NULL DEFAULT 'success',
+  `status` varchar(50) NOT NULL DEFAULT 'success',
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -67,6 +66,7 @@ CREATE TABLE `answers` (
   `question_id` int(10) UNSIGNED NOT NULL,
   `source_type` enum('human','ai') NOT NULL DEFAULT 'human',
   `is_correct` tinyint(1) NOT NULL DEFAULT 0,
+  `source_text` text DEFAULT NULL,
   `position` int(10) UNSIGNED DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -112,7 +112,6 @@ CREATE TABLE `category_translations` (
   `category_id` int(10) UNSIGNED NOT NULL,
   `language_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
-  `slug` varchar(120) NOT NULL,
   `description` text DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -128,14 +127,9 @@ CREATE TABLE `device_logs` (
   `user_id` int(10) UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `user_agent` text DEFAULT NULL,
-  `is_mobile` tinyint(1) NOT NULL DEFAULT 0,
-  `is_tablet` tinyint(1) NOT NULL DEFAULT 0,
-  `is_desktop` tinyint(1) NOT NULL DEFAULT 0,
-  `os` varchar(100) DEFAULT NULL,
-  `browser` varchar(100) DEFAULT NULL,
+  `device_type` int(11) NOT NULL DEFAULT 2 COMMENT '0: Mobile, 1: Tablet, 2: Desktop',
   `country` varchar(100) DEFAULT NULL,
   `city` varchar(100) DEFAULT NULL,
-  `extra_info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`extra_info`)),
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -147,9 +141,22 @@ CREATE TABLE `device_logs` (
 
 CREATE TABLE `difficulties` (
   `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(50) NOT NULL,
   `level` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `difficulty_translations`
+--
+
+CREATE TABLE `difficulty_translations` (
+  `id` int(11) NOT NULL,
+  `difficulty_id` int(10) UNSIGNED NOT NULL,
+  `language_id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -166,6 +173,20 @@ CREATE TABLE `languages` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `phinxlog`
+--
+
+CREATE TABLE `phinxlog` (
+  `version` bigint(20) NOT NULL,
+  `migration_name` varchar(100) DEFAULT NULL,
+  `start_time` timestamp NULL DEFAULT NULL,
+  `end_time` timestamp NULL DEFAULT NULL,
+  `breakpoint` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `questions`
 --
 
@@ -174,6 +195,8 @@ CREATE TABLE `questions` (
   `test_id` int(10) UNSIGNED DEFAULT NULL,
   `category_id` int(10) UNSIGNED NOT NULL,
   `difficulty_id` int(10) UNSIGNED DEFAULT NULL,
+  `question_type` varchar(50) NOT NULL DEFAULT 'single_choice',
+  `original_language_id` int(10) UNSIGNED DEFAULT NULL,
   `source_type` enum('human','ai') NOT NULL DEFAULT 'human',
   `created_by` int(10) UNSIGNED DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
@@ -276,7 +299,6 @@ CREATE TABLE `test_translations` (
   `test_id` int(10) UNSIGNED NOT NULL,
   `language_id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `translator_id` int(10) UNSIGNED DEFAULT NULL,
   `is_complete` tinyint(1) NOT NULL DEFAULT 0,
@@ -294,6 +316,7 @@ CREATE TABLE `test_translations` (
 CREATE TABLE `users` (
   `id` int(10) UNSIGNED NOT NULL,
   `email` varchar(190) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
   `avatar_url` varchar(255) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role_id` int(10) UNSIGNED NOT NULL,
@@ -314,6 +337,19 @@ CREATE TABLE `user_favorite_categories` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL,
   `category_id` int(10) UNSIGNED NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_favorite_tests`
+--
+
+CREATE TABLE `user_favorite_tests` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `test_id` int(10) UNSIGNED NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -351,7 +387,6 @@ ALTER TABLE `activity_logs`
 ALTER TABLE `ai_requests`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_ai_requests_user_id` (`user_id`),
-  ADD KEY `idx_ai_requests_test_lang` (`test_id`,`language_id`),
   ADD KEY `idx_ai_requests_type_created` (`type`,`created_at`),
   ADD KEY `fk_ai_requests_languages` (`language_id`);
 
@@ -383,7 +418,6 @@ ALTER TABLE `categories`
 ALTER TABLE `category_translations`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_cat_trans_cat_lang` (`category_id`,`language_id`),
-  ADD UNIQUE KEY `uq_cat_trans_slug` (`slug`),
   ADD KEY `idx_cat_trans_lang` (`language_id`);
 
 --
@@ -399,8 +433,15 @@ ALTER TABLE `device_logs`
 --
 ALTER TABLE `difficulties`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_difficulties_name` (`name`),
   ADD UNIQUE KEY `uq_difficulties_level` (`level`);
+
+--
+-- Indexes for table `difficulty_translations`
+--
+ALTER TABLE `difficulty_translations`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `difficulty_id` (`difficulty_id`),
+  ADD KEY `language_id` (`language_id`);
 
 --
 -- Indexes for table `languages`
@@ -410,6 +451,12 @@ ALTER TABLE `languages`
   ADD UNIQUE KEY `uq_languages_code` (`code`);
 
 --
+-- Indexes for table `phinxlog`
+--
+ALTER TABLE `phinxlog`
+  ADD PRIMARY KEY (`version`);
+
+--
 -- Indexes for table `questions`
 --
 ALTER TABLE `questions`
@@ -417,7 +464,8 @@ ALTER TABLE `questions`
   ADD KEY `idx_questions_test_id` (`test_id`),
   ADD KEY `idx_questions_category_id` (`category_id`),
   ADD KEY `idx_questions_difficulty_id` (`difficulty_id`),
-  ADD KEY `idx_questions_created_by` (`created_by`);
+  ADD KEY `idx_questions_created_by` (`created_by`),
+  ADD KEY `fk_questions_original_language` (`original_language_id`);
 
 --
 -- Indexes for table `question_translations`
@@ -470,7 +518,6 @@ ALTER TABLE `test_attempt_answers`
 ALTER TABLE `test_translations`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_test_trans_test_lang` (`test_id`,`language_id`),
-  ADD UNIQUE KEY `uq_test_trans_slug` (`slug`),
   ADD KEY `idx_test_trans_translator` (`translator_id`),
   ADD KEY `fk_test_translations_languages` (`language_id`);
 
@@ -480,6 +527,7 @@ ALTER TABLE `test_translations`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_users_email` (`email`),
+  ADD UNIQUE KEY `username` (`username`),
   ADD KEY `idx_users_role_id` (`role_id`);
 
 --
@@ -489,6 +537,14 @@ ALTER TABLE `user_favorite_categories`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_user_cat_fav` (`user_id`,`category_id`),
   ADD KEY `idx_fav_cat_category` (`category_id`);
+
+--
+-- Indexes for table `user_favorite_tests`
+--
+ALTER TABLE `user_favorite_tests`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_user_test_fav` (`user_id`,`test_id`),
+  ADD KEY `idx_fav_test_test` (`test_id`);
 
 --
 -- Indexes for table `user_tokens`
@@ -552,6 +608,12 @@ ALTER TABLE `difficulties`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `difficulty_translations`
+--
+ALTER TABLE `difficulty_translations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `languages`
 --
 ALTER TABLE `languages`
@@ -612,6 +674,12 @@ ALTER TABLE `user_favorite_categories`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `user_favorite_tests`
+--
+ALTER TABLE `user_favorite_tests`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `user_tokens`
 --
 ALTER TABLE `user_tokens`
@@ -632,7 +700,6 @@ ALTER TABLE `activity_logs`
 --
 ALTER TABLE `ai_requests`
   ADD CONSTRAINT `fk_ai_requests_languages` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_ai_requests_tests` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ai_requests_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -663,11 +730,19 @@ ALTER TABLE `device_logs`
   ADD CONSTRAINT `fk_device_logs_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
+-- Constraints for table `difficulty_translations`
+--
+ALTER TABLE `difficulty_translations`
+  ADD CONSTRAINT `difficulty_translations_ibfk_1` FOREIGN KEY (`difficulty_id`) REFERENCES `difficulties` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `difficulty_translations_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `questions`
 --
 ALTER TABLE `questions`
   ADD CONSTRAINT `fk_questions_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_difficulties` FOREIGN KEY (`difficulty_id`) REFERENCES `difficulties` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_questions_original_language` FOREIGN KEY (`original_language_id`) REFERENCES `languages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_tests` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -725,6 +800,13 @@ ALTER TABLE `users`
 ALTER TABLE `user_favorite_categories`
   ADD CONSTRAINT `fk_fav_cat_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_fav_cat_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_favorite_tests`
+--
+ALTER TABLE `user_favorite_tests`
+  ADD CONSTRAINT `fk_fav_tests_tests` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_fav_tests_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_tokens`

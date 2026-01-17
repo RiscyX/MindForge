@@ -53,6 +53,7 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             <thead>
                 <tr>
                     <th scope="col" class="mf-muted fs-6"><?= __('ID') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Title') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Category') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Difficulty') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Questions') ?></th>
@@ -67,10 +68,13 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                     <tr>
                         <td class="mf-muted" data-order="<?= h((string)$test->id) ?>"><?= $this->Number->format($test->id) ?></td>
                         <td class="mf-muted">
-                            <?= $test->hasValue('category') ? h((string)$test->category->id) : '—' ?>
+                            <?= !empty($test->test_translations) ? h($test->test_translations[0]->title) : __('N/A') ?>
                         </td>
                         <td class="mf-muted">
-                            <?= $test->hasValue('difficulty') ? h((string)$test->difficulty->name) : '—' ?>
+                            <?= ($test->hasValue('category') && !empty($test->category->category_translations)) ? h($test->category->category_translations[0]->name) : __('N/A') ?>
+                        </td>
+                        <td class="mf-muted">
+                            <?= ($test->hasValue('difficulty') && !empty($test->difficulty->difficulty_translations)) ? h($test->difficulty->difficulty_translations[0]->name) : __('N/A') ?>
                         </td>
                         <td class="mf-muted" data-order="<?= $test->number_of_questions === null ? '0' : h((string)$test->number_of_questions) ?>">
                             <?= $test->number_of_questions === null ? '—' : $this->Number->format($test->number_of_questions) ?>

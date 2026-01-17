@@ -12,12 +12,15 @@ use Cake\ORM\Entity;
  * @property int|null $test_id
  * @property int $category_id
  * @property int|null $difficulty_id
+ * @property string $question_type
+ * @property int|null $original_language_id
  * @property string $source_type
  * @property int|null $created_by
  * @property bool $is_active
  * @property int|null $position
  * @property \Cake\I18n\DateTime $created_at
  * @property \Cake\I18n\DateTime $updated_at
+ * @property string $type
  *
  * @property \App\Model\Entity\Test $test
  * @property \App\Model\Entity\Category $category
@@ -28,6 +31,10 @@ use Cake\ORM\Entity;
  */
 class Question extends Entity
 {
+    public const TYPE_TRUE_FALSE = 'true_false';
+    public const TYPE_MULTIPLE_CHOICE = 'multiple_choice';
+    public const TYPE_TEXT = 'text';
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -41,6 +48,8 @@ class Question extends Entity
         'test_id' => true,
         'category_id' => true,
         'difficulty_id' => true,
+        'question_type' => true,
+        'original_language_id' => true,
         'source_type' => true,
         'created_by' => true,
         'is_active' => true,
