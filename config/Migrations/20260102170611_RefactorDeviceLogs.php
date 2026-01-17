@@ -15,20 +15,32 @@ class RefactorDeviceLogs extends BaseMigration
      */
     public function change(): void
     {
+        if (!$this->hasTable('device_logs')) {
+            return;
+        }
+
         $table = $this->table('device_logs');
-        $table
-            ->removeColumn('os')
-            ->removeColumn('browser')
-            ->removeColumn('is_mobile')
-            ->removeColumn('is_tablet')
-            ->removeColumn('is_desktop')
-            ->addColumn('device_type', 'integer', [
-                'default' => 2,
-                'limit' => 1, // TINYINT
-                'null' => false,
-                'comment' => '0: Mobile, 1: Tablet, 2: Desktop',
-                'after' => 'user_agent'
-            ])
-            ->update();
+
+        foreach (['os', 'browser', 'is_mobile', 'is_tablet', 'is_desktop'] as $column) {
+            if ($table->hasColumn($column)) {
+                $table->removeColumn($column);
+            }
+        }
+
+        $deviceTypeOptions = [
+            'default' => 2,
+            'limit' => 1, // TINYINT
+            'null' => false,
+            'comment' => '0: Mobile, 1: Tablet, 2: Desktop',
+            'after' => 'user_agent',
+        ];
+
+        if ($table->hasColumn('device_type')) {
+            $table->changeColumn('device_type', 'integer', $deviceTypeOptions);
+        } else {
+            $table->addColumn('device_type', 'integer', $deviceTypeOptions);
+        }
+
+        $table->update();
     }
 }

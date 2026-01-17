@@ -15,40 +15,45 @@ class RefactorDifficultiesForTranslations extends BaseMigration
      */
     public function change(): void
     {
-        $table = $this->table('difficulty_translations');
-        $table->addColumn('difficulty_id', 'integer', [
-            'default' => null,
-            'limit' => 10,
-            'null' => false,
-            'signed' => false,
-        ]);
-        $table->addColumn('language_id', 'integer', [
-            'default' => null,
-            'limit' => 10,
-            'null' => false,
-            'signed' => false,
-        ]);
-        $table->addColumn('name', 'string', [
-            'default' => null,
-            'limit' => 100,
-            'null' => false,
-        ]);
-        $table->addColumn('created_at', 'datetime', [
-            'default' => 'CURRENT_TIMESTAMP',
-            'null' => false,
-        ]);
-        $table->addForeignKey('difficulty_id', 'difficulties', 'id', [
-            'delete' => 'CASCADE',
-            'update' => 'CASCADE',
-        ]);
-        $table->addForeignKey('language_id', 'languages', 'id', [
-            'delete' => 'CASCADE',
-            'update' => 'CASCADE',
-        ]);
-        $table->create();
+        if (!$this->hasTable('difficulty_translations')) {
+            $table = $this->table('difficulty_translations');
+            $table->addColumn('difficulty_id', 'integer', [
+                'default' => null,
+                'limit' => 10,
+                'null' => false,
+                'signed' => false,
+            ]);
+            $table->addColumn('language_id', 'integer', [
+                'default' => null,
+                'limit' => 10,
+                'null' => false,
+                'signed' => false,
+            ]);
+            $table->addColumn('name', 'string', [
+                'default' => null,
+                'limit' => 100,
+                'null' => false,
+            ]);
+            $table->addColumn('created_at', 'datetime', [
+                'default' => 'CURRENT_TIMESTAMP',
+                'null' => false,
+            ]);
+            $table->addForeignKey('difficulty_id', 'difficulties', 'id', [
+                'delete' => 'CASCADE',
+                'update' => 'CASCADE',
+            ]);
+            $table->addForeignKey('language_id', 'languages', 'id', [
+                'delete' => 'CASCADE',
+                'update' => 'CASCADE',
+            ]);
+            $table->create();
+        }
 
-        $this->table('difficulties')
-            ->removeColumn('name')
-            ->update();
+        if ($this->hasTable('difficulties')) {
+            $difficultiesTable = $this->table('difficulties');
+            if ($difficultiesTable->hasColumn('name')) {
+                $difficultiesTable->removeColumn('name')->update();
+            }
+        }
     }
 }

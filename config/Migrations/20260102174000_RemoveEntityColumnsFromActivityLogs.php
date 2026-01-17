@@ -12,11 +12,20 @@ class RemoveEntityColumnsFromActivityLogs extends BaseMigration
      */
     public function up(): void
     {
+        if (!$this->hasTable('activity_logs')) {
+            return;
+        }
+
         $table = $this->table('activity_logs');
-        $table
-            ->removeColumn('entity_type')
-            ->removeColumn('entity_id')
-            ->update();
+
+        if ($table->hasColumn('entity_type')) {
+            $table->removeColumn('entity_type');
+        }
+        if ($table->hasColumn('entity_id')) {
+            $table->removeColumn('entity_id');
+        }
+
+        $table->update();
     }
 
     /**
@@ -26,18 +35,26 @@ class RemoveEntityColumnsFromActivityLogs extends BaseMigration
      */
     public function down(): void
     {
+        if (!$this->hasTable('activity_logs')) {
+            return;
+        }
+
         $table = $this->table('activity_logs');
-        $table
-            ->addColumn('entity_type', 'string', [
+        if (!$table->hasColumn('entity_type')) {
+            $table->addColumn('entity_type', 'string', [
                 'default' => null,
                 'limit' => 100,
                 'null' => true,
-            ])
-            ->addColumn('entity_id', 'integer', [
+            ]);
+        }
+        if (!$table->hasColumn('entity_id')) {
+            $table->addColumn('entity_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
                 'null' => true,
-            ])
-            ->update();
+            ]);
+        }
+
+        $table->update();
     }
 }

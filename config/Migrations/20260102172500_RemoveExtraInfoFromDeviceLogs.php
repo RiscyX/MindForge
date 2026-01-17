@@ -12,9 +12,14 @@ class RemoveExtraInfoFromDeviceLogs extends BaseMigration
      */
     public function up(): void
     {
+        if (!$this->hasTable('device_logs')) {
+            return;
+        }
+
         $table = $this->table('device_logs');
-        $table->removeColumn('extra_info')
-              ->update();
+        if ($table->hasColumn('extra_info')) {
+            $table->removeColumn('extra_info')->update();
+        }
     }
 
     /**
@@ -24,11 +29,17 @@ class RemoveExtraInfoFromDeviceLogs extends BaseMigration
      */
     public function down(): void
     {
+        if (!$this->hasTable('device_logs')) {
+            return;
+        }
+
         $table = $this->table('device_logs');
-        $table->addColumn('extra_info', 'text', [
-            'default' => null,
-            'limit' => 4294967295,
-            'null' => true,
-        ])->update();
+        if (!$table->hasColumn('extra_info')) {
+            $table->addColumn('extra_info', 'text', [
+                'default' => null,
+                'limit' => 4294967295,
+                'null' => true,
+            ])->update();
+        }
     }
 }
