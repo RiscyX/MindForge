@@ -29,8 +29,9 @@ class QuestionsFixture extends TestFixture
                 'created_by' => 1,
                 'is_active' => 1,
                 'position' => 1,
-                'created_at' => '2026-01-03 10:15:46',
-                'updated_at' => '2026-01-03 10:15:46',
+                'created_at' => '2026-01-08 19:39:31',
+                'updated_at' => '2026-01-08 19:39:31',
+                'type' => 'Lorem ipsum dolor sit amet',
             ],
         ];
         parent::init();

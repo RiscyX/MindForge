@@ -30,8 +30,25 @@ class DifficultiesController extends AppController
      */
     public function index()
     {
-        $query = $this->Difficulties->find()->orderByAsc('Difficulties.id');
+        $langCode = $this->request->getParam('lang');
+
+        $query = $this->Difficulties->find()
+            ->contain(['DifficultyTranslations' => function ($q) use ($langCode) {
+                return $q->contain(['Languages'])
+                    ->where(['Languages.code LIKE' => $langCode . '%']);
+            }])
+            ->orderByAsc('Difficulties.id');
+
         $difficulties = $query->all();
+
+        // Fallback for missing translations
+        // We might want to load ALL translations if the specific one isn't found,
+        // to show a fallback. But for now let's try to just load the specific one.
+        // If we want a fallback logic (e.g. show English if Hungarian missing),
+        // we might need a more complex query or post-processing.
+
+        // Let's load all translations if we want to be safe, or just stick to the requested one.
+        // The previous code block filters translations. If empty, the entity will have an empty array.
 
         $this->set(compact('difficulties'));
     }
@@ -69,7 +86,8 @@ class DifficultiesController extends AppController
             $this->Flash->error(__('The difficulty could not be saved. Please, try again.'));
         }
 
-        $this->set(compact('difficulty'));
+        $languages = $this->fetchTable('Languages')->find('all');
+        $this->set(compact('difficulty', 'languages'));
     }
 
     /**
@@ -81,7 +99,7 @@ class DifficultiesController extends AppController
      */
     public function edit(?string $id = null)
     {
-        $difficulty = $this->Difficulties->get($id, contain: []);
+        $difficulty = $this->Difficulties->get($id, contain: ['DifficultyTranslations']);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $difficulty = $this->Difficulties->patchEntity($difficulty, $this->request->getData());
@@ -93,7 +111,8 @@ class DifficultiesController extends AppController
             $this->Flash->error(__('The difficulty could not be saved. Please, try again.'));
         }
 
-        $this->set(compact('difficulty'));
+        $languages = $this->fetchTable('Languages')->find('all');
+        $this->set(compact('difficulty', 'languages'));
     }
 
     /**

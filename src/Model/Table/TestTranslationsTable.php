@@ -80,13 +80,6 @@ class TestTranslationsTable extends Table
             ->notEmptyString('title');
 
         $validator
-            ->scalar('slug')
-            ->maxLength('slug', 255)
-            ->requirePresence('slug', 'create')
-            ->notEmptyString('slug')
-            ->add('slug', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
-
-        $validator
             ->scalar('description')
             ->allowEmptyString('description');
 
@@ -123,7 +116,6 @@ class TestTranslationsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['test_id', 'language_id']), ['errorField' => 'test_id']);
-        $rules->add($rules->isUnique(['slug']), ['errorField' => 'slug']);
         $rules->add($rules->existsIn(['test_id'], 'Tests'), ['errorField' => 'test_id']);
         $rules->add($rules->existsIn(['language_id'], 'Languages'), ['errorField' => 'language_id']);
         $rules->add($rules->existsIn(['translator_id'], 'Translators'), ['errorField' => 'translator_id']);

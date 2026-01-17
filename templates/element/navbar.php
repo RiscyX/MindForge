@@ -14,6 +14,8 @@ $identity = $this->request->getAttribute('identity');
 $isLoggedIn = $identity !== null;
 $isAdmin = $isLoggedIn
     && (int)$identity->get('role_id') === Role::ADMIN;
+// Quiz creator role -> show Tests link in navbar
+$isCreator = $isLoggedIn && (int)$identity->get('role_id') === Role::CREATOR;
 
 $isOnAdminDashboard = $currentPrefix === 'Admin'
     && $currentController === 'Dashboard'
@@ -108,6 +110,15 @@ $isProfileActive = $isAdmin
                             <?= __('Dashboard') ?>
                         </a>
                     </li>
+
+                        <?php if ($isCreator) : ?>
+                        <li class="nav-item">
+                            <a class="nav-link<?= ($currentController === 'Tests') ? ' active' : '' ?>"
+                               href="<?= $this->Url->build(['controller' => 'Tests', 'action' => 'index', 'lang' => $lang]) ?>">
+                                <?= __('Tests') ?>
+                            </a>
+                        </li>
+                        <?php endif; ?>
 
                     <li class="nav-item">
                         <a class="nav-link<?= $isProfileActive ? ' active' : '' ?>"

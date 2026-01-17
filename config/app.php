@@ -448,4 +448,13 @@ return [
         'errorLevel' => null,
         'fixtureStrategy' => null,
     ],
+
+    /*
+     * AI Configuration
+     */
+    'AI' => [
+        'apiKey' => env('AI_API_KEY', ''),
+        'baseUrl' => env('AI_BASE_URL', 'https://api.openai.com/v1'),
+        'defaultModel' => env('AI_DEFAULT_MODEL', 'gpt-4'),
+    ],
 ];

@@ -28,7 +28,6 @@ class QuestionsTableTest extends TestCase
         'app.Tests',
         'app.Categories',
         'app.Difficulties',
-        'app.OriginalLanguages',
         'app.Answers',
         'app.QuestionTranslations',
         'app.TestAttemptAnswers',

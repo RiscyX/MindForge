@@ -60,9 +60,20 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             </thead>
             <tbody>
                 <?php foreach ($difficulties as $difficulty) : ?>
+                    <?php 
+                        $translatedName = '';
+                        if (!empty($difficulty->difficulty_translations)) {
+                            $translatedName = $difficulty->difficulty_translations[0]->name;
+                        } else {
+                            // Fallback if no translation for current lang found
+                            // Attempt to load default English translation or the first available?
+                            // Since we filtered in controller, we don't have others here.
+                            $translatedName = __('Not translated');
+                        }
+                    ?>
                     <tr>
                         <td class="mf-muted" data-order="<?= h((string)$difficulty->id) ?>"><?= $this->Number->format($difficulty->id) ?></td>
-                        <td class="text-start"><?= h((string)$difficulty->name) ?></td>
+                        <td class="text-start"><?= h($translatedName) ?></td>
                         <td class="mf-muted" data-order="<?= h((string)$difficulty->level) ?>"><?= $this->Number->format($difficulty->level) ?></td>
                         <td>
                             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">

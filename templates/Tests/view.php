@@ -8,10 +8,10 @@
     <aside class="column">
         <div class="side-nav">
             <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Test'), ['action' => 'edit', $test->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Test'), ['action' => 'delete', $test->id], ['confirm' => __('Are you sure you want to delete # {0}?', $test->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Tests'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Test'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('Edit Test'), ['action' => 'edit', $test->id, 'lang' => $this->request->getParam('lang')], ['class' => 'side-nav-item']) ?>
+            <?= $this->Form->postLink(__('Delete Test'), ['action' => 'delete', $test->id, 'lang' => $this->request->getParam('lang')], ['confirm' => __('Are you sure you want to delete # {0}?', $test->id), 'class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('List Tests'), ['action' => 'index', 'lang' => $this->request->getParam('lang')], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('New Test'), ['action' => 'add', 'lang' => $this->request->getParam('lang')], ['class' => 'side-nav-item']) ?>
         </div>
     </aside>
     <div class="column column-80">

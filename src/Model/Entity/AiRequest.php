@@ -10,9 +10,9 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $user_id
- * @property int|null $test_id
  * @property int|null $language_id
- * @property string $source_medium
+ * @property string|null $source_medium
+
  * @property string|null $source_reference
  * @property string $type
  * @property string|null $input_payload
@@ -37,7 +37,6 @@ class AiRequest extends Entity
      */
     protected array $_accessible = [
         'user_id' => true,
-        'test_id' => true,
         'language_id' => true,
         'source_medium' => true,
         'source_reference' => true,

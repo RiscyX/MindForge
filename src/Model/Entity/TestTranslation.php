@@ -12,9 +12,9 @@ use Cake\ORM\Entity;
  * @property int $test_id
  * @property int $language_id
  * @property string $title
- * @property string $slug
  * @property string|null $description
  * @property int|null $translator_id
+
  * @property bool $is_complete
  * @property \Cake\I18n\DateTime|null $translated_at
  * @property \Cake\I18n\DateTime $created_at
@@ -39,7 +39,6 @@ class TestTranslation extends Entity
         'test_id' => true,
         'language_id' => true,
         'title' => true,
-        'slug' => true,
         'description' => true,
         'translator_id' => true,
         'is_complete' => true,
