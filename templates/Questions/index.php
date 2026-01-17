@@ -48,10 +48,16 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
 ]) ?>
 
 <div class="mf-admin-table-card mt-3">
+    <?= $this->Form->create(null, [
+        'url' => ['action' => 'bulk', 'lang' => $lang],
+        'id' => 'mfQuestionsBulkForm',
+    ]) ?>
+
     <div class="mf-admin-table-scroll">
         <table id="mfQuestionsTable" class="table table-dark table-hover mb-0 align-middle text-center">
             <thead>
                 <tr>
+                    <th scope="col" class="mf-muted fs-6"></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('ID') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Source') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Active') ?></th>
@@ -63,6 +69,15 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             <tbody>
                 <?php foreach ($questions as $question) : ?>
                     <tr>
+                        <td>
+                            <input
+                                class="form-check-input mf-row-select"
+                                type="checkbox"
+                                name="ids[]"
+                                value="<?= h((string)$question->id) ?>"
+                                aria-label="<?= h(__('Select question')) ?>"
+                            />
+                        </td>
                         <td class="mf-muted" data-order="<?= h((string)$question->id) ?>"><?= $this->Number->format($question->id) ?></td>
                         <td class="mf-muted"><?= h((string)$question->source_type) ?></td>
                         <td>
@@ -80,11 +95,6 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                         </td>
                         <td>
                             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                                <?= $this->Html->link(
-                                    __('View'),
-                                    ['action' => 'view', $question->id, 'lang' => $lang],
-                                    ['class' => 'btn btn-sm btn-outline-light'],
-                                ) ?>
                                 <?= $this->Html->link(
                                     __('Edit'),
                                     ['action' => 'edit', $question->id, 'lang' => $lang],
@@ -105,6 +115,37 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             </tbody>
         </table>
     </div>
+
+    <?= $this->Form->end() ?>
+</div>
+
+<div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mt-2">
+    <?= $this->element('functions/admin_bulk_controls', [
+        'containerClass' => 'd-flex align-items-center gap-3 flex-wrap',
+        'selectAll' => [
+            'checkboxId' => 'mfQuestionsSelectAll',
+            'linkId' => 'mfQuestionsSelectAllLink',
+            'text' => __('Összes bejelölése'),
+        ],
+        'bulk' => [
+            'label' => __('A kijelöltekkel végzendő művelet:'),
+            'formId' => 'mfQuestionsBulkForm',
+            'buttons' => [
+                [
+                    'label' => __('Delete'),
+                    'value' => 'delete',
+                    'class' => 'btn btn-sm btn-outline-danger',
+                    'attrs' => [
+                        'data-mf-bulk-delete' => true,
+                    ],
+                ],
+            ],
+        ],
+    ]) ?>
+
+    <nav aria-label="<?= h(__('Pagination')) ?>">
+        <div id="mfQuestionsPagination"></div>
+    </nav>
 </div>
 
 <?php $this->start('script'); ?>
@@ -113,21 +154,35 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
         'tableId' => 'mfQuestionsTable',
         'searchInputId' => 'mfQuestionsSearch',
         'limitSelectId' => 'mfQuestionsLimit',
+        'bulkFormId' => 'mfQuestionsBulkForm',
+        'rowCheckboxSelector' => '.mf-row-select',
+        'selectAllCheckboxId' => 'mfQuestionsSelectAll',
+        'selectAllLinkId' => 'mfQuestionsSelectAllLink',
+        'paginationContainerId' => 'mfQuestionsPagination',
+        'pagination' => [
+            'windowSize' => 3,
+            'jumpSize' => 3,
+        ],
+        'strings' => [
+            'selectAtLeastOne' => (string)__('Select at least one item.'),
+            'confirmDelete' => (string)__('Are you sure you want to delete the selected items?'),
+        ],
+        'bulkDeleteValues' => ['delete'],
         'dataTables' => [
             'enabled' => true,
             'searching' => true,
             'lengthChange' => false,
             'pageLength' => 10,
-            'order' => [[0, 'asc']],
-            'nonOrderableTargets' => [-1],
-            'nonSearchableTargets' => [2, 3, 4],
-            'dom' => 'rt<"d-flex align-items-center justify-content-between mt-2"ip>',
+            'order' => [[1, 'asc']],
+            'nonOrderableTargets' => [0, -1],
+            'nonSearchableTargets' => [3, 4, 5],
+            'dom' => 'rt',
         ],
         'vanilla' => [
-            'defaultSortCol' => 0,
+            'defaultSortCol' => 1,
             'defaultSortDir' => 'asc',
-            'excludedSortCols' => [5],
-            'searchCols' => [0, 1],
+            'excludedSortCols' => [0, 6],
+            'searchCols' => [1, 2],
         ],
     ],
 ]) ?>

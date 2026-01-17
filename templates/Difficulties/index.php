@@ -48,10 +48,16 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
 ]) ?>
 
 <div class="mf-admin-table-card mt-3">
+    <?= $this->Form->create(null, [
+        'url' => ['action' => 'bulk', 'lang' => $lang],
+        'id' => 'mfDifficultiesBulkForm',
+    ]) ?>
+
     <div class="mf-admin-table-scroll">
         <table id="mfDifficultiesTable" class="table table-dark table-hover mb-0 align-middle text-center">
             <thead>
                 <tr>
+                    <th scope="col" class="mf-muted fs-6"></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('ID') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Name') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Level') ?></th>
@@ -72,8 +78,17 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                         }
                     ?>
                     <tr>
+                        <td>
+                            <input
+                                class="form-check-input mf-row-select"
+                                type="checkbox"
+                                name="ids[]"
+                                value="<?= h((string)$difficulty->id) ?>"
+                                aria-label="<?= h(__('Select difficulty')) ?>"
+                            />
+                        </td>
                         <td class="mf-muted" data-order="<?= h((string)$difficulty->id) ?>"><?= $this->Number->format($difficulty->id) ?></td>
-                        <td class="text-start"><?= h($translatedName) ?></td>
+                        <td><?= h($translatedName) ?></td>
                         <td class="mf-muted" data-order="<?= h((string)$difficulty->level) ?>"><?= $this->Number->format($difficulty->level) ?></td>
                         <td>
                             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
@@ -102,6 +117,37 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             </tbody>
         </table>
     </div>
+
+    <?= $this->Form->end() ?>
+</div>
+
+<div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mt-2">
+    <?= $this->element('functions/admin_bulk_controls', [
+        'containerClass' => 'd-flex align-items-center gap-3 flex-wrap',
+        'selectAll' => [
+            'checkboxId' => 'mfDifficultiesSelectAll',
+            'linkId' => 'mfDifficultiesSelectAllLink',
+            'text' => __('Összes bejelölése'),
+        ],
+        'bulk' => [
+            'label' => __('A kijelöltekkel végzendő művelet:'),
+            'formId' => 'mfDifficultiesBulkForm',
+            'buttons' => [
+                [
+                    'label' => __('Delete'),
+                    'value' => 'delete',
+                    'class' => 'btn btn-sm btn-outline-danger',
+                    'attrs' => [
+                        'data-mf-bulk-delete' => true,
+                    ],
+                ],
+            ],
+        ],
+    ]) ?>
+
+    <nav aria-label="<?= h(__('Pagination')) ?>">
+        <div id="mfDifficultiesPagination"></div>
+    </nav>
 </div>
 
 <?php $this->start('script'); ?>
@@ -110,20 +156,34 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
         'tableId' => 'mfDifficultiesTable',
         'searchInputId' => 'mfDifficultiesSearch',
         'limitSelectId' => 'mfDifficultiesLimit',
+        'bulkFormId' => 'mfDifficultiesBulkForm',
+        'rowCheckboxSelector' => '.mf-row-select',
+        'selectAllCheckboxId' => 'mfDifficultiesSelectAll',
+        'selectAllLinkId' => 'mfDifficultiesSelectAllLink',
+        'paginationContainerId' => 'mfDifficultiesPagination',
+        'pagination' => [
+            'windowSize' => 3,
+            'jumpSize' => 3,
+        ],
+        'strings' => [
+            'selectAtLeastOne' => (string)__('Select at least one item.'),
+            'confirmDelete' => (string)__('Are you sure you want to delete the selected items?'),
+        ],
+        'bulkDeleteValues' => ['delete'],
         'dataTables' => [
             'enabled' => true,
             'searching' => true,
             'lengthChange' => false,
             'pageLength' => 10,
-            'order' => [[0, 'asc']],
-            'nonOrderableTargets' => [-1],
-            'dom' => 'rt<"d-flex align-items-center justify-content-between mt-2"ip>',
+            'order' => [[1, 'asc']],
+            'nonOrderableTargets' => [0, -1],
+            'dom' => 'rt',
         ],
         'vanilla' => [
-            'defaultSortCol' => 0,
+            'defaultSortCol' => 1,
             'defaultSortDir' => 'asc',
-            'excludedSortCols' => [3],
-            'searchCols' => [0, 1, 2],
+            'excludedSortCols' => [0, 4],
+            'searchCols' => [1, 2, 3],
         ],
     ],
 ]) ?>

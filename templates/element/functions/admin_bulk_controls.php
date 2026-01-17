@@ -17,9 +17,11 @@ $selectAllText = $selectAll['text'] ?? __('Összes bejelölése');
 $bulkLabel = $bulk['label'] ?? __('A kijelöltekkel végzendő művelet:');
 $bulkFormId = $bulk['formId'] ?? null;
 $buttons = $bulk['buttons'] ?? [];
+
+$containerClass = $containerClass ?? 'd-flex align-items-center gap-3 flex-wrap mt-2';
 ?>
 
-<div class="d-flex align-items-center gap-3 flex-wrap mt-2">
+<div class="<?= h($containerClass) ?>">
     <input id="<?= h($selectAllCheckboxId) ?>" class="visually-hidden" type="checkbox" />
     <a
         id="<?= h($selectAllLinkId) ?>"

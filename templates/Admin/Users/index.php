@@ -154,37 +154,44 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
     <?= $this->Form->end() ?>
 </div>
 
-<?= $this->element('functions/admin_bulk_controls', [
-    'selectAll' => [
-        'checkboxId' => 'mfUsersSelectAll',
-        'linkId' => 'mfUsersSelectAllLink',
-        'text' => __('Összes bejelölése'),
-    ],
-    'bulk' => [
-        'label' => __('A kijelöltekkel végzendő művelet:'),
-        'formId' => 'mfUsersBulkForm',
-        'buttons' => [
-            [
-                'label' => __('Ban'),
-                'value' => 'ban',
-                'class' => 'btn btn-sm btn-danger',
-            ],
-            [
-                'label' => __('Unban'),
-                'value' => 'unban',
-                'class' => 'btn btn-sm btn-success',
-            ],
-            [
-                'label' => __('Delete'),
-                'value' => 'delete',
-                'class' => 'btn btn-sm btn-outline-danger',
-                'attrs' => [
-                    'data-mf-bulk-delete' => true,
+<div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mt-2">
+    <?= $this->element('functions/admin_bulk_controls', [
+        'containerClass' => 'd-flex align-items-center gap-3 flex-wrap',
+        'selectAll' => [
+            'checkboxId' => 'mfUsersSelectAll',
+            'linkId' => 'mfUsersSelectAllLink',
+            'text' => __('Összes bejelölése'),
+        ],
+        'bulk' => [
+            'label' => __('A kijelöltekkel végzendő művelet:'),
+            'formId' => 'mfUsersBulkForm',
+            'buttons' => [
+                [
+                    'label' => __('Ban'),
+                    'value' => 'ban',
+                    'class' => 'btn btn-sm btn-danger',
+                ],
+                [
+                    'label' => __('Unban'),
+                    'value' => 'unban',
+                    'class' => 'btn btn-sm btn-success',
+                ],
+                [
+                    'label' => __('Delete'),
+                    'value' => 'delete',
+                    'class' => 'btn btn-sm btn-outline-danger',
+                    'attrs' => [
+                        'data-mf-bulk-delete' => true,
+                    ],
                 ],
             ],
         ],
-    ],
-]) ?>
+    ]) ?>
+
+    <nav aria-label="<?= h(__('Pagination')) ?>">
+        <div id="mfUsersPagination"></div>
+    </nav>
+</div>
 
 <?php $this->start('script'); ?>
 <?= $this->element('functions/admin_table_operations', [
@@ -196,6 +203,11 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
         'rowCheckboxSelector' => '.mf-user-select',
         'selectAllCheckboxId' => 'mfUsersSelectAll',
         'selectAllLinkId' => 'mfUsersSelectAllLink',
+        'paginationContainerId' => 'mfUsersPagination',
+        'pagination' => [
+            'windowSize' => 3,
+            'jumpSize' => 3,
+        ],
         'strings' => [
             'selectAtLeastOne' => (string)__('Select at least one user.'),
             'confirmDelete' => (string)__('Are you sure you want to delete the selected users?'),
@@ -209,7 +221,7 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             'order' => [[1, 'asc']],
             'nonOrderableTargets' => [0, -1],
             'nonSearchableTargets' => [0, 3, 4, 5],
-            'dom' => 'rt<"d-flex align-items-center justify-content-between mt-2"ip>',
+            'dom' => 'rt',
         ],
         'vanilla' => [
             'defaultSortCol' => 1,
