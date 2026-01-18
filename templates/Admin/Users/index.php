@@ -50,6 +50,22 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
     ],
 ]) ?>
 
+<?php
+// Row-level actions must not create nested <form> tags inside the bulk form.
+// We render one hidden form to carry CSRF token and submit to different endpoints via `formaction`.
+?>
+<?= $this->Form->create(null, [
+    'id' => 'mfUserRowActionForm',
+    'url' => [
+        'prefix' => 'Admin',
+        'controller' => 'Users',
+        'action' => 'index',
+        'lang' => $lang,
+    ],
+    'style' => 'display:none;',
+]) ?>
+<?= $this->Form->end() ?>
+
 <div class="mf-admin-table-card mt-3">
     <?= $this->Form->create(null, [
         'url' => [
@@ -113,30 +129,37 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                                         <button class="btn btn-sm btn-danger" type="button" disabled aria-disabled="true">
                                             <?= __('Ban') ?>
                                         </button>
-                                        <?= $this->Form->postLink(
+                                        <?= $this->Form->button(
                                             __('Unban'),
                                             [
-                                                'prefix' => 'Admin',
-                                                'controller' => 'Users',
-                                                'action' => 'unban',
-                                                $user->id,
-                                                'lang' => $lang,
+                                                'type' => 'submit',
+                                                'class' => 'btn btn-sm btn-success',
+                                                'form' => 'mfUserRowActionForm',
+                                                'formaction' => $this->Url->build([
+                                                    'prefix' => 'Admin',
+                                                    'controller' => 'Users',
+                                                    'action' => 'unban',
+                                                    $user->id,
+                                                    'lang' => $lang,
+                                                ]),
+                                                'onclick' => 'return confirm(' . json_encode((string)__('Are you sure you want to unban this user?')) . ');',
                                             ],
-                                            ['class' => 'btn btn-sm btn-success'],
                                         ) ?>
                                     <?php else : ?>
-                                        <?= $this->Form->postLink(
+                                        <?= $this->Form->button(
                                             __('Ban'),
                                             [
-                                                'prefix' => 'Admin',
-                                                'controller' => 'Users',
-                                                'action' => 'ban',
-                                                $user->id,
-                                                'lang' => $lang,
-                                            ],
-                                            [
+                                                'type' => 'submit',
                                                 'class' => 'btn btn-sm btn-danger',
-                                                'confirm' => __('Are you sure you want to ban this user?'),
+                                                'form' => 'mfUserRowActionForm',
+                                                'formaction' => $this->Url->build([
+                                                    'prefix' => 'Admin',
+                                                    'controller' => 'Users',
+                                                    'action' => 'ban',
+                                                    $user->id,
+                                                    'lang' => $lang,
+                                                ]),
+                                                'onclick' => 'return confirm(' . json_encode((string)__('Are you sure you want to ban this user?')) . ');',
                                             ],
                                         ) ?>
                                         <button class="btn btn-sm btn-success" type="button" disabled aria-disabled="true">

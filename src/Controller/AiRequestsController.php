@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
+use Cake\I18n\FrozenTime;
 
 /**
  * AiRequests Controller
@@ -13,17 +15,145 @@ use Cake\Http\Response;
 class AiRequestsController extends AppController
 {
     /**
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null|void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setLayout('admin');
+    }
+
+    /**
      * Index method
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $query = $this->AiRequests->find()
-            ->contain(['Users', 'Tests', 'Languages']);
-        $aiRequests = $this->paginate($query);
+        $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
 
-        $this->set(compact('aiRequests'));
+        $contain = ['Users', 'Languages'];
+        if ($hasTestId) {
+            $contain[] = 'Tests';
+        }
+
+        $query = $this->AiRequests->find()
+            ->contain($contain)
+            ->orderByDesc('AiRequests.created_at');
+
+        $aiRequests = $query->all();
+
+        $since = FrozenTime::now()->subHours(24);
+
+        $statsTotal = (int)$this->AiRequests->find()->count();
+        $statsLast24h = (int)$this->AiRequests->find()->where(['AiRequests.created_at >=' => $since])->count();
+        $statsSuccessTotal = (int)$this->AiRequests->find()->where(['AiRequests.status' => 'success'])->count();
+        $statsSuccess24h = (int)$this->AiRequests->find()->where([
+            'AiRequests.created_at >=' => $since,
+            'AiRequests.status' => 'success',
+        ])->count();
+        $statsUniqueUsers24h = (int)$this->AiRequests->find()
+            ->select(['user_id'])
+            ->distinct(['user_id'])
+            ->where([
+                'AiRequests.created_at >=' => $since,
+                'AiRequests.user_id IS NOT' => null,
+            ])
+            ->count();
+
+        $topTypes24h = $this->AiRequests->find()
+            ->select([
+                'type' => 'AiRequests.type',
+                'count' => $this->AiRequests->find()->func()->count('*'),
+            ])
+            ->where(['AiRequests.created_at >=' => $since])
+            ->groupBy(['AiRequests.type'])
+            ->orderByDesc('count')
+            ->limit(5)
+            ->enableHydration(false)
+            ->all()
+            ->toList();
+
+        $topSources24h = $this->AiRequests->find()
+            ->select([
+                'source_reference' => 'AiRequests.source_reference',
+                'count' => $this->AiRequests->find()->func()->count('*'),
+            ])
+            ->where([
+                'AiRequests.created_at >=' => $since,
+                'AiRequests.source_reference IS NOT' => null,
+                'AiRequests.source_reference !=' => '',
+            ])
+            ->groupBy(['AiRequests.source_reference'])
+            ->orderByDesc('count')
+            ->limit(5)
+            ->enableHydration(false)
+            ->all()
+            ->toList();
+
+        $stats = [
+            'total' => $statsTotal,
+            'last24h' => $statsLast24h,
+            'successTotal' => $statsSuccessTotal,
+            'success24h' => $statsSuccess24h,
+            'uniqueUsers24h' => $statsUniqueUsers24h,
+            'topTypes24h' => $topTypes24h,
+            'topSources24h' => $topSources24h,
+        ];
+
+        $this->set(compact('aiRequests', 'stats'));
+    }
+
+    /**
+     * Bulk actions for the index table.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function bulk(): ?Response
+    {
+        $this->request->allowMethod(['post']);
+
+        $action = (string)$this->request->getData('bulk_action');
+        $rawIds = $this->request->getData('ids');
+        $ids = is_array($rawIds) ? $rawIds : [];
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
+
+        if (!$ids) {
+            $this->Flash->error(__('Select at least one item.'));
+
+            return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+        }
+
+        if ($action !== 'delete') {
+            $this->Flash->error(__('Invalid bulk action.'));
+
+            return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+        }
+
+        $deleted = 0;
+        $failed = 0;
+        foreach ($ids as $id) {
+            try {
+                $entity = $this->AiRequests->get((string)$id);
+                if ($this->AiRequests->delete($entity)) {
+                    $deleted += 1;
+                } else {
+                    $failed += 1;
+                }
+            } catch (\Throwable) {
+                $failed += 1;
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->Flash->success(__('Deleted {0} item(s).', $deleted));
+        }
+        if ($failed > 0) {
+            $this->Flash->error(__('Could not delete {0} item(s).', $failed));
+        }
+
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 
     /**
@@ -35,7 +165,14 @@ class AiRequestsController extends AppController
      */
     public function view(?string $id = null)
     {
-        $aiRequest = $this->AiRequests->get($id, contain: ['Users', 'Tests', 'Languages']);
+        $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
+
+        $contain = ['Users', 'Languages'];
+        if ($hasTestId) {
+            $contain[] = 'Tests';
+        }
+
+        $aiRequest = $this->AiRequests->get($id, contain: $contain);
         $this->set(compact('aiRequest'));
     }
 
@@ -46,6 +183,8 @@ class AiRequestsController extends AppController
      */
     public function add()
     {
+        $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
+
         $aiRequest = $this->AiRequests->newEmptyEntity();
         if ($this->request->is('post')) {
             $aiRequest = $this->AiRequests->patchEntity($aiRequest, $this->request->getData());
@@ -57,7 +196,7 @@ class AiRequestsController extends AppController
             $this->Flash->error(__('The ai request could not be saved. Please, try again.'));
         }
         $users = $this->AiRequests->Users->find('list', limit: 200)->all();
-        $tests = $this->AiRequests->Tests->find('list', limit: 200)->all();
+        $tests = $hasTestId ? $this->AiRequests->Tests->find('list', limit: 200)->all() : [];
         $languages = $this->AiRequests->Languages->find('list', limit: 200)->all();
         $this->set(compact('aiRequest', 'users', 'tests', 'languages'));
     }
@@ -71,6 +210,8 @@ class AiRequestsController extends AppController
      */
     public function edit(?string $id = null)
     {
+        $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
+
         $aiRequest = $this->AiRequests->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $aiRequest = $this->AiRequests->patchEntity($aiRequest, $this->request->getData());
@@ -82,7 +223,7 @@ class AiRequestsController extends AppController
             $this->Flash->error(__('The ai request could not be saved. Please, try again.'));
         }
         $users = $this->AiRequests->Users->find('list', limit: 200)->all();
-        $tests = $this->AiRequests->Tests->find('list', limit: 200)->all();
+        $tests = $hasTestId ? $this->AiRequests->Tests->find('list', limit: 200)->all() : [];
         $languages = $this->AiRequests->Languages->find('list', limit: 200)->all();
         $this->set(compact('aiRequest', 'users', 'tests', 'languages'));
     }
@@ -104,6 +245,6 @@ class AiRequestsController extends AppController
             $this->Flash->error(__('The ai request could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 }
