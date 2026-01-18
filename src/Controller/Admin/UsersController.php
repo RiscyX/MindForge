@@ -391,8 +391,7 @@ class UsersController extends AppController
         }
 
         return $this->redirect([
-            'action' => 'edit',
-            $user->id,
+            'action' => 'index',
             'lang' => $lang,
         ]);
     }
@@ -420,8 +419,7 @@ class UsersController extends AppController
         }
 
         return $this->redirect([
-            'action' => 'edit',
-            $user->id,
+            'action' => 'index',
             'lang' => $lang,
         ]);
     }

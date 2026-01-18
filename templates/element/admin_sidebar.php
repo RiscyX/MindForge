@@ -70,6 +70,20 @@ $answersRoute = [
     'action' => 'index',
     'lang' => $lang,
 ];
+
+$deviceLogsRoute = [
+    'prefix' => false,
+    'controller' => 'DeviceLogs',
+    'action' => 'index',
+    'lang' => $lang,
+];
+
+$aiRequestsRoute = [
+    'prefix' => false,
+    'controller' => 'AiRequests',
+    'action' => 'index',
+    'lang' => $lang,
+];
 ?>
 
 <aside class="mf-admin-sidebar d-none d-lg-flex flex-column">
@@ -117,9 +131,16 @@ $answersRoute = [
     <div class="mf-admin-sidebar__section mt-2">
         <div class="mf-admin-sidebar__label"><?= __('System') ?></div>
         <nav class="mf-admin-nav">
-            <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Logs') ?></a>
-            <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('Device Logs') ?></a>
-            <a class="mf-admin-nav__link" href="#" onclick="return false;"><?= __('AI Requests') ?></a>
+            <?= $this->Html->link(
+                __('Device Logs'),
+                $deviceLogsRoute,
+                ['class' => 'mf-admin-nav__link' . ($isRoute($deviceLogsRoute) ? ' active' : '')],
+            ) ?>
+            <?= $this->Html->link(
+                __('AI Requests'),
+                $aiRequestsRoute,
+                ['class' => 'mf-admin-nav__link' . ($isRoute($aiRequestsRoute) ? ' active' : '')],
+            ) ?>
         </nav>
     </div>
 </aside>

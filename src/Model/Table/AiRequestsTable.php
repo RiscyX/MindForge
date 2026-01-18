@@ -43,13 +43,17 @@ class AiRequestsTable extends Table
         $this->setDisplayField('source_medium');
         $this->setPrimaryKey('id');
 
+        $hasTestId = $this->getSchema()->hasColumn('test_id');
+
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Tests', [
-            'foreignKey' => 'test_id',
-        ]);
+        if ($hasTestId) {
+            $this->belongsTo('Tests', [
+                'foreignKey' => 'test_id',
+            ]);
+        }
         $this->belongsTo('Languages', [
             'foreignKey' => 'language_id',
         ]);
@@ -63,13 +67,17 @@ class AiRequestsTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+        $hasTestId = $this->getSchema()->hasColumn('test_id');
+
         $validator
             ->nonNegativeInteger('user_id')
             ->notEmptyString('user_id');
 
-        $validator
-            ->nonNegativeInteger('test_id')
-            ->allowEmptyString('test_id');
+        if ($hasTestId) {
+            $validator
+                ->nonNegativeInteger('test_id')
+                ->allowEmptyString('test_id');
+        }
 
         $validator
             ->nonNegativeInteger('language_id')
@@ -118,8 +126,12 @@ class AiRequestsTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
+        $hasTestId = $this->getSchema()->hasColumn('test_id');
+
         $rules->add($rules->existsIn(['user_id'], 'Users'), ['errorField' => 'user_id']);
-        $rules->add($rules->existsIn(['test_id'], 'Tests'), ['errorField' => 'test_id']);
+        if ($hasTestId) {
+            $rules->add($rules->existsIn(['test_id'], 'Tests'), ['errorField' => 'test_id']);
+        }
         $rules->add($rules->existsIn(['language_id'], 'Languages'), ['errorField' => 'language_id']);
 
         return $rules;

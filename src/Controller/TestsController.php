@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Model\Entity\ActivityLog;
 use App\Service\AiService;
 use Cake\Core\Configure;
+use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\View\JsonView;
 use Exception;
@@ -17,6 +18,16 @@ use Exception;
  */
 class TestsController extends AppController
 {
+    /**
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Http\Response|null|void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
+        $this->viewBuilder()->setLayout('admin');
+    }
+
     /**
      * @return array<\class-string>
      */
@@ -60,6 +71,57 @@ class TestsController extends AppController
         $tests = $query->all();
 
         $this->set(compact('tests'));
+    }
+
+    /**
+     * Bulk actions for the index table.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function bulk(): ?Response
+    {
+        $this->request->allowMethod(['post']);
+
+        $action = (string)$this->request->getData('bulk_action');
+        $rawIds = $this->request->getData('ids');
+        $ids = is_array($rawIds) ? $rawIds : [];
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($v) => $v > 0)));
+
+        if (!$ids) {
+            $this->Flash->error(__('Select at least one item.'));
+
+            return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+        }
+
+        if ($action !== 'delete') {
+            $this->Flash->error(__('Invalid bulk action.'));
+
+            return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+        }
+
+        $deleted = 0;
+        $failed = 0;
+        foreach ($ids as $id) {
+            try {
+                $entity = $this->Tests->get((string)$id);
+                if ($this->Tests->delete($entity)) {
+                    $deleted += 1;
+                } else {
+                    $failed += 1;
+                }
+            } catch (\Throwable) {
+                $failed += 1;
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->Flash->success(__('Deleted {0} item(s).', $deleted));
+        }
+        if ($failed > 0) {
+            $this->Flash->error(__('Could not delete {0} item(s).', $failed));
+        }
+
+        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 
     /**

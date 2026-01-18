@@ -59,7 +59,7 @@ class AdminDashboardService
      * Fetch recent system events from ActivityLogs.
      *
      * @param int $limit
-     * @return list<array{ts:string,type:string,user:string,details:string,status:string}>
+     * @return list<array{id:int,ts:string,type:string,user:string,details:string,status:string}>
      */
     public function getRecentSystemEvents(int $limit = 10): array
     {
@@ -99,6 +99,7 @@ class AdminDashboardService
             $details = $this->detailsFromLog((string)$log->action, (string)($log->ip_address ?? ''));
 
             $events[] = [
+                'id' => (int)$log->id,
                 'ts' => $ts,
                 'type' => $type,
                 'user' => $user,
