@@ -2,17 +2,130 @@
 /**
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\Test> $tests
+ * @var int|null $roleId
  */
+
+use App\Model\Entity\Role;
 
 $lang = $this->request->getParam('lang', 'en');
 
-$this->assign('title', __('Tests'));
+$isCatalog = ((int)($roleId ?? 0)) === Role::USER && !$this->request->getParam('prefix');
+
+$this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
 
 $this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
 $this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
 $this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
 $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
 ?>
+
+<?php if ($isCatalog) : ?>
+    <div class="py-3 py-lg-4">
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+            <div>
+                <h1 class="h3 mb-1 text-white"><?= __('Quizzes') ?></h1>
+                <div class="mf-muted"><?= __('Pick a quiz, skim the description, and start when you are ready.') ?></div>
+            </div>
+        </div>
+
+        <div class="mf-quiz-grid mt-3">
+            <?php foreach ($tests as $test) : ?>
+                <?php
+                $title = !empty($test->test_translations) ? (string)$test->test_translations[0]->title : '';
+                $description = !empty($test->test_translations) ? (string)$test->test_translations[0]->description : '';
+                $category = ($test->hasValue('category') && !empty($test->category->category_translations))
+                    ? (string)$test->category->category_translations[0]->name
+                    : '';
+                $difficulty = ($test->hasValue('difficulty') && !empty($test->difficulty->difficulty_translations))
+                    ? (string)$test->difficulty->difficulty_translations[0]->name
+                    : '';
+
+                $difficultyClass = 'mf-quiz-diff--default';
+                $did = (int)($test->difficulty_id ?? 0);
+                $rank = ($did > 0 && isset($difficultyRanks) && is_array($difficultyRanks) && isset($difficultyRanks[$did]))
+                    ? (int)$difficultyRanks[$did]
+                    : null;
+                $count = isset($difficultyCount) ? (int)$difficultyCount : 0;
+                if ($rank !== null && $count > 1) {
+                    $p = $rank / max(1, ($count - 1));
+                    if ($p <= 0.33) {
+                        $difficultyClass = 'mf-quiz-diff--easy';
+                    } elseif ($p <= 0.66) {
+                        $difficultyClass = 'mf-quiz-diff--medium';
+                    } else {
+                        $difficultyClass = 'mf-quiz-diff--hard';
+                    }
+                }
+
+                // Keep accents strictly within the app's base palette.
+                // We only vary intensity per card to avoid "samey" repetition.
+                $variant = ((int)$test->id) % 3;
+                $accentAlpha = match ($variant) {
+                    0 => '0.22',
+                    1 => '0.16',
+                    default => '0.12',
+                };
+                ?>
+                <article class="mf-quiz-card" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: <?= h($accentAlpha) ?>;">
+                    <div class="mf-quiz-card__cover">
+                        <div class="mf-quiz-card__cover-inner">
+                            <div class="mf-quiz-card__icon" aria-hidden="true">
+                                <i class="bi bi-lightning-charge-fill"></i>
+                            </div>
+
+                            <div class="mf-quiz-card__cover-meta">
+                                <?php if ($category !== '') : ?>
+                                    <div class="mf-quiz-card__category" title="<?= h($category) ?>">
+                                        <?= h($category) ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="mf-quiz-card__rightmeta">
+                                <?php if ($difficulty !== '') : ?>
+                                    <span class="mf-quiz-diff <?= h($difficultyClass) ?>" title="<?= h($difficulty) ?>">
+                                        <span class="mf-quiz-diff__dot" aria-hidden="true"></span>
+                                        <span class="mf-quiz-diff__text"><?= h($difficulty) ?></span>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if ($test->number_of_questions !== null) : ?>
+                                    <div class="mf-quiz-stat" title="<?= h(__('Questions')) ?>">
+                                        <i class="bi bi-list-ol" aria-hidden="true"></i>
+                                        <span class="mf-quiz-stat__value"><?= (int)$test->number_of_questions ?></span>
+                                        <span class="mf-quiz-stat__label"><?= __('questions') ?></span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mf-quiz-card__content">
+                        <div class="mf-quiz-card__title">
+                            <?= $title !== '' ? h($title) : __('Untitled quiz') ?>
+                        </div>
+                        <p class="mf-quiz-card__desc">
+                            <?= $description !== '' ? h($description) : __('No description yet.') ?>
+                        </p>
+                    </div>
+
+                    <div class="mf-quiz-card__actions">
+                        <?= $this->Form->postLink(
+                            __('Start quiz'),
+                            ['action' => 'start', $test->id, 'lang' => $lang],
+                            ['class' => 'btn btn-primary mf-quiz-card__cta'],
+                        ) ?>
+                        <?= $this->Html->link(
+                            __('Open details'),
+                            ['action' => 'view', $test->id, 'lang' => $lang],
+                            ['class' => 'btn btn-outline-light mf-quiz-card__secondary'],
+                        ) ?>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+<?php else : ?>
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
     <div>
@@ -197,3 +310,5 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
     ],
 ]) ?>
 <?php $this->end(); ?>
+
+<?php endif; ?>

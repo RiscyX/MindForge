@@ -18,6 +18,13 @@ use Cake\ORM\Entity;
  * @property string|null $input_payload
  * @property string|null $output_payload
  * @property string $status
+ * @property int|null $test_id
+ * @property \Cake\I18n\DateTime|null $updated_at
+ * @property \Cake\I18n\DateTime|null $started_at
+ * @property \Cake\I18n\DateTime|null $finished_at
+ * @property string|null $error_code
+ * @property string|null $error_message
+ * @property string|null $meta
  * @property \Cake\I18n\DateTime $created_at
  *
  * @property \App\Model\Entity\User $user
@@ -44,9 +51,17 @@ class AiRequest extends Entity
         'input_payload' => true,
         'output_payload' => true,
         'status' => true,
+        'test_id' => true,
+        'updated_at' => true,
+        'started_at' => true,
+        'finished_at' => true,
+        'error_code' => true,
+        'error_message' => true,
+        'meta' => true,
         'created_at' => true,
         'user' => true,
         'test' => true,
         'language' => true,
+        'ai_request_assets' => true,
     ];
 }

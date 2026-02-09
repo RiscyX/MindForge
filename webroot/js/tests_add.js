@@ -1,5 +1,4 @@
-// Initialize Sortable on load
-document.addEventListener('DOMContentLoaded', function() {
+function initTestBuilderAiTools() {
     const container = document.getElementById('questions-container');
     if (container) {
         Sortable.create(container, {
@@ -15,7 +14,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // AI Generate Button
     const aiBtn = document.getElementById('ai-generate-test');
     if (aiBtn) {
-        aiBtn.addEventListener('click', function() {
+        if (config.aiGenerateLimited) {
+            aiBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: aiStrings.errorTitle,
+                    text: aiStrings.limitReachedMessage,
+                    icon: 'warning',
+                    background: '#19191a',
+                    color: '#fff',
+                    customClass: {
+                        popup: 'border border-secondary'
+                    }
+                });
+            });
+
+        } else {
+            aiBtn.addEventListener('click', function() {
             Swal.fire({
                 title: aiStrings.generateTitle,
                 input: 'textarea',
@@ -37,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const csrfToken = document.querySelector('input[name="_csrfToken"]').value;
                     return fetch(config.generateAiUrl, {
                         method: 'POST',
+                        credentials: 'same-origin',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-Token': csrfToken
@@ -44,10 +60,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: JSON.stringify({ prompt: prompt })
                     })
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error(response.statusText);
-                        }
-                        return response.json();
+                        return response.text().then(raw => {
+                            let payload = null;
+                            try {
+                                payload = JSON.parse(raw);
+                            } catch {
+                                payload = null;
+                            }
+
+                            if (!response.ok) {
+                                if (response.status === 429 && payload && payload.limit_reached) {
+                                    throw new Error(aiStrings.limitReachedMessage);
+                                }
+
+                                const msg = payload && payload.message ? payload.message : response.statusText;
+                                throw new Error(msg);
+                            }
+
+                            return payload;
+                        });
                     })
                     .catch(error => {
                         Swal.showValidationMessage(
@@ -63,20 +94,292 @@ document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
                             title: aiStrings.successTitle,
                             text: aiStrings.successMessage,
-                            icon: 'success'
+                            icon: 'success',
+                            background: '#19191a',
+                            color: '#fff',
+                            customClass: {
+                                popup: 'border border-secondary'
+                            }
                         });
                     } else {
                          Swal.fire({
                             title: aiStrings.errorTitle,
                             text: result.value ? result.value.message : aiStrings.unknownError,
-                            icon: 'error'
+                            icon: 'error',
+                            background: '#19191a',
+                            color: '#fff',
+                            customClass: {
+                                popup: 'border border-secondary'
+                            }
                         });
                     }
                 }
             });
+            });
+        }
+    }
+
+    // AI Translate Button
+    const translateBtn = document.getElementById('ai-translate-test');
+    if (translateBtn && config.translateAiUrl) {
+        translateBtn.addEventListener('click', function() {
+            Swal.fire({
+                title: aiStrings.translateTitle || 'Translate',
+                text: aiStrings.translateInfo || '',
+                showCancelButton: true,
+                confirmButtonText: aiStrings.translateConfirmText || 'Translate',
+                background: '#19191a',
+                color: '#fff',
+                customClass: {
+                    popup: 'border border-secondary p-5'
+                }
+            }).then((confirmResult) => {
+                if (!confirmResult.isConfirmed) return;
+
+                const csrfTokenEl = document.querySelector('input[name="_csrfToken"]');
+                const csrfToken = csrfTokenEl ? csrfTokenEl.value : '';
+                const payload = buildTranslatePayload();
+
+                let pct = 8;
+                let timer = null;
+
+                Swal.fire({
+                    title: aiStrings.translationInProgress || 'Translation in progress...',
+                    html: `
+                        <div style="text-align:left;">
+                            <div class="progress" style="height: 10px; background: rgba(255,255,255,0.08);">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${pct}%; background: #0dcaf0;"></div>
+                            </div>
+                            <div class="mf-muted" style="margin-top: 10px; font-size: 0.95rem;">
+                                ${aiStrings.translateInfo || ''}
+                            </div>
+                        </div>
+                    `,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    background: '#19191a',
+                    color: '#fff',
+                    customClass: {
+                        popup: 'border border-secondary p-5'
+                    },
+                    didOpen: () => {
+                        timer = window.setInterval(() => {
+                            // Indeterminate-ish: creep up to 92%
+                            pct = Math.min(92, pct + Math.random() * 7);
+                            const bar = Swal.getHtmlContainer()?.querySelector('.progress-bar');
+                            if (bar) {
+                                bar.style.width = `${pct}%`;
+                            }
+                        }, 450);
+                    },
+                    willClose: () => {
+                        if (timer) window.clearInterval(timer);
+                    }
+                });
+
+                fetch(config.translateAiUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.text().then(raw => ({ ok: response.ok, status: response.status, raw })))
+                .then(({ ok, raw, status }) => {
+                    let body = null;
+                    try {
+                        body = JSON.parse(raw);
+                    } catch {
+                        body = null;
+                    }
+
+                    if (!ok) {
+                        const msg = (body && body.message)
+                            ? body.message
+                            : (status === 403 ? 'CSRF verification failed. Please reload the page and try again.' : `HTTP ${status}`);
+                        throw new Error(msg);
+                    }
+
+                    // Finish bar
+                    const bar = Swal.getHtmlContainer()?.querySelector('.progress-bar');
+                    if (bar) bar.style.width = '100%';
+
+                    Swal.close();
+
+                    if (body && body.success) {
+                        applyAiTranslations(body.data);
+                        Swal.fire({
+                            title: aiStrings.successTitle,
+                            text: aiStrings.translateSuccess || aiStrings.successMessage,
+                            icon: 'success',
+                            background: '#19191a',
+                            color: '#fff',
+                            customClass: {
+                                popup: 'border border-secondary'
+                            }
+                        });
+                    } else {
+                        throw new Error(body && body.message ? body.message : aiStrings.unknownError);
+                    }
+                })
+                .catch((err) => {
+                    Swal.close();
+                    Swal.fire({
+                        title: aiStrings.errorTitle,
+                        text: String(err),
+                        icon: 'error',
+                        background: '#19191a',
+                        color: '#fff',
+                        customClass: {
+                            popup: 'border border-secondary'
+                        }
+                    });
+                });
+            });
         });
     }
-});
+}
+
+// Initialize on load (and handle scripts loaded late)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTestBuilderAiTools);
+} else {
+    initTestBuilderAiTools();
+}
+
+function buildTranslatePayload() {
+    const sourceLanguageId = (config.currentLanguageId && Number.isFinite(Number(config.currentLanguageId)))
+        ? Number(config.currentLanguageId)
+        : 0;
+
+    const titleEl = document.getElementById(`test-translations-${sourceLanguageId}-title`);
+    const descEl = document.getElementById(`test-translations-${sourceLanguageId}-description`);
+
+    const payload = {
+        source_language_id: sourceLanguageId,
+        test: {
+            title: titleEl ? titleEl.value : '',
+            description: descEl ? descEl.value : ''
+        },
+        questions: []
+    };
+
+    const cards = document.querySelectorAll('#questions-container .question-card');
+    cards.forEach(card => {
+        const qIndex = Number(card.getAttribute('data-index'));
+        if (!Number.isFinite(qIndex)) return;
+
+        const qIdInput = card.querySelector(`input[name="questions[${qIndex}][id]"]`);
+        const qTypeSelect = card.querySelector(`select[name="questions[${qIndex}][question_type]"]`);
+        const qTextInput = card.querySelector(`input[name="questions[${qIndex}][question_translations][${sourceLanguageId}][content]"]`);
+
+        const qId = qIdInput ? Number(qIdInput.value) : null;
+        const qType = qTypeSelect ? qTypeSelect.value : '';
+        const qContent = qTextInput ? qTextInput.value : '';
+
+        const question = {
+            id: qId,
+            type: qType,
+            content: qContent,
+            answers: []
+        };
+
+        const answerIdInputs = card.querySelectorAll(`input[name^="questions[${qIndex}][answers]"][name$="[id]"]`);
+        answerIdInputs.forEach(idEl => {
+            const name = idEl.getAttribute('name') || '';
+            const m = name.match(/questions\[(\d+)\]\[answers\]\[(\d+)\]\[id\]/);
+            if (!m) return;
+            const aIndex = Number(m[2]);
+
+            const aId = Number(idEl.value);
+            const aCorrectEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][is_correct]"]`);
+            const aTextEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][answer_translations][${sourceLanguageId}][content]"]`);
+            const isCorrect = aCorrectEl ? (aCorrectEl.value === '1' || aCorrectEl.checked) : false;
+            const aContent = aTextEl ? aTextEl.value : '';
+            question.answers.push({ id: aId, is_correct: isCorrect, content: aContent });
+        });
+
+        // Fallback for non-fixed answers where id is not present yet
+        if (question.answers.length === 0) {
+            const anyAnswerInputs = card.querySelectorAll(`input[name^="questions[${qIndex}][answers]"][name$="[answer_translations][${sourceLanguageId}][content]"]`);
+            anyAnswerInputs.forEach(aTextEl => {
+                const name = aTextEl.getAttribute('name') || '';
+                const m = name.match(/questions\[(\d+)\]\[answers\]\[(\d+)\]\[answer_translations\]\[\d+\]\[content\]/);
+                if (!m) return;
+                const aIndex = Number(m[2]);
+                const aCorrectEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][is_correct]"]`);
+                const isCorrect = aCorrectEl ? (aCorrectEl.value === '1' || aCorrectEl.checked) : false;
+                question.answers.push({ id: null, is_correct: isCorrect, content: aTextEl.value });
+            });
+        }
+
+        payload.questions.push(question);
+    });
+
+    return payload;
+}
+
+function applyAiTranslations(data) {
+    if (!data) return;
+
+    // Test title/description translations
+    if (data.translations) {
+        for (const [langId, trans] of Object.entries(data.translations)) {
+            const titleInput = document.getElementById(`test-translations-${langId}-title`);
+            const descInput = document.getElementById(`test-translations-${langId}-description`);
+            if (titleInput && trans && trans.title) titleInput.value = trans.title;
+            if (descInput && trans && trans.description !== undefined) descInput.value = trans.description;
+        }
+    }
+
+    if (!Array.isArray(data.questions)) return;
+
+    // Build a map of question id -> index
+    const questionIdToIndex = {};
+    const cards = document.querySelectorAll('#questions-container .question-card');
+    cards.forEach(card => {
+        const qIndex = Number(card.getAttribute('data-index'));
+        const qIdInput = card.querySelector(`input[name="questions[${qIndex}][id]"]`);
+        if (qIdInput && qIdInput.value) {
+            questionIdToIndex[qIdInput.value] = qIndex;
+        }
+    });
+
+    data.questions.forEach(q => {
+        if (!q) return;
+        const qIndex = q.id !== undefined && q.id !== null ? questionIdToIndex[String(q.id)] : undefined;
+        if (qIndex === undefined) return;
+
+        if (q.translations) {
+            for (const [langId, content] of Object.entries(q.translations)) {
+                const input = document.querySelector(`input[name="questions[${qIndex}][question_translations][${langId}][content]"]`);
+                if (input && content) input.value = content;
+            }
+        }
+
+        if (Array.isArray(q.answers)) {
+            q.answers.forEach(a => {
+                if (!a || a.id === undefined || a.id === null) return;
+                const idEl = document.querySelector(`input[name^="questions[${qIndex}][answers]"][name$="[id]"][value="${a.id}"]`);
+                if (!idEl) return;
+                const name = idEl.getAttribute('name') || '';
+                const m = name.match(/questions\[(\d+)\]\[answers\]\[(\d+)\]\[id\]/);
+                if (!m) return;
+                const aIndex = Number(m[2]);
+
+                if (a.translations) {
+                    for (const [langId, content] of Object.entries(a.translations)) {
+                        const input = document.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][content]"]`);
+                        if (input && content) input.value = content;
+                    }
+                }
+            });
+        }
+    });
+}
 
 function fillFormWithAiData(data) {
     // Fill Title and Description for each language
@@ -133,7 +436,7 @@ function addQuestion(data = null) {
         </div>
         <div class="card-body">
             ${data && data.id ? `<input type="hidden" name="questions[${index}][id]" value="${data.id}">` : ''}
-            <input type="hidden" name="questions[${index}][source_type]" value="${data && data.source_type ? data.source_type : (data ? 'db' : 'human')}">
+            <input type="hidden" name="questions[${index}][source_type]" value="${data && data.source_type ? data.source_type : 'human'}">
             <input type="hidden" class="question-position" name="questions[${index}][position]" value="${index}">
             <input type="hidden" name="questions[${index}][is_active]" value="1">
 
@@ -272,17 +575,12 @@ function changeQuestionType(index, type, answersData = null) {
         let trueCorrect = true; 
         let falseCorrect = false;
         
-        // Prepare translations for True and False buttons
+        // Prepare translations for True and False inputs
+        // Priority:
+        // 1) Existing DB-provided translations (when editing)
+        // 2) Fallback map built from language codes (when creating)
         let trueTransMap = {};
         let falseTransMap = {};
-        
-        // We use the global trueFalseTranslations which is keyed by langId
-        if (typeof trueFalseTranslations !== 'undefined') {
-            for (const [langId, trans] of Object.entries(trueFalseTranslations)) {
-                trueTransMap[langId] = trans.true;
-                falseTransMap[langId] = trans.false;
-            }
-        }
 
         // If AI data provided correct/incorrect flags, use them
         let trueId = null;
@@ -294,10 +592,22 @@ function changeQuestionType(index, type, answersData = null) {
              falseCorrect = answersData[1].is_correct;
              trueId = answersData[0].id;
              falseId = answersData[1].id;
+
+             if (answersData[0].translations && answersData[1].translations) {
+                 trueTransMap = answersData[0].translations;
+                 falseTransMap = answersData[1].translations;
+             }
         }
 
-        addFixedAnswer(index, 0, 'True', trueCorrect, trueTransMap, trueId);
-        addFixedAnswer(index, 1, 'False', falseCorrect, falseTransMap, falseId);
+        if (Object.keys(trueTransMap).length === 0 && typeof trueFalseTranslations !== 'undefined') {
+            for (const [langId, trans] of Object.entries(trueFalseTranslations)) {
+                trueTransMap[langId] = trans.true;
+                falseTransMap[langId] = trans.false;
+            }
+        }
+
+        addFixedAnswer(index, 0, (aiStrings && aiStrings.trueLabel) ? aiStrings.trueLabel : 'True', trueCorrect, trueTransMap, trueId);
+        addFixedAnswer(index, 1, (aiStrings && aiStrings.falseLabel) ? aiStrings.falseLabel : 'False', falseCorrect, falseTransMap, falseId);
     } else {
 
         addBtn.style.display = 'inline-block';

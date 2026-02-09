@@ -5,8 +5,12 @@
  * @var \Cake\Collection\CollectionInterface|string[] $categories
  * @var \Cake\Collection\CollectionInterface|string[] $difficulties
  * @var \Cake\Collection\CollectionInterface|string[] $languages
+ * @var array<string, mixed> $aiGenerationLimit
  */
 use App\Model\Entity\Question;
+
+$aiGenerateLimited = !((bool)($aiGenerationLimit['allowed'] ?? true));
+$aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
 ?>
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2"><?= __('Edit Test') ?></h1>
@@ -86,8 +90,22 @@ use App\Model\Entity\Question;
             </div>
          </div>
          <div class="d-grid gap-2">
-             <button type="button" class="btn btn-outline-info" id="ai-generate-test">
-                <i class="bi bi-robot"></i> <?= __('Generate Content with AI') ?>
+             <span class="d-block" title="<?= h($aiGenerateLimited ? $aiLimitMessage : '') ?>">
+                 <button
+                     type="button"
+                     class="btn btn-outline-info w-100"
+                     id="ai-generate-test"
+                     <?= $aiGenerateLimited ? 'disabled aria-disabled="true"' : '' ?>
+                     title="<?= h($aiGenerateLimited ? $aiLimitMessage : '') ?>"
+                 >
+                     <i class="bi bi-robot"></i> <?= __('Generate Content with AI') ?>
+                 </button>
+             </span>
+             <small class="text-muted">
+                 <?= __('AI generations today: {0}/{1}', (int)($aiGenerationLimit['used'] ?? 0), (int)($aiGenerationLimit['limit'] ?? 0)) ?>
+             </small>
+             <button type="button" class="btn btn-outline-warning" id="ai-translate-test">
+                 <i class="bi bi-translate"></i> <?= __('Translate Test with AI') ?>
              </button>
              <hr>
              <?= $this->Form->button(__('Save Changes'), ['class' => 'btn btn-primary btn-lg']) ?>
@@ -101,14 +119,21 @@ use App\Model\Entity\Question;
 <script>
     // Pass PHP data to JS
     const languages = <?= json_encode($languages) ?>;
-    const trueFalseTranslations = {
-        <?php foreach ($languages as $langId => $langName): ?>
-        <?= $langId ?>: {
-            true: '<?= __('True') ?>',
-            false: '<?= __('False') ?>'
-        },
-        <?php endforeach; ?>
-    };
+    const languagesMeta = <?= json_encode($languagesMeta ?? []) ?>;
+    const trueFalseTranslations = (() => {
+        const out = {};
+        (languagesMeta || []).forEach(lang => {
+            const id = Number(lang.id);
+            const code = String(lang.code || '').toLowerCase();
+            if (!id) return;
+            if (code.startsWith('hu')) {
+                out[id] = { true: 'Igaz', false: 'Hamis' };
+            } else {
+                out[id] = { true: 'True', false: 'False' };
+            }
+        });
+        return out;
+    })();
     const questionTypes = {
         TRUE_FALSE: '<?= Question::TYPE_TRUE_FALSE ?>',
         MULTIPLE_CHOICE: '<?= Question::TYPE_MULTIPLE_CHOICE ?>',
@@ -123,10 +148,21 @@ use App\Model\Entity\Question;
         successTitle: '<?= __('Success!') ?>',
         successMessage: '<?= __('Test generated successfully.') ?>',
         errorTitle: '<?= __('Error') ?>',
-        unknownError: '<?= __('Unknown error occurred') ?>'
+        unknownError: '<?= __('Unknown error occurred') ?>',
+        limitReachedMessage: '<?= __('AI generation limit reached. Limit resets tomorrow.') ?>',
+        translateTitle: '<?= __('Translate Test with AI') ?>',
+        translateConfirmText: '<?= __('Translate') ?>',
+        translateInfo: '<?= __('This will translate the current test content into all configured languages.') ?>',
+        translateSuccess: '<?= __('Translations updated.') ?>',
+        translationInProgress: '<?= __('Translation in progress...') ?>'
+        ,trueLabel: '<?= __('True') ?>'
+        ,falseLabel: '<?= __('False') ?>'
     };
     const config = {
-        generateAiUrl: '<?= $this->Url->build(['action' => 'generateWithAi', 'lang' => $this->request->getParam('lang')]) ?>'
+        generateAiUrl: '<?= $this->Url->build(['action' => 'generateWithAi', 'lang' => $this->request->getParam('lang')]) ?>',
+        translateAiUrl: '<?= $this->Url->build(['action' => 'translateWithAi', $test->id, 'lang' => $this->request->getParam('lang')]) ?>',
+        currentLanguageId: <?= (int)($currentLanguageId ?? 0) ?>,
+        aiGenerateLimited: <?= $aiGenerateLimited ? 'true' : 'false' ?>
     };
     
     // Global state variables used by external JS

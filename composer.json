@@ -11,7 +11,8 @@
         "cakephp/migrations": "^4.0.0",
         "cakephp/plugin-installer": "^2.0",
         "josegonzalez/dotenv": "^4.0",
-        "mobiledetect/mobiledetectlib": "^4.8.03"
+        "mobiledetect/mobiledetectlib": "^4.8.03",
+        "zircote/swagger-php": "^6.0"
     },
     "require-dev": {
         "cakephp/bake": "^3.0.0",

@@ -57,6 +57,11 @@ class AiRequestsTable extends Table
         $this->belongsTo('Languages', [
             'foreignKey' => 'language_id',
         ]);
+
+        $this->hasMany('AiRequestAssets', [
+            'foreignKey' => 'ai_request_id',
+            'dependent' => true,
+        ]);
     }
 
     /**

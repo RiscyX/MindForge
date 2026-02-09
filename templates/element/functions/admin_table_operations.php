@@ -111,6 +111,7 @@ if ($encodedConfig === false) {
             dom: paginationContainer ? 'rt' : dtCfg.dom,
         });
 
+
         const renderPagination = () => {
             if (!paginationContainer) return;
 
@@ -417,6 +418,8 @@ if ($encodedConfig === false) {
                 window.requestAnimationFrame(syncSelectAll);
             });
         }
+
+        return;
     }
 
     applyView();

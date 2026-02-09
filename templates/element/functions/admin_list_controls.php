@@ -28,35 +28,47 @@ $limitOptions = $limit['options'] ?? [
 $limitDefault = (string)($limit['default'] ?? '10');
 ?>
 
-<div class="d-flex align-items-center justify-content-between gap-3 mt-4 flex-wrap">
-    <div class="d-flex align-items-center gap-2 flex-wrap flex-grow-1">
+<div class="mf-admin-toolbar mt-4">
+    <div class="mf-admin-toolbar__search">
         <label class="visually-hidden" for="<?= h($searchId) ?>"><?= h($searchLabel) ?></label>
         <input
             id="<?= h($searchId) ?>"
+            name="mf_search"
             type="search"
-            class="form-control form-control-sm mf-admin-input flex-grow-1"
-            style="max-width:<?= h($searchMaxWidth) ?>;"
+            class="form-control form-control-sm mf-admin-input"
             placeholder="<?= h($searchPlaceholder) ?>"
+            autocomplete="off"
+            spellcheck="false"
+            inputmode="search"
+            aria-label="<?= h($searchLabel) ?>"
+            style="--mf-admin-search-max: <?= h($searchMaxWidth) ?>;"
         >
     </div>
 
-    <div class="d-flex align-items-center gap-2">
-        <label class="mf-muted" for="<?= h($limitId) ?>" style="font-size:0.9rem;">
-            <?= h($limitLabel) ?>
-        </label>
-        <select id="<?= h($limitId) ?>" class="form-select form-select-sm mf-admin-select" style="width:auto;">
+    <div class="mf-admin-toolbar__right">
+        <div class="mf-admin-toolbar__limit">
+            <label class="mf-muted" for="<?= h($limitId) ?>" style="font-size:0.9rem;">
+                <?= h($limitLabel) ?>
+            </label>
+            <select
+                id="<?= h($limitId) ?>"
+                name="mf_limit"
+                class="form-select form-select-sm mf-admin-select"
+                aria-label="<?= h($limitLabel) ?>"
+            >
             <?php foreach ($limitOptions as $value => $label) : ?>
                 <option value="<?= h((string)$value) ?>" <?= ((string)$value === $limitDefault) ? 'selected' : '' ?>>
                     <?= h((string)$label) ?>
                 </option>
             <?php endforeach; ?>
-        </select>
+            </select>
+        </div>
 
         <?php if ($create) : ?>
             <?= $this->Html->link(
                 $create['label'] ?? __('Create') . ' +',
                 $create['url'] ?? '#',
-                ['class' => $create['class'] ?? 'btn btn-sm btn-primary'],
+                ['class' => ($create['class'] ?? 'btn btn-sm btn-primary') . ' mf-admin-toolbar__create'],
             ) ?>
         <?php endif; ?>
     </div>

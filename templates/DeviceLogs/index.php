@@ -15,9 +15,9 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.
 $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
 
 $deviceTypeLabels = [
-    0 => __('Unknown'),
-    1 => __('Desktop'),
-    2 => __('Mobile'),
+    0 => __('Mobile'),
+    1 => __('Tablet'),
+    2 => __('Desktop'),
 ];
 ?>
 

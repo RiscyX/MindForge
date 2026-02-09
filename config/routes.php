@@ -21,8 +21,13 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
+use App\Middleware\ApiCorsMiddleware;
+use App\Middleware\ApiRequestLoggingMiddleware;
+use App\Middleware\ApiTokenAuthMiddleware;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
+use Cake\Routing\Router;
+use Cake\Http\ServerRequest;
 
 /*
  * This file is loaded in the context of the `Application` class.
@@ -32,11 +37,105 @@ use Cake\Routing\RouteBuilder;
 return function (RouteBuilder $routes): void {
     $routes->setRouteClass(DashedRoute::class);
 
+    // Persist the current language in generated URLs by default.
+    Router::addUrlFilter(static function (array $params, ServerRequest $request): array {
+        if (isset($params['lang'])) {
+            return $params;
+        }
+
+        $lang = (string)$request->getParam('lang');
+        if ($lang === '' || !in_array($lang, ['en', 'hu'], true)) {
+            return $params;
+        }
+
+        // Never inject language into API routes.
+        if (($params['prefix'] ?? null) === 'Api') {
+            return $params;
+        }
+
+        // Root redirects use query param lang, not path lang.
+        if (($params['controller'] ?? null) === 'Pages') {
+            $action = (string)($params['action'] ?? '');
+            if (in_array($action, ['redirectToAdmin', 'redirectToQuizCreator', 'redirectToDefaultLanguage'], true)) {
+                return $params;
+            }
+        }
+
+        // Swagger scope is not language-prefixed.
+        if (($params['controller'] ?? null) === 'Swagger') {
+            return $params;
+        }
+
+        $params['lang'] = $lang;
+
+        return $params;
+    });
+
     // Root redirect to default language
     $routes->scope('/', function (RouteBuilder $builder): void {
         $builder->connect('/', ['controller' => 'Pages', 'action' => 'redirectToDefaultLanguage']);
         $builder->connect('/admin', ['controller' => 'Pages', 'action' => 'redirectToAdmin']);
         $builder->connect('/admin/dashboard', ['controller' => 'Pages', 'action' => 'redirectToAdmin']);
+        $builder->connect('/quiz-creator', ['controller' => 'Pages', 'action' => 'redirectToQuizCreator']);
+    });
+
+    // Swagger UI Routes
+    $routes->scope('/swagger', function (RouteBuilder $builder): void {
+        $builder->connect('/', ['controller' => 'Swagger', 'action' => 'ui']);
+        $builder->connect('/json', ['controller' => 'Swagger', 'action' => 'json']);
+    });
+
+    // API Routes
+    $routes->scope('/api/v1', ['prefix' => 'Api'], function (RouteBuilder $builder): void {
+        $builder->registerMiddleware('apiCors', new ApiCorsMiddleware());
+        $builder->registerMiddleware('apiRequestLog', new ApiRequestLoggingMiddleware());
+        $builder->registerMiddleware('apiAuth', new ApiTokenAuthMiddleware());
+        $builder->applyMiddleware('apiCors', 'apiRequestLog', 'apiAuth');
+
+        $builder->setExtensions(['json']);
+        $builder->connect('/auth/register', ['controller' => 'Auth', 'action' => 'register'])->setMethods(['POST']);
+        $builder->connect('/auth/login', ['controller' => 'Auth', 'action' => 'login'])->setMethods(['POST']);
+        $builder->connect('/auth/refresh', ['controller' => 'Auth', 'action' => 'refresh'])->setMethods(['POST']);
+        $builder->connect('/auth/logout', ['controller' => 'Auth', 'action' => 'logout'])->setMethods(['POST']);
+        $builder->connect('/auth/me', ['controller' => 'Auth', 'action' => 'me'])->setMethods(['GET']);
+        $builder->connect('/auth/me', ['controller' => 'Auth', 'action' => 'updateMe'])->setMethods(['PATCH', 'PUT', 'POST']);
+
+        // Attempts / quiz taking flow
+        $builder->connect('/tests/{id}/start', ['controller' => 'Tests', 'action' => 'start'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['POST']);
+        $builder->connect('/attempts/{id}', ['controller' => 'Attempts', 'action' => 'view'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['GET']);
+        $builder->connect('/attempts/{id}/submit', ['controller' => 'Attempts', 'action' => 'submit'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['POST']);
+        $builder->connect('/attempts/{id}/review', ['controller' => 'Attempts', 'action' => 'review'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['GET']);
+
+        // Stats for the authenticated user
+        $builder->connect('/me/stats/quizzes', ['controller' => 'Stats', 'action' => 'quizzes'])
+            ->setMethods(['GET']);
+
+        // Creator: async AI quiz generation (prompt + optional images)
+        $builder->connect('/creator/ai/test-generation', ['controller' => 'CreatorAi', 'action' => 'createTestGeneration'])
+            ->setMethods(['POST']);
+        $builder->connect('/creator/ai/requests/{id}', ['controller' => 'CreatorAi', 'action' => 'view'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['GET']);
+        $builder->connect('/creator/ai/requests/{id}/apply', ['controller' => 'CreatorAi', 'action' => 'apply'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['POST']);
+
+        $builder->resources('Tests');
+        $builder->fallbacks(DashedRoute::class);
     });
 
     // Admin prefix: /{lang}/admin/*
@@ -51,6 +150,20 @@ return function (RouteBuilder $routes): void {
 
             $builder->connect('/my-profile', ['controller' => 'Users', 'action' => 'myProfile'])
                 ->setPatterns(['lang' => 'en|hu']);
+            $builder->fallbacks();
+        },
+    );
+
+    // Quiz creator prefix: /{lang}/quiz-creator/*
+    $routes->scope(
+        '/{lang}/quiz-creator',
+        ['prefix' => 'QuizCreator', 'lang' => 'en|hu'],
+        function (RouteBuilder $builder): void {
+            $builder->connect('/', ['controller' => 'Dashboard', 'action' => 'index'])
+                ->setPatterns(['lang' => 'en|hu']);
+            $builder->connect('/dashboard', ['controller' => 'Dashboard', 'action' => 'index'])
+                ->setPatterns(['lang' => 'en|hu']);
+
             $builder->fallbacks();
         },
     );

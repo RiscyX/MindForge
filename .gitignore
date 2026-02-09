@@ -50,3 +50,10 @@ nbproject/*
 # yarn
 yarn-debug.log
 yarn-error.log
+
+# Local tooling / agents
+.agents/skills/
+
+# Uploaded/generated assets
+webroot/img/avatars/*
+!webroot/img/avatars/stockpfp.jpg

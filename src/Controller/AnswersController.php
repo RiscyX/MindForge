@@ -5,6 +5,8 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
+use Cake\ORM\Query\SelectQuery;
+use Throwable;
 
 /**
  * Answers Controller
@@ -30,9 +32,19 @@ class AnswersController extends AppController
      */
     public function index()
     {
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
         $query = $this->Answers
             ->find()
-            ->contain(['Questions'])
+            ->contain([
+                'Questions.QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $languageId === null ? $q : $q->where(['QuestionTranslations.language_id' => $languageId]);
+                },
+                'AnswerTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $languageId === null ? $q : $q->where(['AnswerTranslations.language_id' => $languageId]);
+                },
+            ])
             ->orderByAsc('Answers.id');
 
         $answers = $query->all();
@@ -49,7 +61,18 @@ class AnswersController extends AppController
      */
     public function view(?string $id = null)
     {
-        $answer = $this->Answers->get($id, contain: ['Questions', 'AnswerTranslations', 'TestAttemptAnswers']);
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
+        $answer = $this->Answers->get($id, contain: [
+            'Questions.QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                return $languageId === null ? $q : $q->where(['QuestionTranslations.language_id' => $languageId]);
+            },
+            'AnswerTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                return $languageId === null ? $q : $q->where(['AnswerTranslations.language_id' => $languageId]);
+            },
+            'TestAttemptAnswers',
+        ]);
         $this->set(compact('answer'));
     }
 
@@ -70,7 +93,27 @@ class AnswersController extends AppController
             }
             $this->Flash->error(__('The answer could not be saved. Please, try again.'));
         }
-        $questions = $this->Answers->Questions->find('list', limit: 200)->all();
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
+        $questionsQuery = $this->Answers->Questions->find()
+            ->contain([
+                'QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $languageId === null ? $q : $q->where(['QuestionTranslations.language_id' => $languageId]);
+                },
+            ])
+            ->orderByAsc('Questions.id');
+
+        $questions = [];
+        foreach ($questionsQuery->all() as $q) {
+            $content = '';
+            if (!empty($q->question_translations)) {
+                $content = (string)($q->question_translations[0]->content ?? '');
+            }
+            $label = $content !== '' ? $content : 'Question #' . $q->id;
+            $label = substr($label, 0, 90);
+            $questions[(string)$q->id] = $label;
+        }
         $this->set(compact('answer', 'questions'));
     }
 
@@ -93,8 +136,42 @@ class AnswersController extends AppController
             }
             $this->Flash->error(__('The answer could not be saved. Please, try again.'));
         }
-        $questions = $this->Answers->Questions->find('list', limit: 200)->all();
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
+        $questionsQuery = $this->Answers->Questions->find()
+            ->contain([
+                'QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $languageId === null ? $q : $q->where(['QuestionTranslations.language_id' => $languageId]);
+                },
+            ])
+            ->orderByAsc('Questions.id');
+
+        $questions = [];
+        foreach ($questionsQuery->all() as $q) {
+            $content = '';
+            if (!empty($q->question_translations)) {
+                $content = (string)($q->question_translations[0]->content ?? '');
+            }
+            $label = $content !== '' ? $content : 'Question #' . $q->id;
+            $label = substr($label, 0, 90);
+            $questions[(string)$q->id] = $label;
+        }
         $this->set(compact('answer', 'questions'));
+    }
+
+    private function resolveLanguageId(string $langCode): ?int
+    {
+        $language = $this->fetchTable('Languages')
+            ->find()
+            ->where(['code LIKE' => $langCode . '%'])
+            ->first();
+
+        if ($language === null) {
+            $language = $this->fetchTable('Languages')->find()->first();
+        }
+
+        return $language?->id === null ? null : (int)$language->id;
     }
 
     /**
@@ -129,7 +206,7 @@ class AnswersController extends AppController
         $action = (string)$this->request->getData('bulk_action');
         $rawIds = $this->request->getData('ids');
         $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($v) => $v > 0)));
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -153,7 +230,7 @@ class AnswersController extends AppController
                 } else {
                     $failed += 1;
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $failed += 1;
             }
         }

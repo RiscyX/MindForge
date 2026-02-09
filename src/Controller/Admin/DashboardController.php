@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Service\AdminDashboardService;
 use Cake\Http\Response;
+use Throwable;
 
 class DashboardController extends AppController
 {
@@ -39,19 +40,19 @@ class DashboardController extends AppController
     /**
      * Bulk actions for recent system events.
      *
-     * @return \\Cake\\Http\\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function bulk(): ?Response
     {
         $this->request->allowMethod(['post']);
 
-        /** @var \\App\\Model\\Table\\ActivityLogsTable $activityLogs */
+        /** @var \App\Model\Table\ActivityLogsTable $activityLogs */
         $activityLogs = $this->fetchTable('ActivityLogs');
 
         $action = (string)$this->request->getData('bulk_action');
         $rawIds = $this->request->getData('ids');
         $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($v) => $v > 0)));
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -75,7 +76,7 @@ class DashboardController extends AppController
                 } else {
                     $failed += 1;
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $failed += 1;
             }
         }

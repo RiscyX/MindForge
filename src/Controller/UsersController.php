@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Model\Entity\ActivityLog;
 use App\Model\Entity\Role;
+use App\Model\Table\UsersTable;
 use App\Service\UserTokensService;
 use Authentication\IdentityInterface;
 use Cake\Cache\Cache;
@@ -180,6 +181,7 @@ class UsersController extends AppController
         $user->is_active = false;
         $user->is_blocked = false;
         $user->role_id = Role::USER;
+        $user->username = $this->buildRegistrationUsername($usersTable, (string)$user->email);
 
         // Only set timestamps if you actually use these columns and don't have Timestamp behavior
         $now = FrozenTime::now();
@@ -255,6 +257,27 @@ class UsersController extends AppController
         }
 
         return $this->redirect(['action' => 'login', 'lang' => $lang]);
+    }
+
+    private function buildRegistrationUsername(UsersTable $usersTable, string $email): string
+    {
+        $localPart = strtolower(trim(strtok($email, '@') ?: ''));
+        $base = preg_replace('/[^a-z0-9._-]/', '', $localPart) ?? '';
+        if ($base === '') {
+            $base = 'user';
+        }
+
+        $base = substr($base, 0, 50);
+        $username = $base;
+        $counter = 2;
+
+        while ($usersTable->exists(['username' => $username])) {
+            $suffix = '_' . $counter;
+            $username = substr($base, 0, max(1, 50 - strlen($suffix))) . $suffix;
+            $counter++;
+        }
+
+        return $username;
     }
 
     /**
@@ -362,14 +385,26 @@ class UsersController extends AppController
                 ]);
             }
 
-            $redirect = $this->request->getQuery('redirect', [
-                'controller' => 'Pages',
-                'action' => 'display',
-                'home',
+            if ($user && (int)$user->get('role_id') === Role::CREATOR) {
+                return $this->redirect([
+                    'prefix' => 'QuizCreator',
+                    'controller' => 'Dashboard',
+                    'action' => 'index',
+                    'lang' => $lang,
+                ]);
+            }
+
+            $redirect = $this->request->getQuery('redirect');
+            if ($redirect) {
+                return $this->redirect($redirect);
+            }
+
+            return $this->redirect([
+                'prefix' => false,
+                'controller' => 'Tests',
+                'action' => 'index',
                 'lang' => $lang,
             ]);
-
-            return $this->redirect($redirect);
         }
 
         // POST + invalid credentials
@@ -642,15 +677,7 @@ class UsersController extends AppController
         $activityLogsTable->save($log);
 
         // Device Log
-        $detect = new MobileDetect();
-        $detect->setUserAgent($userAgent);
-
-        $deviceType = 2; // Desktop
-        if ($detect->isMobile() && !$detect->isTablet()) {
-            $deviceType = 0; // Mobile
-        } elseif ($detect->isTablet()) {
-            $deviceType = 1; // Tablet
-        }
+        $deviceType = $this->detectDeviceType($userAgent);
 
         // IP Lookup via iplocate.io
         $country = null;
@@ -686,6 +713,58 @@ class UsersController extends AppController
         ]);
 
         $deviceLogsTable->save($deviceLog);
+    }
+
+    private function detectDeviceType(string $userAgent): int
+    {
+        $detect = new MobileDetect();
+        $detect->setUserAgent($userAgent);
+
+        if ($detect->isTablet()) {
+            return 1; // Tablet
+        }
+
+        if ($detect->isMobile()) {
+            return 0; // Mobile
+        }
+
+        $normalizedUa = strtolower($userAgent);
+
+        $tabletHints = [
+            'ipad',
+            'tablet',
+            'sm-t',
+            'kindle',
+            'silk/',
+            'playbook',
+        ];
+
+        foreach ($tabletHints as $hint) {
+            if (str_contains($normalizedUa, $hint)) {
+                return 1;
+            }
+        }
+
+        $mobileHints = [
+            'okhttp/',
+            'dalvik/',
+            'android',
+            'iphone',
+            'ipod',
+            'cfnetwork/',
+            'mobile',
+            'reactnative',
+            'expo',
+            'flutter',
+        ];
+
+        foreach ($mobileHints as $hint) {
+            if (str_contains($normalizedUa, $hint)) {
+                return 0;
+            }
+        }
+
+        return 2; // Desktop
     }
 
     /**
