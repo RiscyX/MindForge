@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace App;
 
+use App\Middleware\ConditionalCsrfMiddleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
@@ -51,9 +52,28 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
      */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
-        $lang = (string)($request->getParam('lang') ?? 'en');
+        $path = $request->getUri()->getPath();
+        // App can be hosted in a subdirectory (e.g. /MindForge).
+        // Treat any path containing /api/v1 as API.
+        if (preg_match('#/api/v1(/|$)#', $path) === 1) {
+            $authenticationService = new AuthenticationService([
+                'unauthenticatedRedirect' => null,
+                'queryParam' => null,
+            ]);
+
+            $authenticationService->loadAuthenticator('Authentication.Session');
+
+            return $authenticationService;
+        }
+
+        $lang = 'en';
+        $params = $request->getAttribute('params');
+        if (is_array($params) && isset($params['lang'])) {
+            $lang = (string)$params['lang'];
+        }
 
         $loginUrl = Router::url([
+            'prefix' => false,
             'controller' => 'Users',
             'action' => 'login',
             'lang' => $lang,
@@ -64,8 +84,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             'queryParam' => 'redirect',
         ]);
 
-        // Explicit resolver for the whole service (this is the part you’re missing)
-        $authenticationService->setConfig('identifiers', [
+        // Since Authentication 3.3.0, identifiers should be passed directly to authenticators.
+        $identifierConfig = [
             'Authentication.Password' => [
                 'resolver' => [
                     'className' => OrmResolver::class,
@@ -76,9 +96,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                     'password' => 'password_hash',
                 ],
             ],
-        ]);
+        ];
 
-        $authenticationService->loadAuthenticator('Authentication.Session');
+        $authenticationService->loadAuthenticator('Authentication.Session', [
+            'identifier' => $identifierConfig,
+        ]);
 
         $authenticationService->loadAuthenticator('Authentication.Form', [
             'fields' => [
@@ -86,7 +108,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
                 'password' => 'password',
             ],
             'loginUrl' => $loginUrl,
-            'identifiers' => ['Authentication.Password'],
+            'identifier' => $identifierConfig,
         ]);
 
         return $authenticationService;
@@ -141,11 +163,11 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
             // Cross Site Request Forgery (CSRF) Protection Middleware
             // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
-            ->add(new CsrfProtectionMiddleware([
+            ->add(new ConditionalCsrfMiddleware(new CsrfProtectionMiddleware([
                 'httponly' => true,
                 'secure' => false,
                 'samesite' => 'Lax',
-            ]));
+            ])));
 
         return $middlewareQueue;
     }

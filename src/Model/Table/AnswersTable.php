@@ -69,7 +69,11 @@ class AnswersTable extends Table
 
         $validator
             ->scalar('source_type')
-            ->notEmptyString('source_type');
+            ->notEmptyString('source_type')
+            ->add('source_type', 'inList', [
+                'rule' => ['inList', ['human', 'ai']],
+                'message' => __('Source type must be either human or ai.'),
+            ]);
 
         $validator
             ->boolean('is_correct')

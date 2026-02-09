@@ -4,7 +4,6 @@ use Cake\Cache\Engine\FileEngine;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Log\Engine\FileLog;
-use Cake\Mailer\Transport\SmtpTransport;
 use function Cake\Core\env;
 
 return [
@@ -456,5 +455,9 @@ return [
         'apiKey' => env('AI_API_KEY', ''),
         'baseUrl' => env('AI_BASE_URL', 'https://api.openai.com/v1'),
         'defaultModel' => env('AI_DEFAULT_MODEL', 'gpt-4'),
+        'visionModel' => env('AI_VISION_MODEL', ''),
+        // Upload constraints for async image-based generation.
+        'maxImages' => (int)env('AI_MAX_IMAGES', '6'),
+        'maxImageBytes' => (int)env('AI_MAX_IMAGE_BYTES', (string)(6 * 1024 * 1024)),
     ],
 ];

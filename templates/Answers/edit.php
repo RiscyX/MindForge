@@ -4,36 +4,77 @@
  * @var \App\Model\Entity\Answer $answer
  * @var string[]|\Cake\Collection\CollectionInterface $questions
  */
+
+$lang = $this->request->getParam('lang', 'en');
+
+$this->assign('title', __('Edit Answer'));
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h1 class="h3 mb-0 text-white"><?= __('Edit Answer') ?></h1>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
             <?= $this->Form->postLink(
                 __('Delete'),
-                ['action' => 'delete', $answer->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $answer->id), 'class' => 'side-nav-item']
+                ['action' => 'delete', $answer->id, 'lang' => $lang],
+                [
+                    'confirm' => __('Are you sure you want to delete # {0}?', $answer->id),
+                    'class' => 'btn btn-danger',
+                ]
             ) ?>
-            <?= $this->Html->link(__('List Answers'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+            <?= $this->Html->link(__('Back to List'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-secondary']) ?>
         </div>
-    </aside>
-    <div class="column column-80">
-        <div class="answers form content">
-            <?= $this->Form->create($answer) ?>
-            <fieldset>
-                <legend><?= __('Edit Answer') ?></legend>
-                <?php
-                    echo $this->Form->control('question_id', ['options' => $questions]);
-                    echo $this->Form->control('source_type');
-                    echo $this->Form->control('is_correct');
-                    echo $this->Form->control('source_text');
-                    echo $this->Form->control('position');
-                    echo $this->Form->control('created_at');
-                    echo $this->Form->control('updated_at');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
+    </div>
+
+    <div class="mf-admin-card p-3">
+        <?= $this->Form->create($answer) ?>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <?= $this->Form->control('question_id', [
+                    'options' => $questions,
+                    'class' => 'form-select',
+                    'label' => ['class' => 'form-label text-white', 'text' => __('Question')],
+                ]) ?>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <?= $this->Form->control('source_type', [
+                    'class' => 'form-control',
+                    'label' => ['class' => 'form-label text-white', 'text' => __('Source Type')],
+                ]) ?>
+            </div>
+
+            <div class="col-12 col-lg-6 d-flex align-items-end">
+                <div class="form-check form-switch">
+                    <?= $this->Form->checkbox('is_correct', ['class' => 'form-check-input', 'id' => 'isCorrect']) ?>
+                    <label class="form-check-label text-white" for="isCorrect"><?= __('Is Correct') ?></label>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <?= $this->Form->control('source_text', [
+                    'type' => 'textarea',
+                    'rows' => 4,
+                    'class' => 'form-control',
+                    'label' => ['class' => 'form-label text-white', 'text' => __('Source Text')],
+                ]) ?>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <?= $this->Form->control('position', [
+                    'class' => 'form-control',
+                    'label' => ['class' => 'form-label text-white', 'text' => __('Position')],
+                    'empty' => true,
+                ]) ?>
+            </div>
         </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <?= $this->Form->button(__('Save Changes'), ['class' => 'btn btn-primary']) ?>
+            <?= $this->Html->link(__('Cancel'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
+        </div>
+
+        <?= $this->Form->end() ?>
     </div>
 </div>

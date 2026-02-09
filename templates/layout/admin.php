@@ -29,12 +29,21 @@ $isAuthPage = $request->getParam('controller') === 'Users'
 
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <?= $this->Html->css('index.css?v=12') ?>
+    <?= $this->Html->css('index.css?v=33') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
 </head>
-<body class="mf-auth d-flex flex-column vh-100 overflow-hidden<?= $isAuthPage ? ' mf-auth-page' : '' ?>">
+<?php
+$bodyClass = 'mf-auth d-flex flex-column';
+if ($isAuthPage) {
+    $bodyClass .= ' vh-100 overflow-hidden mf-auth-page';
+} else {
+    $bodyClass .= ' mf-admin-body';
+}
+?>
+<body class="<?= h($bodyClass) ?>">
+    <a class="visually-hidden-focusable" href="#mf-admin-main"><?= __('Skip to content') ?></a>
     <?= $this->element('navbar') ?>
 
     <main class="flex-grow-1 d-flex flex-column mf-admin-wrapper">
@@ -42,7 +51,25 @@ $isAuthPage = $request->getParam('controller') === 'Users'
             <div class="d-flex mf-admin-layout">
                 <?= $this->element('admin_sidebar') ?>
 
-                <section class="flex-grow-1 mf-admin-main">
+                <section class="flex-grow-1 mf-admin-main" id="mf-admin-main">
+                    <div class="mf-admin-topbar d-lg-none">
+                        <div class="d-flex align-items-center justify-content-between gap-2 px-3 py-2">
+                            <button
+                                class="btn btn-sm btn-outline-light mf-admin-topbar__menu"
+                                type="button"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#mfAdminNav"
+                                aria-controls="mfAdminNav"
+                            >
+                                <i class="bi bi-list" aria-hidden="true"></i>
+                                <span><?= __('Menu') ?></span>
+                            </button>
+
+                            <div class="mf-admin-topbar__title" aria-hidden="true">
+                                <?= h((string)$this->fetch('title')) ?>
+                            </div>
+                        </div>
+                    </div>
                     <div class="container-fluid px-3 px-lg-4 py-4">
                         <?= $this->fetch('content') ?>
                     </div>
@@ -59,13 +86,13 @@ $isAuthPage = $request->getParam('controller') === 'Users'
         ],
     ]) ?>
 
-    <div class="mf-flash-stack" data-mf-flash-stack>
+    <div class="mf-flash-stack" data-mf-flash-stack aria-live="polite">
         <?= $this->Flash->render() ?>
     </div>
 
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js') ?>
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/sweetalert2@11') ?>
-    <?= $this->Html->script('logout_confirmation.js') ?>
+    <?= $this->Html->script('logout_confirmation.js?v=3') ?>
     <?= $this->fetch('script') ?>
     <?= $this->fetch('scriptBottom') ?>
 </body>

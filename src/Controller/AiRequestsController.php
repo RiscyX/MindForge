@@ -6,6 +6,7 @@ namespace App\Controller;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
+use Throwable;
 
 /**
  * AiRequests Controller
@@ -141,7 +142,7 @@ class AiRequestsController extends AppController
                 } else {
                     $failed += 1;
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $failed += 1;
             }
         }

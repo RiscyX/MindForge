@@ -14,7 +14,6 @@ $identity = $this->request->getAttribute('identity');
 $isLoggedIn = $identity !== null;
 $isAdmin = $isLoggedIn
     && (int)$identity->get('role_id') === Role::ADMIN;
-// Quiz creator role -> show Tests link in navbar
 $isCreator = $isLoggedIn && (int)$identity->get('role_id') === Role::CREATOR;
 
 $isOnAdminDashboard = $currentPrefix === 'Admin'
@@ -58,12 +57,46 @@ $isProfileActive = $isAdmin
     ? ($currentPrefix === 'Admin' && $currentController === 'Users' && $currentAction === 'myProfile')
     : (($currentPrefix === null || $currentPrefix === '') && $currentController === 'Users' && $currentAction === 'profile');
 
+$pass = (array)$this->request->getParam('pass', []);
+$queryParams = (array)$this->request->getQueryParams();
+$routePrefix = ($currentPrefix === null || $currentPrefix === '') ? false : $currentPrefix;
+
+$buildLangRoute = static function (string $newLang) use ($routePrefix, $currentController, $currentAction, $pass, $queryParams): array {
+    $route = [
+        'prefix' => $routePrefix,
+        'controller' => $currentController,
+        'action' => $currentAction,
+        'lang' => $newLang,
+    ];
+
+    foreach ($pass as $p) {
+        $route[] = $p;
+    }
+
+    if ($queryParams) {
+        $route['?'] = $queryParams;
+    }
+
+    return $route;
+};
+
+$langRouteEn = $buildLangRoute('en');
+$langRouteHu = $buildLangRoute('hu');
+
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark mf-navbar" data-mf-navbar>
     <div class="container-fluid px-3 px-lg-5">
         <!-- Brand -->
-        <a class="navbar-brand mf-brand" href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'display', 'home', 'lang' => $lang]) ?>">
+        <?php
+        $brandUrl = ['controller' => 'Pages', 'action' => 'display', 'home', 'lang' => $lang];
+        if ($isAdmin) {
+            $brandUrl = ['prefix' => false, 'controller' => 'Pages', 'action' => 'redirectToAdmin', '?' => ['lang' => $lang]];
+        } elseif ($isCreator) {
+            $brandUrl = ['prefix' => false, 'controller' => 'Pages', 'action' => 'redirectToQuizCreator', '?' => ['lang' => $lang]];
+        }
+        ?>
+        <a class="navbar-brand mf-brand" href="<?= $this->Url->build($brandUrl) ?>">
             <?= $this->Html->image('favicon-128x128.png', [
                 'alt' => 'MindForge',
                 'class' => 'mf-logo',
@@ -102,6 +135,24 @@ $isProfileActive = $isAdmin
                         </a>
                     </li>
 
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <?= strtoupper(h($lang)) ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item<?= $lang === 'en' ? ' active' : '' ?>" href="<?= $this->Url->build($langRouteEn) ?>">
+                                    <?= __('English') ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item<?= $lang === 'hu' ? ' active' : '' ?>" href="<?= $this->Url->build($langRouteHu) ?>">
+                                    <?= __('Hungarian') ?>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                 <?php else : ?>
                     <!-- Logged in -->
                     <li class="nav-item">
@@ -111,20 +162,29 @@ $isProfileActive = $isAdmin
                         </a>
                     </li>
 
-                        <?php if ($isCreator) : ?>
-                        <li class="nav-item">
-                            <a class="nav-link<?= ($currentController === 'Tests') ? ' active' : '' ?>"
-                               href="<?= $this->Url->build(['controller' => 'Tests', 'action' => 'index', 'lang' => $lang]) ?>">
-                                <?= __('Tests') ?>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-
                     <li class="nav-item">
                         <a class="nav-link<?= $isProfileActive ? ' active' : '' ?>"
                            href="<?= $this->Url->build($profileUrl) ?>">
                             <?= __('My Profile') ?>
                         </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <?= strtoupper(h($lang)) ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item<?= $lang === 'en' ? ' active' : '' ?>" href="<?= $this->Url->build($langRouteEn) ?>">
+                                    <?= __('English') ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item<?= $lang === 'hu' ? ' active' : '' ?>" href="<?= $this->Url->build($langRouteHu) ?>">
+                                    <?= __('Hungarian') ?>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="nav-item">
@@ -220,10 +280,22 @@ $isProfileActive = $isAdmin
         else open();
     });
 
-    // Close when a link inside the menu is clicked.
+    // Close when a *real navigation* link inside the menu is clicked.
+    // Do not close on dropdown toggles (mobile language selector would instantly collapse).
     menu.addEventListener('click', (event) => {
         const a = event.target.closest('a');
         if (!a) return;
+
+        const toggleType = a.getAttribute('data-bs-toggle');
+        if (toggleType === 'dropdown') {
+            return;
+        }
+
+        const href = (a.getAttribute('href') || '').trim();
+        if (href === '' || href === '#') {
+            return;
+        }
+
         close();
     });
 

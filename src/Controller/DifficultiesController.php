@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
+use Throwable;
 
 /**
  * Difficulties Controller
@@ -147,7 +148,7 @@ class DifficultiesController extends AppController
         $action = (string)$this->request->getData('bulk_action');
         $rawIds = $this->request->getData('ids');
         $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($v) => $v > 0)));
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -171,7 +172,7 @@ class DifficultiesController extends AppController
                 } else {
                     $failed += 1;
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $failed += 1;
             }
         }

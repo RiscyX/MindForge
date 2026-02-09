@@ -16,6 +16,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Model\Entity\Role;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
@@ -31,6 +32,18 @@ use Cake\View\Exception\MissingTemplateException;
  */
 class PagesController extends AppController
 {
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->Authentication->allowUnauthenticated([
+            'display',
+            'redirectToDefaultLanguage',
+            'redirectToAdmin',
+            'redirectToQuizCreator',
+        ]);
+    }
+
     /**
      * Displays a view
      *
@@ -60,6 +73,40 @@ class PagesController extends AppController
             $subpage = $path[1];
         }
         $this->set(compact('page', 'subpage'));
+
+        // If a user is already logged in, don't show the landing page.
+        if ($page === 'home') {
+            $identity = $this->request->getAttribute('identity');
+            if ($identity !== null) {
+                $lang = (string)$this->request->getParam('lang', 'en');
+                $roleId = (int)$identity->get('role_id');
+
+                if ($roleId === Role::ADMIN) {
+                    return $this->redirect([
+                        'prefix' => 'Admin',
+                        'controller' => 'Dashboard',
+                        'action' => 'index',
+                        'lang' => $lang,
+                    ]);
+                }
+
+                if ($roleId === Role::CREATOR) {
+                    return $this->redirect([
+                        'prefix' => 'QuizCreator',
+                        'controller' => 'Dashboard',
+                        'action' => 'index',
+                        'lang' => $lang,
+                    ]);
+                }
+
+                return $this->redirect([
+                    'prefix' => false,
+                    'controller' => 'Tests',
+                    'action' => 'index',
+                    'lang' => $lang,
+                ]);
+            }
+        }
 
         try {
             return $this->render(implode('/', $path));
@@ -93,11 +140,36 @@ class PagesController extends AppController
      */
     public function redirectToAdmin(): Response
     {
+        $lang = (string)$this->request->getQuery('lang', 'en');
+        if (!in_array($lang, ['en', 'hu'], true)) {
+            $lang = 'en';
+        }
+
         return $this->redirect([
             'prefix' => 'Admin',
             'controller' => 'Dashboard',
             'action' => 'index',
-            'lang' => 'en',
+            'lang' => $lang,
+        ]);
+    }
+
+    /**
+     * Redirects to the default language quiz creator dashboard.
+     *
+     * @return \Cake\Http\Response
+     */
+    public function redirectToQuizCreator(): Response
+    {
+        $lang = (string)$this->request->getQuery('lang', 'en');
+        if (!in_array($lang, ['en', 'hu'], true)) {
+            $lang = 'en';
+        }
+
+        return $this->redirect([
+            'prefix' => 'QuizCreator',
+            'controller' => 'Dashboard',
+            'action' => 'index',
+            'lang' => $lang,
         ]);
     }
 }

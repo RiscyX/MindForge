@@ -178,31 +178,28 @@ $isAdmin = $isLoggedIn && (int)$identity->get('role_id') === Role::ADMIN;
                             <th><?= __('User Id') ?></th>
                             <th><?= __('Ip Address') ?></th>
                             <th><?= __('User Agent') ?></th>
-                            <th><?= __('Is Mobile') ?></th>
-                            <th><?= __('Is Tablet') ?></th>
-                            <th><?= __('Is Desktop') ?></th>
-                            <th><?= __('Os') ?></th>
-                            <th><?= __('Browser') ?></th>
+                            <th><?= __('Device Type') ?></th>
                             <th><?= __('Country') ?></th>
                             <th><?= __('City') ?></th>
-                            <th><?= __('Extra Info') ?></th>
                             <th><?= __('Created At') ?></th>
                             <th class="actions"><?= __('Actions') ?></th>
                         </tr>
+                        <?php 
+                        $deviceTypeLabels = [
+                            0 => __('Mobile'),
+                            1 => __('Tablet'),
+                            2 => __('Desktop'),
+                        ];
+                        ?>
                         <?php foreach ($user->device_logs as $deviceLog) : ?>
                         <tr>
                             <td><?= h($deviceLog->id) ?></td>
                             <td><?= h($deviceLog->user_id) ?></td>
                             <td><?= h($deviceLog->ip_address) ?></td>
                             <td><?= h($deviceLog->user_agent) ?></td>
-                            <td><?= h($deviceLog->is_mobile) ?></td>
-                            <td><?= h($deviceLog->is_tablet) ?></td>
-                            <td><?= h($deviceLog->is_desktop) ?></td>
-                            <td><?= h($deviceLog->os) ?></td>
-                            <td><?= h($deviceLog->browser) ?></td>
+                            <td><?= h($deviceTypeLabels[$deviceLog->device_type] ?? __('Unknown')) ?></td>
                             <td><?= h($deviceLog->country) ?></td>
                             <td><?= h($deviceLog->city) ?></td>
-                            <td><?= h($deviceLog->extra_info) ?></td>
                             <td><?= h($deviceLog->created_at) ?></td>
                             <td class="actions">
                                 <?= $this->Html->link(__('View'), ['controller' => 'DeviceLogs', 'action' => 'view', $deviceLog->id, 'lang' => $lang]) ?>

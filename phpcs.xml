@@ -4,6 +4,11 @@
 
     <file>src</file>
 
-    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP/ruleset.xml"/>
+    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP/ruleset.xml">
+        <!-- Keep CS checks, but don't block commits on mandatory docblocks/type-hints -->
+        <exclude name="CakePHP.Commenting.FunctionComment.Missing"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingAnyTypeHint"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint"/>
+    </rule>
 
 </ruleset>

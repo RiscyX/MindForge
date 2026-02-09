@@ -60,7 +60,7 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                     <th scope="col" class="mf-muted fs-6"></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('ID') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Question') ?></th>
-                    <th scope="col" class="mf-muted fs-6"><?= __('Source') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Content') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Correct') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Created') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Updated') ?></th>
@@ -80,8 +80,24 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                             />
                         </td>
                         <td class="mf-muted" data-order="<?= h((string)$answer->id) ?>"><?= $this->Number->format($answer->id) ?></td>
-                        <td><?= $answer->hasValue('question') ? h((string)$answer->question->question_type) : '—' ?></td>
-                        <td class="mf-muted"><?= h((string)$answer->source_type) ?></td>
+                        <td class="mf-muted" style="text-align:left;">
+                            <?php
+                            $qContent = null;
+                            if ($answer->hasValue('question') && !empty($answer->question->question_translations)) {
+                                $qContent = $answer->question->question_translations[0]->content ?? null;
+                            }
+                            ?>
+                            <?= $qContent ? h((string)$qContent) : ($answer->hasValue('question') ? ('#' . h((string)$answer->question->id)) : '—') ?>
+                        </td>
+                        <td class="mf-muted" style="text-align:left;">
+                            <?php
+                            $aContent = null;
+                            if (!empty($answer->answer_translations)) {
+                                $aContent = $answer->answer_translations[0]->content ?? null;
+                            }
+                            ?>
+                            <?= $aContent ? h((string)$aContent) : __('N/A') ?>
+                        </td>
                         <td>
                             <?php if ($answer->is_correct) : ?>
                                 <span class="badge bg-success"><?= __('Yes') ?></span>

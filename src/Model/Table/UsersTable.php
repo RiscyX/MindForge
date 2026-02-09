@@ -16,6 +16,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\DeviceLogsTable&\Cake\ORM\Association\HasMany $DeviceLogs
  * @property \App\Model\Table\TestAttemptsTable&\Cake\ORM\Association\HasMany $TestAttempts
  * @property \App\Model\Table\UserTokensTable&\Cake\ORM\Association\HasMany $UserTokens
+ * @property \App\Model\Table\ApiTokensTable&\Cake\ORM\Association\HasMany $ApiTokens
  * @method \App\Model\Entity\User newEmptyEntity()
  * @method \App\Model\Entity\User newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\User> newEntities(array $data, array $options = [])
@@ -78,6 +79,9 @@ class UsersTable extends Table
             'foreignKey' => 'user_id',
         ]);
         $this->hasMany('UserTokens', [
+            'foreignKey' => 'user_id',
+        ]);
+        $this->hasMany('ApiTokens', [
             'foreignKey' => 'user_id',
         ]);
     }

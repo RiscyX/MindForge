@@ -27,6 +27,7 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\DeviceLog[] $device_logs
  * @property \App\Model\Entity\TestAttempt[] $test_attempts
  * @property \App\Model\Entity\UserToken[] $user_tokens
+ * @property \App\Model\Entity\ApiToken[] $api_tokens
  */
 class User extends Entity
 {
@@ -57,6 +58,7 @@ class User extends Entity
         'device_logs' => true,
         'test_attempts' => true,
         'user_tokens' => true,
+        'api_tokens' => true,
     ];
 
     /**

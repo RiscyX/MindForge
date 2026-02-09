@@ -5,6 +5,8 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
+use Cake\ORM\Query\SelectQuery;
+use Throwable;
 
 /**
  * Questions Controller
@@ -30,9 +32,23 @@ class QuestionsController extends AppController
      */
     public function index()
     {
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
         $query = $this->Questions
             ->find()
-            ->contain(['Tests', 'Categories', 'Difficulties'])
+            ->contain([
+                'Tests',
+                'Categories.CategoryTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $languageId === null ? $q : $q->where(['CategoryTranslations.language_id' => $languageId]);
+                },
+                'Difficulties.DifficultyTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $languageId === null ? $q : $q->where(['DifficultyTranslations.language_id' => $languageId]);
+                },
+                'QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $languageId === null ? $q : $q->where(['QuestionTranslations.language_id' => $languageId]);
+                },
+            ])
             ->orderByAsc('Questions.id');
 
         $questions = $query->all();
@@ -49,13 +65,25 @@ class QuestionsController extends AppController
      */
     public function view(?string $id = null)
     {
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
         $question = $this->Questions->get($id, contain: [
-                'Tests',
-                'Categories',
-                'Difficulties',
-                'Answers',
-                'QuestionTranslations',
-                'TestAttemptAnswers']);
+            'Tests',
+            'Categories.CategoryTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                return $languageId === null ? $q : $q->where(['CategoryTranslations.language_id' => $languageId]);
+            },
+            'Difficulties.DifficultyTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                return $languageId === null ? $q : $q->where(['DifficultyTranslations.language_id' => $languageId]);
+            },
+            'Answers.AnswerTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                return $languageId === null ? $q : $q->where(['AnswerTranslations.language_id' => $languageId]);
+            },
+            'QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                return $languageId === null ? $q : $q->where(['QuestionTranslations.language_id' => $languageId]);
+            },
+            'TestAttemptAnswers',
+        ]);
         $this->set(compact('question'));
     }
 
@@ -76,9 +104,24 @@ class QuestionsController extends AppController
             }
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
         $tests = $this->Questions->Tests->find('list', limit: 200)->all();
-        $categories = $this->Questions->Categories->find('list', limit: 200)->all();
-        $difficulties = $this->Questions->Difficulties->find('list', limit: 200)->all();
+
+        $categories = $this->Questions->Categories->CategoryTranslations->find('list', [
+            'keyField' => 'category_id',
+            'valueField' => 'name',
+        ])
+            ->where($languageId === null ? [] : ['language_id' => $languageId])
+            ->all();
+
+        $difficulties = $this->Questions->Difficulties->DifficultyTranslations->find('list', [
+            'keyField' => 'difficulty_id',
+            'valueField' => 'name',
+        ])
+            ->where($languageId === null ? [] : ['language_id' => $languageId])
+            ->all();
         $this->set(compact('question', 'tests', 'categories', 'difficulties'));
     }
 
@@ -101,10 +144,39 @@ class QuestionsController extends AppController
             }
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
+        $langCode = (string)$this->request->getParam('lang', 'en');
+        $languageId = $this->resolveLanguageId($langCode);
+
         $tests = $this->Questions->Tests->find('list', limit: 200)->all();
-        $categories = $this->Questions->Categories->find('list', limit: 200)->all();
-        $difficulties = $this->Questions->Difficulties->find('list', limit: 200)->all();
+
+        $categories = $this->Questions->Categories->CategoryTranslations->find('list', [
+            'keyField' => 'category_id',
+            'valueField' => 'name',
+        ])
+            ->where($languageId === null ? [] : ['language_id' => $languageId])
+            ->all();
+
+        $difficulties = $this->Questions->Difficulties->DifficultyTranslations->find('list', [
+            'keyField' => 'difficulty_id',
+            'valueField' => 'name',
+        ])
+            ->where($languageId === null ? [] : ['language_id' => $languageId])
+            ->all();
         $this->set(compact('question', 'tests', 'categories', 'difficulties'));
+    }
+
+    private function resolveLanguageId(string $langCode): ?int
+    {
+        $language = $this->fetchTable('Languages')
+            ->find()
+            ->where(['code LIKE' => $langCode . '%'])
+            ->first();
+
+        if ($language === null) {
+            $language = $this->fetchTable('Languages')->find()->first();
+        }
+
+        return $language?->id === null ? null : (int)$language->id;
     }
 
     /**
@@ -139,7 +211,7 @@ class QuestionsController extends AppController
         $action = (string)$this->request->getData('bulk_action');
         $rawIds = $this->request->getData('ids');
         $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($v) => $v > 0)));
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -163,7 +235,7 @@ class QuestionsController extends AppController
                 } else {
                     $failed += 1;
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $failed += 1;
             }
         }

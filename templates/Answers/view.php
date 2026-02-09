@@ -3,140 +3,118 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Answer $answer
  */
+
+$lang = $this->request->getParam('lang', 'en');
+
+$this->assign('title', __('Answer'));
+
+$questionLabel = $answer->hasValue('question') ? (string)$answer->question->question_type : '';
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Answer'), ['action' => 'edit', $answer->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Answer'), ['action' => 'delete', $answer->id], ['confirm' => __('Are you sure you want to delete # {0}?', $answer->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Answers'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Answer'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h1 class="h3 mb-0 text-white"><?= __('Answer') ?> #<?= h((string)$answer->id) ?></h1>
+            <div class="mf-muted">
+                <?= $questionLabel !== '' ? h($questionLabel) : __('Question') ?>
+            </div>
         </div>
-    </aside>
-    <div class="column column-80">
-        <div class="answers view content">
-            <h3><?= h($answer->source_type) ?></h3>
-            <table>
-                <tr>
-                    <th><?= __('Question') ?></th>
-                    <td><?= $answer->hasValue('question') ? $this->Html->link($answer->question->question_type, ['controller' => 'Questions', 'action' => 'view', $answer->question->id]) : '' ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Source Type') ?></th>
-                    <td><?= h($answer->source_type) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($answer->id) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Position') ?></th>
-                    <td><?= $answer->position === null ? '' : $this->Number->format($answer->position) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Created At') ?></th>
-                    <td><?= h($answer->created_at) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Updated At') ?></th>
-                    <td><?= h($answer->updated_at) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Is Correct') ?></th>
-                    <td><?= $answer->is_correct ? __('Yes') : __('No'); ?></td>
-                </tr>
-            </table>
-            <div class="text">
-                <strong><?= __('Source Text') ?></strong>
-                <blockquote>
-                    <?= $this->Text->autoParagraph(h($answer->source_text)); ?>
-                </blockquote>
-            </div>
-            <div class="related">
-                <h4><?= __('Related Answer Translations') ?></h4>
-                <?php if (!empty($answer->answer_translations)) : ?>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th><?= __('Id') ?></th>
-                            <th><?= __('Answer Id') ?></th>
-                            <th><?= __('Language Id') ?></th>
-                            <th><?= __('Content') ?></th>
-                            <th><?= __('Source Type') ?></th>
-                            <th><?= __('Created By') ?></th>
-                            <th><?= __('Created At') ?></th>
-                            <th class="actions"><?= __('Actions') ?></th>
-                        </tr>
-                        <?php foreach ($answer->answer_translations as $answerTranslation) : ?>
-                        <tr>
-                            <td><?= h($answerTranslation->id) ?></td>
-                            <td><?= h($answerTranslation->answer_id) ?></td>
-                            <td><?= h($answerTranslation->language_id) ?></td>
-                            <td><?= h($answerTranslation->content) ?></td>
-                            <td><?= h($answerTranslation->source_type) ?></td>
-                            <td><?= h($answerTranslation->created_by) ?></td>
-                            <td><?= h($answerTranslation->created_at) ?></td>
-                            <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'AnswerTranslations', 'action' => 'view', $answerTranslation->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'AnswerTranslations', 'action' => 'edit', $answerTranslation->id]) ?>
-                                <?= $this->Form->postLink(
-                                    __('Delete'),
-                                    ['controller' => 'AnswerTranslations', 'action' => 'delete', $answerTranslation->id],
-                                    [
-                                        'method' => 'delete',
-                                        'confirm' => __('Are you sure you want to delete # {0}?', $answerTranslation->id),
-                                    ]
-                                ) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </table>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <?= $this->Html->link(__('Edit'), ['action' => 'edit', $answer->id, 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
+            <?= $this->Form->postLink(
+                __('Delete'),
+                ['action' => 'delete', $answer->id, 'lang' => $lang],
+                [
+                    'confirm' => __('Are you sure you want to delete # {0}?', $answer->id),
+                    'class' => 'btn btn-outline-danger',
+                ],
+            ) ?>
+            <?= $this->Html->link(__('Back to List'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-secondary']) ?>
+        </div>
+    </div>
+
+    <div class="mf-admin-card p-3">
+        <div class="row g-3">
+            <div class="col-12 col-lg-6">
+                <div class="mf-muted mb-1"><?= __('Question') ?></div>
+                <div class="text-white">
+                    <?php if ($answer->hasValue('question')) : ?>
+                        <?= $this->Html->link(
+                            h((string)$answer->question->question_type),
+                            ['controller' => 'Questions', 'action' => 'view', $answer->question->id, 'lang' => $lang],
+                            ['class' => 'link-light'],
+                        ) ?>
+                    <?php else : ?>
+                        —
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
             </div>
-            <div class="related">
-                <h4><?= __('Related Test Attempt Answers') ?></h4>
-                <?php if (!empty($answer->test_attempt_answers)) : ?>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th><?= __('Id') ?></th>
-                            <th><?= __('Test Attempt Id') ?></th>
-                            <th><?= __('Question Id') ?></th>
-                            <th><?= __('Answer Id') ?></th>
-                            <th><?= __('User Answer Text') ?></th>
-                            <th><?= __('Is Correct') ?></th>
-                            <th><?= __('Answered At') ?></th>
-                            <th class="actions"><?= __('Actions') ?></th>
-                        </tr>
-                        <?php foreach ($answer->test_attempt_answers as $testAttemptAnswer) : ?>
-                        <tr>
-                            <td><?= h($testAttemptAnswer->id) ?></td>
-                            <td><?= h($testAttemptAnswer->test_attempt_id) ?></td>
-                            <td><?= h($testAttemptAnswer->question_id) ?></td>
-                            <td><?= h($testAttemptAnswer->answer_id) ?></td>
-                            <td><?= h($testAttemptAnswer->user_answer_text) ?></td>
-                            <td><?= h($testAttemptAnswer->is_correct) ?></td>
-                            <td><?= h($testAttemptAnswer->answered_at) ?></td>
-                            <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'TestAttemptAnswers', 'action' => 'view', $testAttemptAnswer->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'TestAttemptAnswers', 'action' => 'edit', $testAttemptAnswer->id]) ?>
-                                <?= $this->Form->postLink(
-                                    __('Delete'),
-                                    ['controller' => 'TestAttemptAnswers', 'action' => 'delete', $testAttemptAnswer->id],
-                                    [
-                                        'method' => 'delete',
-                                        'confirm' => __('Are you sure you want to delete # {0}?', $testAttemptAnswer->id),
-                                    ]
-                                ) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </table>
+
+            <div class="col-12 col-lg-3">
+                <div class="mf-muted mb-1"><?= __('Source Type') ?></div>
+                <div class="text-white"><?= h((string)$answer->source_type) ?></div>
+            </div>
+
+            <div class="col-12 col-lg-3">
+                <div class="mf-muted mb-1"><?= __('Is Correct') ?></div>
+                <div>
+                    <?php if ($answer->is_correct) : ?>
+                        <span class="badge bg-success"><?= __('Yes') ?></span>
+                    <?php else : ?>
+                        <span class="badge bg-secondary"><?= __('No') ?></span>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
+            </div>
+
+            <div class="col-12 col-lg-3">
+                <div class="mf-muted mb-1"><?= __('Position') ?></div>
+                <div class="text-white"><?= $answer->position === null ? '—' : h((string)$answer->position) ?></div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="mf-muted mb-1"><?= __('Created') ?></div>
+                <div class="text-white"><?= $answer->created_at ? h($answer->created_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?></div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="mf-muted mb-1"><?= __('Updated') ?></div>
+                <div class="text-white"><?= $answer->updated_at ? h($answer->updated_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?></div>
+            </div>
+
+            <div class="col-12">
+                <div class="mf-muted mb-1"><?= __('Source Text') ?></div>
+                <div class="text-white" style="white-space:pre-wrap;"><?= h((string)$answer->source_text) ?></div>
             </div>
         </div>
     </div>
+
+    <?php if (!empty($answer->answer_translations)) : ?>
+        <div class="mf-admin-card p-3 mt-3">
+            <h2 class="h5 mb-3 text-white"><?= __('Answer Translations') ?></h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th><?= __('ID') ?></th>
+                            <th><?= __('Language Id') ?></th>
+                            <th><?= __('Content') ?></th>
+                            <th><?= __('Source') ?></th>
+                            <th><?= __('Created') ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($answer->answer_translations as $t) : ?>
+                            <tr>
+                                <td class="mf-muted"><?= h((string)$t->id) ?></td>
+                                <td class="mf-muted"><?= h((string)$t->language_id) ?></td>
+                                <td class="text-white"><?= h((string)$t->content) ?></td>
+                                <td class="mf-muted"><?= h((string)$t->source_type) ?></td>
+                                <td class="mf-muted"><?= $t->created_at ? h($t->created_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>

@@ -21,15 +21,16 @@ $buttons = $bulk['buttons'] ?? [];
 $containerClass = $containerClass ?? 'd-flex align-items-center gap-3 flex-wrap mt-2';
 ?>
 
-<div class="<?= h($containerClass) ?>">
+<div class="mf-admin-bulkbar <?= h($containerClass) ?>">
     <input id="<?= h($selectAllCheckboxId) ?>" class="visually-hidden" type="checkbox" />
-    <a
+
+    <button
         id="<?= h($selectAllLinkId) ?>"
-        href="#"
-        class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover"
+        type="button"
+        class="btn btn-sm btn-outline-light"
     >
         <?= h('↑ ') ?><?= h($selectAllText) ?>
-    </a>
+    </button>
 
     <span class="mf-muted" style="font-size:0.9rem;">
         <?= h($bulkLabel) ?>

@@ -59,7 +59,9 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                 <tr>
                     <th scope="col" class="mf-muted fs-6"></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('ID') ?></th>
-                    <th scope="col" class="mf-muted fs-6"><?= __('Source') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Content') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Category') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Difficulty') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Active') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Created') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Updated') ?></th>
@@ -79,7 +81,33 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                             />
                         </td>
                         <td class="mf-muted" data-order="<?= h((string)$question->id) ?>"><?= $this->Number->format($question->id) ?></td>
-                        <td class="mf-muted"><?= h((string)$question->source_type) ?></td>
+                        <td class="mf-muted" style="text-align:left;">
+                            <?php
+                            $content = null;
+                            if (!empty($question->question_translations)) {
+                                $content = $question->question_translations[0]->content ?? null;
+                            }
+                            ?>
+                            <?= $content ? h((string)$content) : __('N/A') ?>
+                        </td>
+                        <td class="mf-muted">
+                            <?php
+                            $catName = null;
+                            if ($question->hasValue('category') && !empty($question->category->category_translations)) {
+                                $catName = $question->category->category_translations[0]->name ?? null;
+                            }
+                            ?>
+                            <?= $catName ? h((string)$catName) : __('N/A') ?>
+                        </td>
+                        <td class="mf-muted">
+                            <?php
+                            $diffName = null;
+                            if ($question->hasValue('difficulty') && !empty($question->difficulty->difficulty_translations)) {
+                                $diffName = $question->difficulty->difficulty_translations[0]->name ?? null;
+                            }
+                            ?>
+                            <?= $diffName ? h((string)$diffName) : __('N/A') ?>
+                        </td>
                         <td>
                             <?php if ($question->is_active) : ?>
                                 <span class="badge bg-success"><?= __('Active') ?></span>

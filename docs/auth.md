@@ -68,6 +68,13 @@ Mobile tokens must be stored in **secure OS storage**:
 ### Logout rules
 - Logout must invalidate the long-lived token so the mobile session cannot be restored.
 - The short-lived token expires naturally after its lifetime.
+- API logout supports current-device revoke by default and optional all-device revoke via `all_devices=true`.
+
+### API token persistence (server-side)
+- Access and refresh tokens are both stored server-side in hashed form.
+- Each token has a random public `token_id` (audit-safe identifier) and a secret part known only by the client.
+- Refresh token rotation is enforced on every refresh.
+- Refresh token reuse triggers family-wide revocation as a security signal.
 
 ---
 
@@ -92,6 +99,10 @@ Security-sensitive actions should be logged:
 - password reset events
 - logout events
 - role changes / bans (admin actions)
+
+### Operational cleanup
+- Expired or long-revoked API tokens should be cleaned up regularly.
+- Use `bin/cake api_tokens_cleanup --retention-days 30` from cron/scheduler.
 
 ---
 

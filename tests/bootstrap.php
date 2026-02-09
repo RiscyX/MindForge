@@ -61,6 +61,27 @@ session_id('cli');
 // Otherwise, table objects inside migrations would use the default datasource
 ConnectionHelper::addTestAliases();
 
+$defaultConfig = ConnectionManager::getConfig('default');
+$testConfig = ConnectionManager::getConfig('test');
+
+$defaultHost = (string)($defaultConfig['host'] ?? '');
+$defaultPort = (string)($defaultConfig['port'] ?? '');
+$defaultDb = (string)($defaultConfig['database'] ?? '');
+
+$testHost = (string)($testConfig['host'] ?? '');
+$testPort = (string)($testConfig['port'] ?? '');
+$testDb = (string)($testConfig['database'] ?? '');
+
+if (
+    $defaultHost !== '' &&
+    $defaultDb !== '' &&
+    $defaultHost === $testHost &&
+    $defaultPort === $testPort &&
+    $defaultDb === $testDb
+) {
+    throw new RuntimeException('Refusing to run tests: test datasource points to the same database as default.');
+}
+
 // Use migrations to build test database schema.
 //
 // Will rebuild the database if the migration state differs
