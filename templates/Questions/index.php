@@ -2,9 +2,21 @@
 /**
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\Question> $questions
+ * @var array<string, string> $filters
+ * @var array<int, string> $categoryOptions
+ * @var array<string, string> $questionTypeOptions
+ * @var array<string, string> $sourceTypeOptions
+ * @var array<string, string> $activeOptions
  */
 
 $lang = $this->request->getParam('lang', 'en');
+$filters = is_array($filters ?? null) ? $filters : [];
+$queryParams = $this->request->getQueryParams();
+
+$selectedCategory = (string)($filters['category'] ?? '');
+$selectedQuestionType = (string)($filters['question_type'] ?? '');
+$selectedIsActive = (string)($filters['is_active'] ?? '');
+$selectedSourceType = (string)($filters['source_type'] ?? '');
 
 $this->assign('title', __('Questions'));
 
@@ -47,11 +59,66 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
     ],
 ]) ?>
 
+<div class="mf-admin-card p-3 mt-3">
+    <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
+        <div class="col-12 col-lg-3">
+            <?= $this->Form->control('category', [
+                'label' => __('Category'),
+                'type' => 'select',
+                'empty' => __('All'),
+                'options' => $categoryOptions ?? [],
+                'value' => $selectedCategory,
+                'class' => 'form-select',
+            ]) ?>
+        </div>
+        <div class="col-12 col-lg-3">
+            <?= $this->Form->control('question_type', [
+                'label' => __('Question Type'),
+                'type' => 'select',
+                'empty' => __('All'),
+                'options' => $questionTypeOptions ?? [],
+                'value' => $selectedQuestionType,
+                'class' => 'form-select',
+            ]) ?>
+        </div>
+        <div class="col-12 col-lg-2">
+            <?= $this->Form->control('is_active', [
+                'label' => __('Status'),
+                'type' => 'select',
+                'empty' => __('All'),
+                'options' => $activeOptions ?? [],
+                'value' => $selectedIsActive,
+                'class' => 'form-select',
+            ]) ?>
+        </div>
+        <div class="col-12 col-lg-2">
+            <?= $this->Form->control('source_type', [
+                'label' => __('Source Type'),
+                'type' => 'select',
+                'empty' => __('All'),
+                'options' => $sourceTypeOptions ?? [],
+                'value' => $selectedSourceType,
+                'class' => 'form-select',
+            ]) ?>
+        </div>
+        <div class="col-12 col-lg-1 d-grid">
+            <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
+        </div>
+        <div class="col-12 col-lg-1 d-grid">
+            <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
+        </div>
+    <?= $this->Form->end() ?>
+</div>
+
 <div class="mf-admin-table-card mt-3">
     <?= $this->Form->create(null, [
         'url' => ['action' => 'bulk', 'lang' => $lang],
         'id' => 'mfQuestionsBulkForm',
     ]) ?>
+    <input type="hidden" name="return_filters[category]" value="<?= h($selectedCategory) ?>">
+    <input type="hidden" name="return_filters[question_type]" value="<?= h($selectedQuestionType) ?>">
+    <input type="hidden" name="return_filters[is_active]" value="<?= h($selectedIsActive) ?>">
+    <input type="hidden" name="return_filters[source_type]" value="<?= h($selectedSourceType) ?>">
 
     <div class="mf-admin-table-scroll">
         <table id="mfQuestionsTable" class="table table-dark table-hover mb-0 align-middle text-center">
@@ -62,6 +129,8 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                     <th scope="col" class="mf-muted fs-6"><?= __('Content') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Category') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Difficulty') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Type') ?></th>
+                    <th scope="col" class="mf-muted fs-6"><?= __('Source') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Active') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Created') ?></th>
                     <th scope="col" class="mf-muted fs-6"><?= __('Updated') ?></th>
@@ -108,6 +177,22 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                             ?>
                             <?= $diffName ? h((string)$diffName) : __('N/A') ?>
                         </td>
+                        <td class="mf-muted">
+                            <?php
+                            $questionType = (string)($question->question_type ?? '');
+                            $questionTypeLabel = $questionTypeOptions[$questionType] ?? $questionType;
+                            ?>
+                            <?= $questionTypeLabel !== '' ? h((string)$questionTypeLabel) : __('N/A') ?>
+                        </td>
+                        <td>
+                            <?php if ((string)$question->source_type === 'ai') : ?>
+                                <span class="badge bg-info text-dark"><?= __('AI') ?></span>
+                            <?php elseif ((string)$question->source_type === 'human') : ?>
+                                <span class="badge bg-primary"><?= __('Human') ?></span>
+                            <?php else : ?>
+                                <span class="badge bg-secondary"><?= h((string)$question->source_type) ?></span>
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <?php if ($question->is_active) : ?>
                                 <span class="badge bg-success"><?= __('Active') ?></span>
@@ -124,13 +209,27 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                         <td>
                             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
                                 <?= $this->Html->link(
+                                    __('View'),
+                                    ['action' => 'view', $question->id, 'lang' => $lang, '?' => $queryParams],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
+                                <?= $this->Html->link(
                                     __('Edit'),
-                                    ['action' => 'edit', $question->id, 'lang' => $lang],
+                                    ['action' => 'edit', $question->id, 'lang' => $lang, '?' => $queryParams],
                                     ['class' => 'btn btn-sm btn-outline-light'],
                                 ) ?>
                                 <?= $this->Form->postLink(
+                                    $question->is_active ? __('Deactivate') : __('Activate'),
+                                    ['action' => 'toggleActive', $question->id, 'lang' => $lang, '?' => $queryParams],
+                                    [
+                                        'class' => $question->is_active
+                                            ? 'btn btn-sm btn-outline-warning'
+                                            : 'btn btn-sm btn-outline-success',
+                                    ],
+                                ) ?>
+                                <?= $this->Form->postLink(
                                     __('Delete'),
-                                    ['action' => 'delete', $question->id, 'lang' => $lang],
+                                    ['action' => 'delete', $question->id, 'lang' => $lang, '?' => $queryParams],
                                     [
                                         'confirm' => __('Are you sure you want to delete # {0}?', $question->id),
                                         'class' => 'btn btn-sm btn-outline-danger',
@@ -158,15 +257,25 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
         'bulk' => [
             'label' => __('A kijelöltekkel végzendő művelet:'),
             'formId' => 'mfQuestionsBulkForm',
-            'buttons' => [
-                [
-                    'label' => __('Delete'),
-                    'value' => 'delete',
-                    'class' => 'btn btn-sm btn-outline-danger',
-                    'attrs' => [
-                        'data-mf-bulk-delete' => true,
+                'buttons' => [
+                    [
+                        'label' => __('Activate'),
+                        'value' => 'activate',
+                        'class' => 'btn btn-sm btn-outline-success',
                     ],
-                ],
+                    [
+                        'label' => __('Deactivate'),
+                        'value' => 'deactivate',
+                        'class' => 'btn btn-sm btn-outline-warning',
+                    ],
+                    [
+                        'label' => __('Delete'),
+                        'value' => 'delete',
+                        'class' => 'btn btn-sm btn-outline-danger',
+                        'attrs' => [
+                            'data-mf-bulk-delete' => true,
+                        ],
+                    ],
             ],
         ],
     ]) ?>
@@ -203,14 +312,14 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             'pageLength' => 10,
             'order' => [[1, 'asc']],
             'nonOrderableTargets' => [0, -1],
-            'nonSearchableTargets' => [3, 4, 5],
+            'nonSearchableTargets' => [3, 4, 5, 7, 8],
             'dom' => 'rt',
         ],
         'vanilla' => [
             'defaultSortCol' => 1,
             'defaultSortDir' => 'asc',
-            'excludedSortCols' => [0, 6],
-            'searchCols' => [1, 2],
+            'excludedSortCols' => [0, 10],
+            'searchCols' => [1, 2, 6, 7],
         ],
     ],
 ]) ?>

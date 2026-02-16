@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Entity\Question;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\ORM\Query\SelectQuery;
@@ -34,6 +35,12 @@ class QuestionsController extends AppController
     {
         $langCode = (string)$this->request->getParam('lang', 'en');
         $languageId = $this->resolveLanguageId($langCode);
+        $filters = [
+            'category' => (string)$this->request->getQuery('category', ''),
+            'question_type' => (string)$this->request->getQuery('question_type', ''),
+            'is_active' => (string)$this->request->getQuery('is_active', ''),
+            'source_type' => (string)$this->request->getQuery('source_type', ''),
+        ];
 
         $query = $this->Questions
             ->find()
@@ -51,9 +58,61 @@ class QuestionsController extends AppController
             ])
             ->orderByAsc('Questions.id');
 
+        if ($filters['category'] !== '' && ctype_digit($filters['category'])) {
+            $query->where(['Questions.category_id' => (int)$filters['category']]);
+        }
+
+        $questionTypes = [
+            Question::TYPE_MULTIPLE_CHOICE,
+            Question::TYPE_TRUE_FALSE,
+            Question::TYPE_TEXT,
+        ];
+        if (in_array($filters['question_type'], $questionTypes, true)) {
+            $query->where(['Questions.question_type' => $filters['question_type']]);
+        }
+
+        if (in_array($filters['source_type'], ['human', 'ai'], true)) {
+            $query->where(['Questions.source_type' => $filters['source_type']]);
+        }
+
+        if ($filters['is_active'] === '1') {
+            $query->where(['Questions.is_active' => true]);
+        } elseif ($filters['is_active'] === '0') {
+            $query->where(['Questions.is_active' => false]);
+        }
+
         $questions = $query->all();
 
-        $this->set(compact('questions'));
+        $categoryOptions = $this->Questions->Categories->CategoryTranslations->find('list', [
+            'keyField' => 'category_id',
+            'valueField' => 'name',
+        ])
+            ->where($languageId === null ? [] : ['language_id' => $languageId])
+            ->all()
+            ->toArray();
+
+        $questionTypeOptions = [
+            Question::TYPE_MULTIPLE_CHOICE => __('Multiple Choice'),
+            Question::TYPE_TRUE_FALSE => __('True/False'),
+            Question::TYPE_TEXT => __('Text'),
+        ];
+        $sourceTypeOptions = [
+            'human' => __('Human'),
+            'ai' => __('AI'),
+        ];
+        $activeOptions = [
+            '1' => __('Active'),
+            '0' => __('Inactive'),
+        ];
+
+        $this->set(compact(
+            'questions',
+            'filters',
+            'categoryOptions',
+            'questionTypeOptions',
+            'sourceTypeOptions',
+            'activeOptions',
+        ));
     }
 
     /**
@@ -278,7 +337,40 @@ class QuestionsController extends AppController
             $this->Flash->error(__('The question could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+        return $this->redirect([
+            'action' => 'index',
+            'lang' => $this->request->getParam('lang'),
+            '?' => $this->request->getQueryParams(),
+        ]);
+    }
+
+    /**
+     * Toggle active state for a question.
+     *
+     * @param string|null $id Question id.
+     * @return \Cake\Http\Response|null
+     */
+    public function toggleActive(?string $id = null): ?Response
+    {
+        $this->request->allowMethod(['post']);
+
+        $question = $this->Questions->get($id);
+        $question->is_active = !$question->is_active;
+        if ($this->Questions->save($question)) {
+            $this->Flash->success(
+                $question->is_active
+                    ? __('The question has been activated.')
+                    : __('The question has been deactivated.'),
+            );
+        } else {
+            $this->Flash->error(__('The question status could not be changed. Please, try again.'));
+        }
+
+        return $this->redirect([
+            'action' => 'index',
+            'lang' => $this->request->getParam('lang'),
+            '?' => $this->request->getQueryParams(),
+        ]);
     }
 
     /**
@@ -290,6 +382,7 @@ class QuestionsController extends AppController
     {
         $this->request->allowMethod(['post']);
 
+        $returnFilters = $this->extractReturnFilters();
         $action = (string)$this->request->getData('bulk_action');
         $rawIds = $this->request->getData('ids');
         $ids = is_array($rawIds) ? $rawIds : [];
@@ -298,24 +391,42 @@ class QuestionsController extends AppController
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
 
-            return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+            return $this->redirect([
+                'action' => 'index',
+                'lang' => $this->request->getParam('lang'),
+                '?' => $returnFilters,
+            ]);
         }
 
-        if ($action !== 'delete') {
+        if (!in_array($action, ['delete', 'activate', 'deactivate'], true)) {
             $this->Flash->error(__('Invalid bulk action.'));
 
-            return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+            return $this->redirect([
+                'action' => 'index',
+                'lang' => $this->request->getParam('lang'),
+                '?' => $returnFilters,
+            ]);
         }
 
         $deleted = 0;
+        $updated = 0;
         $failed = 0;
         foreach ($ids as $id) {
             try {
                 $entity = $this->Questions->get((string)$id);
-                if ($this->Questions->delete($entity)) {
-                    $deleted += 1;
+                if ($action === 'delete') {
+                    if ($this->Questions->delete($entity)) {
+                        $deleted += 1;
+                    } else {
+                        $failed += 1;
+                    }
                 } else {
-                    $failed += 1;
+                    $entity->is_active = $action === 'activate';
+                    if ($this->Questions->save($entity)) {
+                        $updated += 1;
+                    } else {
+                        $failed += 1;
+                    }
                 }
             } catch (Throwable) {
                 $failed += 1;
@@ -325,10 +436,53 @@ class QuestionsController extends AppController
         if ($deleted > 0) {
             $this->Flash->success(__('Deleted {0} item(s).', $deleted));
         }
+        if ($updated > 0) {
+            $this->Flash->success(
+                $action === 'activate'
+                    ? __('Activated {0} item(s).', $updated)
+                    : __('Deactivated {0} item(s).', $updated),
+            );
+        }
         if ($failed > 0) {
-            $this->Flash->error(__('Could not delete {0} item(s).', $failed));
+            $this->Flash->error(
+                $action === 'delete'
+                    ? __('Could not delete {0} item(s).', $failed)
+                    : __('Could not update {0} item(s).', $failed),
+            );
         }
 
-        return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+        return $this->redirect([
+            'action' => 'index',
+            'lang' => $this->request->getParam('lang'),
+            '?' => $returnFilters,
+        ]);
+    }
+
+    /**
+     * Extract and normalize filter query values for redirect targets.
+     *
+     * @return array<string, string>
+     */
+    private function extractReturnFilters(): array
+    {
+        $raw = $this->request->getData('return_filters');
+        if (!is_array($raw)) {
+            return [];
+        }
+
+        $allowed = ['category', 'question_type', 'is_active', 'source_type'];
+        $filters = [];
+        foreach ($allowed as $key) {
+            if (!array_key_exists($key, $raw)) {
+                continue;
+            }
+            $value = trim((string)$raw[$key]);
+            if ($value === '') {
+                continue;
+            }
+            $filters[$key] = $value;
+        }
+
+        return $filters;
     }
 }

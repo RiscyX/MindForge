@@ -1228,6 +1228,7 @@ class TestsController extends AppController
             $qData = [
                 'id' => $question->id, // keep ID to update existing
                 'type' => $question->question_type,
+                'source_type' => (string)$question->source_type,
                 'translations' => [],
                 'answers' => [],
             ];
@@ -1242,6 +1243,7 @@ class TestsController extends AppController
             foreach ($question->answers as $answer) {
                 $aData = [
                     'id' => $answer->id,
+                    'source_type' => (string)$answer->source_type,
                     'is_correct' => $answer->is_correct,
                     'translations' => [],
                 ];
@@ -1419,6 +1421,25 @@ class TestsController extends AppController
                         'message' => 'Invalid JSON from AI',
                         'debug' => $responseContent,
                     ]));
+            }
+
+            if (isset($json['questions']) && is_array($json['questions'])) {
+                foreach ($json['questions'] as &$question) {
+                    if (!is_array($question)) {
+                        continue;
+                    }
+                    $question['source_type'] = 'ai';
+                    if (isset($question['answers']) && is_array($question['answers'])) {
+                        foreach ($question['answers'] as &$answer) {
+                            if (!is_array($answer)) {
+                                continue;
+                            }
+                            $answer['source_type'] = 'ai';
+                        }
+                        unset($answer);
+                    }
+                }
+                unset($question);
             }
 
             // Save Activity Log

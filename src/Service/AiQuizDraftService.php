@@ -40,6 +40,7 @@ class AiQuizDraftService
             }
             $testTranslations[] = [
                 'language_id' => $lid,
+                'source_type' => 'ai',
                 'title' => $title,
                 'description' => $description,
             ];
@@ -55,7 +56,17 @@ class AiQuizDraftService
                 continue;
             }
             $type = (string)($q['type'] ?? '');
-            if (!in_array($type, [Question::TYPE_MULTIPLE_CHOICE, Question::TYPE_TRUE_FALSE, Question::TYPE_TEXT], true)) {
+            if (
+                !in_array(
+                    $type,
+                    [
+                        Question::TYPE_MULTIPLE_CHOICE,
+                        Question::TYPE_TRUE_FALSE,
+                        Question::TYPE_TEXT,
+                    ],
+                    true,
+                )
+            ) {
                 throw new RuntimeException('Invalid question type: ' . $type);
             }
 
@@ -74,6 +85,7 @@ class AiQuizDraftService
                 }
                 $questionTranslations[] = [
                     'language_id' => (int)$langId,
+                    'source_type' => 'ai',
                     'content' => $c,
                 ];
             }
@@ -110,6 +122,7 @@ class AiQuizDraftService
                         }
                         $answerTranslations[] = [
                             'language_id' => (int)$langId,
+                            'source_type' => 'ai',
                             'content' => $c,
                         ];
                     }
@@ -122,6 +135,7 @@ class AiQuizDraftService
                     }
 
                     $answersData[] = [
+                        'source_type' => 'ai',
                         'position' => $aPos,
                         'is_correct' => $isCorrect,
                         'answer_translations' => $answerTranslations,
@@ -141,6 +155,7 @@ class AiQuizDraftService
             }
 
             $questionsData[] = [
+                'source_type' => 'ai',
                 'position' => $pos,
                 'question_type' => $type,
                 'is_active' => true,

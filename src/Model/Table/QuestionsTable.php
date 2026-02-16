@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -33,6 +35,36 @@ use Cake\Validation\Validator;
  */
 class QuestionsTable extends Table
 {
+    /**
+     * Keep question difficulty in sync with parent test difficulty.
+     *
+     * @param \Cake\Event\EventInterface $event Event instance.
+     * @param \Cake\Datasource\EntityInterface $entity Question entity.
+     * @param \ArrayObject<string, mixed> $options Save options.
+     * @return void
+     */
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+    {
+        if (!$entity->has('test_id') || !is_numeric($entity->test_id)) {
+            return;
+        }
+
+        $testId = (int)$entity->test_id;
+        if ($testId <= 0) {
+            return;
+        }
+
+        $test = $this->Tests->find()
+            ->select(['difficulty_id'])
+            ->where(['Tests.id' => $testId])
+            ->enableHydration(false)
+            ->first();
+
+        if ($test !== null) {
+            $entity->set('difficulty_id', $test['difficulty_id'] ?? null);
+        }
+    }
+
     /**
      * Initialize method
      *
