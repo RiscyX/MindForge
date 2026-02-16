@@ -24,10 +24,10 @@
 use App\Middleware\ApiCorsMiddleware;
 use App\Middleware\ApiRequestLoggingMiddleware;
 use App\Middleware\ApiTokenAuthMiddleware;
+use Cake\Http\ServerRequest;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
-use Cake\Http\ServerRequest;
 
 /*
  * This file is loaded in the context of the `Application` class.
@@ -123,6 +123,8 @@ return function (RouteBuilder $routes): void {
             ->setMethods(['GET']);
 
         // Creator: async AI quiz generation (prompt + optional images)
+        $builder->connect('/creator/tests/metadata', ['controller' => 'CreatorTests', 'action' => 'metadata'])
+            ->setMethods(['GET']);
         $builder->connect('/creator/ai/test-generation', ['controller' => 'CreatorAi', 'action' => 'createTestGeneration'])
             ->setMethods(['POST']);
         $builder->connect('/creator/ai/requests/{id}', ['controller' => 'CreatorAi', 'action' => 'view'])
@@ -203,6 +205,11 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/categories/delete/*', ['controller' => 'Categories', 'action' => 'delete'])
             ->setPatterns(['lang' => 'en|hu']);
 
+        // Public/user-facing test details (friendly URL)
+        $builder->connect('/tests/{id}/details', ['controller' => 'Tests', 'action' => 'details'])
+            ->setPatterns(['lang' => 'en|hu', 'id' => '\\d+'])
+            ->setPass(['id']);
+
         $builder->connect('/pages/*', 'Pages::display')
             ->setPatterns(['lang' => 'en|hu']);
 
@@ -213,6 +220,9 @@ return function (RouteBuilder $routes): void {
             ->setPatterns(['lang' => 'en|hu']);
 
         $builder->connect('/profile-edit', ['controller' => 'Users', 'action' => 'profileEdit'])
+            ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/my-stats', ['controller' => 'Users', 'action' => 'stats'])
             ->setPatterns(['lang' => 'en|hu']);
 
         $builder->connect('/users', ['controller' => 'Users', 'action' => 'index'])

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2026-02-07 14:37+0000\n"
+"POT-Creation-Date: 2026-02-09 18:11+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -32,61 +32,61 @@ msgstr ""
 msgid "The activity log could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/Admin/DashboardController.php:57
-#: ./src/Controller/AiRequestsController.php:123
-#: ./src/Controller/AnswersController.php:135
-#: ./src/Controller/CategoriesController.php:167
-#: ./src/Controller/DeviceLogsController.php:74
-#: ./src/Controller/DifficultiesController.php:153
-#: ./src/Controller/LanguagesController.php:54
-#: ./src/Controller/QuestionsController.php:145
-#: ./src/Controller/TestsController.php:93
+#: ./src/Controller/Admin/DashboardController.php:58
+#: ./src/Controller/AiRequestsController.php:124
+#: ./src/Controller/AnswersController.php:212
+#: ./src/Controller/CategoriesController.php:168
+#: ./src/Controller/DeviceLogsController.php:75
+#: ./src/Controller/DifficultiesController.php:154
+#: ./src/Controller/LanguagesController.php:55
+#: ./src/Controller/QuestionsController.php:217
+#: ./src/Controller/TestsController.php:615
 #: ./templates/Admin/Dashboard/index.php:205
 #: ./templates/AiRequests/index.php:275
-#: ./templates/Answers/index.php:169
+#: ./templates/Answers/index.php:185
 #: ./templates/Categories/index.php:176
 #: ./templates/DeviceLogs/index.php:217
 #: ./templates/Difficulties/index.php:169
 #: ./templates/Languages/index.php:153
-#: ./templates/Questions/index.php:167
-#: ./templates/Tests/index.php:177
+#: ./templates/Questions/index.php:195
+#: ./templates/Tests/index.php:289
 msgid "Select at least one item."
 msgstr ""
 
-#: ./src/Controller/Admin/DashboardController.php:63
+#: ./src/Controller/Admin/DashboardController.php:64
 #: ./src/Controller/Admin/UsersController.php:58
-#: ./src/Controller/AiRequestsController.php:129
-#: ./src/Controller/AnswersController.php:141
-#: ./src/Controller/CategoriesController.php:173
-#: ./src/Controller/DeviceLogsController.php:80
-#: ./src/Controller/DifficultiesController.php:159
-#: ./src/Controller/LanguagesController.php:60
-#: ./src/Controller/QuestionsController.php:151
-#: ./src/Controller/TestsController.php:99
+#: ./src/Controller/AiRequestsController.php:130
+#: ./src/Controller/AnswersController.php:218
+#: ./src/Controller/CategoriesController.php:174
+#: ./src/Controller/DeviceLogsController.php:81
+#: ./src/Controller/DifficultiesController.php:160
+#: ./src/Controller/LanguagesController.php:61
+#: ./src/Controller/QuestionsController.php:223
+#: ./src/Controller/TestsController.php:621
 msgid "Invalid bulk action."
 msgstr ""
 
-#: ./src/Controller/Admin/DashboardController.php:84
-#: ./src/Controller/AiRequestsController.php:150
-#: ./src/Controller/AnswersController.php:162
-#: ./src/Controller/CategoriesController.php:194
-#: ./src/Controller/DeviceLogsController.php:101
-#: ./src/Controller/DifficultiesController.php:180
-#: ./src/Controller/LanguagesController.php:81
-#: ./src/Controller/QuestionsController.php:172
-#: ./src/Controller/TestsController.php:120
+#: ./src/Controller/Admin/DashboardController.php:85
+#: ./src/Controller/AiRequestsController.php:151
+#: ./src/Controller/AnswersController.php:239
+#: ./src/Controller/CategoriesController.php:195
+#: ./src/Controller/DeviceLogsController.php:102
+#: ./src/Controller/DifficultiesController.php:181
+#: ./src/Controller/LanguagesController.php:82
+#: ./src/Controller/QuestionsController.php:244
+#: ./src/Controller/TestsController.php:642
 msgid "Deleted {0} item(s)."
 msgstr ""
 
-#: ./src/Controller/Admin/DashboardController.php:87
-#: ./src/Controller/AiRequestsController.php:153
-#: ./src/Controller/AnswersController.php:165
-#: ./src/Controller/CategoriesController.php:197
-#: ./src/Controller/DeviceLogsController.php:104
-#: ./src/Controller/DifficultiesController.php:183
-#: ./src/Controller/LanguagesController.php:84
-#: ./src/Controller/QuestionsController.php:175
-#: ./src/Controller/TestsController.php:123
+#: ./src/Controller/Admin/DashboardController.php:88
+#: ./src/Controller/AiRequestsController.php:154
+#: ./src/Controller/AnswersController.php:242
+#: ./src/Controller/CategoriesController.php:198
+#: ./src/Controller/DeviceLogsController.php:105
+#: ./src/Controller/DifficultiesController.php:184
+#: ./src/Controller/LanguagesController.php:85
+#: ./src/Controller/QuestionsController.php:247
+#: ./src/Controller/TestsController.php:645
 msgid "Could not delete {0} item(s)."
 msgstr ""
 
@@ -126,17 +126,17 @@ msgid "No users were deleted."
 msgstr ""
 
 #: ./src/Controller/Admin/UsersController.php:192
-#: ./src/Controller/UsersController.php:627
+#: ./src/Controller/UsersController.php:643
 msgid "Your profile has been updated."
 msgstr ""
 
 #: ./src/Controller/Admin/UsersController.php:200
-#: ./src/Controller/UsersController.php:632
+#: ./src/Controller/UsersController.php:648
 msgid "Unable to update your profile. Please try again."
 msgstr ""
 
 #: ./src/Controller/Admin/UsersController.php:251
-#: ./src/Controller/UsersController.php:490
+#: ./src/Controller/UsersController.php:504
 msgid "Reset your MindForge password"
 msgstr ""
 
@@ -193,30 +193,30 @@ msgid "Failed to upload avatar."
 msgstr ""
 
 #: ./src/Controller/Admin/UsersController.php:528
-#: ./src/Controller/UsersController.php:117
+#: ./src/Controller/UsersController.php:119
 msgid "The user has been deleted."
 msgstr ""
 
 #: ./src/Controller/Admin/UsersController.php:530
-#: ./src/Controller/UsersController.php:119
+#: ./src/Controller/UsersController.php:121
 msgid "The user could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/AiRequestsController.php:192
-#: ./src/Controller/AiRequestsController.php:219
+#: ./src/Controller/AiRequestsController.php:193
+#: ./src/Controller/AiRequestsController.php:220
 msgid "The ai request has been saved."
 msgstr ""
 
-#: ./src/Controller/AiRequestsController.php:196
-#: ./src/Controller/AiRequestsController.php:223
+#: ./src/Controller/AiRequestsController.php:197
+#: ./src/Controller/AiRequestsController.php:224
 msgid "The ai request could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/AiRequestsController.php:243
+#: ./src/Controller/AiRequestsController.php:244
 msgid "The ai request has been deleted."
 msgstr ""
 
-#: ./src/Controller/AiRequestsController.php:245
+#: ./src/Controller/AiRequestsController.php:246
 msgid "The ai request could not be deleted. Please, try again."
 msgstr ""
 
@@ -238,39 +238,39 @@ msgstr ""
 msgid "The answer translation could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/AnswersController.php:67
 #: ./src/Controller/AnswersController.php:90
+#: ./src/Controller/AnswersController.php:133
 msgid "The answer has been saved."
 msgstr ""
 
-#: ./src/Controller/AnswersController.php:71
 #: ./src/Controller/AnswersController.php:94
+#: ./src/Controller/AnswersController.php:137
 msgid "The answer could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/AnswersController.php:112
+#: ./src/Controller/AnswersController.php:189
 msgid "The answer has been deleted."
 msgstr ""
 
-#: ./src/Controller/AnswersController.php:114
+#: ./src/Controller/AnswersController.php:191
 msgid "The answer could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/CategoriesController.php:72
-#: ./src/Controller/CategoriesController.php:106
+#: ./src/Controller/CategoriesController.php:73
+#: ./src/Controller/CategoriesController.php:107
 msgid "The category has been saved."
 msgstr ""
 
-#: ./src/Controller/CategoriesController.php:76
-#: ./src/Controller/CategoriesController.php:110
+#: ./src/Controller/CategoriesController.php:77
+#: ./src/Controller/CategoriesController.php:111
 msgid "The category could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/CategoriesController.php:144
+#: ./src/Controller/CategoriesController.php:145
 msgid "The category has been deleted."
 msgstr ""
 
-#: ./src/Controller/CategoriesController.php:146
+#: ./src/Controller/CategoriesController.php:147
 msgid "The category could not be deleted. Please, try again."
 msgstr ""
 
@@ -292,57 +292,57 @@ msgstr ""
 msgid "The category translation could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/DeviceLogsController.php:134
-#: ./src/Controller/DeviceLogsController.php:157
+#: ./src/Controller/DeviceLogsController.php:135
+#: ./src/Controller/DeviceLogsController.php:158
 msgid "The device log has been saved."
 msgstr ""
 
-#: ./src/Controller/DeviceLogsController.php:138
-#: ./src/Controller/DeviceLogsController.php:161
+#: ./src/Controller/DeviceLogsController.php:139
+#: ./src/Controller/DeviceLogsController.php:162
 msgid "The device log could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/DeviceLogsController.php:179
+#: ./src/Controller/DeviceLogsController.php:180
 msgid "The device log has been deleted."
 msgstr ""
 
-#: ./src/Controller/DeviceLogsController.php:181
+#: ./src/Controller/DeviceLogsController.php:182
 msgid "The device log could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/DifficultiesController.php:82
-#: ./src/Controller/DifficultiesController.php:107
+#: ./src/Controller/DifficultiesController.php:83
+#: ./src/Controller/DifficultiesController.php:108
 msgid "The difficulty has been saved."
 msgstr ""
 
-#: ./src/Controller/DifficultiesController.php:86
-#: ./src/Controller/DifficultiesController.php:111
+#: ./src/Controller/DifficultiesController.php:87
+#: ./src/Controller/DifficultiesController.php:112
 msgid "The difficulty could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/DifficultiesController.php:130
+#: ./src/Controller/DifficultiesController.php:131
 msgid "The difficulty has been deleted."
 msgstr ""
 
-#: ./src/Controller/DifficultiesController.php:132
+#: ./src/Controller/DifficultiesController.php:133
 msgid "The difficulty could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/LanguagesController.php:120
-#: ./src/Controller/LanguagesController.php:142
+#: ./src/Controller/LanguagesController.php:121
+#: ./src/Controller/LanguagesController.php:143
 msgid "The language has been saved."
 msgstr ""
 
-#: ./src/Controller/LanguagesController.php:124
-#: ./src/Controller/LanguagesController.php:146
+#: ./src/Controller/LanguagesController.php:125
+#: ./src/Controller/LanguagesController.php:147
 msgid "The language could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/LanguagesController.php:163
+#: ./src/Controller/LanguagesController.php:164
 msgid "The language has been deleted."
 msgstr ""
 
-#: ./src/Controller/LanguagesController.php:165
+#: ./src/Controller/LanguagesController.php:166
 msgid "The language could not be deleted. Please, try again."
 msgstr ""
 
@@ -364,22 +364,28 @@ msgstr ""
 msgid "The question translation could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/QuestionsController.php:73
-#: ./src/Controller/QuestionsController.php:98
+#: ./src/Controller/QuestionsController.php:101
+#: ./src/Controller/QuestionsController.php:141
 msgid "The question has been saved."
 msgstr ""
 
-#: ./src/Controller/QuestionsController.php:77
-#: ./src/Controller/QuestionsController.php:102
+#: ./src/Controller/QuestionsController.php:105
+#: ./src/Controller/QuestionsController.php:145
 msgid "The question could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/QuestionsController.php:122
+#: ./src/Controller/QuestionsController.php:194
 msgid "The question has been deleted."
 msgstr ""
 
-#: ./src/Controller/QuestionsController.php:124
+#: ./src/Controller/QuestionsController.php:196
 msgid "The question could not be deleted. Please, try again."
+msgstr ""
+
+#: ./src/Controller/QuizCreator/DashboardController.php:10
+#: ./templates/QuizCreator/Dashboard/index.php:8
+#: ./templates/QuizCreator/Dashboard/index.php:13
+msgid "Quiz Creator"
 msgstr ""
 
 #: ./src/Controller/RolesController.php:52
@@ -454,29 +460,67 @@ msgstr ""
 msgid "The test translation could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/TestsController.php:183
-#: ./src/Controller/TestsController.php:287
-msgid "The test has been saved."
+#: ./src/Controller/TestsController.php:168
+#: ./src/Controller/TestsController.php:702
+msgid "Quiz not found."
 msgstr ""
 
-#: ./src/Controller/TestsController.php:189
-#: ./src/Controller/TestsController.php:291
-msgid "The test could not be saved. Please, try again."
+#: ./src/Controller/TestsController.php:184
+msgid "This quiz has no active questions yet."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:205
+msgid "Could not start the quiz. Please try again."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:227
+msgid "Please log in to start a quiz."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:326
+msgid "Please log in to submit a quiz."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:344
+msgid "This attempt has already been submitted."
 msgstr ""
 
 #: ./src/Controller/TestsController.php:383
+msgid "This quiz has no active questions."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:481
+msgid "Could not submit your answers. Please try again."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:503
+#: ./src/Controller/TestsController.php:531
+msgid "Please log in to view results."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:819
+#: ./src/Controller/TestsController.php:929
+msgid "The test has been saved."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:825
+#: ./src/Controller/TestsController.php:933
+msgid "The test could not be saved. Please, try again."
+msgstr ""
+
+#: ./src/Controller/TestsController.php:1031
 msgid "The test has been deleted."
 msgstr ""
 
-#: ./src/Controller/TestsController.php:385
+#: ./src/Controller/TestsController.php:1033
 msgid "The test could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/TestsController.php:410
+#: ./src/Controller/TestsController.php:1058
 #: ./templates/Tests/add.php:13
-#: ./templates/Tests/add.php:140
+#: ./templates/Tests/add.php:147
 #: ./templates/Tests/edit.php:13
-#: ./templates/Tests/edit.php:142
+#: ./templates/Tests/edit.php:152
 msgid "AI generation limit reached. Limit resets tomorrow."
 msgstr ""
 
@@ -534,84 +578,88 @@ msgstr ""
 msgid "The user token could not be deleted. Please, try again."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:72
-#: ./src/Controller/UsersController.php:95
+#: ./src/Controller/UsersController.php:74
+#: ./src/Controller/UsersController.php:97
 msgid "The user has been saved."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:76
-#: ./src/Controller/UsersController.php:99
+#: ./src/Controller/UsersController.php:78
+#: ./src/Controller/UsersController.php:101
 msgid "The user could not be saved. Please, try again."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:173
-#: ./src/Controller/UsersController.php:543
+#: ./src/Controller/UsersController.php:175
+#: ./src/Controller/UsersController.php:557
 #: ./templates/Users/register.php:88
 #: ./templates/Users/reset_password.php:56
 msgid "Passwords do not match."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:205
-#: ./src/Controller/UsersController.php:211
+#: ./src/Controller/UsersController.php:207
+#: ./src/Controller/UsersController.php:213
 msgid "Registration failed."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:238
-#: ./src/Service/ApiAuthService.php:239
+#: ./src/Controller/UsersController.php:240
+#: ./src/Service/ApiAuthService.php:238
 msgid "Activate your MindForge account"
 msgstr ""
 
-#: ./src/Controller/UsersController.php:246
+#: ./src/Controller/UsersController.php:248
 msgid "Check your email to activate your account."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:252
+#: ./src/Controller/UsersController.php:254
 msgid "Registration successful but email failed. Activation link: {0}"
 msgstr ""
 
-#: ./src/Controller/UsersController.php:299
+#: ./src/Controller/UsersController.php:301
 msgid "Invalid or expired activation token."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:311
+#: ./src/Controller/UsersController.php:313
 msgid "Your account has been activated. You can now log in."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:316
+#: ./src/Controller/UsersController.php:318
 msgid "Failed to activate your account. Please try again."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:332
+#: ./src/Controller/UsersController.php:334
 msgid "Too many login attempts. Please try again in a minute."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:363
-#: ./src/Controller/UsersController.php:405
+#: ./src/Controller/UsersController.php:365
+#: ./src/Controller/UsersController.php:419
 msgid "Invalid email or password."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:429
+#: ./src/Controller/UsersController.php:443
 msgid "You are now logged out."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:455
+#: ./src/Controller/UsersController.php:469
 msgid "If the email exists in our system, we sent a password reset link."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:527
+#: ./src/Controller/UsersController.php:541
 msgid "Invalid or expired reset token."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:554
+#: ./src/Controller/UsersController.php:568
 msgid "Your password has been reset. You can now log in."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:559
+#: ./src/Controller/UsersController.php:573
 msgid "Failed to reset password. Please try again."
 msgstr ""
 
-#: ./src/Controller/UsersController.php:620
+#: ./src/Controller/UsersController.php:636
 msgid "Invalid image format. Allowed: JPG, PNG, GIF, WEBP"
+msgstr ""
+
+#: ./src/Controller/UsersController.php:666
+msgid "Please log in to view your stats."
 msgstr ""
 
 #: ./src/Model/Table/AnswersTable.php:75
@@ -637,19 +685,8 @@ msgstr ""
 #: ./templates/AnswerTranslations/edit.php:12
 #: ./templates/AnswerTranslations/index.php:20
 #: ./templates/AnswerTranslations/view.php:10
-#: ./templates/Answers/add.php:11
-#: ./templates/Answers/edit.php:11
 #: ./templates/Answers/index.php:67
-#: ./templates/Answers/view.php:10
-#: ./templates/Answers/view.php:69
-#: ./templates/Answers/view.php:111
 #: ./templates/Categories/index.php:66
-#: ./templates/Categories/view.php:10
-#: ./templates/Categories/view.php:50
-#: ./templates/Categories/view.php:96
-#: ./templates/Categories/view.php:148
-#: ./templates/Categories/view.php:196
-#: ./templates/Categories/view.php:236
 #: ./templates/CategoryTranslations/add.php:12
 #: ./templates/CategoryTranslations/edit.php:12
 #: ./templates/CategoryTranslations/index.php:19
@@ -659,10 +696,7 @@ msgstr ""
 #: ./templates/DeviceLogs/index.php:96
 #: ./templates/DeviceLogs/view.php:10
 #: ./templates/Difficulties/index.php:64
-#: ./templates/Difficulties/view.php:10
-#: ./templates/Difficulties/view.php:52
-#: ./templates/Difficulties/view.php:104
-#: ./templates/Difficulties/view.php:152
+#: ./templates/Difficulties/view.php:66
 #: ./templates/Languages/index.php:64
 #: ./templates/Languages/view.php:10
 #: ./templates/Languages/view.php:51
@@ -675,13 +709,7 @@ msgstr ""
 #: ./templates/QuestionTranslations/edit.php:12
 #: ./templates/QuestionTranslations/index.php:20
 #: ./templates/QuestionTranslations/view.php:10
-#: ./templates/Questions/add.php:13
-#: ./templates/Questions/edit.php:13
-#: ./templates/Questions/index.php:66
-#: ./templates/Questions/view.php:10
-#: ./templates/Questions/view.php:76
-#: ./templates/Questions/view.php:120
-#: ./templates/Questions/view.php:163
+#: ./templates/Questions/index.php:68
 #: ./templates/Roles/add.php:10
 #: ./templates/Roles/edit.php:10
 #: ./templates/Roles/index.php:17
@@ -700,13 +728,8 @@ msgstr ""
 #: ./templates/TestTranslations/edit.php:13
 #: ./templates/TestTranslations/index.php:24
 #: ./templates/TestTranslations/view.php:10
-#: ./templates/Tests/index.php:69
-#: ./templates/Tests/view.php:10
-#: ./templates/Tests/view.php:71
-#: ./templates/Tests/view.php:122
-#: ./templates/Tests/view.php:174
-#: ./templates/Tests/view.php:225
-#: ./templates/Tests/view.php:268
+#: ./templates/Tests/index.php:181
+#: ./templates/Tests/view.php:107
 #: ./templates/UserFavoriteCategories/add.php:12
 #: ./templates/UserFavoriteCategories/edit.php:12
 #: ./templates/UserFavoriteCategories/index.php:18
@@ -747,8 +770,7 @@ msgstr ""
 #: ./templates/AiRequests/edit.php:40
 #: ./templates/AnswerTranslations/add.php:30
 #: ./templates/AnswerTranslations/edit.php:35
-#: ./templates/Answers/add.php:30
-#: ./templates/Answers/edit.php:35
+#: ./templates/Answers/add.php:64
 #: ./templates/Categories/add.php:53
 #: ./templates/Categories/edit.php:59
 #: ./templates/CategoryTranslations/add.php:29
@@ -761,8 +783,7 @@ msgstr ""
 #: ./templates/Languages/edit.php:29
 #: ./templates/QuestionTranslations/add.php:31
 #: ./templates/QuestionTranslations/edit.php:36
-#: ./templates/Questions/add.php:34
-#: ./templates/Questions/edit.php:39
+#: ./templates/Questions/add.php:83
 #: ./templates/Roles/add.php:24
 #: ./templates/Roles/edit.php:29
 #: ./templates/TestAttemptAnswers/add.php:31
@@ -793,19 +814,14 @@ msgstr ""
 #: ./templates/AiRequests/view.php:33
 #: ./templates/AnswerTranslations/edit.php:14
 #: ./templates/AnswerTranslations/index.php:36
-#: ./templates/Answers/edit.php:13
-#: ./templates/Answers/index.php:106
-#: ./templates/Answers/index.php:137
-#: ./templates/Answers/view.php:84
-#: ./templates/Answers/view.php:126
+#: ./templates/Answers/edit.php:18
+#: ./templates/Answers/index.php:122
+#: ./templates/Answers/index.php:153
+#: ./templates/Answers/view.php:25
 #: ./templates/Categories/edit.php:12
 #: ./templates/Categories/index.php:113
 #: ./templates/Categories/index.php:144
-#: ./templates/Categories/view.php:64
-#: ./templates/Categories/view.php:116
-#: ./templates/Categories/view.php:168
-#: ./templates/Categories/view.php:212
-#: ./templates/Categories/view.php:248
+#: ./templates/Categories/view.php:21
 #: ./templates/CategoryTranslations/edit.php:14
 #: ./templates/CategoryTranslations/index.php:34
 #: ./templates/DeviceLogs/edit.php:13
@@ -814,9 +830,7 @@ msgstr ""
 #: ./templates/Difficulties/edit.php:14
 #: ./templates/Difficulties/index.php:106
 #: ./templates/Difficulties/index.php:137
-#: ./templates/Difficulties/view.php:72
-#: ./templates/Difficulties/view.php:124
-#: ./templates/Difficulties/view.php:168
+#: ./templates/Difficulties/view.php:21
 #: ./templates/Languages/edit.php:12
 #: ./templates/Languages/index.php:90
 #: ./templates/Languages/index.php:121
@@ -828,12 +842,10 @@ msgstr ""
 #: ./templates/Languages/view.php:298
 #: ./templates/QuestionTranslations/edit.php:14
 #: ./templates/QuestionTranslations/index.php:36
-#: ./templates/Questions/edit.php:15
-#: ./templates/Questions/index.php:104
-#: ./templates/Questions/index.php:135
-#: ./templates/Questions/view.php:92
-#: ./templates/Questions/view.php:136
-#: ./templates/Questions/view.php:178
+#: ./templates/Questions/edit.php:20
+#: ./templates/Questions/index.php:132
+#: ./templates/Questions/index.php:163
+#: ./templates/Questions/view.php:21
 #: ./templates/Roles/edit.php:12
 #: ./templates/Roles/index.php:30
 #: ./templates/Roles/view.php:68
@@ -845,13 +857,9 @@ msgstr ""
 #: ./templates/TestTranslations/edit.php:15
 #: ./templates/TestTranslations/index.php:44
 #: ./templates/Tests/edit.php:20
-#: ./templates/Tests/index.php:114
-#: ./templates/Tests/index.php:145
-#: ./templates/Tests/view.php:90
-#: ./templates/Tests/view.php:142
-#: ./templates/Tests/view.php:194
-#: ./templates/Tests/view.php:244
-#: ./templates/Tests/view.php:280
+#: ./templates/Tests/index.php:226
+#: ./templates/Tests/index.php:257
+#: ./templates/Tests/view.php:26
 #: ./templates/UserFavoriteCategories/edit.php:14
 #: ./templates/UserFavoriteCategories/index.php:32
 #: ./templates/UserFavoriteTests/edit.php:14
@@ -877,19 +885,12 @@ msgstr ""
 #: ./templates/AnswerTranslations/edit.php:16
 #: ./templates/AnswerTranslations/index.php:40
 #: ./templates/AnswerTranslations/view.php:12
-#: ./templates/Answers/edit.php:15
-#: ./templates/Answers/index.php:109
-#: ./templates/Answers/view.php:12
-#: ./templates/Answers/view.php:88
-#: ./templates/Answers/view.php:130
+#: ./templates/Answers/edit.php:21
+#: ./templates/Answers/index.php:125
+#: ./templates/Answers/view.php:28
 #: ./templates/Categories/edit.php:14
 #: ./templates/Categories/index.php:116
-#: ./templates/Categories/view.php:12
-#: ./templates/Categories/view.php:68
-#: ./templates/Categories/view.php:120
-#: ./templates/Categories/view.php:172
-#: ./templates/Categories/view.php:216
-#: ./templates/Categories/view.php:252
+#: ./templates/Categories/view.php:24
 #: ./templates/CategoryTranslations/edit.php:16
 #: ./templates/CategoryTranslations/index.php:38
 #: ./templates/CategoryTranslations/view.php:12
@@ -898,10 +899,7 @@ msgstr ""
 #: ./templates/DeviceLogs/view.php:12
 #: ./templates/Difficulties/edit.php:16
 #: ./templates/Difficulties/index.php:109
-#: ./templates/Difficulties/view.php:12
-#: ./templates/Difficulties/view.php:76
-#: ./templates/Difficulties/view.php:128
-#: ./templates/Difficulties/view.php:172
+#: ./templates/Difficulties/view.php:24
 #: ./templates/Languages/edit.php:14
 #: ./templates/Languages/index.php:93
 #: ./templates/Languages/view.php:12
@@ -914,12 +912,9 @@ msgstr ""
 #: ./templates/QuestionTranslations/edit.php:16
 #: ./templates/QuestionTranslations/index.php:40
 #: ./templates/QuestionTranslations/view.php:12
-#: ./templates/Questions/edit.php:17
-#: ./templates/Questions/index.php:107
-#: ./templates/Questions/view.php:12
-#: ./templates/Questions/view.php:96
-#: ./templates/Questions/view.php:140
-#: ./templates/Questions/view.php:182
+#: ./templates/Questions/edit.php:23
+#: ./templates/Questions/index.php:135
+#: ./templates/Questions/view.php:24
 #: ./templates/Roles/edit.php:14
 #: ./templates/Roles/index.php:34
 #: ./templates/Roles/view.php:12
@@ -935,13 +930,8 @@ msgstr ""
 #: ./templates/TestTranslations/index.php:48
 #: ./templates/TestTranslations/view.php:12
 #: ./templates/Tests/edit.php:22
-#: ./templates/Tests/index.php:117
-#: ./templates/Tests/view.php:12
-#: ./templates/Tests/view.php:94
-#: ./templates/Tests/view.php:146
-#: ./templates/Tests/view.php:198
-#: ./templates/Tests/view.php:248
-#: ./templates/Tests/view.php:284
+#: ./templates/Tests/index.php:229
+#: ./templates/Tests/view.php:29
 #: ./templates/UserFavoriteCategories/edit.php:16
 #: ./templates/UserFavoriteCategories/index.php:36
 #: ./templates/UserFavoriteCategories/view.php:12
@@ -978,18 +968,9 @@ msgstr ""
 
 #: ./templates/ActivityLogs/index.php:31
 #: ./templates/AnswerTranslations/index.php:33
-#: ./templates/Answers/view.php:81
-#: ./templates/Answers/view.php:123
-#: ./templates/Categories/view.php:61
-#: ./templates/Categories/view.php:113
-#: ./templates/Categories/view.php:165
-#: ./templates/Categories/view.php:209
-#: ./templates/Categories/view.php:245
 #: ./templates/CategoryTranslations/index.php:31
 #: ./templates/Difficulties/index.php:96
-#: ./templates/Difficulties/view.php:69
-#: ./templates/Difficulties/view.php:121
-#: ./templates/Difficulties/view.php:165
+#: ./templates/Difficulties/view.php:76
 #: ./templates/Languages/view.php:67
 #: ./templates/Languages/view.php:109
 #: ./templates/Languages/view.php:149
@@ -997,20 +978,13 @@ msgstr ""
 #: ./templates/Languages/view.php:245
 #: ./templates/Languages/view.php:295
 #: ./templates/QuestionTranslations/index.php:33
-#: ./templates/Questions/view.php:89
-#: ./templates/Questions/view.php:133
-#: ./templates/Questions/view.php:175
 #: ./templates/Roles/index.php:27
 #: ./templates/Roles/view.php:65
 #: ./templates/TestAttemptAnswers/index.php:33
 #: ./templates/TestAttempts/index.php:45
 #: ./templates/TestAttempts/view.php:95
 #: ./templates/TestTranslations/index.php:41
-#: ./templates/Tests/view.php:87
-#: ./templates/Tests/view.php:139
-#: ./templates/Tests/view.php:191
-#: ./templates/Tests/view.php:241
-#: ./templates/Tests/view.php:277
+#: ./templates/Tests/view.php:124
 #: ./templates/UserFavoriteCategories/index.php:29
 #: ./templates/UserFavoriteTests/index.php:29
 #: ./templates/UserTokens/index.php:33
@@ -1026,20 +1000,13 @@ msgstr ""
 #: ./templates/ActivityLogs/index.php:32
 #: ./templates/Admin/Users/index.php:117
 #: ./templates/AnswerTranslations/index.php:34
-#: ./templates/Answers/index.php:101
-#: ./templates/Answers/view.php:82
-#: ./templates/Answers/view.php:124
+#: ./templates/Answers/index.php:117
+#: ./templates/Answers/view.php:23
 #: ./templates/Categories/index.php:108
-#: ./templates/Categories/view.php:62
-#: ./templates/Categories/view.php:114
-#: ./templates/Categories/view.php:166
-#: ./templates/Categories/view.php:210
-#: ./templates/Categories/view.php:246
+#: ./templates/Categories/view.php:19
 #: ./templates/CategoryTranslations/index.php:32
 #: ./templates/Difficulties/index.php:101
-#: ./templates/Difficulties/view.php:70
-#: ./templates/Difficulties/view.php:122
-#: ./templates/Difficulties/view.php:166
+#: ./templates/Difficulties/view.php:19
 #: ./templates/Languages/index.php:85
 #: ./templates/Languages/view.php:68
 #: ./templates/Languages/view.php:110
@@ -1048,22 +1015,16 @@ msgstr ""
 #: ./templates/Languages/view.php:246
 #: ./templates/Languages/view.php:296
 #: ./templates/QuestionTranslations/index.php:34
-#: ./templates/Questions/index.php:99
-#: ./templates/Questions/view.php:90
-#: ./templates/Questions/view.php:134
-#: ./templates/Questions/view.php:176
+#: ./templates/Questions/index.php:127
+#: ./templates/Questions/view.php:19
 #: ./templates/Roles/index.php:28
 #: ./templates/Roles/view.php:66
 #: ./templates/TestAttemptAnswers/index.php:34
 #: ./templates/TestAttempts/index.php:46
 #: ./templates/TestAttempts/view.php:96
 #: ./templates/TestTranslations/index.php:42
-#: ./templates/Tests/index.php:109
-#: ./templates/Tests/view.php:88
-#: ./templates/Tests/view.php:140
-#: ./templates/Tests/view.php:192
-#: ./templates/Tests/view.php:242
-#: ./templates/Tests/view.php:278
+#: ./templates/Tests/index.php:221
+#: ./templates/Tests/view.php:24
 #: ./templates/UserFavoriteCategories/index.php:30
 #: ./templates/UserFavoriteTests/index.php:30
 #: ./templates/UserTokens/index.php:34
@@ -1165,7 +1126,7 @@ msgstr ""
 #: ./templates/UserFavoriteCategories/view.php:22
 #: ./templates/UserFavoriteTests/view.php:22
 #: ./templates/UserTokens/view.php:22
-#: ./templates/Users/profile.php:35
+#: ./templates/Users/profile.php:41
 msgid "User"
 msgstr ""
 
@@ -1183,21 +1144,8 @@ msgstr ""
 
 #: ./templates/ActivityLogs/view.php:34
 #: ./templates/AnswerTranslations/view.php:34
-#: ./templates/Answers/view.php:30
-#: ./templates/Answers/view.php:62
-#: ./templates/Answers/view.php:104
-#: ./templates/Categories/view.php:22
-#: ./templates/Categories/view.php:44
-#: ./templates/Categories/view.php:84
-#: ./templates/Categories/view.php:136
-#: ./templates/Categories/view.php:188
-#: ./templates/Categories/view.php:232
 #: ./templates/CategoryTranslations/view.php:34
 #: ./templates/DeviceLogs/view.php:38
-#: ./templates/Difficulties/view.php:26
-#: ./templates/Difficulties/view.php:40
-#: ./templates/Difficulties/view.php:92
-#: ./templates/Difficulties/view.php:144
 #: ./templates/Languages/view.php:30
 #: ./templates/Languages/view.php:40
 #: ./templates/Languages/view.php:90
@@ -1206,22 +1154,12 @@ msgstr ""
 #: ./templates/Languages/view.php:216
 #: ./templates/Languages/view.php:268
 #: ./templates/QuestionTranslations/view.php:34
-#: ./templates/Questions/view.php:38
-#: ./templates/Questions/view.php:68
-#: ./templates/Questions/view.php:112
-#: ./templates/Questions/view.php:156
 #: ./templates/Roles/view.php:30
 #: ./templates/Roles/view.php:40
 #: ./templates/TestAttemptAnswers/view.php:34
 #: ./templates/TestAttempts/view.php:42
 #: ./templates/TestAttempts/view.php:76
 #: ./templates/TestTranslations/view.php:42
-#: ./templates/Tests/view.php:30
-#: ./templates/Tests/view.php:60
-#: ./templates/Tests/view.php:110
-#: ./templates/Tests/view.php:162
-#: ./templates/Tests/view.php:214
-#: ./templates/Tests/view.php:264
 #: ./templates/UserFavoriteCategories/view.php:30
 #: ./templates/UserFavoriteTests/view.php:30
 #: ./templates/UserTokens/view.php:30
@@ -1237,19 +1175,8 @@ msgstr ""
 
 #: ./templates/ActivityLogs/view.php:38
 #: ./templates/AnswerTranslations/view.php:42
-#: ./templates/Answers/view.php:38
-#: ./templates/Answers/view.php:68
-#: ./templates/Categories/view.php:26
-#: ./templates/Categories/view.php:49
-#: ./templates/Categories/view.php:94
-#: ./templates/Categories/view.php:147
-#: ./templates/Categories/view.php:194
-#: ./templates/Categories/view.php:235
 #: ./templates/CategoryTranslations/view.php:38
 #: ./templates/DeviceLogs/view.php:46
-#: ./templates/Difficulties/view.php:50
-#: ./templates/Difficulties/view.php:103
-#: ./templates/Difficulties/view.php:150
 #: ./templates/Languages/view.php:50
 #: ./templates/Languages/view.php:96
 #: ./templates/Languages/view.php:137
@@ -1257,18 +1184,9 @@ msgstr ""
 #: ./templates/Languages/view.php:227
 #: ./templates/Languages/view.php:277
 #: ./templates/QuestionTranslations/view.php:42
-#: ./templates/Questions/view.php:50
-#: ./templates/Questions/view.php:74
-#: ./templates/Questions/view.php:119
 #: ./templates/Roles/view.php:48
 #: ./templates/TestAttempts/view.php:66
 #: ./templates/TestTranslations/view.php:50
-#: ./templates/Tests/view.php:42
-#: ./templates/Tests/view.php:70
-#: ./templates/Tests/view.php:120
-#: ./templates/Tests/view.php:173
-#: ./templates/Tests/view.php:223
-#: ./templates/Tests/view.php:267
 #: ./templates/UserFavoriteCategories/view.php:34
 #: ./templates/UserFavoriteTests/view.php:34
 #: ./templates/UserTokens/view.php:42
@@ -1319,13 +1237,20 @@ msgid "Total Tests"
 msgstr ""
 
 #: ./templates/Admin/Dashboard/index.php:38
+#: ./templates/Difficulties/view.php:43
 #: ./templates/Questions/index.php:9
 #: ./templates/Questions/index.php:19
+#: ./templates/QuizCreator/Dashboard/index.php:29
 #: ./templates/Tests/add.php:49
+#: ./templates/Tests/catalog_view.php:79
 #: ./templates/Tests/edit.php:54
-#: ./templates/Tests/index.php:65
-#: ./templates/element/admin_sidebar.php:123
-#: ./templates/element/admin_sidebar.php:165
+#: ./templates/Tests/index.php:92
+#: ./templates/Tests/index.php:177
+#: ./templates/Tests/review.php:73
+#: ./templates/Tests/view.php:70
+#: ./templates/Tests/view.php:99
+#: ./templates/element/admin_sidebar.php:136
+#: ./templates/element/admin_sidebar.php:188
 msgid "Questions"
 msgstr ""
 
@@ -1336,7 +1261,7 @@ msgstr ""
 #: ./templates/Admin/Dashboard/index.php:40
 #: ./templates/AiRequests/index.php:10
 #: ./templates/AiRequests/index.php:23
-#: ./templates/element/admin_sidebar.php:149
+#: ./templates/element/admin_sidebar.php:162
 msgid "AI Requests"
 msgstr ""
 
@@ -1350,7 +1275,7 @@ msgstr ""
 #: ./templates/DeviceLogs/index.php:61
 #: ./templates/Languages/index.php:28
 #: ./templates/Questions/index.php:28
-#: ./templates/Tests/index.php:28
+#: ./templates/Tests/index.php:140
 #: ./templates/element/functions/admin_list_controls.php:16
 msgid "Search"
 msgstr ""
@@ -1363,7 +1288,7 @@ msgstr ""
 #: ./templates/Difficulties/index.php:29
 #: ./templates/Languages/index.php:29
 #: ./templates/Questions/index.php:29
-#: ./templates/Tests/index.php:29
+#: ./templates/Tests/index.php:141
 #: ./templates/element/functions/admin_list_controls.php:17
 msgid "Search…"
 msgstr ""
@@ -1377,7 +1302,7 @@ msgstr ""
 #: ./templates/Difficulties/index.php:34
 #: ./templates/Languages/index.php:34
 #: ./templates/Questions/index.php:34
-#: ./templates/Tests/index.php:34
+#: ./templates/Tests/index.php:146
 #: ./templates/element/functions/admin_list_controls.php:21
 msgid "Show"
 msgstr ""
@@ -1391,7 +1316,7 @@ msgstr ""
 #: ./templates/Difficulties/index.php:40
 #: ./templates/Languages/index.php:40
 #: ./templates/Questions/index.php:40
-#: ./templates/Tests/index.php:40
+#: ./templates/Tests/index.php:152
 #: ./templates/element/functions/admin_list_controls.php:26
 msgid "All"
 msgstr ""
@@ -1413,7 +1338,6 @@ msgstr ""
 #: ./templates/AiRequests/index.php:132
 #: ./templates/AiRequests/view.php:52
 #: ./templates/Languages/view.php:49
-#: ./templates/Tests/view.php:69
 #: ./templates/Users/view.php:138
 msgid "Status"
 msgstr ""
@@ -1429,13 +1353,13 @@ msgstr ""
 #: ./templates/Admin/Dashboard/index.php:164
 #: ./templates/Admin/Users/index.php:186
 #: ./templates/AiRequests/index.php:236
-#: ./templates/Answers/index.php:130
+#: ./templates/Answers/index.php:146
 #: ./templates/Categories/index.php:137
 #: ./templates/DeviceLogs/index.php:178
 #: ./templates/Difficulties/index.php:130
 #: ./templates/Languages/index.php:114
-#: ./templates/Questions/index.php:128
-#: ./templates/Tests/index.php:138
+#: ./templates/Questions/index.php:156
+#: ./templates/Tests/index.php:250
 #: ./templates/element/functions/admin_bulk_controls.php:15
 msgid "Összes bejelölése"
 msgstr ""
@@ -1443,13 +1367,13 @@ msgstr ""
 #: ./templates/Admin/Dashboard/index.php:167
 #: ./templates/Admin/Users/index.php:189
 #: ./templates/AiRequests/index.php:239
-#: ./templates/Answers/index.php:133
+#: ./templates/Answers/index.php:149
 #: ./templates/Categories/index.php:140
 #: ./templates/DeviceLogs/index.php:181
 #: ./templates/Difficulties/index.php:133
 #: ./templates/Languages/index.php:117
-#: ./templates/Questions/index.php:131
-#: ./templates/Tests/index.php:141
+#: ./templates/Questions/index.php:159
+#: ./templates/Tests/index.php:253
 #: ./templates/element/functions/admin_bulk_controls.php:17
 msgid "A kijelöltekkel végzendő művelet:"
 msgstr ""
@@ -1457,25 +1381,25 @@ msgstr ""
 #: ./templates/Admin/Dashboard/index.php:184
 #: ./templates/Admin/Users/index.php:214
 #: ./templates/AiRequests/index.php:254
-#: ./templates/Answers/index.php:148
+#: ./templates/Answers/index.php:164
 #: ./templates/Categories/index.php:155
 #: ./templates/DeviceLogs/index.php:196
 #: ./templates/Difficulties/index.php:148
 #: ./templates/Languages/index.php:132
-#: ./templates/Questions/index.php:146
-#: ./templates/Tests/index.php:156
+#: ./templates/Questions/index.php:174
+#: ./templates/Tests/index.php:268
 msgid "Pagination"
 msgstr ""
 
 #: ./templates/Admin/Dashboard/index.php:206
 #: ./templates/AiRequests/index.php:276
-#: ./templates/Answers/index.php:170
+#: ./templates/Answers/index.php:186
 #: ./templates/Categories/index.php:177
 #: ./templates/DeviceLogs/index.php:218
 #: ./templates/Difficulties/index.php:170
 #: ./templates/Languages/index.php:154
-#: ./templates/Questions/index.php:168
-#: ./templates/Tests/index.php:178
+#: ./templates/Questions/index.php:196
+#: ./templates/Tests/index.php:290
 msgid "Are you sure you want to delete the selected items?"
 msgstr ""
 
@@ -1532,12 +1456,16 @@ msgid "Avatar"
 msgstr ""
 
 #: ./templates/Admin/Users/add.php:83
-#: ./templates/element/functions/admin_list_controls.php:57
+#: ./templates/element/functions/admin_list_controls.php:69
 msgid "Create"
 msgstr ""
 
 #: ./templates/Admin/Users/add.php:85
 #: ./templates/Admin/Users/edit.php:91
+#: ./templates/Answers/add.php:65
+#: ./templates/Answers/edit.php:75
+#: ./templates/Questions/add.php:84
+#: ./templates/Questions/edit.php:94
 #: ./templates/Users/profile_edit.php:67
 msgid "Cancel"
 msgstr ""
@@ -1590,7 +1518,7 @@ msgstr ""
 #: ./templates/Admin/Users/index.php:19
 #: ./templates/Users/index.php:6
 #: ./templates/Users/index.php:11
-#: ./templates/element/admin_sidebar.php:103
+#: ./templates/element/admin_sidebar.php:116
 msgid "Users"
 msgstr ""
 
@@ -1612,10 +1540,15 @@ msgstr ""
 #: ./templates/AiRequests/index.php:129
 #: ./templates/AiRequests/view.php:48
 #: ./templates/Answers/index.php:65
+#: ./templates/Answers/view.php:75
+#: ./templates/Answers/view.php:102
 #: ./templates/Categories/index.php:64
+#: ./templates/Categories/view.php:45
 #: ./templates/DeviceLogs/index.php:90
-#: ./templates/Questions/index.php:64
-#: ./templates/Tests/index.php:67
+#: ./templates/Questions/index.php:66
+#: ./templates/Questions/view.php:96
+#: ./templates/Tests/index.php:179
+#: ./templates/Tests/view.php:86
 msgid "Created"
 msgstr ""
 
@@ -1632,9 +1565,9 @@ msgid "Are you sure you want to delete the selected users?"
 msgstr ""
 
 #: ./templates/Admin/my_profile.php:8
-#: ./templates/Users/profile.php:7
+#: ./templates/Users/profile.php:13
 #: ./templates/element/admin_navbar.php:43
-#: ./templates/element/navbar.php:115
+#: ./templates/element/navbar.php:187
 msgid "My Profile"
 msgstr ""
 
@@ -1698,6 +1631,7 @@ msgstr ""
 #: ./templates/AiRequests/view.php:53
 #: ./templates/DeviceLogs/index.php:106
 #: ./templates/Users/view.php:200
+#: ./templates/element/users/stats.php:109
 msgid "Unknown"
 msgstr ""
 
@@ -1707,7 +1641,6 @@ msgstr ""
 
 #: ./templates/AiRequests/index.php:131
 #: ./templates/Languages/view.php:46
-#: ./templates/Tests/view.php:66
 #: ./templates/UserTokens/view.php:26
 #: ./templates/Users/view.php:135
 #: ./templates/Users/view.php:283
@@ -1720,8 +1653,8 @@ msgstr ""
 
 #: ./templates/AiRequests/index.php:134
 #: ./templates/AiRequests/view.php:86
-#: ./templates/Answers/index.php:63
-#: ./templates/Questions/index.php:62
+#: ./templates/Answers/view.php:101
+#: ./templates/Tests/view.php:105
 msgid "Source"
 msgstr ""
 
@@ -1739,7 +1672,7 @@ msgstr ""
 
 #: ./templates/AiRequests/index.php:181
 #: ./templates/AiRequests/view.php:67
-#: ./templates/element/admin_sidebar.php:141
+#: ./templates/element/admin_sidebar.php:154
 msgid "System"
 msgstr ""
 
@@ -1753,6 +1686,8 @@ msgid "AI Request #{0}"
 msgstr ""
 
 #: ./templates/AiRequests/view.php:28
+#: ./templates/Tests/review.php:202
+#: ./templates/Tests/take.php:120
 #: ./templates/layout/error.php:36
 msgid "Back"
 msgstr ""
@@ -1772,14 +1707,12 @@ msgstr ""
 
 #: ./templates/AiRequests/view.php:99
 #: ./templates/Languages/view.php:47
-#: ./templates/Tests/view.php:67
 #: ./templates/Users/view.php:136
 msgid "Input Payload"
 msgstr ""
 
 #: ./templates/AiRequests/view.php:106
 #: ./templates/Languages/view.php:48
-#: ./templates/Tests/view.php:68
 #: ./templates/Users/view.php:137
 msgid "Output Payload"
 msgstr ""
@@ -1805,6 +1738,7 @@ msgid "New Answer Translation"
 msgstr ""
 
 #: ./templates/AnswerTranslations/index.php:9
+#: ./templates/Answers/view.php:93
 msgid "Answer Translations"
 msgstr ""
 
@@ -1813,101 +1747,157 @@ msgid "Delete Answer Translation"
 msgstr ""
 
 #: ./templates/AnswerTranslations/view.php:22
+#: ./templates/Answers/view.php:9
+#: ./templates/Answers/view.php:17
 #: ./templates/TestAttemptAnswers/view.php:30
 msgid "Answer"
 msgstr ""
 
 #: ./templates/AnswerTranslations/view.php:30
-#: ./templates/Answers/view.php:26
-#: ./templates/Answers/view.php:66
-#: ./templates/Categories/view.php:90
-#: ./templates/Difficulties/view.php:46
+#: ./templates/Answers/add.php:34
+#: ./templates/Answers/edit.php:44
+#: ./templates/Answers/view.php:54
 #: ./templates/Languages/view.php:94
 #: ./templates/Languages/view.php:177
 #: ./templates/QuestionTranslations/view.php:30
-#: ./templates/Questions/view.php:34
-#: ./templates/Questions/view.php:70
-#: ./templates/Questions/view.php:117
-#: ./templates/Tests/view.php:116
+#: ./templates/Questions/add.php:54
+#: ./templates/Questions/edit.php:64
 msgid "Source Type"
 msgstr ""
 
 #: ./templates/AnswerTranslations/view.php:38
-#: ./templates/Answers/view.php:67
-#: ./templates/Categories/view.php:91
-#: ./templates/Categories/view.php:193
-#: ./templates/Difficulties/view.php:47
-#: ./templates/Difficulties/view.php:149
 #: ./templates/Languages/view.php:95
 #: ./templates/Languages/view.php:178
 #: ./templates/QuestionTranslations/view.php:38
-#: ./templates/Questions/view.php:42
-#: ./templates/Questions/view.php:118
-#: ./templates/Tests/view.php:38
-#: ./templates/Tests/view.php:117
+#: ./templates/Questions/add.php:61
+#: ./templates/Questions/edit.php:71
 msgid "Created By"
 msgstr ""
 
 #: ./templates/AnswerTranslations/view.php:47
-#: ./templates/Answers/view.php:65
+#: ./templates/Answers/index.php:63
+#: ./templates/Answers/view.php:100
 #: ./templates/Languages/view.php:93
 #: ./templates/Languages/view.php:175
 #: ./templates/QuestionTranslations/view.php:47
-#: ./templates/Questions/view.php:115
+#: ./templates/Questions/index.php:62
 msgid "Content"
 msgstr ""
 
-#: ./templates/Answers/add.php:12
-#: ./templates/Answers/edit.php:17
-#: ./templates/Answers/view.php:13
-msgid "List Answers"
-msgstr ""
-
-#: ./templates/Answers/add.php:19
+#: ./templates/Answers/add.php:10
+#: ./templates/Answers/add.php:15
 msgid "Add Answer"
 msgstr ""
 
-#: ./templates/Answers/edit.php:24
-#: ./templates/Answers/view.php:11
+#: ./templates/Answers/add.php:16
+#: ./templates/Answers/edit.php:25
+#: ./templates/Answers/view.php:32
+#: ./templates/Categories/add.php:10
+#: ./templates/Categories/edit.php:16
+#: ./templates/Categories/view.php:28
+#: ./templates/Difficulties/add.php:12
+#: ./templates/Difficulties/edit.php:18
+#: ./templates/Difficulties/view.php:28
+#: ./templates/Languages/add.php:10
+#: ./templates/Languages/edit.php:16
+#: ./templates/Questions/add.php:18
+#: ./templates/Questions/edit.php:27
+#: ./templates/Questions/view.php:28
+#: ./templates/Tests/view.php:33
+msgid "Back to List"
+msgstr ""
+
+#: ./templates/Answers/add.php:27
+#: ./templates/Answers/edit.php:37
+#: ./templates/Answers/index.php:62
+#: ./templates/Answers/view.php:19
+#: ./templates/Answers/view.php:39
+#: ./templates/Pages/home.php:96
+#: ./templates/QuestionTranslations/view.php:22
+#: ./templates/Questions/view.php:9
+#: ./templates/Questions/view.php:15
+#: ./templates/TestAttemptAnswers/view.php:26
+#: ./templates/Tests/review.php:120
+#: ./templates/Tests/take.php:38
+msgid "Question"
+msgstr ""
+
+#: ./templates/Answers/add.php:41
+#: ./templates/Answers/edit.php:51
+#: ./templates/Answers/view.php:59
+#: ./templates/TestAttemptAnswers/view.php:42
+#: ./templates/TestAttempts/view.php:81
+msgid "Is Correct"
+msgstr ""
+
+#: ./templates/Answers/add.php:50
+#: ./templates/Answers/edit.php:60
+#: ./templates/Answers/view.php:85
+msgid "Source Text"
+msgstr ""
+
+#: ./templates/Answers/add.php:57
+#: ./templates/Answers/edit.php:67
+#: ./templates/Answers/view.php:70
+#: ./templates/Questions/add.php:69
+#: ./templates/Questions/edit.php:79
+#: ./templates/Questions/view.php:91
+msgid "Position"
+msgstr ""
+
+#: ./templates/Answers/edit.php:10
+#: ./templates/Answers/edit.php:15
 msgid "Edit Answer"
+msgstr ""
+
+#: ./templates/Answers/edit.php:74
+#: ./templates/Questions/edit.php:93
+#: ./templates/Tests/edit.php:111
+#: ./templates/Users/profile_edit.php:66
+msgid "Save Changes"
 msgstr ""
 
 #: ./templates/Answers/index.php:9
 #: ./templates/Answers/index.php:19
-#: ./templates/element/admin_sidebar.php:128
-#: ./templates/element/admin_sidebar.php:170
+#: ./templates/QuizCreator/Dashboard/index.php:37
+#: ./templates/Tests/review.php:147
+#: ./templates/element/admin_sidebar.php:141
+#: ./templates/element/admin_sidebar.php:193
 msgid "Answers"
 msgstr ""
 
 #: ./templates/Answers/index.php:44
-#: ./templates/Answers/view.php:14
 msgid "New Answer"
 msgstr ""
 
 #: ./templates/Answers/index.php:61
+#: ./templates/Answers/view.php:98
 #: ./templates/Categories/index.php:61
 #: ./templates/Difficulties/index.php:61
+#: ./templates/Difficulties/view.php:64
 #: ./templates/Languages/index.php:61
 #: ./templates/Questions/index.php:61
-#: ./templates/Tests/index.php:61
+#: ./templates/Tests/index.php:173
+#: ./templates/Tests/view.php:104
 msgid "ID"
 msgstr ""
 
-#: ./templates/Answers/index.php:62
-#: ./templates/Answers/view.php:22
-#: ./templates/QuestionTranslations/view.php:22
-#: ./templates/TestAttemptAnswers/view.php:26
-msgid "Question"
-msgstr ""
-
 #: ./templates/Answers/index.php:64
+#: ./templates/Tests/catalog_view.php:120
+#: ./templates/Tests/review.php:128
+#: ./templates/Tests/review.php:185
+#: ./templates/element/users/stats.php:99
 msgid "Correct"
 msgstr ""
 
 #: ./templates/Answers/index.php:66
+#: ./templates/Answers/view.php:80
 #: ./templates/Categories/index.php:65
-#: ./templates/Questions/index.php:65
-#: ./templates/Tests/index.php:68
+#: ./templates/Categories/view.php:49
+#: ./templates/Questions/index.php:67
+#: ./templates/Questions/view.php:101
+#: ./templates/Tests/index.php:180
+#: ./templates/Tests/view.php:91
 msgid "Updated"
 msgstr ""
 
@@ -1915,171 +1905,79 @@ msgstr ""
 msgid "Select answer"
 msgstr ""
 
-#: ./templates/Answers/index.php:87
-#: ./templates/Answers/view.php:47
-#: ./templates/Categories/view.php:35
-#: ./templates/Questions/view.php:59
+#: ./templates/Answers/index.php:99
+#: ./templates/Questions/index.php:91
+#: ./templates/Questions/index.php:100
+#: ./templates/Questions/index.php:109
+#: ./templates/Tests/index.php:198
+#: ./templates/Tests/index.php:201
+#: ./templates/Tests/index.php:204
+#: ./templates/Tests/view.php:21
+msgid "N/A"
+msgstr ""
+
+#: ./templates/Answers/index.php:103
+#: ./templates/Answers/view.php:62
+#: ./templates/Difficulties/view.php:73
 #: ./templates/TestAttemptAnswers/view.php:43
 #: ./templates/TestTranslations/view.php:59
-#: ./templates/Tests/index.php:98
-#: ./templates/Tests/view.php:51
+#: ./templates/Tests/index.php:210
+#: ./templates/Tests/view.php:78
 #: ./templates/Users/view.php:72
 #: ./templates/Users/view.php:76
 msgid "Yes"
 msgstr ""
 
-#: ./templates/Answers/index.php:89
-#: ./templates/Answers/view.php:47
-#: ./templates/Categories/view.php:35
-#: ./templates/Questions/view.php:59
+#: ./templates/Answers/index.php:105
+#: ./templates/Answers/view.php:64
+#: ./templates/Difficulties/view.php:73
 #: ./templates/TestAttemptAnswers/view.php:43
 #: ./templates/TestTranslations/view.php:59
-#: ./templates/Tests/index.php:98
-#: ./templates/Tests/view.php:51
+#: ./templates/Tests/index.php:210
+#: ./templates/Tests/view.php:80
 #: ./templates/Users/view.php:72
 #: ./templates/Users/view.php:76
 msgid "No"
 msgstr ""
 
-#: ./templates/Answers/view.php:12
-msgid "Delete Answer"
-msgstr ""
-
-#: ./templates/Answers/view.php:34
-#: ./templates/Categories/view.php:93
-#: ./templates/Difficulties/view.php:49
-#: ./templates/Questions/view.php:46
-#: ./templates/Questions/view.php:73
-#: ./templates/Tests/view.php:119
-msgid "Position"
-msgstr ""
-
-#: ./templates/Answers/view.php:42
-#: ./templates/Categories/view.php:30
-#: ./templates/Categories/view.php:95
-#: ./templates/Categories/view.php:195
-#: ./templates/Difficulties/view.php:51
-#: ./templates/Difficulties/view.php:151
-#: ./templates/Languages/view.php:278
-#: ./templates/Questions/view.php:54
-#: ./templates/Questions/view.php:75
-#: ./templates/Roles/view.php:49
-#: ./templates/TestTranslations/view.php:54
-#: ./templates/Tests/view.php:46
-#: ./templates/Tests/view.php:121
-#: ./templates/Tests/view.php:224
-#: ./templates/Users/index.php:24
-#: ./templates/Users/view.php:67
-msgid "Updated At"
-msgstr ""
-
-#: ./templates/Answers/view.php:46
-#: ./templates/Answers/view.php:109
-#: ./templates/Questions/view.php:71
-#: ./templates/Questions/view.php:161
-#: ./templates/TestAttemptAnswers/view.php:42
-#: ./templates/TestAttempts/view.php:81
-msgid "Is Correct"
-msgstr ""
-
-#: ./templates/Answers/view.php:51
-#: ./templates/Questions/view.php:72
-msgid "Source Text"
-msgstr ""
-
-#: ./templates/Answers/view.php:57
-#: ./templates/Languages/view.php:85
-msgid "Related Answer Translations"
-msgstr ""
-
-#: ./templates/Answers/view.php:63
-#: ./templates/Answers/view.php:107
-#: ./templates/Languages/view.php:91
-#: ./templates/Questions/view.php:159
-#: ./templates/TestAttempts/view.php:79
-msgid "Answer Id"
-msgstr ""
-
-#: ./templates/Answers/view.php:64
-#: ./templates/Categories/view.php:46
-#: ./templates/Categories/view.php:141
-#: ./templates/Difficulties/view.php:97
+#: ./templates/Answers/view.php:99
+#: ./templates/Categories/view.php:62
 #: ./templates/Languages/view.php:43
 #: ./templates/Languages/view.php:92
 #: ./templates/Languages/view.php:134
 #: ./templates/Languages/view.php:174
 #: ./templates/Languages/view.php:221
 #: ./templates/Languages/view.php:270
-#: ./templates/Questions/view.php:114
-#: ./templates/Tests/view.php:63
-#: ./templates/Tests/view.php:167
-#: ./templates/Tests/view.php:216
 #: ./templates/Users/view.php:134
 #: ./templates/Users/view.php:233
 msgid "Language Id"
-msgstr ""
-
-#: ./templates/Answers/view.php:99
-#: ./templates/Questions/view.php:151
-#: ./templates/TestAttempts/view.php:71
-msgid "Related Test Attempt Answers"
-msgstr ""
-
-#: ./templates/Answers/view.php:105
-#: ./templates/Questions/view.php:157
-#: ./templates/TestAttempts/view.php:77
-msgid "Test Attempt Id"
-msgstr ""
-
-#: ./templates/Answers/view.php:106
-#: ./templates/Languages/view.php:173
-#: ./templates/Questions/view.php:69
-#: ./templates/Questions/view.php:113
-#: ./templates/Questions/view.php:158
-#: ./templates/TestAttempts/view.php:78
-msgid "Question Id"
-msgstr ""
-
-#: ./templates/Answers/view.php:108
-#: ./templates/Questions/view.php:160
-#: ./templates/TestAttemptAnswers/view.php:47
-#: ./templates/TestAttempts/view.php:80
-msgid "User Answer Text"
-msgstr ""
-
-#: ./templates/Answers/view.php:110
-#: ./templates/Questions/view.php:162
-#: ./templates/TestAttemptAnswers/view.php:38
-#: ./templates/TestAttempts/view.php:82
-msgid "Answered At"
 msgstr ""
 
 #: ./templates/Categories/add.php:9
 msgid "Add Category"
 msgstr ""
 
-#: ./templates/Categories/add.php:10
-#: ./templates/Categories/edit.php:16
-#: ./templates/Difficulties/add.php:12
-#: ./templates/Difficulties/edit.php:18
-#: ./templates/Languages/add.php:10
-#: ./templates/Languages/edit.php:16
-msgid "Back to List"
-msgstr ""
-
 #: ./templates/Categories/add.php:17
 #: ./templates/Categories/edit.php:24
 #: ./templates/Categories/index.php:63
 #: ./templates/Categories/index.php:94
-#: ./templates/Questions/index.php:63
-#: ./templates/Questions/index.php:85
+#: ./templates/Categories/view.php:38
+#: ./templates/Questions/index.php:65
+#: ./templates/Questions/index.php:113
+#: ./templates/Questions/view.php:83
+#: ./templates/Tests/view.php:106
+#: ./templates/Tests/view.php:117
 msgid "Active"
 msgstr ""
 
 #: ./templates/Categories/add.php:22
 #: ./templates/Categories/edit.php:29
+#: ./templates/Categories/view.php:16
+#: ./templates/Categories/view.php:57
 #: ./templates/Difficulties/add.php:20
 #: ./templates/Difficulties/edit.php:27
+#: ./templates/Pages/home.php:93
+#: ./templates/Pages/home.php:165
 #: ./templates/Tests/add.php:63
 #: ./templates/Tests/edit.php:68
 msgid "Translations"
@@ -2087,13 +1985,13 @@ msgstr ""
 
 #: ./templates/Categories/add.php:35
 #: ./templates/Categories/edit.php:41
-#: ./templates/Categories/view.php:47
+#: ./templates/Categories/view.php:63
 #: ./templates/CategoryTranslations/view.php:30
 #: ./templates/Difficulties/add.php:30
 #: ./templates/Difficulties/edit.php:50
 #: ./templates/Difficulties/edit.php:56
 #: ./templates/Difficulties/index.php:62
-#: ./templates/Difficulties/view.php:22
+#: ./templates/Difficulties/view.php:35
 #: ./templates/Languages/index.php:63
 #: ./templates/Languages/view.php:26
 #: ./templates/Languages/view.php:135
@@ -2103,25 +2001,25 @@ msgstr ""
 
 #: ./templates/Categories/add.php:44
 #: ./templates/Categories/edit.php:50
-#: ./templates/Categories/view.php:48
+#: ./templates/Categories/view.php:64
 #: ./templates/CategoryTranslations/view.php:43
 #: ./templates/Languages/view.php:136
 #: ./templates/Languages/view.php:273
 #: ./templates/Roles/view.php:26
 #: ./templates/TestTranslations/view.php:63
-#: ./templates/Tests/view.php:219
 msgid "Description"
 msgstr ""
 
 #: ./templates/Categories/edit.php:9
-#: ./templates/Categories/view.php:11
 msgid "Edit Category"
 msgstr ""
 
 #: ./templates/Categories/index.php:9
 #: ./templates/Categories/index.php:19
-#: ./templates/element/admin_sidebar.php:108
-#: ./templates/element/admin_sidebar.php:175
+#: ./templates/Pages/home.php:166
+#: ./templates/QuizCreator/Dashboard/index.php:45
+#: ./templates/element/admin_sidebar.php:121
+#: ./templates/element/admin_sidebar.php:173
 msgid "Categories"
 msgstr ""
 
@@ -2131,7 +2029,6 @@ msgid "Search by name or id"
 msgstr ""
 
 #: ./templates/Categories/index.php:44
-#: ./templates/Categories/view.php:14
 msgid "New Category"
 msgstr ""
 
@@ -2144,188 +2041,35 @@ msgid "Select category"
 msgstr ""
 
 #: ./templates/Categories/index.php:96
-#: ./templates/Questions/index.php:87
+#: ./templates/Categories/view.php:40
+#: ./templates/Questions/index.php:115
+#: ./templates/Questions/view.php:85
+#: ./templates/Tests/view.php:119
 msgid "Inactive"
 msgstr ""
 
-#: ./templates/Categories/view.php:12
-msgid "Delete Category"
+#: ./templates/Categories/view.php:9
+#: ./templates/Categories/view.php:15
+#: ./templates/CategoryTranslations/view.php:22
+#: ./templates/Questions/add.php:38
+#: ./templates/Questions/edit.php:48
+#: ./templates/Questions/index.php:63
+#: ./templates/Questions/view.php:50
+#: ./templates/TestAttempts/view.php:30
+#: ./templates/Tests/index.php:175
+#: ./templates/Tests/view.php:40
+#: ./templates/UserFavoriteCategories/view.php:26
+msgid "Category"
 msgstr ""
 
-#: ./templates/Categories/view.php:13
-msgid "List Categories"
-msgstr ""
-
-#: ./templates/Categories/view.php:34
-#: ./templates/Categories/view.php:92
-#: ./templates/Difficulties/view.php:48
-#: ./templates/Questions/view.php:58
+#: ./templates/Categories/view.php:35
+#: ./templates/Questions/add.php:77
+#: ./templates/Questions/edit.php:87
+#: ./templates/Questions/view.php:80
 #: ./templates/Roles/view.php:45
-#: ./templates/Tests/view.php:118
 #: ./templates/Users/index.php:20
 #: ./templates/Users/view.php:71
 msgid "Is Active"
-msgstr ""
-
-#: ./templates/Categories/view.php:39
-#: ./templates/Languages/view.php:127
-msgid "Related Category Translations"
-msgstr ""
-
-#: ./templates/Categories/view.php:45
-#: ./templates/Categories/view.php:86
-#: ./templates/Categories/view.php:139
-#: ./templates/Categories/view.php:189
-#: ./templates/Categories/view.php:234
-#: ./templates/Difficulties/view.php:42
-#: ./templates/Difficulties/view.php:95
-#: ./templates/Difficulties/view.php:145
-#: ./templates/Languages/view.php:133
-#: ./templates/Languages/view.php:219
-#: ./templates/Tests/view.php:112
-#: ./templates/Tests/view.php:165
-#: ./templates/Users/view.php:231
-msgid "Category Id"
-msgstr ""
-
-#: ./templates/Categories/view.php:79
-#: ./templates/Difficulties/view.php:35
-#: ./templates/Tests/view.php:105
-msgid "Related Questions"
-msgstr ""
-
-#: ./templates/Categories/view.php:85
-#: ./templates/Categories/view.php:138
-#: ./templates/Difficulties/view.php:41
-#: ./templates/Difficulties/view.php:94
-#: ./templates/Languages/view.php:42
-#: ./templates/Languages/view.php:218
-#: ./templates/Languages/view.php:269
-#: ./templates/Tests/view.php:62
-#: ./templates/Tests/view.php:111
-#: ./templates/Tests/view.php:164
-#: ./templates/Tests/view.php:215
-#: ./templates/Tests/view.php:266
-#: ./templates/Users/view.php:133
-#: ./templates/Users/view.php:230
-msgid "Test Id"
-msgstr ""
-
-#: ./templates/Categories/view.php:87
-#: ./templates/Categories/view.php:140
-#: ./templates/Categories/view.php:190
-#: ./templates/Difficulties/view.php:43
-#: ./templates/Difficulties/view.php:96
-#: ./templates/Difficulties/view.php:146
-#: ./templates/Languages/view.php:220
-#: ./templates/Tests/view.php:113
-#: ./templates/Tests/view.php:166
-#: ./templates/Users/view.php:232
-msgid "Difficulty Id"
-msgstr ""
-
-#: ./templates/Categories/view.php:88
-#: ./templates/Difficulties/view.php:44
-#: ./templates/Tests/view.php:114
-msgid "Question Type"
-msgstr ""
-
-#: ./templates/Categories/view.php:89
-#: ./templates/Difficulties/view.php:45
-#: ./templates/Tests/view.php:115
-msgid "Original Language Id"
-msgstr ""
-
-#: ./templates/Categories/view.php:131
-#: ./templates/Difficulties/view.php:87
-#: ./templates/Languages/view.php:211
-#: ./templates/Tests/view.php:157
-#: ./templates/Users/view.php:223
-msgid "Related Test Attempts"
-msgstr ""
-
-#: ./templates/Categories/view.php:137
-#: ./templates/Categories/view.php:233
-#: ./templates/Difficulties/view.php:93
-#: ./templates/Languages/view.php:41
-#: ./templates/Languages/view.php:217
-#: ./templates/Tests/view.php:61
-#: ./templates/Tests/view.php:163
-#: ./templates/Tests/view.php:265
-#: ./templates/Users/view.php:88
-#: ./templates/Users/view.php:132
-#: ./templates/Users/view.php:178
-#: ./templates/Users/view.php:229
-#: ./templates/Users/view.php:281
-msgid "User Id"
-msgstr ""
-
-#: ./templates/Categories/view.php:142
-#: ./templates/Difficulties/view.php:98
-#: ./templates/Languages/view.php:222
-#: ./templates/TestAttempts/view.php:58
-#: ./templates/Tests/view.php:168
-#: ./templates/Users/view.php:234
-msgid "Started At"
-msgstr ""
-
-#: ./templates/Categories/view.php:143
-#: ./templates/Difficulties/view.php:99
-#: ./templates/Languages/view.php:223
-#: ./templates/TestAttempts/view.php:62
-#: ./templates/Tests/view.php:169
-#: ./templates/Users/view.php:235
-msgid "Finished At"
-msgstr ""
-
-#: ./templates/Categories/view.php:144
-#: ./templates/Difficulties/view.php:100
-#: ./templates/Languages/view.php:224
-#: ./templates/TestAttempts/view.php:46
-#: ./templates/Tests/view.php:170
-#: ./templates/Users/view.php:236
-msgid "Score"
-msgstr ""
-
-#: ./templates/Categories/view.php:145
-#: ./templates/Difficulties/view.php:101
-#: ./templates/Languages/view.php:225
-#: ./templates/TestAttempts/view.php:50
-#: ./templates/Tests/view.php:171
-#: ./templates/Users/view.php:237
-msgid "Total Questions"
-msgstr ""
-
-#: ./templates/Categories/view.php:146
-#: ./templates/Difficulties/view.php:102
-#: ./templates/Languages/view.php:226
-#: ./templates/TestAttempts/view.php:54
-#: ./templates/Tests/view.php:172
-#: ./templates/Users/view.php:238
-msgid "Correct Answers"
-msgstr ""
-
-#: ./templates/Categories/view.php:183
-#: ./templates/Difficulties/view.php:139
-msgid "Related Tests"
-msgstr ""
-
-#: ./templates/Categories/view.php:191
-#: ./templates/Difficulties/view.php:147
-#: ./templates/Tests/view.php:34
-msgid "Number Of Questions"
-msgstr ""
-
-#: ./templates/Categories/view.php:192
-#: ./templates/Difficulties/view.php:148
-#: ./templates/Tests/add.php:40
-#: ./templates/Tests/edit.php:45
-#: ./templates/Tests/view.php:50
-msgid "Is Public"
-msgstr ""
-
-#: ./templates/Categories/view.php:227
-msgid "Related User Favorite Categories"
 msgstr ""
 
 #: ./templates/CategoryTranslations/add.php:13
@@ -2356,18 +2100,9 @@ msgstr ""
 msgid "Delete Category Translation"
 msgstr ""
 
-#: ./templates/CategoryTranslations/view.php:22
-#: ./templates/Questions/view.php:26
-#: ./templates/TestAttempts/view.php:30
-#: ./templates/Tests/index.php:63
-#: ./templates/Tests/view.php:22
-#: ./templates/UserFavoriteCategories/view.php:26
-msgid "Category"
-msgstr ""
-
 #: ./templates/Dashboard/index.php:2
 #: ./templates/Dashboard/index.php:5
-#: ./templates/element/navbar.php:108
+#: ./templates/element/navbar.php:172
 msgid "Dashboard"
 msgstr ""
 
@@ -2392,7 +2127,7 @@ msgstr ""
 
 #: ./templates/DeviceLogs/index.php:10
 #: ./templates/DeviceLogs/index.php:26
-#: ./templates/element/admin_sidebar.php:144
+#: ./templates/element/admin_sidebar.php:157
 msgid "Device Logs"
 msgstr ""
 
@@ -2475,23 +2210,23 @@ msgid "Add Difficulty"
 msgstr ""
 
 #: ./templates/Difficulties/edit.php:11
-#: ./templates/Difficulties/view.php:11
 msgid "Edit Difficulty"
 msgstr ""
 
 #: ./templates/Difficulties/index.php:9
 #: ./templates/Difficulties/index.php:19
-#: ./templates/element/admin_sidebar.php:113
+#: ./templates/QuizCreator/Dashboard/index.php:53
+#: ./templates/element/admin_sidebar.php:126
+#: ./templates/element/admin_sidebar.php:178
 msgid "Difficulties"
 msgstr ""
 
 #: ./templates/Difficulties/index.php:44
-#: ./templates/Difficulties/view.php:14
 msgid "New Difficulty"
 msgstr ""
 
 #: ./templates/Difficulties/index.php:63
-#: ./templates/Difficulties/view.php:30
+#: ./templates/Difficulties/view.php:39
 msgid "Level"
 msgstr ""
 
@@ -2503,12 +2238,35 @@ msgstr ""
 msgid "Select difficulty"
 msgstr ""
 
-#: ./templates/Difficulties/view.php:12
-msgid "Delete Difficulty"
+#: ./templates/Difficulties/view.php:9
+#: ./templates/Difficulties/view.php:15
+#: ./templates/Questions/add.php:47
+#: ./templates/Questions/edit.php:57
+#: ./templates/Questions/index.php:64
+#: ./templates/Questions/view.php:65
+#: ./templates/TestAttempts/view.php:34
+#: ./templates/Tests/index.php:176
+#: ./templates/Tests/view.php:55
+msgid "Difficulty"
 msgstr ""
 
-#: ./templates/Difficulties/view.php:13
-msgid "List Difficulties"
+#: ./templates/Difficulties/view.php:47
+#: ./templates/Difficulties/view.php:59
+#: ./templates/Tests/index.php:14
+#: ./templates/Tests/index.php:131
+#: ./templates/element/admin_sidebar.php:131
+msgid "Tests"
+msgstr ""
+
+#: ./templates/Difficulties/view.php:51
+#: ./templates/TestAttempts/index.php:9
+msgid "Test Attempts"
+msgstr ""
+
+#: ./templates/Difficulties/view.php:65
+#: ./templates/Tests/index.php:178
+#: ./templates/Tests/view.php:75
+msgid "Public"
 msgstr ""
 
 #: ./templates/Languages/add.php:9
@@ -2522,7 +2280,7 @@ msgstr ""
 
 #: ./templates/Languages/index.php:9
 #: ./templates/Languages/index.php:19
-#: ./templates/element/admin_sidebar.php:133
+#: ./templates/element/admin_sidebar.php:146
 msgid "Languages"
 msgstr ""
 
@@ -2549,116 +2307,302 @@ msgid "List Languages"
 msgstr ""
 
 #: ./templates/Languages/view.php:35
-#: ./templates/Tests/view.php:55
 #: ./templates/Users/view.php:126
 msgid "Related Ai Requests"
 msgstr ""
 
+#: ./templates/Languages/view.php:41
+#: ./templates/Languages/view.php:217
+#: ./templates/Users/view.php:88
+#: ./templates/Users/view.php:132
+#: ./templates/Users/view.php:178
+#: ./templates/Users/view.php:229
+#: ./templates/Users/view.php:281
+msgid "User Id"
+msgstr ""
+
+#: ./templates/Languages/view.php:42
+#: ./templates/Languages/view.php:218
+#: ./templates/Languages/view.php:269
+#: ./templates/Users/view.php:133
+#: ./templates/Users/view.php:230
+msgid "Test Id"
+msgstr ""
+
 #: ./templates/Languages/view.php:44
-#: ./templates/Tests/view.php:64
 msgid "Source Medium"
 msgstr ""
 
 #: ./templates/Languages/view.php:45
-#: ./templates/Tests/view.php:65
 msgid "Source Reference"
 msgstr ""
 
+#: ./templates/Languages/view.php:85
+msgid "Related Answer Translations"
+msgstr ""
+
+#: ./templates/Languages/view.php:91
+#: ./templates/TestAttempts/view.php:79
+msgid "Answer Id"
+msgstr ""
+
+#: ./templates/Languages/view.php:127
+msgid "Related Category Translations"
+msgstr ""
+
+#: ./templates/Languages/view.php:133
+#: ./templates/Languages/view.php:219
+#: ./templates/Users/view.php:231
+msgid "Category Id"
+msgstr ""
+
 #: ./templates/Languages/view.php:167
-#: ./templates/Questions/view.php:107
 msgid "Related Question Translations"
+msgstr ""
+
+#: ./templates/Languages/view.php:173
+#: ./templates/TestAttempts/view.php:78
+msgid "Question Id"
 msgstr ""
 
 #: ./templates/Languages/view.php:176
 #: ./templates/QuestionTranslations/view.php:53
-#: ./templates/Questions/view.php:116
 msgid "Explanation"
 msgstr ""
 
+#: ./templates/Languages/view.php:211
+#: ./templates/Users/view.php:223
+msgid "Related Test Attempts"
+msgstr ""
+
+#: ./templates/Languages/view.php:220
+#: ./templates/Users/view.php:232
+msgid "Difficulty Id"
+msgstr ""
+
+#: ./templates/Languages/view.php:222
+#: ./templates/TestAttempts/view.php:58
+#: ./templates/Users/view.php:234
+msgid "Started At"
+msgstr ""
+
+#: ./templates/Languages/view.php:223
+#: ./templates/TestAttempts/view.php:62
+#: ./templates/Users/view.php:235
+msgid "Finished At"
+msgstr ""
+
+#: ./templates/Languages/view.php:224
+#: ./templates/TestAttempts/view.php:46
+#: ./templates/Tests/result.php:40
+#: ./templates/Tests/review.php:67
+#: ./templates/Users/view.php:236
+#: ./templates/element/users/stats.php:98
+msgid "Score"
+msgstr ""
+
+#: ./templates/Languages/view.php:225
+#: ./templates/TestAttempts/view.php:50
+#: ./templates/Users/view.php:237
+msgid "Total Questions"
+msgstr ""
+
+#: ./templates/Languages/view.php:226
+#: ./templates/TestAttempts/view.php:54
+#: ./templates/Users/view.php:238
+msgid "Correct Answers"
+msgstr ""
+
 #: ./templates/Languages/view.php:263
-#: ./templates/Tests/view.php:209
 msgid "Related Test Translations"
 msgstr ""
 
 #: ./templates/Languages/view.php:271
 #: ./templates/TestTranslations/view.php:30
-#: ./templates/Tests/index.php:62
-#: ./templates/Tests/view.php:217
+#: ./templates/Tests/index.php:174
 msgid "Title"
 msgstr ""
 
 #: ./templates/Languages/view.php:272
 #: ./templates/TestTranslations/view.php:34
-#: ./templates/Tests/view.php:218
 msgid "Slug"
 msgstr ""
 
 #: ./templates/Languages/view.php:274
-#: ./templates/Tests/view.php:220
 msgid "Translator Id"
 msgstr ""
 
 #: ./templates/Languages/view.php:275
 #: ./templates/TestTranslations/view.php:58
-#: ./templates/Tests/view.php:221
 msgid "Is Complete"
 msgstr ""
 
 #: ./templates/Languages/view.php:276
 #: ./templates/TestTranslations/view.php:46
-#: ./templates/Tests/view.php:222
 msgid "Translated At"
 msgstr ""
 
-#: ./templates/Pages/home.php:12
+#: ./templates/Languages/view.php:278
+#: ./templates/Roles/view.php:49
+#: ./templates/TestTranslations/view.php:54
+#: ./templates/Users/index.php:24
+#: ./templates/Users/view.php:67
+msgid "Updated At"
+msgstr ""
+
+#: ./templates/Pages/home.php:13
 msgid "MindForge"
 msgstr ""
 
-#: ./templates/Pages/home.php:22
-msgid "Set up your username on the {0} link."
-msgstr ""
-
-#: ./templates/Pages/home.php:23
-msgid "profile"
-msgstr ""
-
-#: ./templates/Pages/home.php:28
-msgid "Welcome to MindForge"
-msgstr ""
-
-#: ./templates/Pages/home.php:30
-msgid "An AI-powered platform built to help you learn smarter, test faster, and improve continuously."
-msgstr ""
-
-#: ./templates/Pages/home.php:34
-msgid "Create and take intelligent tests"
-msgstr ""
-
-#: ./templates/Pages/home.php:35
-msgid "Track your progress over time"
-msgstr ""
-
-#: ./templates/Pages/home.php:36
-msgid "Learn with AI-assisted feedback"
-msgstr ""
-
 #: ./templates/Pages/home.php:44
-#: ./templates/Users/login.php:59
-#: ./templates/Users/register.php:96
-#: ./templates/element/navbar.php:89
-msgid "Log In"
+msgid "AI-powered quiz engine"
 msgstr ""
 
 #: ./templates/Pages/home.php:51
-msgid "Create Account"
+msgid "Forge your learning into {0}."
+msgstr ""
+
+#: ./templates/Pages/home.php:51
+msgid "mastery"
+msgstr ""
+
+#: ./templates/Pages/home.php:57
+msgid "MindForge turns studying into a fast loop: build quizzes, test understanding, then sharpen weak spots with structured practice."
 msgstr ""
 
 #: ./templates/Pages/home.php:64
-msgid "Build knowledge. Test understanding. Improve."
+#: ./templates/Pages/home.php:197
+#: ./templates/Users/login.php:59
+#: ./templates/Users/register.php:96
+#: ./templates/element/navbar.php:134
+msgid "Log In"
 msgstr ""
 
 #: ./templates/Pages/home.php:67
-msgid "MindForge combines structured testing with AI to help you focus on what actually matters."
+#: ./templates/Pages/home.php:200
+msgid "Create Account"
+msgstr ""
+
+#: ./templates/Pages/home.php:70
+msgid "No credit card. No fluff. Start in under a minute."
+msgstr ""
+
+#: ./templates/Pages/home.php:74
+msgid "Continue"
+msgstr ""
+
+#: ./templates/Pages/home.php:76
+msgid "You are signed in."
+msgstr ""
+
+#: ./templates/Pages/home.php:92
+msgid "Live preview"
+msgstr ""
+
+#: ./templates/Pages/home.php:101
+#: ./templates/Pages/home.php:107
+msgid "What drives long-term memory?"
+msgstr ""
+
+#: ./templates/Pages/home.php:102
+msgid "Why does spaced repetition work?"
+msgstr ""
+
+#: ./templates/Pages/home.php:103
+msgid "Which option best fits the definition?"
+msgstr ""
+
+#: ./templates/Pages/home.php:104
+msgid "What is the key idea in one sentence?"
+msgstr ""
+
+#: ./templates/Pages/home.php:111
+msgid "Spaced repetition"
+msgstr ""
+
+#: ./templates/Pages/home.php:112
+msgid "Random guessing"
+msgstr ""
+
+#: ./templates/Pages/home.php:113
+msgid "Passive reading"
+msgstr ""
+
+#: ./templates/Pages/home.php:119
+#: ./templates/Pages/home.php:137
+msgid "AI assistance"
+msgstr ""
+
+#: ./templates/Pages/home.php:120
+msgid "Built for safety"
+msgstr ""
+
+#: ./templates/Pages/home.php:123
+msgid "Generate, translate, then review. Always structured. Always yours."
+msgstr ""
+
+#: ./templates/Pages/home.php:138
+msgid "Generate drafts, translate content, and iterate quickly without breaking structure."
+msgstr ""
+
+#: ./templates/Pages/home.php:143
+msgid "Mobile-ready auth"
+msgstr ""
+
+#: ./templates/Pages/home.php:144
+msgid "Access + refresh tokens, rotation, revoke, and device-aware logging."
+msgstr ""
+
+#: ./templates/Pages/home.php:149
+msgid "Speed"
+msgstr ""
+
+#: ./templates/Pages/home.php:150
+msgid "Less clicking. More learning. Admin-style tools where they matter."
+msgstr ""
+
+#: ./templates/Pages/home.php:159
+msgid "One place for quizzes, questions, answers, translations."
+msgstr ""
+
+#: ./templates/Pages/home.php:162
+msgid "Create multilingual content, keep consistency across difficulties and categories, and ship clean question banks for mobile and web."
+msgstr ""
+
+#: ./templates/Pages/home.php:167
+msgid "Rotation & revoke"
+msgstr ""
+
+#: ./templates/Pages/home.php:174
+msgid "Fast loop"
+msgstr ""
+
+#: ./templates/Pages/home.php:176
+msgid "Write once, test repeatedly, improve daily. AI helps generate and translate, you keep control and review."
+msgstr ""
+
+#: ./templates/Pages/home.php:180
+#: ./templates/Tests/add.php:141
+#: ./templates/Tests/edit.php:146
+msgid "Generate"
+msgstr ""
+
+#: ./templates/Pages/home.php:181
+#: ./templates/Tests/add.php:149
+#: ./templates/Tests/edit.php:154
+msgid "Translate"
+msgstr ""
+
+#: ./templates/Pages/home.php:182
+msgid "Practice"
+msgstr ""
+
+#: ./templates/Pages/home.php:192
+msgid "Ready to build your first quiz?"
+msgstr ""
+
+#: ./templates/Pages/home.php:193
+msgid "Start with AI, then refine by hand. You stay in control."
 msgstr ""
 
 #: ./templates/QuestionTranslations/add.php:13
@@ -2689,56 +2633,77 @@ msgstr ""
 msgid "Delete Question Translation"
 msgstr ""
 
-#: ./templates/Questions/add.php:14
-#: ./templates/Questions/edit.php:19
-#: ./templates/Questions/view.php:13
-msgid "List Questions"
-msgstr ""
-
-#: ./templates/Questions/add.php:21
+#: ./templates/Questions/add.php:12
+#: ./templates/Questions/add.php:17
 #: ./templates/Tests/add.php:50
 #: ./templates/Tests/edit.php:55
 msgid "Add Question"
 msgstr ""
 
-#: ./templates/Questions/edit.php:26
-#: ./templates/Questions/view.php:11
-msgid "Edit Question"
-msgstr ""
-
-#: ./templates/Questions/index.php:44
-#: ./templates/Questions/view.php:14
-msgid "New Question"
-msgstr ""
-
-#: ./templates/Questions/index.php:78
-msgid "Select question"
-msgstr ""
-
-#: ./templates/Questions/view.php:12
-msgid "Delete Question"
-msgstr ""
-
-#: ./templates/Questions/view.php:19
-msgid "Question # {0}"
-msgstr ""
-
-#: ./templates/Questions/view.php:22
+#: ./templates/Questions/add.php:30
+#: ./templates/Questions/edit.php:40
+#: ./templates/Questions/view.php:35
 #: ./templates/TestAttempts/view.php:26
 #: ./templates/TestTranslations/view.php:22
+#: ./templates/Tests/view.php:9
+#: ./templates/Tests/view.php:20
 #: ./templates/UserFavoriteTests/view.php:26
 msgid "Test"
 msgstr ""
 
-#: ./templates/Questions/view.php:30
-#: ./templates/TestAttempts/view.php:34
-#: ./templates/Tests/index.php:64
-#: ./templates/Tests/view.php:26
-msgid "Difficulty"
+#: ./templates/Questions/edit.php:12
+#: ./templates/Questions/edit.php:17
+msgid "Edit Question"
 msgstr ""
 
-#: ./templates/Questions/view.php:63
-msgid "Related Answers"
+#: ./templates/Questions/index.php:44
+msgid "New Question"
+msgstr ""
+
+#: ./templates/Questions/index.php:80
+msgid "Select question"
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:14
+msgid "Create and manage quizzes, questions and answers."
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:21
+#: ./templates/Tests/index.php:14
+#: ./templates/Tests/index.php:26
+#: ./templates/element/admin_sidebar.php:183
+#: ./templates/element/navbar.php:179
+#: ./templates/element/users/stats.php:43
+#: ./templates/element/users/stats.php:46
+msgid "Quizzes"
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:22
+msgid "Manage quizzes and generate content with AI."
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:23
+#: ./templates/QuizCreator/Dashboard/index.php:31
+#: ./templates/QuizCreator/Dashboard/index.php:39
+#: ./templates/QuizCreator/Dashboard/index.php:47
+#: ./templates/QuizCreator/Dashboard/index.php:55
+msgid "Open"
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:30
+msgid "Review and edit the question bank."
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:38
+msgid "Maintain answer choices and translations."
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:46
+msgid "Manage category taxonomy for filtering."
+msgstr ""
+
+#: ./templates/QuizCreator/Dashboard/index.php:54
+msgid "Manage difficulty levels used by quizzes."
 msgstr ""
 
 #: ./templates/Roles/add.php:11
@@ -2833,6 +2798,16 @@ msgstr ""
 msgid "Test Attempt"
 msgstr ""
 
+#: ./templates/TestAttemptAnswers/view.php:38
+#: ./templates/TestAttempts/view.php:82
+msgid "Answered At"
+msgstr ""
+
+#: ./templates/TestAttemptAnswers/view.php:47
+#: ./templates/TestAttempts/view.php:80
+msgid "User Answer Text"
+msgstr ""
+
 #: ./templates/TestAttempts/add.php:16
 #: ./templates/TestAttempts/edit.php:21
 #: ./templates/TestAttempts/view.php:13
@@ -2853,12 +2828,16 @@ msgstr ""
 msgid "New Test Attempt"
 msgstr ""
 
-#: ./templates/TestAttempts/index.php:9
-msgid "Test Attempts"
-msgstr ""
-
 #: ./templates/TestAttempts/view.php:12
 msgid "Delete Test Attempt"
+msgstr ""
+
+#: ./templates/TestAttempts/view.php:71
+msgid "Related Test Attempt Answers"
+msgstr ""
+
+#: ./templates/TestAttempts/view.php:77
+msgid "Test Attempt Id"
 msgstr ""
 
 #: ./templates/TestTranslations/add.php:14
@@ -2899,13 +2878,17 @@ msgstr ""
 
 #: ./templates/Tests/add.php:18
 #: ./templates/Tests/edit.php:18
-#: ./templates/Tests/view.php:13
 msgid "List Tests"
 msgstr ""
 
 #: ./templates/Tests/add.php:27
 #: ./templates/Tests/edit.php:32
 msgid "Basic Information"
+msgstr ""
+
+#: ./templates/Tests/add.php:40
+#: ./templates/Tests/edit.php:45
+msgid "Is Public"
 msgstr ""
 
 #: ./templates/Tests/add.php:78
@@ -2919,8 +2902,8 @@ msgid "Description ({0})"
 msgstr ""
 
 #: ./templates/Tests/add.php:96
-#: ./templates/Tests/add.php:131
-#: ./templates/Tests/edit.php:133
+#: ./templates/Tests/add.php:138
+#: ./templates/Tests/edit.php:143
 msgid "Generate Test with AI"
 msgstr ""
 
@@ -2930,172 +2913,153 @@ msgid "AI generations today: {0}/{1}"
 msgstr ""
 
 #: ./templates/Tests/add.php:103
+#: ./templates/Tests/add.php:148
+#: ./templates/Tests/edit.php:108
+#: ./templates/Tests/edit.php:153
 msgid "Translate Test with AI"
-msgstr ""
-
-msgid "Translate"
-msgstr ""
-
-msgid "This will translate the current test content into all configured languages."
-msgstr ""
-
-msgid "Translations updated."
-msgstr ""
-
-msgid "Translation in progress..."
-msgstr ""
-
-msgid "AI-powered quiz engine"
-msgstr ""
-
-msgid "Forge your learning into"
-msgstr ""
-
-msgid "mastery"
-msgstr ""
-
-msgid "MindForge turns studying into a fast loop: build quizzes, test understanding, then sharpen weak spots with structured practice."
-msgstr ""
-
-msgid "Continue"
-msgstr ""
-
-msgid "You are signed in."
-msgstr ""
-
-msgid "One place for quizzes, questions, answers, translations."
-msgstr ""
-
-msgid "Create multilingual content, keep consistency across difficulties and categories, and ship clean question banks for mobile and web."
-msgstr ""
-
-msgid "Fast loop"
-msgstr ""
-
-msgid "Write once, test repeatedly, improve daily. AI helps generate and translate, you keep control and review."
-msgstr ""
-
-msgid "Practice"
-msgstr ""
-
-msgid "AI assistance"
-msgstr ""
-
-msgid "Generate drafts, translate content, and iterate quickly without breaking structure."
-msgstr ""
-
-msgid "Built for safety"
-msgstr ""
-
-msgid "Role-based access, token auth for mobile, and audit-friendly system logs."
-msgstr ""
-
-msgid "Less clicking. More learning. Admin-style tools where they matter."
-msgstr ""
-
-msgid "Forge your learning into {0}."
-msgstr ""
-
-msgid "No credit card. No fluff. Start in under a minute."
-msgstr ""
-
-msgid "Live preview"
-msgstr ""
-
-msgid "What drives long-term memory?"
-msgstr ""
-
-msgid "Why does spaced repetition work?"
-msgstr ""
-
-msgid "Which option best fits the definition?"
-msgstr ""
-
-msgid "What is the key idea in one sentence?"
-msgstr ""
-
-msgid "Spaced repetition"
-msgstr ""
-
-msgid "Random guessing"
-msgstr ""
-
-msgid "Passive reading"
-msgstr ""
-
-msgid "Generate, translate, then review. Always structured. Always yours."
-msgstr ""
-
-msgid "Mobile-ready auth"
-msgstr ""
-
-msgid "Access + refresh tokens, rotation, revoke, and device-aware logging."
-msgstr ""
-
-msgid "Rotation & revoke"
-msgstr ""
-
-msgid "Ready to build your first quiz?"
-msgstr ""
-
-msgid "Start with AI, then refine by hand. You stay in control."
 msgstr ""
 
 #: ./templates/Tests/add.php:106
 msgid "Save Test"
 msgstr ""
 
-#: ./templates/Tests/add.php:120
-#: ./templates/Tests/edit.php:122
-msgid "True"
-msgstr ""
-
-#: ./templates/Tests/add.php:121
-#: ./templates/Tests/edit.php:123
-msgid "False"
-msgstr ""
-
-#: ./templates/Tests/add.php:132
+#: ./templates/Tests/add.php:139
 msgid "Describe the test you want to create (topic, difficulty, number of questions, etc.)"
 msgstr ""
 
-#: ./templates/Tests/add.php:133
-#: ./templates/Tests/edit.php:135
+#: ./templates/Tests/add.php:140
+#: ./templates/Tests/edit.php:145
 msgid "E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty."
 msgstr ""
 
-#: ./templates/Tests/add.php:134
-#: ./templates/Tests/edit.php:136
-msgid "Generate"
-msgstr ""
-
-#: ./templates/Tests/add.php:135
-#: ./templates/Tests/edit.php:137
+#: ./templates/Tests/add.php:142
+#: ./templates/Tests/edit.php:147
 msgid "Please enter a prompt"
 msgstr ""
 
-#: ./templates/Tests/add.php:136
-#: ./templates/Tests/edit.php:138
+#: ./templates/Tests/add.php:143
+#: ./templates/Tests/edit.php:148
 msgid "Success!"
 msgstr ""
 
-#: ./templates/Tests/add.php:137
-#: ./templates/Tests/edit.php:139
+#: ./templates/Tests/add.php:144
+#: ./templates/Tests/edit.php:149
 msgid "Test generated successfully."
 msgstr ""
 
-#: ./templates/Tests/add.php:138
-#: ./templates/Tests/edit.php:140
+#: ./templates/Tests/add.php:145
+#: ./templates/Tests/edit.php:150
+#: ./templates/Error/error400.php:24
+#: ./templates/Error/error500.php:34
 msgid "Error"
 msgstr ""
 
-#: ./templates/Tests/add.php:139
-#: ./templates/Tests/edit.php:141
+#: ./templates/Tests/add.php:146
+#: ./templates/Tests/edit.php:151
 msgid "Unknown error occurred"
 msgstr ""
 
+#: ./templates/Tests/add.php:150
+#: ./templates/Tests/edit.php:155
+msgid "This will translate the current test content into all configured languages."
+msgstr ""
+
+#: ./templates/Tests/add.php:151
+#: ./templates/Tests/edit.php:156
+msgid "Translations updated."
+msgstr ""
+
+#: ./templates/Tests/add.php:152
+#: ./templates/Tests/edit.php:157
+msgid "Translation in progress..."
+msgstr ""
+
+#: ./templates/Tests/add.php:153
+#: ./templates/Tests/edit.php:158
+msgid "True"
+msgstr ""
+
+#: ./templates/Tests/add.php:154
+#: ./templates/Tests/edit.php:159
+msgid "False"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:12
+#: ./templates/Tests/take.php:32
+#: ./templates/element/users/stats.php:97
+msgid "Quiz"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:82
+#: ./templates/Tests/index.php:95
+msgid "questions"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:90
+#: ./templates/Users/profile.php:74
+#: ./templates/Users/stats.php:13
+#: ./templates/Users/stats.php:20
+#: ./templates/element/users/stats.php:38
+msgid "My Stats"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:92
+#: ./templates/Tests/index.php:104
+msgid "Untitled quiz"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:96
+#: ./templates/Tests/catalog_view.php:99
+#: ./templates/element/users/stats.php:59
+#: ./templates/element/users/stats.php:62
+msgid "Attempts"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:102
+#: ./templates/Tests/catalog_view.php:105
+#: ./templates/Tests/catalog_view.php:117
+#: ./templates/Tests/catalog_view.php:129
+#: ./templates/Tests/result.php:46
+#: ./templates/element/users/stats.php:64
+#: ./templates/element/users/stats.php:67
+#: ./templates/element/users/stats.php:100
+msgid "Finished"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:108
+#: ./templates/Tests/catalog_view.php:111
+#: ./templates/element/users/stats.php:48
+#: ./templates/element/users/stats.php:51
+msgid "Best Result"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:129
+#: ./templates/element/users/stats.php:84
+msgid "Last {0}"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:137
+#: ./templates/Tests/index.php:113
+msgid "Start quiz"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:144
+#: ./templates/element/users/stats.php:129
+msgid "Result"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:149
+#: ./templates/Tests/review.php:14
+#: ./templates/Tests/review.php:33
+#: ./templates/element/users/stats.php:134
+msgid "Review"
+msgstr ""
+
+#: ./templates/Tests/catalog_view.php:156
+msgid "Back to Quizzes"
+msgstr ""
+
 #: ./templates/Tests/edit.php:16
-#: ./templates/Tests/view.php:11
 msgid "Edit Test"
 msgstr ""
 
@@ -3103,47 +3067,118 @@ msgstr ""
 msgid "Generate Content with AI"
 msgstr ""
 
-#: ./templates/Tests/edit.php:108
-#: ./templates/Users/profile_edit.php:66
-msgid "Save Changes"
-msgstr ""
-
-#: ./templates/Tests/edit.php:134
+#: ./templates/Tests/edit.php:144
 msgid "Describe the test you want to create or update (topic, difficulty, number of questions, etc.)"
 msgstr ""
 
-#: ./templates/Tests/index.php:9
-#: ./templates/Tests/index.php:19
-#: ./templates/element/admin_sidebar.php:118
-#: ./templates/element/admin_sidebar.php:160
-msgid "Tests"
+#: ./templates/Tests/index.php:27
+msgid "Pick a quiz, skim the description, and start when you are ready."
 msgstr ""
 
-#: ./templates/Tests/index.php:44
-#: ./templates/Tests/view.php:14
+#: ./templates/Tests/index.php:107
+msgid "No description yet."
+msgstr ""
+
+#: ./templates/Tests/index.php:118
+msgid "Open details"
+msgstr ""
+
+#: ./templates/Tests/index.php:156
 msgid "New Test"
 msgstr ""
 
-#: ./templates/Tests/index.php:66
-msgid "Public"
-msgstr ""
-
-#: ./templates/Tests/index.php:81
+#: ./templates/Tests/index.php:193
 msgid "Select test"
 msgstr ""
 
-#: ./templates/Tests/index.php:86
-#: ./templates/Tests/index.php:89
-#: ./templates/Tests/index.php:92
-msgid "N/A"
+#: ./templates/Tests/result.php:9
+#: ./templates/Tests/result.php:19
+msgid "Quiz results"
 msgstr ""
 
-#: ./templates/Tests/view.php:12
-msgid "Delete Test"
+#: ./templates/Tests/result.php:20
+#: ./templates/Tests/review.php:36
+#: ./templates/Tests/take.php:29
+msgid "Attempt"
 msgstr ""
 
-#: ./templates/Tests/view.php:259
-msgid "Related User Favorite Tests"
+#: ./templates/Tests/result.php:24
+#: ./templates/Tests/review.php:44
+#: ./templates/Tests/take.php:46
+msgid "Back to quizzes"
+msgstr ""
+
+#: ./templates/Tests/result.php:34
+#: ./templates/Tests/review.php:61
+msgid "Correct answers"
+msgstr ""
+
+#: ./templates/Tests/result.php:56
+#: ./templates/Tests/review.php:50
+msgid "Try again"
+msgstr ""
+
+#: ./templates/Tests/result.php:61
+msgid "Review answers"
+msgstr ""
+
+#: ./templates/Tests/result.php:66
+msgid "View quiz details"
+msgstr ""
+
+#: ./templates/Tests/review.php:123
+#: ./templates/Tests/take.php:72
+msgid "Untitled question"
+msgstr ""
+
+#: ./templates/Tests/review.php:130
+msgid "Wrong"
+msgstr ""
+
+#: ./templates/Tests/review.php:137
+msgid "Your answer"
+msgstr ""
+
+#: ./templates/Tests/review.php:139
+msgid "(no answer)"
+msgstr ""
+
+#: ./templates/Tests/review.php:142
+msgid "Correct answer"
+msgstr ""
+
+#: ./templates/Tests/review.php:144
+msgid "(not set)"
+msgstr ""
+
+#: ./templates/Tests/review.php:178
+#: ./templates/Tests/take.php:106
+msgid "(empty)"
+msgstr ""
+
+#: ./templates/Tests/review.php:182
+msgid "You"
+msgstr ""
+
+#: ./templates/Tests/review.php:193
+msgid "You did not answer this question."
+msgstr ""
+
+#: ./templates/Tests/review.php:205
+#: ./templates/Tests/take.php:125
+msgid "Next"
+msgstr ""
+
+#: ./templates/Tests/take.php:13
+msgid "Take quiz"
+msgstr ""
+
+#: ./templates/Tests/take.php:80
+msgid "Type your answer…"
+msgstr ""
+
+#: ./templates/Tests/take.php:128
+msgid "Submit answers"
 msgstr ""
 
 #: ./templates/UserFavoriteCategories/add.php:13
@@ -3318,7 +3353,7 @@ msgstr ""
 
 #: ./templates/Users/login.php:63
 #: ./templates/Users/register.php:92
-#: ./templates/element/navbar.php:99
+#: ./templates/element/navbar.php:144
 msgid "Sign Up"
 msgstr ""
 
@@ -3334,18 +3369,23 @@ msgstr ""
 msgid "AI-powered learning and testing, designed to help you master any subject faster and smarter."
 msgstr ""
 
-#: ./templates/Users/profile.php:42
+#: ./templates/Users/profile.php:48
 msgid "Joined"
 msgstr ""
 
-#: ./templates/Users/profile.php:48
+#: ./templates/Users/profile.php:54
 msgid "Last Login"
 msgstr ""
 
-#: ./templates/Users/profile.php:56
+#: ./templates/Users/profile.php:62
 #: ./templates/Users/profile_edit.php:7
 #: ./templates/Users/profile_edit.php:12
 msgid "Edit Profile"
+msgstr ""
+
+#: ./templates/Users/profile.php:75
+#: ./templates/Users/stats.php:21
+msgid "Your quiz history and performance overview."
 msgstr ""
 
 #: ./templates/Users/profile_edit.php:18
@@ -3420,6 +3460,10 @@ msgstr ""
 msgid "Update Password"
 msgstr ""
 
+#: ./templates/Users/stats.php:26
+msgid "Back to Profile"
+msgstr ""
+
 #: ./templates/Users/view.php:19
 msgid "Delete User"
 msgstr ""
@@ -3459,49 +3503,36 @@ msgid "Super Admin"
 msgstr ""
 
 #: ./templates/element/admin_navbar.php:46
-#: ./templates/element/navbar.php:120
+#: ./templates/element/navbar.php:210
 msgid "Logout"
 msgstr ""
 
-#: ./templates/element/admin_sidebar.php:100
+#: ./templates/element/admin_sidebar.php:113
 msgid "Management"
 msgstr ""
 
-#: ./templates/element/admin_sidebar.php:157
+#: ./templates/element/admin_sidebar.php:114
+msgid "Admin navigation"
+msgstr ""
+
+#: ./templates/element/admin_sidebar.php:155
+msgid "System navigation"
+msgstr ""
+
+#: ./templates/element/admin_sidebar.php:170
 msgid "Quiz Tools"
 msgstr ""
 
-msgid "English"
+#: ./templates/element/admin_sidebar.php:171
+msgid "Quiz tools navigation"
 msgstr ""
 
-msgid "Hungarian"
+#: ./templates/element/admin_sidebar.php:216
+msgid "Navigation"
 msgstr ""
 
-msgid "Quiz Creator"
-msgstr ""
-
-msgid "Create and manage quizzes, questions and answers."
-msgstr ""
-
-msgid "Open"
-msgstr ""
-
-msgid "Manage quizzes and generate content with AI."
-msgstr ""
-
-msgid "Review and edit the question bank."
-msgstr ""
-
-msgid "Maintain answer choices and translations."
-msgstr ""
-
-msgid "Manage category taxonomy for filtering."
-msgstr ""
-
-msgid "Manage difficulty levels used by quizzes."
-msgstr ""
-
-msgid "Quizzes"
+#: ./templates/element/admin_sidebar.php:217
+msgid "Close"
 msgstr ""
 
 #: ./templates/element/functions/scroll_to_top.php:32
@@ -3509,8 +3540,34 @@ msgstr ""
 msgid "Scroll to top"
 msgstr ""
 
-#: ./templates/element/navbar.php:73
+#: ./templates/element/navbar.php:118
 msgid "Toggle navigation"
+msgstr ""
+
+#: ./templates/element/navbar.php:155
+#: ./templates/element/navbar.php:198
+msgid "English"
+msgstr ""
+
+#: ./templates/element/navbar.php:160
+#: ./templates/element/navbar.php:203
+msgid "Hungarian"
+msgstr ""
+
+#: ./templates/element/users/stats.php:69
+msgid "Avg: {0}"
+msgstr ""
+
+#: ./templates/element/users/stats.php:72
+msgid "Avg"
+msgstr ""
+
+#: ./templates/element/users/stats.php:83
+msgid "Recent Attempts"
+msgstr ""
+
+#: ./templates/element/users/stats.php:90
+msgid "No finished attempts yet."
 msgstr ""
 
 #: ./templates/email/html/activation.php:39
@@ -3565,3 +3622,20 @@ msgstr ""
 #: ./templates/email/text/password_reset.php:9
 msgid "Use the link below to set a new password:"
 msgstr ""
+
+#: ./templates/layout/admin.php:46
+msgid "Skip to content"
+msgstr ""
+
+#: ./templates/layout/admin.php:65
+msgid "Menu"
+msgstr ""
+
+#: ./templates/Error/error400.php:25
+msgid "The requested address {0} was not found on this server."
+msgstr ""
+
+#: ./templates/Error/error500.php:32
+msgid "An Internal Error Has Occurred."
+msgstr ""
+

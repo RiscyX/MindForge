@@ -15,6 +15,11 @@ use Throwable;
 #[OA\Tag(name: 'CreatorAi', description: 'Creator AI quiz generation')]
 class CreatorAiController extends AppController
 {
+    /**
+     * Create asynchronous AI generation request.
+     *
+     * @return void
+     */
     #[OA\Post(
         path: '/api/v1/creator/ai/test-generation',
         summary: 'Create an async AI test generation request (prompt + optional images)',
@@ -84,6 +89,29 @@ class CreatorAiController extends AppController
         $categoryId = $this->intOrNull($this->request->getData('category_id'));
         $difficultyId = $this->intOrNull($this->request->getData('difficulty_id'));
         $questionCount = $this->intOrNull($this->request->getData('question_count'));
+        $isPublic = $this->boolOrDefault($this->request->getData('is_public'), true);
+
+        if ($categoryId === null) {
+            $this->jsonError(422, 'CATEGORY_REQUIRED', 'Category is required.');
+
+            return;
+        }
+        if (!$this->isCategoryValidAndActive($categoryId)) {
+            $this->jsonError(422, 'CATEGORY_INVALID', 'Category is invalid or inactive.');
+
+            return;
+        }
+
+        if ($difficultyId === null) {
+            $this->jsonError(422, 'DIFFICULTY_REQUIRED', 'Difficulty is required.');
+
+            return;
+        }
+        if (!$this->isDifficultyValidAndActive($difficultyId)) {
+            $this->jsonError(422, 'DIFFICULTY_INVALID', 'Difficulty is invalid or inactive.');
+
+            return;
+        }
 
         $now = FrozenTime::now();
         $req = $aiRequests->newEntity([
@@ -97,6 +125,7 @@ class CreatorAiController extends AppController
                 'category_id' => $categoryId,
                 'difficulty_id' => $difficultyId,
                 'question_count' => $questionCount,
+                'is_public' => $isPublic,
             ], JSON_UNESCAPED_SLASHES),
             'status' => 'pending',
             'created_at' => $now,
@@ -144,6 +173,12 @@ class CreatorAiController extends AppController
         ]);
     }
 
+    /**
+     * Return AI request status and optional generated draft.
+     *
+     * @param string|null $id AI request id.
+     * @return void
+     */
     #[OA\Get(
         path: '/api/v1/creator/ai/requests/{id}',
         summary: 'Get status/result of an AI generation request',
@@ -231,7 +266,9 @@ class CreatorAiController extends AppController
                     'category' => $catTrans?->name ?? null,
                     'difficulty_id' => $test->difficulty_id !== null ? (int)$test->difficulty_id : null,
                     'difficulty' => $diffTrans?->name ?? null,
-                    'number_of_questions' => $test->number_of_questions !== null ? (int)$test->number_of_questions : null,
+                    'number_of_questions' => $test->number_of_questions !== null
+                        ? (int)$test->number_of_questions
+                        : null,
                     'is_public' => (bool)$test->is_public,
                 ];
             }
@@ -247,6 +284,12 @@ class CreatorAiController extends AppController
         $this->jsonSuccess($payload);
     }
 
+    /**
+     * Apply successful AI draft and persist it as a test.
+     *
+     * @param string|null $id AI request id.
+     * @return void
+     */
     #[OA\Post(
         path: '/api/v1/creator/ai/requests/{id}/apply',
         summary: 'Apply a successful AI draft into a real Test',
@@ -351,23 +394,32 @@ class CreatorAiController extends AppController
 
         $testData = $built['testData'];
         $testData['created_by'] = $userId;
-        $testData['is_public'] = false;
-        $testData['category_id'] = isset($opts['category_id']) && is_numeric($opts['category_id']) ? (int)$opts['category_id'] : null;
-        $testData['difficulty_id'] = isset($opts['difficulty_id']) && is_numeric($opts['difficulty_id']) ? (int)$opts['difficulty_id'] : null;
+        $testData['is_public'] = $this->boolOrDefault($opts['is_public'] ?? null, true);
+        $testData['category_id'] = isset($opts['category_id']) && is_numeric($opts['category_id'])
+            ? (int)$opts['category_id']
+            : null;
+        $testData['difficulty_id'] = isset($opts['difficulty_id']) && is_numeric($opts['difficulty_id'])
+            ? (int)$opts['difficulty_id']
+            : null;
 
-        if (empty($testData['category_id'])) {
-            $defaultCategory = $this->fetchTable('Categories')->find()
-                ->select(['id'])
-                ->where(['Categories.is_active' => true])
-                ->orderByAsc('Categories.id')
-                ->first();
-            if ($defaultCategory) {
-                $testData['category_id'] = (int)$defaultCategory->id;
-            }
+        if ($testData['category_id'] === null) {
+            $this->jsonError(422, 'CATEGORY_REQUIRED', 'Category is required.');
+
+            return;
+        }
+        if (!$this->isCategoryValidAndActive((int)$testData['category_id'])) {
+            $this->jsonError(422, 'CATEGORY_INVALID', 'Category is invalid or inactive.');
+
+            return;
         }
 
-        if (empty($testData['category_id'])) {
-            $this->jsonError(422, 'CATEGORY_REQUIRED', 'No category selected and no active categories exist.');
+        if ($testData['difficulty_id'] === null) {
+            $this->jsonError(422, 'DIFFICULTY_REQUIRED', 'Difficulty is required.');
+
+            return;
+        }
+        if (!$this->isDifficultyValidAndActive((int)$testData['difficulty_id'])) {
+            $this->jsonError(422, 'DIFFICULTY_INVALID', 'Difficulty is invalid or inactive.');
 
             return;
         }
@@ -407,6 +459,11 @@ class CreatorAiController extends AppController
         $this->jsonSuccess(['test_id' => (int)$test->id]);
     }
 
+    /**
+     * Resolve language id from request payload or route query.
+     *
+     * @return int|null
+     */
     private function resolveLanguageId(): ?int
     {
         $languageId = $this->request->getData('language_id');
@@ -414,7 +471,10 @@ class CreatorAiController extends AppController
             return (int)$languageId;
         }
 
-        $langCode = strtolower(trim((string)$this->request->getData('lang', $this->request->getQuery('lang', 'en'))));
+        $langCode = strtolower(trim((string)$this->request->getData(
+            'lang',
+            $this->request->getQuery('lang', 'en'),
+        )));
         $languages = $this->fetchTable('Languages');
         $lang = $languages->find()->where(['code LIKE' => $langCode . '%'])->first();
         if (!$lang) {
@@ -424,11 +484,85 @@ class CreatorAiController extends AppController
         return $lang?->id;
     }
 
+    /**
+     * Parse positive integer or null.
+     *
+     * @param mixed $v Value to parse.
+     * @return int|null
+     */
     private function intOrNull(mixed $v): ?int
     {
         return is_numeric($v) && (int)$v > 0 ? (int)$v : null;
     }
 
+    /**
+     * Convert mixed input to boolean with fallback default.
+     *
+     * @param mixed $value Raw value.
+     * @param bool $default Fallback value.
+     * @return bool
+     */
+    private function boolOrDefault(mixed $value, bool $default): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+        if (is_numeric($value)) {
+            return (int)$value !== 0;
+        }
+        if (is_string($value)) {
+            $normalized = strtolower(trim($value));
+            if (in_array($normalized, ['1', 'true', 'yes', 'on'], true)) {
+                return true;
+            }
+            if (in_array($normalized, ['0', 'false', 'no', 'off'], true)) {
+                return false;
+            }
+        }
+
+        return $default;
+    }
+
+    /**
+     * Check whether the category exists and is active.
+     *
+     * @param int $categoryId Category identifier.
+     * @return bool
+     */
+    private function isCategoryValidAndActive(int $categoryId): bool
+    {
+        $categories = $this->fetchTable('Categories');
+        $query = $categories->find()->where(['Categories.id' => $categoryId]);
+        if ($categories->getSchema()->hasColumn('is_active')) {
+            $query->where(['Categories.is_active' => true]);
+        }
+
+        return $query->count() > 0;
+    }
+
+    /**
+     * Check whether the difficulty exists and is active.
+     *
+     * @param int $difficultyId Difficulty identifier.
+     * @return bool
+     */
+    private function isDifficultyValidAndActive(int $difficultyId): bool
+    {
+        $difficulties = $this->fetchTable('Difficulties');
+        $query = $difficulties->find()->where(['Difficulties.id' => $difficultyId]);
+        if ($difficulties->getSchema()->hasColumn('is_active')) {
+            $query->where(['Difficulties.is_active' => true]);
+        }
+
+        return $query->count() > 0;
+    }
+
+    /**
+     * Persist uploaded images for AI request.
+     *
+     * @param int $aiRequestId AI request identifier.
+     * @return void
+     */
     private function saveUploadedImages(int $aiRequestId): void
     {
         $files = $this->request->getUploadedFiles();
@@ -491,7 +625,8 @@ class CreatorAiController extends AppController
             $absPath = $baseDir . DS . $name;
             $file->moveTo($absPath);
 
-            $sha256 = @hash_file('sha256', $absPath) ?: null;
+            $hash = hash_file('sha256', $absPath);
+            $sha256 = $hash !== false ? $hash : null;
             // Store as a workspace-relative path for the worker.
             $relPath = 'tmp/ai_assets/' . $aiRequestId . '/' . $name;
 

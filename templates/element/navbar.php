@@ -20,10 +20,6 @@ $isOnAdminDashboard = $currentPrefix === 'Admin'
     && $currentController === 'Dashboard'
     && $currentAction === 'index';
 
-$isOnUserDashboard = ($currentPrefix === null || $currentPrefix === '')
-    && $currentController === 'Dashboard'
-    && $currentAction === 'index';
-
 $dashboardUrl = $isAdmin
     ? [
         'prefix' => 'Admin',
@@ -32,12 +28,26 @@ $dashboardUrl = $isAdmin
         'lang' => $lang,
     ]
     : [
+        'prefix' => 'QuizCreator',
         'controller' => 'Dashboard',
         'action' => 'index',
         'lang' => $lang,
     ];
 
-$isDashboardActive = $isAdmin ? $isOnAdminDashboard : $isOnUserDashboard;
+$isDashboardActive = $isAdmin
+    ? $isOnAdminDashboard
+    : ($currentPrefix === 'QuizCreator' && $currentController === 'Dashboard' && $currentAction === 'index');
+
+$quizzesUrl = [
+    'prefix' => false,
+    'controller' => 'Tests',
+    'action' => 'index',
+    'lang' => $lang,
+];
+
+$isQuizzesActive = ($currentPrefix === null || $currentPrefix === '')
+    && $currentController === 'Tests'
+    && $currentAction === 'index';
 
 $profileUrl = $isAdmin
     ? [
@@ -59,7 +69,7 @@ $isProfileActive = $isAdmin
 
 $pass = (array)$this->request->getParam('pass', []);
 $queryParams = (array)$this->request->getQueryParams();
-$routePrefix = ($currentPrefix === null || $currentPrefix === '') ? false : $currentPrefix;
+$routePrefix = $currentPrefix === null || $currentPrefix === '' ? false : $currentPrefix;
 
 $buildLangRoute = static function (string $newLang) use ($routePrefix, $currentController, $currentAction, $pass, $queryParams): array {
     $route = [
@@ -155,12 +165,21 @@ $langRouteHu = $buildLangRoute('hu');
 
                 <?php else : ?>
                     <!-- Logged in -->
-                    <li class="nav-item">
-                        <a class="nav-link<?= $isDashboardActive ? ' active' : '' ?>"
-                           href="<?= $this->Url->build($dashboardUrl) ?>">
-                            <?= __('Dashboard') ?>
-                        </a>
-                    </li>
+                    <?php if ($isAdmin || $isCreator) : ?>
+                        <li class="nav-item">
+                            <a class="nav-link<?= $isDashboardActive ? ' active' : '' ?>"
+                               href="<?= $this->Url->build($dashboardUrl) ?>">
+                                <?= __('Dashboard') ?>
+                            </a>
+                        </li>
+                    <?php else : ?>
+                        <li class="nav-item">
+                            <a class="nav-link<?= $isQuizzesActive ? ' active' : '' ?>"
+                               href="<?= $this->Url->build($quizzesUrl) ?>">
+                                <?= __('Quizzes') ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
                     <li class="nav-item">
                         <a class="nav-link<?= $isProfileActive ? ' active' : '' ?>"

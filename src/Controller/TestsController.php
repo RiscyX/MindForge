@@ -37,7 +37,10 @@ class TestsController extends AppController
         $roleId = $identity ? (int)$identity->get('role_id') : null;
 
         // Public/consumer-facing pages use the default layout.
-        if (!$this->request->getParam('prefix') && ($roleId === null || $roleId === Role::USER)) {
+        if (
+            !$this->request->getParam('prefix') &&
+            ($roleId === null || $roleId === Role::USER || $roleId === Role::CREATOR)
+        ) {
             $this->viewBuilder()->setLayout('default');
 
             return;
@@ -63,6 +66,8 @@ class TestsController extends AppController
     {
         $identity = $this->Authentication->getIdentity();
         $roleId = $identity ? (int)$identity->get('role_id') : null;
+        $userId = $identity ? (int)$identity->getIdentifier() : null;
+        $isCreatorCatalog = $roleId === Role::CREATOR && !$this->request->getParam('prefix');
 
         $langCode = $this->request->getParam('lang');
         $language = $this->fetchTable('Languages')->find()
@@ -94,6 +99,135 @@ class TestsController extends AppController
             $query->where(['Tests.is_public' => true]);
         }
 
+        $filters = [
+            'q' => trim((string)$this->request->getQuery('q', '')),
+            'category' => (string)$this->request->getQuery('category', ''),
+            'difficulty' => (string)$this->request->getQuery('difficulty', ''),
+            'visibility' => (string)$this->request->getQuery('visibility', ''),
+            'sort' => (string)$this->request->getQuery('sort', 'latest'),
+        ];
+
+        $categoryOptions = [];
+        $difficultyOptions = [];
+
+        if ($isCreatorCatalog && $userId !== null) {
+            $query->where(['Tests.created_by' => $userId]);
+
+            $creatorBase = $this->Tests->find()
+                ->where(['Tests.created_by' => $userId]);
+
+            $categoryRows = (clone $creatorBase)
+                ->select(['category_id'])
+                ->where(['Tests.category_id IS NOT' => null])
+                ->distinct(['Tests.category_id'])
+                ->enableHydration(false)
+                ->all();
+            $categoryIds = [];
+            foreach ($categoryRows as $row) {
+                $cid = (int)($row['category_id'] ?? 0);
+                if ($cid > 0) {
+                    $categoryIds[] = $cid;
+                }
+            }
+
+            $difficultyRows = (clone $creatorBase)
+                ->select(['difficulty_id'])
+                ->where(['Tests.difficulty_id IS NOT' => null])
+                ->distinct(['Tests.difficulty_id'])
+                ->enableHydration(false)
+                ->all();
+            $difficultyIds = [];
+            foreach ($difficultyRows as $row) {
+                $did = (int)($row['difficulty_id'] ?? 0);
+                if ($did > 0) {
+                    $difficultyIds[] = $did;
+                }
+            }
+
+            if ($categoryIds) {
+                $categoryTranslations = $this->fetchTable('CategoryTranslations')->find()
+                    ->select(['category_id', 'name'])
+                    ->where([
+                        'CategoryTranslations.category_id IN' => $categoryIds,
+                        'CategoryTranslations.language_id' => $language->id ?? null,
+                    ])
+                    ->enableHydration(false)
+                    ->all();
+
+                foreach ($categoryTranslations as $row) {
+                    $cid = (int)($row['category_id'] ?? 0);
+                    $name = trim((string)($row['name'] ?? ''));
+                    if ($cid > 0 && $name !== '') {
+                        $categoryOptions[$cid] = $name;
+                    }
+                }
+                asort($categoryOptions);
+            }
+
+            if ($difficultyIds) {
+                $difficultyTranslations = $this->fetchTable('DifficultyTranslations')->find()
+                    ->select(['difficulty_id', 'name'])
+                    ->where([
+                        'DifficultyTranslations.difficulty_id IN' => $difficultyIds,
+                        'DifficultyTranslations.language_id' => $language->id ?? null,
+                    ])
+                    ->enableHydration(false)
+                    ->all();
+
+                foreach ($difficultyTranslations as $row) {
+                    $did = (int)($row['difficulty_id'] ?? 0);
+                    $name = trim((string)($row['name'] ?? ''));
+                    if ($did > 0 && $name !== '') {
+                        $difficultyOptions[$did] = $name;
+                    }
+                }
+                asort($difficultyOptions);
+            }
+
+            if ($filters['category'] !== '' && ctype_digit($filters['category'])) {
+                $query->where(['Tests.category_id' => (int)$filters['category']]);
+            }
+
+            if ($filters['difficulty'] !== '' && ctype_digit($filters['difficulty'])) {
+                $query->where(['Tests.difficulty_id' => (int)$filters['difficulty']]);
+            }
+
+            if ($filters['visibility'] === 'public') {
+                $query->where(['Tests.is_public' => true]);
+            } elseif ($filters['visibility'] === 'private') {
+                $query->where(['Tests.is_public' => false]);
+            }
+
+            if ($filters['q'] !== '') {
+                $qLike = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $filters['q']) . '%';
+                $query
+                    ->matching('TestTranslations', function ($q) use ($language, $qLike) {
+                        $query = $q->where([
+                            'OR' => [
+                                'TestTranslations.title LIKE' => $qLike,
+                                'TestTranslations.description LIKE' => $qLike,
+                            ],
+                        ]);
+                        if ($language && $language->id !== null) {
+                            $query = $query->where(['TestTranslations.language_id' => (int)$language->id]);
+                        }
+
+                        return $query;
+                    })
+                    ->distinct(['Tests.id']);
+            }
+
+            $sort = $filters['sort'];
+            if ($sort === 'oldest') {
+                $query->orderByAsc('Tests.id');
+            } elseif ($sort === 'updated') {
+                $query->orderByDesc('Tests.updated_at')->orderByDesc('Tests.id');
+            } else {
+                $query->orderByDesc('Tests.id');
+                $filters['sort'] = 'latest';
+            }
+        }
+
         $tests = $query->all();
 
         // Difficulty ordering is admin-configurable, but ids are increasing.
@@ -121,7 +255,16 @@ class TestsController extends AppController
             // Keep UI working if difficulties table is unavailable.
         }
 
-        $this->set(compact('tests', 'roleId', 'difficultyRanks', 'difficultyCount'));
+        $this->set(compact(
+            'tests',
+            'roleId',
+            'difficultyRanks',
+            'difficultyCount',
+            'isCreatorCatalog',
+            'filters',
+            'categoryOptions',
+            'difficultyOptions',
+        ));
     }
 
     /**
@@ -238,7 +381,18 @@ class TestsController extends AppController
             return $this->redirect(['action' => 'result', $attempt->id, 'lang' => $lang]);
         }
 
-        $languageId = $attempt->language_id ? (int)$attempt->language_id : null;
+        // Use the currently selected UI language for translations.
+        // If the attempt is still in progress, persist the user's language switch.
+        $language = $this->resolveLanguage();
+        $languageId = $language ? (int)$language->id : null;
+        if ($languageId !== null && (int)($attempt->language_id ?? 0) !== $languageId) {
+            try {
+                $attempt->language_id = $languageId;
+                $attempts->save($attempt, ['validate' => false]);
+            } catch (Throwable) {
+                // Non-blocking: keep rendering with the selected language.
+            }
+        }
 
         $test = $this->Tests->find()
             ->where(['Tests.id' => (int)$attempt->test_id])
@@ -335,7 +489,17 @@ class TestsController extends AppController
             return $this->redirect(['action' => 'result', $attempt->id, 'lang' => $lang]);
         }
 
-        $languageId = $attempt->language_id ? (int)$attempt->language_id : null;
+        // Submit should follow the currently selected UI language.
+        $language = $this->resolveLanguage();
+        $languageId = $language ? (int)$language->id : null;
+        if ($languageId !== null && (int)($attempt->language_id ?? 0) !== $languageId) {
+            try {
+                $attempt->language_id = $languageId;
+                $attempts->save($attempt, ['validate' => false]);
+            } catch (Throwable) {
+                // Non-blocking.
+            }
+        }
         $questions = $this->fetchTable('Questions')->find()
             ->where([
                 'Questions.test_id' => (int)$attempt->test_id,
@@ -522,7 +686,9 @@ class TestsController extends AppController
             return $this->redirect(['action' => 'take', $attempt->id, 'lang' => $lang]);
         }
 
-        $languageId = $attempt->language_id ? (int)$attempt->language_id : null;
+        // Review uses the currently selected UI language for translations.
+        $language = $this->resolveLanguage();
+        $languageId = $language ? (int)$language->id : null;
 
         $test = $this->Tests->find()
             ->where(['Tests.id' => (int)$attempt->test_id])
@@ -625,6 +791,11 @@ class TestsController extends AppController
         return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
     }
 
+    /**
+     * Resolve current route language with fallback.
+     *
+     * @return \App\Model\Entity\Language|null
+     */
     private function resolveLanguage(): ?Language
     {
         $langCode = (string)$this->request->getParam('lang', 'en');
@@ -648,15 +819,200 @@ class TestsController extends AppController
      */
     public function view(?string $id = null)
     {
+        $identity = $this->Authentication->getIdentity();
+        $roleId = $identity ? (int)$identity->get('role_id') : null;
+
+        // Regular user detail page: keep it minimal and focused on user stats.
+        if (!$this->request->getParam('prefix') && ($roleId === null || $roleId === Role::USER)) {
+            $lang = (string)$this->request->getParam('lang', 'en');
+            $language = $this->resolveLanguage();
+            $languageId = $language ? (int)$language->id : null;
+
+            $test = $this->Tests->find()
+                ->where([
+                    'Tests.id' => $id,
+                    'Tests.is_public' => true,
+                ])
+                ->contain([
+                    'Categories.CategoryTranslations' => function ($q) use ($languageId) {
+                        return $languageId ? $q->where(['CategoryTranslations.language_id' => $languageId]) : $q;
+                    },
+                    'Difficulties.DifficultyTranslations' => function ($q) use ($languageId) {
+                        return $languageId ? $q->where(['DifficultyTranslations.language_id' => $languageId]) : $q;
+                    },
+                    'TestTranslations' => function ($q) use ($languageId) {
+                        return $languageId ? $q->where(['TestTranslations.language_id' => $languageId]) : $q;
+                    },
+                ])
+                ->first();
+
+            if (!$test) {
+                $this->Flash->error(__('Quiz not found.'));
+
+                return $this->redirect(['action' => 'index', 'lang' => $lang]);
+            }
+
+            $userId = $identity ? (int)$identity->getIdentifier() : null;
+            $attemptsCount = 0;
+            $finishedCount = 0;
+            $bestAttempt = null;
+            $lastAttempt = null;
+
+            if ($userId !== null) {
+                $attemptsTable = $this->fetchTable('TestAttempts');
+
+                $attemptsCount = (int)$attemptsTable->find()
+                    ->where([
+                        'TestAttempts.user_id' => $userId,
+                        'TestAttempts.test_id' => (int)$test->id,
+                    ])
+                    ->count();
+
+                $finishedCount = (int)$attemptsTable->find()
+                    ->where([
+                        'TestAttempts.user_id' => $userId,
+                        'TestAttempts.test_id' => (int)$test->id,
+                        'TestAttempts.finished_at IS NOT' => null,
+                    ])
+                    ->count();
+
+                $bestAttempt = $attemptsTable->find()
+                    ->where([
+                        'TestAttempts.user_id' => $userId,
+                        'TestAttempts.test_id' => (int)$test->id,
+                        'TestAttempts.finished_at IS NOT' => null,
+                    ])
+                    ->orderByDesc('TestAttempts.score')
+                    ->orderByDesc('TestAttempts.correct_answers')
+                    ->orderByDesc('TestAttempts.finished_at')
+                    ->orderByDesc('TestAttempts.id')
+                    ->first();
+
+                $lastAttempt = $attemptsTable->find()
+                    ->where([
+                        'TestAttempts.user_id' => $userId,
+                        'TestAttempts.test_id' => (int)$test->id,
+                        'TestAttempts.finished_at IS NOT' => null,
+                    ])
+                    ->orderByDesc('TestAttempts.finished_at')
+                    ->orderByDesc('TestAttempts.id')
+                    ->first();
+            }
+
+            $this->set(compact('test', 'attemptsCount', 'finishedCount', 'bestAttempt', 'lastAttempt'));
+            $this->viewBuilder()->setTemplate('catalog_view');
+
+            return;
+        }
+
+        if (!$this->request->getParam('prefix') && $roleId === Role::CREATOR) {
+            $lang = (string)$this->request->getParam('lang', 'en');
+            $language = $this->resolveLanguage();
+            $languageId = $language ? (int)$language->id : null;
+            $userId = $identity ? (int)$identity->getIdentifier() : null;
+
+            $test = $this->Tests->find()
+                ->where([
+                    'Tests.id' => $id,
+                    'Tests.created_by' => $userId,
+                ])
+                ->contain([
+                    'Categories.CategoryTranslations' => function ($q) use ($languageId) {
+                        return $languageId ? $q->where(['CategoryTranslations.language_id' => $languageId]) : $q;
+                    },
+                    'Difficulties.DifficultyTranslations' => function ($q) use ($languageId) {
+                        return $languageId ? $q->where(['DifficultyTranslations.language_id' => $languageId]) : $q;
+                    },
+                    'TestTranslations' => function ($q) use ($languageId) {
+                        return $languageId ? $q->where(['TestTranslations.language_id' => $languageId]) : $q;
+                    },
+                ])
+                ->first();
+
+            if (!$test) {
+                $this->Flash->error(__('Quiz not found.'));
+
+                return $this->redirect(['action' => 'index', 'lang' => $lang]);
+            }
+
+            $attemptsTable = $this->fetchTable('TestAttempts');
+            $quizAttempts = $attemptsTable->find()->where(['TestAttempts.test_id' => (int)$test->id]);
+
+            $attemptsCount = (int)(clone $quizAttempts)->count();
+            $finishedCount = (int)(clone $quizAttempts)
+                ->where(['TestAttempts.finished_at IS NOT' => null])
+                ->count();
+
+            $finishedWithScore = (clone $quizAttempts)
+                ->where([
+                    'TestAttempts.finished_at IS NOT' => null,
+                    'TestAttempts.score IS NOT' => null,
+                ]);
+
+            $avgScoreRow = (clone $finishedWithScore)
+                ->select(['avg_score' => $attemptsTable->find()->func()->avg('TestAttempts.score')])
+                ->enableHydration(false)
+                ->first();
+            $bestScoreRow = (clone $finishedWithScore)
+                ->select(['best_score' => $attemptsTable->find()->func()->max('TestAttempts.score')])
+                ->enableHydration(false)
+                ->first();
+
+            $correctnessRow = (clone $quizAttempts)
+                ->where([
+                    'TestAttempts.finished_at IS NOT' => null,
+                    'TestAttempts.correct_answers IS NOT' => null,
+                    'TestAttempts.total_questions IS NOT' => null,
+                    'TestAttempts.total_questions >' => 0,
+                ])
+                ->select([
+                    'sum_correct' => $attemptsTable->find()->func()->sum('TestAttempts.correct_answers'),
+                    'sum_total' => $attemptsTable->find()->func()->sum('TestAttempts.total_questions'),
+                ])
+                ->enableHydration(false)
+                ->first();
+
+            $sumCorrect = (float)($correctnessRow['sum_correct'] ?? 0);
+            $sumTotal = (float)($correctnessRow['sum_total'] ?? 0);
+
+            $stats = [
+                'attempts' => $attemptsCount,
+                'finished' => $finishedCount,
+                'completionRate' => $attemptsCount > 0 ? $finishedCount / $attemptsCount * 100.0 : 0.0,
+                'avgScore' => (float)($avgScoreRow['avg_score'] ?? 0.0),
+                'bestScore' => (float)($bestScoreRow['best_score'] ?? 0.0),
+                'avgCorrectRate' => $sumTotal > 0 ? $sumCorrect / $sumTotal * 100.0 : 0.0,
+            ];
+
+            $this->set(compact('test', 'stats'));
+            $this->viewBuilder()->setTemplate('creator_view');
+
+            return;
+        }
+
         $test = $this->Tests->get($id, contain: [
-                'Categories',
-                'Difficulties',
-                'AiRequests',
-                'Questions',
-                'TestAttempts',
-                'TestTranslations',
-                'UserFavoriteTests']);
+            'Categories',
+            'Difficulties',
+            'AiRequests',
+            'Questions',
+            'TestAttempts',
+            'TestTranslations',
+            'UserFavoriteTests',
+        ]);
         $this->set(compact('test'));
+    }
+
+    /**
+     * Public/user-facing details page.
+     *
+     * Friendly URL: /{lang}/tests/{id}/details
+     *
+     * @param string|null $id Test id.
+     * @return \Cake\Http\Response|null|void
+     */
+    public function details(?string $id = null)
+    {
+        return $this->view($id);
     }
 
     /**
@@ -746,7 +1102,15 @@ class TestsController extends AppController
         $userId = $identity ? (int)$identity->getIdentifier() : null;
         $aiGenerationLimit = $this->getAiGenerationLimitInfo($userId);
         $currentLanguageId = $languageId;
-        $this->set(compact('test', 'categories', 'difficulties', 'languages', 'languagesMeta', 'aiGenerationLimit', 'currentLanguageId'));
+        $this->set(compact(
+            'test',
+            'categories',
+            'difficulties',
+            'languages',
+            'languagesMeta',
+            'aiGenerationLimit',
+            'currentLanguageId',
+        ));
     }
 
     /**
@@ -869,7 +1233,10 @@ class TestsController extends AppController
             ];
 
             foreach ($question->question_translations as $qt) {
-                $qData['translations'][$qt->language_id] = $qt->content;
+                $qData['translations'][$qt->language_id] = [
+                    'id' => $qt->id,
+                    'content' => $qt->content,
+                ];
             }
 
             foreach ($question->answers as $answer) {
@@ -879,7 +1246,10 @@ class TestsController extends AppController
                     'translations' => [],
                 ];
                 foreach ($answer->answer_translations as $at) {
-                    $aData['translations'][$at->language_id] = $at->content;
+                    $aData['translations'][$at->language_id] = [
+                        'id' => $at->id,
+                        'content' => $at->content,
+                    ];
                 }
                 $qData['answers'][] = $aData;
             }
@@ -890,7 +1260,16 @@ class TestsController extends AppController
         $userId = $identity ? (int)$identity->getIdentifier() : null;
         $aiGenerationLimit = $this->getAiGenerationLimitInfo($userId);
         $currentLanguageId = $languageId;
-        $this->set(compact('test', 'categories', 'difficulties', 'languages', 'languagesMeta', 'questionsData', 'aiGenerationLimit', 'currentLanguageId'));
+        $this->set(compact(
+            'test',
+            'categories',
+            'difficulties',
+            'languages',
+            'languagesMeta',
+            'questionsData',
+            'aiGenerationLimit',
+            'currentLanguageId',
+        ));
     }
 
     /**
@@ -1176,7 +1555,8 @@ class TestsController extends AppController
                 "      \"type\": \"multiple_choice\"|\"true_false\"|\"text\",\n" .
                 "      \"translations\": { \"[language_id]\": \"...\" },\n" .
                 "      \"answers\": [\n" .
-                "        { \"id\": 456, \"is_correct\": true|false, \"translations\": { \"[language_id]\": \"...\" } }\n" .
+                '        { \"id\": 456, \"is_correct\": true|false, ' .
+                '\"translations\": { \"[language_id]\": \"...\" } }\n' .
                 "      ]\n" .
                 "    }\n" .
                 "  ]\n" .
