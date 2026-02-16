@@ -25,27 +25,27 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
     </div>
 </div>
 
-    <div class="row g-3 mt-2">
-        <div class="col-12 col-md-6 col-xl-3">
+    <div class="row g-3 mt-2 mf-admin-kpi-grid">
+        <div class="col-6 col-md-6 col-xl-3">
             <div class="mf-admin-card p-3 h-100">
                 <div class="mf-muted"><?= __('Total requests') ?></div>
                 <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['total'] ?? 0)) ?></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-3">
+        <div class="col-6 col-md-6 col-xl-3">
             <div class="mf-admin-card p-3 h-100">
                 <div class="mf-muted"><?= __('Last 24h') ?></div>
                 <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['last24h'] ?? 0)) ?></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-3">
+        <div class="col-6 col-md-6 col-xl-3">
             <div class="mf-admin-card p-3 h-100">
                 <div class="mf-muted"><?= __('Success (total)') ?></div>
                 <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['successTotal'] ?? 0)) ?></div>
                 <div class="mf-admin-delta"><?= __('Last 24h: {0}', $this->Number->format((int)($stats['success24h'] ?? 0))) ?></div>
             </div>
         </div>
-        <div class="col-12 col-md-6 col-xl-3">
+        <div class="col-6 col-md-6 col-xl-3">
             <div class="mf-admin-card p-3 h-100">
                 <div class="mf-muted"><?= __('Unique users (24h)') ?></div>
                 <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['uniqueUsers24h'] ?? 0)) ?></div>

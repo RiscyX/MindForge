@@ -52,24 +52,6 @@ if ($isAuthPage) {
                 <?= $this->element('admin_sidebar') ?>
 
                 <section class="flex-grow-1 mf-admin-main" id="mf-admin-main">
-                    <div class="mf-admin-topbar d-lg-none">
-                        <div class="d-flex align-items-center justify-content-between gap-2 px-3 py-2">
-                            <button
-                                class="btn btn-sm btn-outline-light mf-admin-topbar__menu"
-                                type="button"
-                                data-bs-toggle="offcanvas"
-                                data-bs-target="#mfAdminNav"
-                                aria-controls="mfAdminNav"
-                            >
-                                <i class="bi bi-list" aria-hidden="true"></i>
-                                <span><?= __('Menu') ?></span>
-                            </button>
-
-                            <div class="mf-admin-topbar__title" aria-hidden="true">
-                                <?= h((string)$this->fetch('title')) ?>
-                            </div>
-                        </div>
-                    </div>
                     <div class="container-fluid px-3 px-lg-4 py-4">
                         <?= $this->fetch('content') ?>
                     </div>

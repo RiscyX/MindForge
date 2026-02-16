@@ -114,10 +114,31 @@ $langRouteHu = $buildLangRoute('hu');
         </a>
 
         <!-- Hamburger Toggle -->
-        <button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false"
-            aria-label="<?= __('Toggle navigation') ?>" data-mf-navbar-toggle>
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="d-flex align-items-center gap-2 ms-auto d-lg-none">
+            <!-- Mobile-only language selector (always visible) -->
+            <div class="dropdown mf-mobile-lang">
+                <button class="btn btn-sm btn-link nav-link dropdown-toggle px-2 py-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <?= strtoupper(h($lang)) ?>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item<?= $lang === 'en' ? ' active' : '' ?>" href="<?= $this->Url->build($langRouteEn) ?>">
+                            <?= __('English') ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item<?= $lang === 'hu' ? ' active' : '' ?>" href="<?= $this->Url->build($langRouteHu) ?>">
+                            <?= __('Hungarian') ?>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="<?= __('Toggle navigation') ?>" data-mf-navbar-toggle>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
 
         <!-- Navbar Links -->
         <div class="navbar-collapse" id="navbarNav" data-mf-navbar-menu>
@@ -145,7 +166,7 @@ $langRouteHu = $buildLangRoute('hu');
                         </a>
                     </li>
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown d-none d-lg-block">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <?= strtoupper(h($lang)) ?>
                         </a>
@@ -188,7 +209,7 @@ $langRouteHu = $buildLangRoute('hu');
                         </a>
                     </li>
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown d-none d-lg-block">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <?= strtoupper(h($lang)) ?>
                         </a>
@@ -217,6 +238,14 @@ $langRouteHu = $buildLangRoute('hu');
                     </li>
                 <?php endif; ?>
             </ul>
+
+            <?php if ($isLoggedIn && ($isAdmin || $isCreator)) : ?>
+            <!-- Admin sidebar nav merged into mobile navbar -->
+            <div class="d-lg-none mf-navbar-admin-nav" data-mf-admin-mobile-nav>
+                <hr class="my-2" style="border-color: rgba(var(--mf-text-rgb), 0.10);">
+                <?= $this->element('admin_sidebar_links') ?>
+            </div>
+            <?php endif; ?>
 
         </div>
     </div>

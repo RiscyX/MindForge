@@ -19,7 +19,7 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
     </div>
 </div>
 
-<div class="row g-3 mt-3">
+<div class="row g-3 mt-3 mf-admin-kpi-grid">
     <?php
     /** @var array{totalUsers:int,activeUsers:int,totalTests:int,totalQuestions:int,todaysLogins:int,aiRequests:int} $metrics */
     $metrics = $stats ?? [
@@ -41,7 +41,7 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
     ];
     ?>
     <?php foreach ($statCards as $stat) : ?>
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+        <div class="col-6 col-lg-4 col-xl-2">
             <div class="mf-admin-card p-3 h-100">
                 <div class="mf-muted" style="font-size:0.85rem;"><?= h($stat['label']) ?></div>
                 <div class="fw-semibold" style="font-size:1.35rem; line-height:1.15;"><?= h($stat['value']) ?></div>
