@@ -503,25 +503,21 @@ function updateQuestionOrder() {
 function generateTranslationInputs(baseName, index, subName, fieldName, values = null) {
     let html = '';
     for (const [langId, langName] of Object.entries(languages)) {
-        // Find value if exists. values structure: { 'en': 'Text', 'hu': 'Szoveg' } or similar
-        // Or maybe keyed by langId directly? Let's assume passed data keys by lang code (e.g. en_US) or keys used in languages object?
-        // The PHP languages array is $id => $name (e.g. 1 => 'English').
-        // The AI data likely won't know our IDs. We might need to map language codes to IDs in PHP or here.
-        // For now, let's assume the keys in `values` match the keys in `languages` (the IDs). 
-        // Realistically, AI returns 'en', 'hu'. We need to map 'en' -> langId 1.
-        // We can pass that map from PHP.
-        
         let val = '';
-        if (values && values[langId]) {
-            val = values[langId];
+        let translationId = '';
+        if (values && values[langId] !== undefined && values[langId] !== null) {
+            if (typeof values[langId] === 'object') {
+                val = values[langId].content || '';
+                translationId = values[langId].id || '';
+            } else {
+                val = values[langId];
+            }
         }
-        
-        // Quick hack: if values is keyed by iso code (en, hu) and we only have IDs here.
-        // We will deal with that in the PHP variable injection.
-        
+
         html += `
         <div class="input-group mb-2">
             <span class="input-group-text bg-secondary text-white border-secondary" style="width: 100px;">${langName}</span>
+            ${translationId ? `<input type="hidden" name="${baseName}[${index}][${subName}][${langId}][id]" value="${translationId}">` : ''}
             <input type="hidden" name="${baseName}[${index}][${subName}][${langId}][language_id]" value="${langId}">
             <input type="text" class="form-control bg-dark text-white border-secondary" name="${baseName}[${index}][${subName}][${langId}][${fieldName}]" placeholder="Translation for ${langName}" value="${val}">
         </div>
@@ -539,15 +535,20 @@ function generateAnswerTranslationInputs(qIndex, aIndex, values = null) {
     
     for (const [langId, langName] of Object.entries(languages)) {
         let val = '';
+        let translationId = '';
         if (values && values[langId]) {
-            // values[langId] might be an object { content: "..." } or string "..." depending on earlier structure
-            // In addFixedAnswer for T/F, we will pass { langId: "TranslatedTrue" }
-             val = values[langId];
+            if (typeof values[langId] === 'object') {
+                val = values[langId].content || '';
+                translationId = values[langId].id || '';
+            } else {
+                val = values[langId];
+            }
         }
 
         html += `
         <div class="input-group input-group-sm mb-1">
             <span class="input-group-text bg-secondary text-white border-secondary" style="width: 80px;">${langName}</span>
+            ${translationId ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][id]" value="${translationId}">` : ''}
             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][language_id]" value="${langId}">
             <input type="text" class="form-control bg-dark text-white border-secondary" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][content]" placeholder="Answer text..." value="${val}">
         </div>

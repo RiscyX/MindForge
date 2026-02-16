@@ -2,6 +2,12 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\User $user
+ * @var int $totalAttempts
+ * @var int $finishedAttempts
+ * @var int $uniqueQuizzes
+ * @var float $avgScore
+ * @var float $bestScore
+ * @var \Cake\Datasource\ResultSetInterface<\App\Model\Entity\TestAttempt> $recentAttempts
  */
 $lang = $this->request->getParam('lang', 'en');
 $this->assign('title', __('My Profile'));
@@ -14,7 +20,7 @@ $this->assign('title', __('My Profile'));
                     <?= $this->Html->image($user->avatar_url, [
                         'alt' => $user->email,
                         'class' => 'rounded-circle img-thumbnail shadow-sm',
-                        'style' => 'width: 150px; height: 150px; object-fit: cover;'
+                        'style' => 'width: 150px; height: 150px; object-fit: cover;',
                     ]) ?>
                 <?php else : ?>
                     <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto shadow-sm" style="width: 150px; height: 150px;">
@@ -55,9 +61,22 @@ $this->assign('title', __('My Profile'));
                 <?= $this->Html->link(
                     __('Edit Profile'),
                     ['action' => 'profileEdit', 'lang' => $lang],
-                    ['class' => 'btn btn-primary btn-lg rounded-pill']
+                    ['class' => 'btn btn-primary btn-lg rounded-pill'],
                 ) ?>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mt-4">
+        <div>
+            <h2 class="h4 mb-1 text-white"><?= __('My Stats') ?></h2>
+            <div class="mf-muted"><?= __('Your quiz history and performance overview.') ?></div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <?= $this->element('users/stats') ?>
     </div>
 </div>

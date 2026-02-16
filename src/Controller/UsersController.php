@@ -17,6 +17,7 @@ use Cake\I18n\I18n;
 use Cake\Log\Log;
 use Cake\Mailer\Mailer;
 use Cake\ORM\Exception\PersistenceFailedException;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Routing\Router;
 use Detection\MobileDetect;
 use Exception;
@@ -259,6 +260,13 @@ class UsersController extends AppController
         return $this->redirect(['action' => 'login', 'lang' => $lang]);
     }
 
+    /**
+     * Build a unique username from email local-part.
+     *
+     * @param \App\Model\Table\UsersTable $usersTable Users table instance.
+     * @param string $email User email.
+     * @return string
+     */
     private function buildRegistrationUsername(UsersTable $usersTable, string $email): string
     {
         $localPart = strtolower(trim(strtok($email, '@') ?: ''));
@@ -586,8 +594,10 @@ class UsersController extends AppController
             return $this->redirect(['action' => 'login']);
         }
 
-        $user = $this->Users->get($identity->getIdentifier());
-        $this->set(compact('user'));
+        $userId = (int)$identity->getIdentifier();
+        $user = $this->Users->get($userId);
+
+        $this->set(['user' => $user] + $this->buildUserStatsData($userId));
     }
 
     /**
@@ -646,6 +656,136 @@ class UsersController extends AppController
         }
 
         $this->set(compact('user'));
+    }
+
+    /**
+     * Statistics for the logged-in user.
+     *
+     * @return \Cake\Http\Response|null|void
+     */
+    public function stats()
+    {
+        $this->request->allowMethod(['get']);
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $identity = $this->Authentication->getIdentity();
+        if (!$identity) {
+            $this->Flash->error(__('Please log in to view your stats.'));
+
+            return $this->redirect(['controller' => 'Users', 'action' => 'login', 'lang' => $lang]);
+        }
+
+        $userId = (int)$identity->getIdentifier();
+        $this->set($this->buildUserStatsData($userId));
+    }
+
+    /**
+     * @param int $userId
+     * @return array<string, mixed>
+     */
+    private function buildUserStatsData(int $userId): array
+    {
+        $languageId = $this->resolveLanguageIdFromRoute();
+
+        $attemptsTable = $this->fetchTable('TestAttempts');
+
+        $base = $attemptsTable->find()
+            ->where([
+                'TestAttempts.user_id' => $userId,
+                'TestAttempts.test_id IS NOT' => null,
+            ])
+            ->innerJoinWith('Tests', function (SelectQuery $q) use ($userId): SelectQuery {
+                return $q->where([
+                    'OR' => [
+                        ['Tests.is_public' => true],
+                        ['Tests.created_by' => $userId],
+                    ],
+                ]);
+            });
+
+        $totalAttempts = (int)(clone $base)->count();
+
+        $finishedBase = (clone $base)->where(['TestAttempts.finished_at IS NOT' => null]);
+        $finishedAttempts = (int)(clone $finishedBase)->count();
+
+        $uniqueQuizzes = (int)(clone $finishedBase)
+            ->select(['test_id' => 'TestAttempts.test_id'])
+            ->distinct(['TestAttempts.test_id'])
+            ->count();
+
+        $avgScoreRow = (clone $finishedBase)
+            ->select(['avg_score' => $attemptsTable->find()->func()->avg('TestAttempts.score')])
+            ->where(['TestAttempts.score IS NOT' => null])
+            ->enableHydration(false)
+            ->first();
+        $avgScore = $avgScoreRow ? (float)($avgScoreRow['avg_score'] ?? 0) : 0.0;
+
+        $bestScoreRow = (clone $finishedBase)
+            ->select(['best_score' => $attemptsTable->find()->func()->max('TestAttempts.score')])
+            ->where(['TestAttempts.score IS NOT' => null])
+            ->enableHydration(false)
+            ->first();
+        $bestScore = $bestScoreRow ? (float)($bestScoreRow['best_score'] ?? 0) : 0.0;
+
+        $recentAttempts = (clone $finishedBase)
+            ->contain([
+                'Tests' => function (SelectQuery $q) use ($languageId): SelectQuery {
+                    return $q->contain([
+                        'Categories.CategoryTranslations' => function (SelectQuery $q) use ($languageId) {
+                            if ($languageId === null) {
+                                return $q;
+                            }
+
+                            return $q->where(['CategoryTranslations.language_id' => $languageId]);
+                        },
+                        'Difficulties.DifficultyTranslations' => function (SelectQuery $q) use ($languageId) {
+                            if ($languageId === null) {
+                                return $q;
+                            }
+
+                            return $q->where(['DifficultyTranslations.language_id' => $languageId]);
+                        },
+                        'TestTranslations' => function (SelectQuery $q) use ($languageId) {
+                            if ($languageId === null) {
+                                return $q;
+                            }
+
+                            return $q->where(['TestTranslations.language_id' => $languageId]);
+                        },
+                    ]);
+                },
+            ])
+            ->orderByDesc('TestAttempts.finished_at')
+            ->orderByDesc('TestAttempts.id')
+            ->limit(20)
+            ->all();
+
+        return compact(
+            'totalAttempts',
+            'finishedAttempts',
+            'uniqueQuizzes',
+            'avgScore',
+            'bestScore',
+            'recentAttempts',
+        );
+    }
+
+    /**
+     * Resolve language id from route language code.
+     *
+     * @return int|null
+     */
+    private function resolveLanguageIdFromRoute(): ?int
+    {
+        $langCode = strtolower(trim((string)$this->request->getParam('lang', 'en')));
+
+        $languages = $this->fetchTable('Languages');
+        $lang = $languages->find()->where(['code LIKE' => $langCode . '%'])->first();
+        if (!$lang) {
+            $lang = $languages->find()->first();
+        }
+
+        return $lang?->id;
     }
 
     /**
@@ -715,6 +855,12 @@ class UsersController extends AppController
         $deviceLogsTable->save($deviceLog);
     }
 
+    /**
+     * Detect device type from user agent.
+     *
+     * @param string $userAgent Raw user agent string.
+     * @return int
+     */
     private function detectDeviceType(string $userAgent): int
     {
         $detect = new MobileDetect();

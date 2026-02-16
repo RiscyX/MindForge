@@ -10,13 +10,24 @@ use Cake\Http\Exception\ForbiddenException;
 
 class AppController extends BaseAppController
 {
+    /**
+     * Initialize creator layout.
+     *
+     * @return void
+     */
     public function initialize(): void
     {
         parent::initialize();
 
-        $this->viewBuilder()->setLayout('admin');
+        $this->viewBuilder()->setLayout('default');
     }
 
+    /**
+     * Restrict creator area to creator users only.
+     *
+     * @param \Cake\Event\EventInterface $event Event instance.
+     * @return void
+     */
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);

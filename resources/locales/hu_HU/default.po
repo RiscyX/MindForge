@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2026-02-07 14:37+0000\n"
+"POT-Creation-Date: 2026-02-09 18:11+0000\n"
 "PO-Revision-Date: 2026-01-02 18:35+0000\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Hungarian <EMAIL@ADDRESS>\n"
@@ -35,57 +35,57 @@ msgstr "A szerepkör törölve lett."
 msgid "The activity log could not be deleted. Please, try again."
 msgstr "A szerepkör törlése sikertelen. Próbáld újra."
 
-#: src/Controller/Admin/DashboardController.php:57
-#: src/Controller/AiRequestsController.php:123
-#: src/Controller/AnswersController.php:135
-#: src/Controller/CategoriesController.php:167
-#: src/Controller/DeviceLogsController.php:74
-#: src/Controller/DifficultiesController.php:153
-#: src/Controller/LanguagesController.php:54
-#: src/Controller/QuestionsController.php:145
-#: src/Controller/TestsController.php:93
+#: src/Controller/Admin/DashboardController.php:58
+#: src/Controller/AiRequestsController.php:124
+#: src/Controller/AnswersController.php:212
+#: src/Controller/CategoriesController.php:168
+#: src/Controller/DeviceLogsController.php:75
+#: src/Controller/DifficultiesController.php:154
+#: src/Controller/LanguagesController.php:55
+#: src/Controller/QuestionsController.php:217
+#: src/Controller/TestsController.php:615
 #: templates/Admin/Dashboard/index.php:205 templates/AiRequests/index.php:275
-#: templates/Answers/index.php:169 templates/Categories/index.php:176
+#: templates/Answers/index.php:185 templates/Categories/index.php:176
 #: templates/DeviceLogs/index.php:217 templates/Difficulties/index.php:169
-#: templates/Languages/index.php:153 templates/Questions/index.php:167
-#: templates/Tests/index.php:177
+#: templates/Languages/index.php:153 templates/Questions/index.php:195
+#: templates/Tests/index.php:289
 msgid "Select at least one item."
 msgstr "Válassz legalább egy elemet."
 
-#: src/Controller/Admin/DashboardController.php:63
+#: src/Controller/Admin/DashboardController.php:64
 #: src/Controller/Admin/UsersController.php:58
-#: src/Controller/AiRequestsController.php:129
-#: src/Controller/AnswersController.php:141
-#: src/Controller/CategoriesController.php:173
-#: src/Controller/DeviceLogsController.php:80
-#: src/Controller/DifficultiesController.php:159
-#: src/Controller/LanguagesController.php:60
-#: src/Controller/QuestionsController.php:151
-#: src/Controller/TestsController.php:99
+#: src/Controller/AiRequestsController.php:130
+#: src/Controller/AnswersController.php:218
+#: src/Controller/CategoriesController.php:174
+#: src/Controller/DeviceLogsController.php:81
+#: src/Controller/DifficultiesController.php:160
+#: src/Controller/LanguagesController.php:61
+#: src/Controller/QuestionsController.php:223
+#: src/Controller/TestsController.php:621
 msgid "Invalid bulk action."
 msgstr "Érvénytelen csoportos művelet."
 
-#: src/Controller/Admin/DashboardController.php:84
-#: src/Controller/AiRequestsController.php:150
-#: src/Controller/AnswersController.php:162
-#: src/Controller/CategoriesController.php:194
-#: src/Controller/DeviceLogsController.php:101
-#: src/Controller/DifficultiesController.php:180
-#: src/Controller/LanguagesController.php:81
-#: src/Controller/QuestionsController.php:172
-#: src/Controller/TestsController.php:120
+#: src/Controller/Admin/DashboardController.php:85
+#: src/Controller/AiRequestsController.php:151
+#: src/Controller/AnswersController.php:239
+#: src/Controller/CategoriesController.php:195
+#: src/Controller/DeviceLogsController.php:102
+#: src/Controller/DifficultiesController.php:181
+#: src/Controller/LanguagesController.php:82
+#: src/Controller/QuestionsController.php:244
+#: src/Controller/TestsController.php:642
 msgid "Deleted {0} item(s)."
 msgstr "{0} elem törölve."
 
-#: src/Controller/Admin/DashboardController.php:87
-#: src/Controller/AiRequestsController.php:153
-#: src/Controller/AnswersController.php:165
-#: src/Controller/CategoriesController.php:197
-#: src/Controller/DeviceLogsController.php:104
-#: src/Controller/DifficultiesController.php:183
-#: src/Controller/LanguagesController.php:84
-#: src/Controller/QuestionsController.php:175
-#: src/Controller/TestsController.php:123
+#: src/Controller/Admin/DashboardController.php:88
+#: src/Controller/AiRequestsController.php:154
+#: src/Controller/AnswersController.php:242
+#: src/Controller/CategoriesController.php:198
+#: src/Controller/DeviceLogsController.php:105
+#: src/Controller/DifficultiesController.php:184
+#: src/Controller/LanguagesController.php:85
+#: src/Controller/QuestionsController.php:247
+#: src/Controller/TestsController.php:645
 msgid "Could not delete {0} item(s)."
 msgstr "Nem sikerült {0} elemet törölni."
 
@@ -128,19 +128,19 @@ msgid "No users were deleted."
 msgstr "A felhasználó törölve lett."
 
 #: src/Controller/Admin/UsersController.php:192
-#: src/Controller/UsersController.php:627
+#: src/Controller/UsersController.php:643
 #, fuzzy
 msgid "Your profile has been updated."
 msgstr "A szerepkör törölve lett."
 
 #: src/Controller/Admin/UsersController.php:200
-#: src/Controller/UsersController.php:632
+#: src/Controller/UsersController.php:648
 #, fuzzy
 msgid "Unable to update your profile. Please try again."
 msgstr "A fiók aktiválása sikertelen. Kérjük, próbáld újra."
 
 #: src/Controller/Admin/UsersController.php:251
-#: src/Controller/UsersController.php:490
+#: src/Controller/UsersController.php:504
 msgid "Reset your MindForge password"
 msgstr "MindForge jelszó visszaállítása"
 
@@ -207,33 +207,33 @@ msgid "Failed to upload avatar."
 msgstr "Nem sikerült feltölteni az avatart."
 
 #: src/Controller/Admin/UsersController.php:528
-#: src/Controller/UsersController.php:117
+#: src/Controller/UsersController.php:119
 msgid "The user has been deleted."
 msgstr "A felhasználó törölve lett."
 
 #: src/Controller/Admin/UsersController.php:530
-#: src/Controller/UsersController.php:119
+#: src/Controller/UsersController.php:121
 msgid "The user could not be deleted. Please, try again."
 msgstr "A felhasználó törlése sikertelen. Próbáld újra."
 
-#: src/Controller/AiRequestsController.php:192
-#: src/Controller/AiRequestsController.php:219
+#: src/Controller/AiRequestsController.php:193
+#: src/Controller/AiRequestsController.php:220
 #, fuzzy
 msgid "The ai request has been saved."
 msgstr "A szerepkör el lett mentve."
 
-#: src/Controller/AiRequestsController.php:196
-#: src/Controller/AiRequestsController.php:223
+#: src/Controller/AiRequestsController.php:197
+#: src/Controller/AiRequestsController.php:224
 #, fuzzy
 msgid "The ai request could not be saved. Please, try again."
 msgstr "A szerepkört nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/AiRequestsController.php:243
+#: src/Controller/AiRequestsController.php:244
 #, fuzzy
 msgid "The ai request has been deleted."
 msgstr "A szerepkör törölve lett."
 
-#: src/Controller/AiRequestsController.php:245
+#: src/Controller/AiRequestsController.php:246
 #, fuzzy
 msgid "The ai request could not be deleted. Please, try again."
 msgstr "A szerepkör törlése sikertelen. Próbáld újra."
@@ -260,46 +260,46 @@ msgstr "A felhasználói token törölve lett."
 msgid "The answer translation could not be deleted. Please, try again."
 msgstr "A felhasználói token törlése sikertelen. Próbáld újra."
 
-#: src/Controller/AnswersController.php:67
 #: src/Controller/AnswersController.php:90
+#: src/Controller/AnswersController.php:133
 #, fuzzy
 msgid "The answer has been saved."
 msgstr "A felhasználó el lett mentve."
 
-#: src/Controller/AnswersController.php:71
 #: src/Controller/AnswersController.php:94
+#: src/Controller/AnswersController.php:137
 #, fuzzy
 msgid "The answer could not be saved. Please, try again."
 msgstr "A felhasználót nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/AnswersController.php:112
+#: src/Controller/AnswersController.php:189
 #, fuzzy
 msgid "The answer has been deleted."
 msgstr "A felhasználó törölve lett."
 
-#: src/Controller/AnswersController.php:114
+#: src/Controller/AnswersController.php:191
 #, fuzzy
 msgid "The answer could not be deleted. Please, try again."
 msgstr "A felhasználó törlése sikertelen. Próbáld újra."
 
-#: src/Controller/CategoriesController.php:72
-#: src/Controller/CategoriesController.php:106
+#: src/Controller/CategoriesController.php:73
+#: src/Controller/CategoriesController.php:107
 #, fuzzy
 msgid "The category has been saved."
 msgstr "A felhasználó el lett mentve."
 
-#: src/Controller/CategoriesController.php:76
-#: src/Controller/CategoriesController.php:110
+#: src/Controller/CategoriesController.php:77
+#: src/Controller/CategoriesController.php:111
 #, fuzzy
 msgid "The category could not be saved. Please, try again."
 msgstr "A felhasználót nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/CategoriesController.php:144
+#: src/Controller/CategoriesController.php:145
 #, fuzzy
 msgid "The category has been deleted."
 msgstr "A felhasználó törölve lett."
 
-#: src/Controller/CategoriesController.php:146
+#: src/Controller/CategoriesController.php:147
 #, fuzzy
 msgid "The category could not be deleted. Please, try again."
 msgstr "A felhasználó törlése sikertelen. Próbáld újra."
@@ -326,68 +326,68 @@ msgstr "A felhasználói token törölve lett."
 msgid "The category translation could not be deleted. Please, try again."
 msgstr "A felhasználói token törlése sikertelen. Próbáld újra."
 
-#: src/Controller/DeviceLogsController.php:134
-#: src/Controller/DeviceLogsController.php:157
+#: src/Controller/DeviceLogsController.php:135
+#: src/Controller/DeviceLogsController.php:158
 #, fuzzy
 msgid "The device log has been saved."
 msgstr "A szerepkör el lett mentve."
 
-#: src/Controller/DeviceLogsController.php:138
-#: src/Controller/DeviceLogsController.php:161
+#: src/Controller/DeviceLogsController.php:139
+#: src/Controller/DeviceLogsController.php:162
 #, fuzzy
 msgid "The device log could not be saved. Please, try again."
 msgstr "A szerepkört nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/DeviceLogsController.php:179
+#: src/Controller/DeviceLogsController.php:180
 #, fuzzy
 msgid "The device log has been deleted."
 msgstr "A szerepkör törölve lett."
 
-#: src/Controller/DeviceLogsController.php:181
+#: src/Controller/DeviceLogsController.php:182
 #, fuzzy
 msgid "The device log could not be deleted. Please, try again."
 msgstr "A szerepkör törlése sikertelen. Próbáld újra."
 
-#: src/Controller/DifficultiesController.php:82
-#: src/Controller/DifficultiesController.php:107
+#: src/Controller/DifficultiesController.php:83
+#: src/Controller/DifficultiesController.php:108
 #, fuzzy
 msgid "The difficulty has been saved."
 msgstr "A szerepkör el lett mentve."
 
-#: src/Controller/DifficultiesController.php:86
-#: src/Controller/DifficultiesController.php:111
+#: src/Controller/DifficultiesController.php:87
+#: src/Controller/DifficultiesController.php:112
 #, fuzzy
 msgid "The difficulty could not be saved. Please, try again."
 msgstr "A szerepkört nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/DifficultiesController.php:130
+#: src/Controller/DifficultiesController.php:131
 #, fuzzy
 msgid "The difficulty has been deleted."
 msgstr "A szerepkör törölve lett."
 
-#: src/Controller/DifficultiesController.php:132
+#: src/Controller/DifficultiesController.php:133
 #, fuzzy
 msgid "The difficulty could not be deleted. Please, try again."
 msgstr "A szerepkör törlése sikertelen. Próbáld újra."
 
-#: src/Controller/LanguagesController.php:120
-#: src/Controller/LanguagesController.php:142
+#: src/Controller/LanguagesController.php:121
+#: src/Controller/LanguagesController.php:143
 #, fuzzy
 msgid "The language has been saved."
 msgstr "A szerepkör el lett mentve."
 
-#: src/Controller/LanguagesController.php:124
-#: src/Controller/LanguagesController.php:146
+#: src/Controller/LanguagesController.php:125
+#: src/Controller/LanguagesController.php:147
 #, fuzzy
 msgid "The language could not be saved. Please, try again."
 msgstr "A szerepkört nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/LanguagesController.php:163
+#: src/Controller/LanguagesController.php:164
 #, fuzzy
 msgid "The language has been deleted."
 msgstr "A szerepkör törölve lett."
 
-#: src/Controller/LanguagesController.php:165
+#: src/Controller/LanguagesController.php:166
 #, fuzzy
 msgid "The language could not be deleted. Please, try again."
 msgstr "A szerepkör törlése sikertelen. Próbáld újra."
@@ -414,27 +414,33 @@ msgstr "A felhasználói token törölve lett."
 msgid "The question translation could not be deleted. Please, try again."
 msgstr "A felhasználói token törlése sikertelen. Próbáld újra."
 
-#: src/Controller/QuestionsController.php:73
-#: src/Controller/QuestionsController.php:98
+#: src/Controller/QuestionsController.php:101
+#: src/Controller/QuestionsController.php:141
 #, fuzzy
 msgid "The question has been saved."
 msgstr "A felhasználói token el lett mentve."
 
-#: src/Controller/QuestionsController.php:77
-#: src/Controller/QuestionsController.php:102
+#: src/Controller/QuestionsController.php:105
+#: src/Controller/QuestionsController.php:145
 #, fuzzy
 msgid "The question could not be saved. Please, try again."
 msgstr "A felhasználói tokent nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/QuestionsController.php:122
+#: src/Controller/QuestionsController.php:194
 #, fuzzy
 msgid "The question has been deleted."
 msgstr "A felhasználói token törölve lett."
 
-#: src/Controller/QuestionsController.php:124
+#: src/Controller/QuestionsController.php:196
 #, fuzzy
 msgid "The question could not be deleted. Please, try again."
 msgstr "A felhasználói token törlése sikertelen. Próbáld újra."
+
+#: src/Controller/QuizCreator/DashboardController.php:10
+#: templates/QuizCreator/Dashboard/index.php:8
+#: templates/QuizCreator/Dashboard/index.php:13
+msgid "Quiz Creator"
+msgstr "Kvízkészítő"
 
 #: src/Controller/RolesController.php:52 src/Controller/RolesController.php:74
 msgid "The role has been saved."
@@ -518,31 +524,69 @@ msgstr "A felhasználói token törölve lett."
 msgid "The test translation could not be deleted. Please, try again."
 msgstr "A felhasználói token törlése sikertelen. Próbáld újra."
 
-#: src/Controller/TestsController.php:183
-#: src/Controller/TestsController.php:287
+#: src/Controller/TestsController.php:168
+#: src/Controller/TestsController.php:702
+msgid "Quiz not found."
+msgstr "A kvíz nem található."
+
+#: src/Controller/TestsController.php:184
+msgid "This quiz has no active questions yet."
+msgstr "Ehhez a kvízhez még nincsenek aktív kérdések."
+
+#: src/Controller/TestsController.php:205
+msgid "Could not start the quiz. Please try again."
+msgstr "Nem sikerült elindítani a kvízt. Kérlek, próbáld újra."
+
+#: src/Controller/TestsController.php:227
+msgid "Please log in to start a quiz."
+msgstr "Kérlek, jelentkezz be a kvíz indításához."
+
+#: src/Controller/TestsController.php:326
+msgid "Please log in to submit a quiz."
+msgstr "Kérlek, jelentkezz be a kvíz beküldéséhez."
+
+#: src/Controller/TestsController.php:344
+msgid "This attempt has already been submitted."
+msgstr "Ez a próbálkozás már be lett küldve."
+
+#: src/Controller/TestsController.php:383
+msgid "This quiz has no active questions."
+msgstr "Ennek a kvíznek nincsenek aktív kérdései."
+
+#: src/Controller/TestsController.php:481
+msgid "Could not submit your answers. Please try again."
+msgstr "Nem sikerült beküldeni a válaszaidat. Kérlek, próbáld újra."
+
+#: src/Controller/TestsController.php:503
+#: src/Controller/TestsController.php:531
+msgid "Please log in to view results."
+msgstr "Kérlek, jelentkezz be az eredmények megtekintéséhez."
+
+#: src/Controller/TestsController.php:819
+#: src/Controller/TestsController.php:929
 #, fuzzy
 msgid "The test has been saved."
 msgstr "A szerepkör el lett mentve."
 
-#: src/Controller/TestsController.php:189
-#: src/Controller/TestsController.php:291
+#: src/Controller/TestsController.php:825
+#: src/Controller/TestsController.php:933
 #, fuzzy
 msgid "The test could not be saved. Please, try again."
 msgstr "A szerepkört nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/TestsController.php:383
+#: src/Controller/TestsController.php:1031
 #, fuzzy
 msgid "The test has been deleted."
 msgstr "A szerepkör törölve lett."
 
-#: src/Controller/TestsController.php:385
+#: src/Controller/TestsController.php:1033
 #, fuzzy
 msgid "The test could not be deleted. Please, try again."
 msgstr "A szerepkör törlése sikertelen. Próbáld újra."
 
-#: src/Controller/TestsController.php:410 templates/Tests/add.php:13
-#: templates/Tests/add.php:140 templates/Tests/edit.php:13
-#: templates/Tests/edit.php:142
+#: src/Controller/TestsController.php:1058 templates/Tests/add.php:13
+#: templates/Tests/add.php:147 templates/Tests/edit.php:13
+#: templates/Tests/edit.php:152
 msgid "AI generation limit reached. Limit resets tomorrow."
 msgstr "Elérted az AI tesztgenerálási limitet. A limit holnap nullázódik."
 
@@ -608,84 +652,90 @@ msgstr "A felhasználói token törölve lett."
 msgid "The user token could not be deleted. Please, try again."
 msgstr "A felhasználói token törlése sikertelen. Próbáld újra."
 
-#: src/Controller/UsersController.php:72 src/Controller/UsersController.php:95
+#: src/Controller/UsersController.php:74 src/Controller/UsersController.php:97
 msgid "The user has been saved."
 msgstr "A felhasználó el lett mentve."
 
-#: src/Controller/UsersController.php:76 src/Controller/UsersController.php:99
+#: src/Controller/UsersController.php:78 src/Controller/UsersController.php:101
 msgid "The user could not be saved. Please, try again."
 msgstr "A felhasználót nem sikerült elmenteni. Próbáld újra."
 
-#: src/Controller/UsersController.php:173
-#: src/Controller/UsersController.php:543 templates/Users/register.php:88
+#: src/Controller/UsersController.php:175
+#: src/Controller/UsersController.php:557 templates/Users/register.php:88
 #: templates/Users/reset_password.php:56
 msgid "Passwords do not match."
 msgstr "A jelszavak nem egyeznek."
 
-#: src/Controller/UsersController.php:205
-#: src/Controller/UsersController.php:211
+#: src/Controller/UsersController.php:207
+#: src/Controller/UsersController.php:213
 msgid "Registration failed."
 msgstr "A regisztráció sikertelen."
 
-#: src/Controller/UsersController.php:238 src/Service/ApiAuthService.php:239
+#: src/Controller/UsersController.php:240 src/Service/ApiAuthService.php:238
 msgid "Activate your MindForge account"
 msgstr "Aktiváld a MindForge fiókodat"
 
-#: src/Controller/UsersController.php:246
+#: src/Controller/UsersController.php:248
 msgid "Check your email to activate your account."
 msgstr "Ellenőrizd az e-mailjeidet a fiók aktiválásához."
 
-#: src/Controller/UsersController.php:252
+#: src/Controller/UsersController.php:254
 msgid "Registration successful but email failed. Activation link: {0}"
-msgstr "A regisztráció sikerült, de az email küldése nem. Aktivációs link: {0}"
-"A regisztráció sikeres, de az e-mail küldése meghiúsult. Aktiváló link: {0}"
+msgstr ""
+"A regisztráció sikerült, de az email küldése nem. Aktivációs link: {0}A "
+"regisztráció sikeres, de az e-mail küldése meghiúsult. Aktiváló link: {0}"
 
-#: src/Controller/UsersController.php:299
+#: src/Controller/UsersController.php:301
 msgid "Invalid or expired activation token."
 msgstr "Érvénytelen vagy lejárt aktiváló token."
 
-#: src/Controller/UsersController.php:311
+#: src/Controller/UsersController.php:313
 msgid "Your account has been activated. You can now log in."
 msgstr "A fiókod aktiválva lett. Most már be tudsz jelentkezni."
 
-#: src/Controller/UsersController.php:316
+#: src/Controller/UsersController.php:318
 msgid "Failed to activate your account. Please try again."
 msgstr "A fiók aktiválása sikertelen. Kérjük, próbáld újra."
 
-#: src/Controller/UsersController.php:332
+#: src/Controller/UsersController.php:334
 msgid "Too many login attempts. Please try again in a minute."
 msgstr "Túl sok bejelentkezési kísérlet. Próbáld újra egy perc múlva."
 
-#: src/Controller/UsersController.php:363
-#: src/Controller/UsersController.php:405
+#: src/Controller/UsersController.php:365
+#: src/Controller/UsersController.php:419
 msgid "Invalid email or password."
 msgstr "Érvénytelen e-mail vagy jelszó."
 
-#: src/Controller/UsersController.php:429
+#: src/Controller/UsersController.php:443
 msgid "You are now logged out."
 msgstr "Sikeresen kijelentkeztél."
 
-#: src/Controller/UsersController.php:455
+#: src/Controller/UsersController.php:469
 msgid "If the email exists in our system, we sent a password reset link."
-msgstr "Ha az email szerepel a rendszerben, elküldtük a jelszó-visszaállító linket."
+msgstr ""
+"Ha az email szerepel a rendszerben, elküldtük a jelszó-visszaállító linket."
 "Ha az e-mail cím létezik a rendszerünkben, elküldtük a jelszó-visszaállítási "
 "linket."
 
-#: src/Controller/UsersController.php:527
+#: src/Controller/UsersController.php:541
 msgid "Invalid or expired reset token."
 msgstr "Érvénytelen vagy lejárt visszaállító token."
 
-#: src/Controller/UsersController.php:554
+#: src/Controller/UsersController.php:568
 msgid "Your password has been reset. You can now log in."
 msgstr "A jelszavadat visszaállítottuk. Most már bejelentkezhetsz."
 
-#: src/Controller/UsersController.php:559
+#: src/Controller/UsersController.php:573
 msgid "Failed to reset password. Please try again."
 msgstr "A jelszó visszaállítása sikertelen. Kérlek, próbáld újra."
 
-#: src/Controller/UsersController.php:620
+#: src/Controller/UsersController.php:636
 msgid "Invalid image format. Allowed: JPG, PNG, GIF, WEBP"
 msgstr "Érvénytelen képformátum. Engedélyezett: JPG, PNG, GIF, WEBP"
+
+#: src/Controller/UsersController.php:666
+msgid "Please log in to view your stats."
+msgstr "Kérlek, jelentkezz be a statisztikák megtekintéséhez."
 
 #: src/Model/Table/AnswersTable.php:75 src/Model/Table/QuestionsTable.php:108
 msgid "Source type must be either human or ai."
@@ -703,32 +753,21 @@ msgstr "A jelszónak legalább 8 karakter hosszúnak kell lennie."
 #: templates/AnswerTranslations/add.php:12
 #: templates/AnswerTranslations/edit.php:12
 #: templates/AnswerTranslations/index.php:20
-#: templates/AnswerTranslations/view.php:10 templates/Answers/add.php:11
-#: templates/Answers/edit.php:11 templates/Answers/index.php:67
-#: templates/Answers/view.php:10 templates/Answers/view.php:69
-#: templates/Answers/view.php:111 templates/Categories/index.php:66
-#: templates/Categories/view.php:10 templates/Categories/view.php:50
-#: templates/Categories/view.php:96 templates/Categories/view.php:148
-#: templates/Categories/view.php:196 templates/Categories/view.php:236
-#: templates/CategoryTranslations/add.php:12
+#: templates/AnswerTranslations/view.php:10 templates/Answers/index.php:67
+#: templates/Categories/index.php:66 templates/CategoryTranslations/add.php:12
 #: templates/CategoryTranslations/edit.php:12
 #: templates/CategoryTranslations/index.php:19
 #: templates/CategoryTranslations/view.php:10 templates/DeviceLogs/add.php:11
 #: templates/DeviceLogs/edit.php:11 templates/DeviceLogs/index.php:96
 #: templates/DeviceLogs/view.php:10 templates/Difficulties/index.php:64
-#: templates/Difficulties/view.php:10 templates/Difficulties/view.php:52
-#: templates/Difficulties/view.php:104 templates/Difficulties/view.php:152
-#: templates/Languages/index.php:64 templates/Languages/view.php:10
-#: templates/Languages/view.php:51 templates/Languages/view.php:97
-#: templates/Languages/view.php:138 templates/Languages/view.php:180
-#: templates/Languages/view.php:228 templates/Languages/view.php:279
-#: templates/QuestionTranslations/add.php:12
+#: templates/Difficulties/view.php:66 templates/Languages/index.php:64
+#: templates/Languages/view.php:10 templates/Languages/view.php:51
+#: templates/Languages/view.php:97 templates/Languages/view.php:138
+#: templates/Languages/view.php:180 templates/Languages/view.php:228
+#: templates/Languages/view.php:279 templates/QuestionTranslations/add.php:12
 #: templates/QuestionTranslations/edit.php:12
 #: templates/QuestionTranslations/index.php:20
-#: templates/QuestionTranslations/view.php:10 templates/Questions/add.php:13
-#: templates/Questions/edit.php:13 templates/Questions/index.php:66
-#: templates/Questions/view.php:10 templates/Questions/view.php:76
-#: templates/Questions/view.php:120 templates/Questions/view.php:163
+#: templates/QuestionTranslations/view.php:10 templates/Questions/index.php:68
 #: templates/Roles/add.php:10 templates/Roles/edit.php:10
 #: templates/Roles/index.php:17 templates/Roles/view.php:10
 #: templates/Roles/view.php:50 templates/TestAttemptAnswers/add.php:13
@@ -739,11 +778,8 @@ msgstr "A jelszónak legalább 8 karakter hosszúnak kell lennie."
 #: templates/TestAttempts/view.php:10 templates/TestAttempts/view.php:83
 #: templates/TestTranslations/add.php:13 templates/TestTranslations/edit.php:13
 #: templates/TestTranslations/index.php:24
-#: templates/TestTranslations/view.php:10 templates/Tests/index.php:69
-#: templates/Tests/view.php:10 templates/Tests/view.php:71
-#: templates/Tests/view.php:122 templates/Tests/view.php:174
-#: templates/Tests/view.php:225 templates/Tests/view.php:268
-#: templates/UserFavoriteCategories/add.php:12
+#: templates/TestTranslations/view.php:10 templates/Tests/index.php:181
+#: templates/Tests/view.php:107 templates/UserFavoriteCategories/add.php:12
 #: templates/UserFavoriteCategories/edit.php:12
 #: templates/UserFavoriteCategories/index.php:18
 #: templates/UserFavoriteCategories/view.php:10
@@ -774,16 +810,16 @@ msgstr "Kapcsolódó aktivitási naplók"
 #: templates/ActivityLogs/add.php:28 templates/ActivityLogs/edit.php:33
 #: templates/AiRequests/add.php:35 templates/AiRequests/edit.php:40
 #: templates/AnswerTranslations/add.php:30
-#: templates/AnswerTranslations/edit.php:35 templates/Answers/add.php:30
-#: templates/Answers/edit.php:35 templates/Categories/add.php:53
-#: templates/Categories/edit.php:59 templates/CategoryTranslations/add.php:29
+#: templates/AnswerTranslations/edit.php:35 templates/Answers/add.php:64
+#: templates/Categories/add.php:53 templates/Categories/edit.php:59
+#: templates/CategoryTranslations/add.php:29
 #: templates/CategoryTranslations/edit.php:34 templates/DeviceLogs/add.php:30
 #: templates/DeviceLogs/edit.php:35 templates/Difficulties/add.php:39
 #: templates/Difficulties/edit.php:66 templates/Languages/add.php:22
 #: templates/Languages/edit.php:29 templates/QuestionTranslations/add.php:31
-#: templates/QuestionTranslations/edit.php:36 templates/Questions/add.php:34
-#: templates/Questions/edit.php:39 templates/Roles/add.php:24
-#: templates/Roles/edit.php:29 templates/TestAttemptAnswers/add.php:31
+#: templates/QuestionTranslations/edit.php:36 templates/Questions/add.php:83
+#: templates/Roles/add.php:24 templates/Roles/edit.php:29
+#: templates/TestAttemptAnswers/add.php:31
 #: templates/TestAttemptAnswers/edit.php:36 templates/TestAttempts/add.php:38
 #: templates/TestAttempts/edit.php:43 templates/TestTranslations/add.php:35
 #: templates/TestTranslations/edit.php:40
@@ -801,38 +837,31 @@ msgstr "Mentés"
 #: templates/Admin/Users/index.php:203 templates/AiRequests/edit.php:15
 #: templates/AiRequests/index.php:212 templates/AiRequests/index.php:243
 #: templates/AiRequests/view.php:33 templates/AnswerTranslations/edit.php:14
-#: templates/AnswerTranslations/index.php:36 templates/Answers/edit.php:13
-#: templates/Answers/index.php:106 templates/Answers/index.php:137
-#: templates/Answers/view.php:84 templates/Answers/view.php:126
-#: templates/Categories/edit.php:12 templates/Categories/index.php:113
-#: templates/Categories/index.php:144 templates/Categories/view.php:64
-#: templates/Categories/view.php:116 templates/Categories/view.php:168
-#: templates/Categories/view.php:212 templates/Categories/view.php:248
-#: templates/CategoryTranslations/edit.php:14
+#: templates/AnswerTranslations/index.php:36 templates/Answers/edit.php:18
+#: templates/Answers/index.php:122 templates/Answers/index.php:153
+#: templates/Answers/view.php:25 templates/Categories/edit.php:12
+#: templates/Categories/index.php:113 templates/Categories/index.php:144
+#: templates/Categories/view.php:21 templates/CategoryTranslations/edit.php:14
 #: templates/CategoryTranslations/index.php:34 templates/DeviceLogs/edit.php:13
 #: templates/DeviceLogs/index.php:154 templates/DeviceLogs/index.php:185
 #: templates/Difficulties/edit.php:14 templates/Difficulties/index.php:106
-#: templates/Difficulties/index.php:137 templates/Difficulties/view.php:72
-#: templates/Difficulties/view.php:124 templates/Difficulties/view.php:168
+#: templates/Difficulties/index.php:137 templates/Difficulties/view.php:21
 #: templates/Languages/edit.php:12 templates/Languages/index.php:90
 #: templates/Languages/index.php:121 templates/Languages/view.php:70
 #: templates/Languages/view.php:112 templates/Languages/view.php:152
 #: templates/Languages/view.php:196 templates/Languages/view.php:248
 #: templates/Languages/view.php:298 templates/QuestionTranslations/edit.php:14
-#: templates/QuestionTranslations/index.php:36 templates/Questions/edit.php:15
-#: templates/Questions/index.php:104 templates/Questions/index.php:135
-#: templates/Questions/view.php:92 templates/Questions/view.php:136
-#: templates/Questions/view.php:178 templates/Roles/edit.php:12
+#: templates/QuestionTranslations/index.php:36 templates/Questions/edit.php:20
+#: templates/Questions/index.php:132 templates/Questions/index.php:163
+#: templates/Questions/view.php:21 templates/Roles/edit.php:12
 #: templates/Roles/index.php:30 templates/Roles/view.php:68
 #: templates/TestAttemptAnswers/edit.php:15
 #: templates/TestAttemptAnswers/index.php:36 templates/TestAttempts/edit.php:17
 #: templates/TestAttempts/index.php:48 templates/TestAttempts/view.php:98
 #: templates/TestTranslations/edit.php:15
 #: templates/TestTranslations/index.php:44 templates/Tests/edit.php:20
-#: templates/Tests/index.php:114 templates/Tests/index.php:145
-#: templates/Tests/view.php:90 templates/Tests/view.php:142
-#: templates/Tests/view.php:194 templates/Tests/view.php:244
-#: templates/Tests/view.php:280 templates/UserFavoriteCategories/edit.php:14
+#: templates/Tests/index.php:226 templates/Tests/index.php:257
+#: templates/Tests/view.php:26 templates/UserFavoriteCategories/edit.php:14
 #: templates/UserFavoriteCategories/index.php:32
 #: templates/UserFavoriteTests/edit.php:14
 #: templates/UserFavoriteTests/index.php:32 templates/UserTokens/edit.php:13
@@ -848,42 +877,34 @@ msgstr "Törlés"
 #: templates/AiRequests/index.php:215 templates/AiRequests/view.php:36
 #: templates/AnswerTranslations/edit.php:16
 #: templates/AnswerTranslations/index.php:40
-#: templates/AnswerTranslations/view.php:12 templates/Answers/edit.php:15
-#: templates/Answers/index.php:109 templates/Answers/view.php:12
-#: templates/Answers/view.php:88 templates/Answers/view.php:130
+#: templates/AnswerTranslations/view.php:12 templates/Answers/edit.php:21
+#: templates/Answers/index.php:125 templates/Answers/view.php:28
 #: templates/Categories/edit.php:14 templates/Categories/index.php:116
-#: templates/Categories/view.php:12 templates/Categories/view.php:68
-#: templates/Categories/view.php:120 templates/Categories/view.php:172
-#: templates/Categories/view.php:216 templates/Categories/view.php:252
-#: templates/CategoryTranslations/edit.php:16
+#: templates/Categories/view.php:24 templates/CategoryTranslations/edit.php:16
 #: templates/CategoryTranslations/index.php:38
 #: templates/CategoryTranslations/view.php:12 templates/DeviceLogs/edit.php:15
 #: templates/DeviceLogs/index.php:157 templates/DeviceLogs/view.php:12
 #: templates/Difficulties/edit.php:16 templates/Difficulties/index.php:109
-#: templates/Difficulties/view.php:12 templates/Difficulties/view.php:76
-#: templates/Difficulties/view.php:128 templates/Difficulties/view.php:172
-#: templates/Languages/edit.php:14 templates/Languages/index.php:93
-#: templates/Languages/view.php:12 templates/Languages/view.php:74
-#: templates/Languages/view.php:116 templates/Languages/view.php:156
-#: templates/Languages/view.php:200 templates/Languages/view.php:252
-#: templates/Languages/view.php:302 templates/QuestionTranslations/edit.php:16
+#: templates/Difficulties/view.php:24 templates/Languages/edit.php:14
+#: templates/Languages/index.php:93 templates/Languages/view.php:12
+#: templates/Languages/view.php:74 templates/Languages/view.php:116
+#: templates/Languages/view.php:156 templates/Languages/view.php:200
+#: templates/Languages/view.php:252 templates/Languages/view.php:302
+#: templates/QuestionTranslations/edit.php:16
 #: templates/QuestionTranslations/index.php:40
-#: templates/QuestionTranslations/view.php:12 templates/Questions/edit.php:17
-#: templates/Questions/index.php:107 templates/Questions/view.php:12
-#: templates/Questions/view.php:96 templates/Questions/view.php:140
-#: templates/Questions/view.php:182 templates/Roles/edit.php:14
-#: templates/Roles/index.php:34 templates/Roles/view.php:12
-#: templates/Roles/view.php:72 templates/TestAttemptAnswers/edit.php:17
+#: templates/QuestionTranslations/view.php:12 templates/Questions/edit.php:23
+#: templates/Questions/index.php:135 templates/Questions/view.php:24
+#: templates/Roles/edit.php:14 templates/Roles/index.php:34
+#: templates/Roles/view.php:12 templates/Roles/view.php:72
+#: templates/TestAttemptAnswers/edit.php:17
 #: templates/TestAttemptAnswers/index.php:40
 #: templates/TestAttemptAnswers/view.php:12 templates/TestAttempts/edit.php:19
 #: templates/TestAttempts/index.php:52 templates/TestAttempts/view.php:12
 #: templates/TestAttempts/view.php:102 templates/TestTranslations/edit.php:17
 #: templates/TestTranslations/index.php:48
 #: templates/TestTranslations/view.php:12 templates/Tests/edit.php:22
-#: templates/Tests/index.php:117 templates/Tests/view.php:12
-#: templates/Tests/view.php:94 templates/Tests/view.php:146
-#: templates/Tests/view.php:198 templates/Tests/view.php:248
-#: templates/Tests/view.php:284 templates/UserFavoriteCategories/edit.php:16
+#: templates/Tests/index.php:229 templates/Tests/view.php:29
+#: templates/UserFavoriteCategories/edit.php:16
 #: templates/UserFavoriteCategories/index.php:36
 #: templates/UserFavoriteCategories/view.php:12
 #: templates/UserFavoriteTests/edit.php:16
@@ -913,24 +934,16 @@ msgid "Activity Logs"
 msgstr "Kapcsolódó aktivitási naplók"
 
 #: templates/ActivityLogs/index.php:31
-#: templates/AnswerTranslations/index.php:33 templates/Answers/view.php:81
-#: templates/Answers/view.php:123 templates/Categories/view.php:61
-#: templates/Categories/view.php:113 templates/Categories/view.php:165
-#: templates/Categories/view.php:209 templates/Categories/view.php:245
+#: templates/AnswerTranslations/index.php:33
 #: templates/CategoryTranslations/index.php:31
-#: templates/Difficulties/index.php:96 templates/Difficulties/view.php:69
-#: templates/Difficulties/view.php:121 templates/Difficulties/view.php:165
+#: templates/Difficulties/index.php:96 templates/Difficulties/view.php:76
 #: templates/Languages/view.php:67 templates/Languages/view.php:109
 #: templates/Languages/view.php:149 templates/Languages/view.php:193
 #: templates/Languages/view.php:245 templates/Languages/view.php:295
-#: templates/QuestionTranslations/index.php:33 templates/Questions/view.php:89
-#: templates/Questions/view.php:133 templates/Questions/view.php:175
-#: templates/Roles/index.php:27 templates/Roles/view.php:65
-#: templates/TestAttemptAnswers/index.php:33
+#: templates/QuestionTranslations/index.php:33 templates/Roles/index.php:27
+#: templates/Roles/view.php:65 templates/TestAttemptAnswers/index.php:33
 #: templates/TestAttempts/index.php:45 templates/TestAttempts/view.php:95
-#: templates/TestTranslations/index.php:41 templates/Tests/view.php:87
-#: templates/Tests/view.php:139 templates/Tests/view.php:191
-#: templates/Tests/view.php:241 templates/Tests/view.php:277
+#: templates/TestTranslations/index.php:41 templates/Tests/view.php:124
 #: templates/UserFavoriteCategories/index.php:29
 #: templates/UserFavoriteTests/index.php:29 templates/UserTokens/index.php:33
 #: templates/Users/index.php:43 templates/Users/view.php:108
@@ -940,27 +953,20 @@ msgid "View"
 msgstr "Megtekintés"
 
 #: templates/ActivityLogs/index.php:32 templates/Admin/Users/index.php:117
-#: templates/AnswerTranslations/index.php:34 templates/Answers/index.php:101
-#: templates/Answers/view.php:82 templates/Answers/view.php:124
-#: templates/Categories/index.php:108 templates/Categories/view.php:62
-#: templates/Categories/view.php:114 templates/Categories/view.php:166
-#: templates/Categories/view.php:210 templates/Categories/view.php:246
-#: templates/CategoryTranslations/index.php:32
-#: templates/Difficulties/index.php:101 templates/Difficulties/view.php:70
-#: templates/Difficulties/view.php:122 templates/Difficulties/view.php:166
+#: templates/AnswerTranslations/index.php:34 templates/Answers/index.php:117
+#: templates/Answers/view.php:23 templates/Categories/index.php:108
+#: templates/Categories/view.php:19 templates/CategoryTranslations/index.php:32
+#: templates/Difficulties/index.php:101 templates/Difficulties/view.php:19
 #: templates/Languages/index.php:85 templates/Languages/view.php:68
 #: templates/Languages/view.php:110 templates/Languages/view.php:150
 #: templates/Languages/view.php:194 templates/Languages/view.php:246
 #: templates/Languages/view.php:296 templates/QuestionTranslations/index.php:34
-#: templates/Questions/index.php:99 templates/Questions/view.php:90
-#: templates/Questions/view.php:134 templates/Questions/view.php:176
+#: templates/Questions/index.php:127 templates/Questions/view.php:19
 #: templates/Roles/index.php:28 templates/Roles/view.php:66
 #: templates/TestAttemptAnswers/index.php:34
 #: templates/TestAttempts/index.php:46 templates/TestAttempts/view.php:96
-#: templates/TestTranslations/index.php:42 templates/Tests/index.php:109
-#: templates/Tests/view.php:88 templates/Tests/view.php:140
-#: templates/Tests/view.php:192 templates/Tests/view.php:242
-#: templates/Tests/view.php:278 templates/UserFavoriteCategories/index.php:30
+#: templates/TestTranslations/index.php:42 templates/Tests/index.php:221
+#: templates/Tests/view.php:24 templates/UserFavoriteCategories/index.php:30
 #: templates/UserFavoriteTests/index.php:30 templates/UserTokens/index.php:34
 #: templates/Users/index.php:44 templates/Users/view.php:109
 #: templates/Users/view.php:155 templates/Users/view.php:206
@@ -1042,7 +1048,7 @@ msgstr "Kapcsolódó aktivitási naplók"
 #: templates/TestAttempts/view.php:22
 #: templates/UserFavoriteCategories/view.php:22
 #: templates/UserFavoriteTests/view.php:22 templates/UserTokens/view.php:22
-#: templates/Users/profile.php:35
+#: templates/Users/profile.php:41
 msgid "User"
 msgstr "Felhasználó"
 
@@ -1056,26 +1062,15 @@ msgid "Ip Address"
 msgstr "IP-cím"
 
 #: templates/ActivityLogs/view.php:34 templates/AnswerTranslations/view.php:34
-#: templates/Answers/view.php:30 templates/Answers/view.php:62
-#: templates/Answers/view.php:104 templates/Categories/view.php:22
-#: templates/Categories/view.php:44 templates/Categories/view.php:84
-#: templates/Categories/view.php:136 templates/Categories/view.php:188
-#: templates/Categories/view.php:232 templates/CategoryTranslations/view.php:34
-#: templates/DeviceLogs/view.php:38 templates/Difficulties/view.php:26
-#: templates/Difficulties/view.php:40 templates/Difficulties/view.php:92
-#: templates/Difficulties/view.php:144 templates/Languages/view.php:30
-#: templates/Languages/view.php:40 templates/Languages/view.php:90
-#: templates/Languages/view.php:132 templates/Languages/view.php:172
-#: templates/Languages/view.php:216 templates/Languages/view.php:268
-#: templates/QuestionTranslations/view.php:34 templates/Questions/view.php:38
-#: templates/Questions/view.php:68 templates/Questions/view.php:112
-#: templates/Questions/view.php:156 templates/Roles/view.php:30
-#: templates/Roles/view.php:40 templates/TestAttemptAnswers/view.php:34
-#: templates/TestAttempts/view.php:42 templates/TestAttempts/view.php:76
-#: templates/TestTranslations/view.php:42 templates/Tests/view.php:30
-#: templates/Tests/view.php:60 templates/Tests/view.php:110
-#: templates/Tests/view.php:162 templates/Tests/view.php:214
-#: templates/Tests/view.php:264 templates/UserFavoriteCategories/view.php:30
+#: templates/CategoryTranslations/view.php:34 templates/DeviceLogs/view.php:38
+#: templates/Languages/view.php:30 templates/Languages/view.php:40
+#: templates/Languages/view.php:90 templates/Languages/view.php:132
+#: templates/Languages/view.php:172 templates/Languages/view.php:216
+#: templates/Languages/view.php:268 templates/QuestionTranslations/view.php:34
+#: templates/Roles/view.php:30 templates/Roles/view.php:40
+#: templates/TestAttemptAnswers/view.php:34 templates/TestAttempts/view.php:42
+#: templates/TestAttempts/view.php:76 templates/TestTranslations/view.php:42
+#: templates/UserFavoriteCategories/view.php:30
 #: templates/UserFavoriteTests/view.php:30 templates/UserTokens/view.php:30
 #: templates/Users/index.php:16 templates/Users/view.php:63
 #: templates/Users/view.php:87 templates/Users/view.php:131
@@ -1085,22 +1080,12 @@ msgid "Id"
 msgstr "Azonosító"
 
 #: templates/ActivityLogs/view.php:38 templates/AnswerTranslations/view.php:42
-#: templates/Answers/view.php:38 templates/Answers/view.php:68
-#: templates/Categories/view.php:26 templates/Categories/view.php:49
-#: templates/Categories/view.php:94 templates/Categories/view.php:147
-#: templates/Categories/view.php:194 templates/Categories/view.php:235
 #: templates/CategoryTranslations/view.php:38 templates/DeviceLogs/view.php:46
-#: templates/Difficulties/view.php:50 templates/Difficulties/view.php:103
-#: templates/Difficulties/view.php:150 templates/Languages/view.php:50
-#: templates/Languages/view.php:96 templates/Languages/view.php:137
-#: templates/Languages/view.php:179 templates/Languages/view.php:227
-#: templates/Languages/view.php:277 templates/QuestionTranslations/view.php:42
-#: templates/Questions/view.php:50 templates/Questions/view.php:74
-#: templates/Questions/view.php:119 templates/Roles/view.php:48
+#: templates/Languages/view.php:50 templates/Languages/view.php:96
+#: templates/Languages/view.php:137 templates/Languages/view.php:179
+#: templates/Languages/view.php:227 templates/Languages/view.php:277
+#: templates/QuestionTranslations/view.php:42 templates/Roles/view.php:48
 #: templates/TestAttempts/view.php:66 templates/TestTranslations/view.php:50
-#: templates/Tests/view.php:42 templates/Tests/view.php:70
-#: templates/Tests/view.php:120 templates/Tests/view.php:173
-#: templates/Tests/view.php:223 templates/Tests/view.php:267
 #: templates/UserFavoriteCategories/view.php:34
 #: templates/UserFavoriteTests/view.php:34 templates/UserTokens/view.php:42
 #: templates/Users/index.php:23 templates/Users/view.php:58
@@ -1148,11 +1133,14 @@ msgstr "Kapcsolódó felhasználók"
 msgid "Total Tests"
 msgstr "Összes kérdés"
 
-#: templates/Admin/Dashboard/index.php:38 templates/Questions/index.php:9
-#: templates/Questions/index.php:19 templates/Tests/add.php:49
-#: templates/Tests/edit.php:54 templates/Tests/index.php:65
-#: templates/element/admin_sidebar.php:123
-#: templates/element/admin_sidebar.php:165
+#: templates/Admin/Dashboard/index.php:38 templates/Difficulties/view.php:43
+#: templates/Questions/index.php:9 templates/Questions/index.php:19
+#: templates/QuizCreator/Dashboard/index.php:29 templates/Tests/add.php:49
+#: templates/Tests/catalog_view.php:79 templates/Tests/edit.php:54
+#: templates/Tests/index.php:92 templates/Tests/index.php:177
+#: templates/Tests/review.php:73 templates/Tests/view.php:70
+#: templates/Tests/view.php:99 templates/element/admin_sidebar.php:136
+#: templates/element/admin_sidebar.php:188
 msgid "Questions"
 msgstr "Kérdések"
 
@@ -1161,7 +1149,7 @@ msgid "Today's Logins"
 msgstr "Mai bejelentkezések"
 
 #: templates/Admin/Dashboard/index.php:40 templates/AiRequests/index.php:10
-#: templates/AiRequests/index.php:23 templates/element/admin_sidebar.php:149
+#: templates/AiRequests/index.php:23 templates/element/admin_sidebar.php:162
 msgid "AI Requests"
 msgstr "AI kérések"
 
@@ -1172,7 +1160,7 @@ msgstr "Legutóbbi rendszeresemények"
 #: templates/Admin/Dashboard/index.php:65 templates/AiRequests/index.php:100
 #: templates/Answers/index.php:28 templates/DeviceLogs/index.php:61
 #: templates/Languages/index.php:28 templates/Questions/index.php:28
-#: templates/Tests/index.php:28
+#: templates/Tests/index.php:140
 #: templates/element/functions/admin_list_controls.php:16
 msgid "Search"
 msgstr "Keresés"
@@ -1181,7 +1169,7 @@ msgstr "Keresés"
 #: templates/Answers/index.php:29 templates/Categories/index.php:29
 #: templates/DeviceLogs/index.php:62 templates/Difficulties/index.php:29
 #: templates/Languages/index.php:29 templates/Questions/index.php:29
-#: templates/Tests/index.php:29
+#: templates/Tests/index.php:141
 #: templates/element/functions/admin_list_controls.php:17
 msgid "Search…"
 msgstr "Keresés…"
@@ -1190,7 +1178,7 @@ msgstr "Keresés…"
 #: templates/AiRequests/index.php:106 templates/Answers/index.php:34
 #: templates/Categories/index.php:34 templates/DeviceLogs/index.php:67
 #: templates/Difficulties/index.php:34 templates/Languages/index.php:34
-#: templates/Questions/index.php:34 templates/Tests/index.php:34
+#: templates/Questions/index.php:34 templates/Tests/index.php:146
 #: templates/element/functions/admin_list_controls.php:21
 msgid "Show"
 msgstr "Megjelenítés"
@@ -1199,7 +1187,7 @@ msgstr "Megjelenítés"
 #: templates/AiRequests/index.php:112 templates/Answers/index.php:40
 #: templates/Categories/index.php:40 templates/DeviceLogs/index.php:73
 #: templates/Difficulties/index.php:40 templates/Languages/index.php:40
-#: templates/Questions/index.php:40 templates/Tests/index.php:40
+#: templates/Questions/index.php:40 templates/Tests/index.php:152
 #: templates/element/functions/admin_list_controls.php:26
 msgid "All"
 msgstr "Összes"
@@ -1219,7 +1207,7 @@ msgstr "Részletek"
 
 #: templates/Admin/Dashboard/index.php:102 templates/AiRequests/index.php:132
 #: templates/AiRequests/view.php:52 templates/Languages/view.php:49
-#: templates/Tests/view.php:69 templates/Users/view.php:138
+#: templates/Users/view.php:138
 msgid "Status"
 msgstr "Állapot"
 
@@ -1232,36 +1220,36 @@ msgid "Select event"
 msgstr "Esemény kiválasztása"
 
 #: templates/Admin/Dashboard/index.php:164 templates/Admin/Users/index.php:186
-#: templates/AiRequests/index.php:236 templates/Answers/index.php:130
+#: templates/AiRequests/index.php:236 templates/Answers/index.php:146
 #: templates/Categories/index.php:137 templates/DeviceLogs/index.php:178
 #: templates/Difficulties/index.php:130 templates/Languages/index.php:114
-#: templates/Questions/index.php:128 templates/Tests/index.php:138
+#: templates/Questions/index.php:156 templates/Tests/index.php:250
 #: templates/element/functions/admin_bulk_controls.php:15
 msgid "Összes bejelölése"
 msgstr "Összes bejelölése"
 
 #: templates/Admin/Dashboard/index.php:167 templates/Admin/Users/index.php:189
-#: templates/AiRequests/index.php:239 templates/Answers/index.php:133
+#: templates/AiRequests/index.php:239 templates/Answers/index.php:149
 #: templates/Categories/index.php:140 templates/DeviceLogs/index.php:181
 #: templates/Difficulties/index.php:133 templates/Languages/index.php:117
-#: templates/Questions/index.php:131 templates/Tests/index.php:141
+#: templates/Questions/index.php:159 templates/Tests/index.php:253
 #: templates/element/functions/admin_bulk_controls.php:17
 msgid "A kijelöltekkel végzendő művelet:"
 msgstr "A kijelöltekkel végzendő művelet:"
 
 #: templates/Admin/Dashboard/index.php:184 templates/Admin/Users/index.php:214
-#: templates/AiRequests/index.php:254 templates/Answers/index.php:148
+#: templates/AiRequests/index.php:254 templates/Answers/index.php:164
 #: templates/Categories/index.php:155 templates/DeviceLogs/index.php:196
 #: templates/Difficulties/index.php:148 templates/Languages/index.php:132
-#: templates/Questions/index.php:146 templates/Tests/index.php:156
+#: templates/Questions/index.php:174 templates/Tests/index.php:268
 msgid "Pagination"
 msgstr "Lapozás"
 
 #: templates/Admin/Dashboard/index.php:206 templates/AiRequests/index.php:276
-#: templates/Answers/index.php:170 templates/Categories/index.php:177
+#: templates/Answers/index.php:186 templates/Categories/index.php:177
 #: templates/DeviceLogs/index.php:218 templates/Difficulties/index.php:170
-#: templates/Languages/index.php:154 templates/Questions/index.php:168
-#: templates/Tests/index.php:178
+#: templates/Languages/index.php:154 templates/Questions/index.php:196
+#: templates/Tests/index.php:290
 msgid "Are you sure you want to delete the selected items?"
 msgstr "Biztosan törölni szeretnéd a(z) # {0} elemet?"
 
@@ -1307,11 +1295,13 @@ msgid "Avatar"
 msgstr "Profilkép URL"
 
 #: templates/Admin/Users/add.php:83
-#: templates/element/functions/admin_list_controls.php:57
+#: templates/element/functions/admin_list_controls.php:69
 msgid "Create"
 msgstr "Létrehozva"
 
 #: templates/Admin/Users/add.php:85 templates/Admin/Users/edit.php:91
+#: templates/Answers/add.php:65 templates/Answers/edit.php:75
+#: templates/Questions/add.php:84 templates/Questions/edit.php:94
 #: templates/Users/profile_edit.php:67
 msgid "Cancel"
 msgstr "Mégse"
@@ -1358,7 +1348,7 @@ msgstr "Biztosan törölni szeretnéd a(z) # {0} elemet?"
 
 #: templates/Admin/Users/index.php:9 templates/Admin/Users/index.php:19
 #: templates/Users/index.php:6 templates/Users/index.php:11
-#: templates/element/admin_sidebar.php:103
+#: templates/element/admin_sidebar.php:116
 msgid "Users"
 msgstr "Felhasználók"
 
@@ -1377,9 +1367,11 @@ msgstr "Utolsó bejelentkezés ideje"
 
 #: templates/Admin/Users/index.php:89 templates/Admin/my_profile.php:56
 #: templates/AiRequests/index.php:129 templates/AiRequests/view.php:48
-#: templates/Answers/index.php:65 templates/Categories/index.php:64
-#: templates/DeviceLogs/index.php:90 templates/Questions/index.php:64
-#: templates/Tests/index.php:67
+#: templates/Answers/index.php:65 templates/Answers/view.php:75
+#: templates/Answers/view.php:102 templates/Categories/index.php:64
+#: templates/Categories/view.php:45 templates/DeviceLogs/index.php:90
+#: templates/Questions/index.php:66 templates/Questions/view.php:96
+#: templates/Tests/index.php:179 templates/Tests/view.php:86
 msgid "Created"
 msgstr "Létrehozva"
 
@@ -1397,8 +1389,8 @@ msgstr "Biztosan ki szeretnél jelentkezni?"
 msgid "Are you sure you want to delete the selected users?"
 msgstr "Biztosan törölni szeretnéd a(z) # {0} elemet?"
 
-#: templates/Admin/my_profile.php:8 templates/Users/profile.php:7
-#: templates/element/admin_navbar.php:43 templates/element/navbar.php:115
+#: templates/Admin/my_profile.php:8 templates/Users/profile.php:13
+#: templates/element/admin_navbar.php:43 templates/element/navbar.php:187
 msgid "My Profile"
 msgstr "Profilom"
 
@@ -1462,6 +1454,7 @@ msgstr "Leggyakoribb típusok (24 óra)"
 #: templates/AiRequests/index.php:70 templates/AiRequests/index.php:88
 #: templates/AiRequests/index.php:188 templates/AiRequests/view.php:53
 #: templates/DeviceLogs/index.php:106 templates/Users/view.php:200
+#: templates/element/users/stats.php:109
 msgid "Unknown"
 msgstr "Ismeretlen"
 
@@ -1470,8 +1463,8 @@ msgid "Top sources (24h)"
 msgstr "Leggyakoribb források (24 óra)"
 
 #: templates/AiRequests/index.php:131 templates/Languages/view.php:46
-#: templates/Tests/view.php:66 templates/UserTokens/view.php:26
-#: templates/Users/view.php:135 templates/Users/view.php:283
+#: templates/UserTokens/view.php:26 templates/Users/view.php:135
+#: templates/Users/view.php:283
 msgid "Type"
 msgstr "Típus"
 
@@ -1480,7 +1473,7 @@ msgid "Lang"
 msgstr "Nyelv"
 
 #: templates/AiRequests/index.php:134 templates/AiRequests/view.php:86
-#: templates/Answers/index.php:63 templates/Questions/index.php:62
+#: templates/Answers/view.php:101 templates/Tests/view.php:105
 msgid "Source"
 msgstr "Forrás"
 
@@ -1499,7 +1492,7 @@ msgid "Select request"
 msgstr "Kapcsolódó MI-kérések"
 
 #: templates/AiRequests/index.php:181 templates/AiRequests/view.php:67
-#: templates/element/admin_sidebar.php:141
+#: templates/element/admin_sidebar.php:154
 msgid "System"
 msgstr "Rendszer"
 
@@ -1511,7 +1504,8 @@ msgstr "be {0} / ki {1}"
 msgid "AI Request #{0}"
 msgstr "AI-kérés #{0}"
 
-#: templates/AiRequests/view.php:28 templates/layout/error.php:36
+#: templates/AiRequests/view.php:28 templates/Tests/review.php:202
+#: templates/Tests/take.php:120 templates/layout/error.php:36
 msgid "Back"
 msgstr "Vissza"
 
@@ -1528,12 +1522,12 @@ msgid "Reference"
 msgstr "Referencia"
 
 #: templates/AiRequests/view.php:99 templates/Languages/view.php:47
-#: templates/Tests/view.php:67 templates/Users/view.php:136
+#: templates/Users/view.php:136
 msgid "Input Payload"
 msgstr "Bemeneti payload"
 
 #: templates/AiRequests/view.php:106 templates/Languages/view.php:48
-#: templates/Tests/view.php:68 templates/Users/view.php:137
+#: templates/Users/view.php:137
 msgid "Output Payload"
 msgstr "Kimeneti payload"
 
@@ -1561,7 +1555,7 @@ msgstr "Felhasználói token szerkesztése"
 msgid "New Answer Translation"
 msgstr "Új felhasználói token"
 
-#: templates/AnswerTranslations/index.php:9
+#: templates/AnswerTranslations/index.php:9 templates/Answers/view.php:93
 msgid "Answer Translations"
 msgstr "Válasz fordítások"
 
@@ -1570,82 +1564,116 @@ msgstr "Válasz fordítások"
 msgid "Delete Answer Translation"
 msgstr "Felhasználói token törlése"
 
-#: templates/AnswerTranslations/view.php:22
-#: templates/TestAttemptAnswers/view.php:30
+#: templates/AnswerTranslations/view.php:22 templates/Answers/view.php:9
+#: templates/Answers/view.php:17 templates/TestAttemptAnswers/view.php:30
 msgid "Answer"
 msgstr "Válasz"
 
-#: templates/AnswerTranslations/view.php:30 templates/Answers/view.php:26
-#: templates/Answers/view.php:66 templates/Categories/view.php:90
-#: templates/Difficulties/view.php:46 templates/Languages/view.php:94
-#: templates/Languages/view.php:177 templates/QuestionTranslations/view.php:30
-#: templates/Questions/view.php:34 templates/Questions/view.php:70
-#: templates/Questions/view.php:117 templates/Tests/view.php:116
+#: templates/AnswerTranslations/view.php:30 templates/Answers/add.php:34
+#: templates/Answers/edit.php:44 templates/Answers/view.php:54
+#: templates/Languages/view.php:94 templates/Languages/view.php:177
+#: templates/QuestionTranslations/view.php:30 templates/Questions/add.php:54
+#: templates/Questions/edit.php:64
 msgid "Source Type"
 msgstr "Eszköztípus"
 
-#: templates/AnswerTranslations/view.php:38 templates/Answers/view.php:67
-#: templates/Categories/view.php:91 templates/Categories/view.php:193
-#: templates/Difficulties/view.php:47 templates/Difficulties/view.php:149
-#: templates/Languages/view.php:95 templates/Languages/view.php:178
-#: templates/QuestionTranslations/view.php:38 templates/Questions/view.php:42
-#: templates/Questions/view.php:118 templates/Tests/view.php:38
-#: templates/Tests/view.php:117
+#: templates/AnswerTranslations/view.php:38 templates/Languages/view.php:95
+#: templates/Languages/view.php:178 templates/QuestionTranslations/view.php:38
+#: templates/Questions/add.php:61 templates/Questions/edit.php:71
 msgid "Created By"
 msgstr "Létrehozva"
 
-#: templates/AnswerTranslations/view.php:47 templates/Answers/view.php:65
-#: templates/Languages/view.php:93 templates/Languages/view.php:175
-#: templates/QuestionTranslations/view.php:47 templates/Questions/view.php:115
+#: templates/AnswerTranslations/view.php:47 templates/Answers/index.php:63
+#: templates/Answers/view.php:100 templates/Languages/view.php:93
+#: templates/Languages/view.php:175 templates/QuestionTranslations/view.php:47
+#: templates/Questions/index.php:62
 msgid "Content"
 msgstr "Tartalom"
 
-#: templates/Answers/add.php:12 templates/Answers/edit.php:17
-#: templates/Answers/view.php:13
-#, fuzzy
-msgid "List Answers"
-msgstr "Felhasználók listája"
-
-#: templates/Answers/add.php:19
+#: templates/Answers/add.php:10 templates/Answers/add.php:15
 #, fuzzy
 msgid "Add Answer"
 msgstr "Felhasználó hozzáadása"
 
-#: templates/Answers/edit.php:24 templates/Answers/view.php:11
+#: templates/Answers/add.php:16 templates/Answers/edit.php:25
+#: templates/Answers/view.php:32 templates/Categories/add.php:10
+#: templates/Categories/edit.php:16 templates/Categories/view.php:28
+#: templates/Difficulties/add.php:12 templates/Difficulties/edit.php:18
+#: templates/Difficulties/view.php:28 templates/Languages/add.php:10
+#: templates/Languages/edit.php:16 templates/Questions/add.php:18
+#: templates/Questions/edit.php:27 templates/Questions/view.php:28
+#: templates/Tests/view.php:33
 #, fuzzy
-msgid "Edit Answer"
-msgstr "Felhasználó szerkesztése"
+msgid "Back to List"
+msgstr "Vissza a bejelentkezéshez"
 
-#: templates/Answers/index.php:9 templates/Answers/index.php:19
-#: templates/element/admin_sidebar.php:128
-#: templates/element/admin_sidebar.php:170
-msgid "Answers"
-msgstr "Válaszok"
-
-#: templates/Answers/index.php:44 templates/Answers/view.php:14
-msgid "New Answer"
-msgstr "Új válasz"
-
-#: templates/Answers/index.php:61 templates/Categories/index.php:61
-#: templates/Difficulties/index.php:61 templates/Languages/index.php:61
-#: templates/Questions/index.php:61 templates/Tests/index.php:61
-msgid "ID"
-msgstr "ID"
-
-#: templates/Answers/index.php:62 templates/Answers/view.php:22
-#: templates/QuestionTranslations/view.php:22
-#: templates/TestAttemptAnswers/view.php:26
+#: templates/Answers/add.php:27 templates/Answers/edit.php:37
+#: templates/Answers/index.php:62 templates/Answers/view.php:19
+#: templates/Answers/view.php:39 templates/Pages/home.php:96
+#: templates/QuestionTranslations/view.php:22 templates/Questions/view.php:9
+#: templates/Questions/view.php:15 templates/TestAttemptAnswers/view.php:26
+#: templates/Tests/review.php:120 templates/Tests/take.php:38
 #, fuzzy
 msgid "Question"
 msgstr "Összes kérdés"
 
-#: templates/Answers/index.php:64
+#: templates/Answers/add.php:41 templates/Answers/edit.php:51
+#: templates/Answers/view.php:59 templates/TestAttemptAnswers/view.php:42
+#: templates/TestAttempts/view.php:81
+msgid "Is Correct"
+msgstr "Helyes"
+
+#: templates/Answers/add.php:50 templates/Answers/edit.php:60
+#: templates/Answers/view.php:85
+msgid "Source Text"
+msgstr "Forrásszöveg"
+
+#: templates/Answers/add.php:57 templates/Answers/edit.php:67
+#: templates/Answers/view.php:70 templates/Questions/add.php:69
+#: templates/Questions/edit.php:79 templates/Questions/view.php:91
+msgid "Position"
+msgstr "Leírás"
+
+#: templates/Answers/edit.php:10 templates/Answers/edit.php:15
+#, fuzzy
+msgid "Edit Answer"
+msgstr "Felhasználó szerkesztése"
+
+#: templates/Answers/edit.php:74 templates/Questions/edit.php:93
+#: templates/Tests/edit.php:111 templates/Users/profile_edit.php:66
+msgid "Save Changes"
+msgstr "Változások mentése"
+
+#: templates/Answers/index.php:9 templates/Answers/index.php:19
+#: templates/QuizCreator/Dashboard/index.php:37 templates/Tests/review.php:147
+#: templates/element/admin_sidebar.php:141
+#: templates/element/admin_sidebar.php:193
+msgid "Answers"
+msgstr "Válaszok"
+
+#: templates/Answers/index.php:44
+msgid "New Answer"
+msgstr "Új válasz"
+
+#: templates/Answers/index.php:61 templates/Answers/view.php:98
+#: templates/Categories/index.php:61 templates/Difficulties/index.php:61
+#: templates/Difficulties/view.php:64 templates/Languages/index.php:61
+#: templates/Questions/index.php:61 templates/Tests/index.php:173
+#: templates/Tests/view.php:104
+msgid "ID"
+msgstr "ID"
+
+#: templates/Answers/index.php:64 templates/Tests/catalog_view.php:120
+#: templates/Tests/review.php:128 templates/Tests/review.php:185
+#: templates/element/users/stats.php:99
 #, fuzzy
 msgid "Correct"
 msgstr "Helyes válaszok"
 
-#: templates/Answers/index.php:66 templates/Categories/index.php:65
-#: templates/Questions/index.php:65 templates/Tests/index.php:68
+#: templates/Answers/index.php:66 templates/Answers/view.php:80
+#: templates/Categories/index.php:65 templates/Categories/view.php:49
+#: templates/Questions/index.php:67 templates/Questions/view.php:101
+#: templates/Tests/index.php:180 templates/Tests/view.php:91
 msgid "Updated"
 msgstr "Frissítve"
 
@@ -1654,160 +1682,84 @@ msgstr "Frissítve"
 msgid "Select answer"
 msgstr "Helyes válaszok"
 
-#: templates/Answers/index.php:87 templates/Answers/view.php:47
-#: templates/Categories/view.php:35 templates/Questions/view.php:59
-#: templates/TestAttemptAnswers/view.php:43
-#: templates/TestTranslations/view.php:59 templates/Tests/index.php:98
-#: templates/Tests/view.php:51 templates/Users/view.php:72
+#: templates/Answers/index.php:99 templates/Questions/index.php:91
+#: templates/Questions/index.php:100 templates/Questions/index.php:109
+#: templates/Tests/index.php:198 templates/Tests/index.php:201
+#: templates/Tests/index.php:204 templates/Tests/view.php:21
+msgid "N/A"
+msgstr "N/A"
+
+#: templates/Answers/index.php:103 templates/Answers/view.php:62
+#: templates/Difficulties/view.php:73 templates/TestAttemptAnswers/view.php:43
+#: templates/TestTranslations/view.php:59 templates/Tests/index.php:210
+#: templates/Tests/view.php:78 templates/Users/view.php:72
 #: templates/Users/view.php:76
 msgid "Yes"
 msgstr "Igen"
 
-#: templates/Answers/index.php:89 templates/Answers/view.php:47
-#: templates/Categories/view.php:35 templates/Questions/view.php:59
-#: templates/TestAttemptAnswers/view.php:43
-#: templates/TestTranslations/view.php:59 templates/Tests/index.php:98
-#: templates/Tests/view.php:51 templates/Users/view.php:72
+#: templates/Answers/index.php:105 templates/Answers/view.php:64
+#: templates/Difficulties/view.php:73 templates/TestAttemptAnswers/view.php:43
+#: templates/TestTranslations/view.php:59 templates/Tests/index.php:210
+#: templates/Tests/view.php:80 templates/Users/view.php:72
 #: templates/Users/view.php:76
 msgid "No"
 msgstr "Nem"
 
-#: templates/Answers/view.php:12
-#, fuzzy
-msgid "Delete Answer"
-msgstr "Felhasználó törlése"
-
-#: templates/Answers/view.php:34 templates/Categories/view.php:93
-#: templates/Difficulties/view.php:49 templates/Questions/view.php:46
-#: templates/Questions/view.php:73 templates/Tests/view.php:119
-msgid "Position"
-msgstr "Leírás"
-
-#: templates/Answers/view.php:42 templates/Categories/view.php:30
-#: templates/Categories/view.php:95 templates/Categories/view.php:195
-#: templates/Difficulties/view.php:51 templates/Difficulties/view.php:151
-#: templates/Languages/view.php:278 templates/Questions/view.php:54
-#: templates/Questions/view.php:75 templates/Roles/view.php:49
-#: templates/TestTranslations/view.php:54 templates/Tests/view.php:46
-#: templates/Tests/view.php:121 templates/Tests/view.php:224
-#: templates/Users/index.php:24 templates/Users/view.php:67
-msgid "Updated At"
-msgstr "Frissítve"
-
-#: templates/Answers/view.php:46 templates/Answers/view.php:109
-#: templates/Questions/view.php:71 templates/Questions/view.php:161
-#: templates/TestAttemptAnswers/view.php:42 templates/TestAttempts/view.php:81
-msgid "Is Correct"
-msgstr "Helyes"
-
-#: templates/Answers/view.php:51 templates/Questions/view.php:72
-msgid "Source Text"
-msgstr "Forrásszöveg"
-
-#: templates/Answers/view.php:57 templates/Languages/view.php:85
-#, fuzzy
-msgid "Related Answer Translations"
-msgstr "Kapcsolódó felhasználói tokenek"
-
-#: templates/Answers/view.php:63 templates/Answers/view.php:107
-#: templates/Languages/view.php:91 templates/Questions/view.php:159
-#: templates/TestAttempts/view.php:79
-#, fuzzy
-msgid "Answer Id"
-msgstr "Felhasználó azonosító"
-
-#: templates/Answers/view.php:64 templates/Categories/view.php:46
-#: templates/Categories/view.php:141 templates/Difficulties/view.php:97
+#: templates/Answers/view.php:99 templates/Categories/view.php:62
 #: templates/Languages/view.php:43 templates/Languages/view.php:92
 #: templates/Languages/view.php:134 templates/Languages/view.php:174
 #: templates/Languages/view.php:221 templates/Languages/view.php:270
-#: templates/Questions/view.php:114 templates/Tests/view.php:63
-#: templates/Tests/view.php:167 templates/Tests/view.php:216
 #: templates/Users/view.php:134 templates/Users/view.php:233
 msgid "Language Id"
 msgstr "Nyelv azonosító"
-
-#: templates/Answers/view.php:99 templates/Questions/view.php:151
-#: templates/TestAttempts/view.php:71
-#, fuzzy
-msgid "Related Test Attempt Answers"
-msgstr "Kapcsolódó tesztpróbálkozások"
-
-#: templates/Answers/view.php:105 templates/Questions/view.php:157
-#: templates/TestAttempts/view.php:77
-#, fuzzy
-msgid "Test Attempt Id"
-msgstr "Kapcsolódó tesztpróbálkozások"
-
-#: templates/Answers/view.php:106 templates/Languages/view.php:173
-#: templates/Questions/view.php:69 templates/Questions/view.php:113
-#: templates/Questions/view.php:158 templates/TestAttempts/view.php:78
-#, fuzzy
-msgid "Question Id"
-msgstr "Összes kérdés"
-
-#: templates/Answers/view.php:108 templates/Questions/view.php:160
-#: templates/TestAttemptAnswers/view.php:47 templates/TestAttempts/view.php:80
-#, fuzzy
-msgid "User Answer Text"
-msgstr "User agent"
-
-#: templates/Answers/view.php:110 templates/Questions/view.php:162
-#: templates/TestAttemptAnswers/view.php:38 templates/TestAttempts/view.php:82
-#, fuzzy
-msgid "Answered At"
-msgstr "Felhasználva"
 
 #: templates/Categories/add.php:9
 #, fuzzy
 msgid "Add Category"
 msgstr "Kategória azonosító"
 
-#: templates/Categories/add.php:10 templates/Categories/edit.php:16
-#: templates/Difficulties/add.php:12 templates/Difficulties/edit.php:18
-#: templates/Languages/add.php:10 templates/Languages/edit.php:16
-#, fuzzy
-msgid "Back to List"
-msgstr "Vissza a bejelentkezéshez"
-
 #: templates/Categories/add.php:17 templates/Categories/edit.php:24
 #: templates/Categories/index.php:63 templates/Categories/index.php:94
-#: templates/Questions/index.php:63 templates/Questions/index.php:85
+#: templates/Categories/view.php:38 templates/Questions/index.php:65
+#: templates/Questions/index.php:113 templates/Questions/view.php:83
+#: templates/Tests/view.php:106 templates/Tests/view.php:117
 #, fuzzy
 msgid "Active"
 msgstr "Aktív"
 
 #: templates/Categories/add.php:22 templates/Categories/edit.php:29
+#: templates/Categories/view.php:16 templates/Categories/view.php:57
 #: templates/Difficulties/add.php:20 templates/Difficulties/edit.php:27
+#: templates/Pages/home.php:93 templates/Pages/home.php:165
 #: templates/Tests/add.php:63 templates/Tests/edit.php:68
 msgid "Translations"
 msgstr "Fordítások"
 
 #: templates/Categories/add.php:35 templates/Categories/edit.php:41
-#: templates/Categories/view.php:47 templates/CategoryTranslations/view.php:30
+#: templates/Categories/view.php:63 templates/CategoryTranslations/view.php:30
 #: templates/Difficulties/add.php:30 templates/Difficulties/edit.php:50
 #: templates/Difficulties/edit.php:56 templates/Difficulties/index.php:62
-#: templates/Difficulties/view.php:22 templates/Languages/index.php:63
+#: templates/Difficulties/view.php:35 templates/Languages/index.php:63
 #: templates/Languages/view.php:26 templates/Languages/view.php:135
 #: templates/Roles/view.php:22
 msgid "Name"
 msgstr "Név"
 
 #: templates/Categories/add.php:44 templates/Categories/edit.php:50
-#: templates/Categories/view.php:48 templates/CategoryTranslations/view.php:43
+#: templates/Categories/view.php:64 templates/CategoryTranslations/view.php:43
 #: templates/Languages/view.php:136 templates/Languages/view.php:273
 #: templates/Roles/view.php:26 templates/TestTranslations/view.php:63
-#: templates/Tests/view.php:219
 msgid "Description"
 msgstr "Leírás"
 
-#: templates/Categories/edit.php:9 templates/Categories/view.php:11
+#: templates/Categories/edit.php:9
 msgid "Edit Category"
 msgstr "Kategória szerkesztése"
 
 #: templates/Categories/index.php:9 templates/Categories/index.php:19
-#: templates/element/admin_sidebar.php:108
-#: templates/element/admin_sidebar.php:175
+#: templates/Pages/home.php:166 templates/QuizCreator/Dashboard/index.php:45
+#: templates/element/admin_sidebar.php:121
+#: templates/element/admin_sidebar.php:173
 msgid "Categories"
 msgstr "Kategóriák"
 
@@ -1815,7 +1767,7 @@ msgstr "Kategóriák"
 msgid "Search by name or id"
 msgstr "Keresés név vagy ID alapján"
 
-#: templates/Categories/index.php:44 templates/Categories/view.php:14
+#: templates/Categories/index.php:44
 msgid "New Category"
 msgstr "Új kategória"
 
@@ -1827,140 +1779,27 @@ msgstr "Nevek"
 msgid "Select category"
 msgstr "Kategória kiválasztása"
 
-#: templates/Categories/index.php:96 templates/Questions/index.php:87
+#: templates/Categories/index.php:96 templates/Categories/view.php:40
+#: templates/Questions/index.php:115 templates/Questions/view.php:85
+#: templates/Tests/view.php:119
 msgid "Inactive"
 msgstr "Inaktív"
 
-#: templates/Categories/view.php:12
-msgid "Delete Category"
-msgstr "Kategória törlése"
+#: templates/Categories/view.php:9 templates/Categories/view.php:15
+#: templates/CategoryTranslations/view.php:22 templates/Questions/add.php:38
+#: templates/Questions/edit.php:48 templates/Questions/index.php:63
+#: templates/Questions/view.php:50 templates/TestAttempts/view.php:30
+#: templates/Tests/index.php:175 templates/Tests/view.php:40
+#: templates/UserFavoriteCategories/view.php:26
+msgid "Category"
+msgstr "Kategória"
 
-#: templates/Categories/view.php:13
-#, fuzzy
-msgid "List Categories"
-msgstr "Szerepkörök listája"
-
-#: templates/Categories/view.php:34 templates/Categories/view.php:92
-#: templates/Difficulties/view.php:48 templates/Questions/view.php:58
-#: templates/Roles/view.php:45 templates/Tests/view.php:118
-#: templates/Users/index.php:20 templates/Users/view.php:71
+#: templates/Categories/view.php:35 templates/Questions/add.php:77
+#: templates/Questions/edit.php:87 templates/Questions/view.php:80
+#: templates/Roles/view.php:45 templates/Users/index.php:20
+#: templates/Users/view.php:71
 msgid "Is Active"
 msgstr "Aktív"
-
-#: templates/Categories/view.php:39 templates/Languages/view.php:127
-#, fuzzy
-msgid "Related Category Translations"
-msgstr "Kapcsolódó felhasználói tokenek"
-
-#: templates/Categories/view.php:45 templates/Categories/view.php:86
-#: templates/Categories/view.php:139 templates/Categories/view.php:189
-#: templates/Categories/view.php:234 templates/Difficulties/view.php:42
-#: templates/Difficulties/view.php:95 templates/Difficulties/view.php:145
-#: templates/Languages/view.php:133 templates/Languages/view.php:219
-#: templates/Tests/view.php:112 templates/Tests/view.php:165
-#: templates/Users/view.php:231
-msgid "Category Id"
-msgstr "Kategória azonosító"
-
-#: templates/Categories/view.php:79 templates/Difficulties/view.php:35
-#: templates/Tests/view.php:105
-msgid "Related Questions"
-msgstr "Kapcsolódó MI-kérések"
-
-#: templates/Categories/view.php:85 templates/Categories/view.php:138
-#: templates/Difficulties/view.php:41 templates/Difficulties/view.php:94
-#: templates/Languages/view.php:42 templates/Languages/view.php:218
-#: templates/Languages/view.php:269 templates/Tests/view.php:62
-#: templates/Tests/view.php:111 templates/Tests/view.php:164
-#: templates/Tests/view.php:215 templates/Tests/view.php:266
-#: templates/Users/view.php:133 templates/Users/view.php:230
-msgid "Test Id"
-msgstr "Teszt azonosító"
-
-#: templates/Categories/view.php:87 templates/Categories/view.php:140
-#: templates/Categories/view.php:190 templates/Difficulties/view.php:43
-#: templates/Difficulties/view.php:96 templates/Difficulties/view.php:146
-#: templates/Languages/view.php:220 templates/Tests/view.php:113
-#: templates/Tests/view.php:166 templates/Users/view.php:232
-msgid "Difficulty Id"
-msgstr "Nehézség azonosító"
-
-#: templates/Categories/view.php:88 templates/Difficulties/view.php:44
-#: templates/Tests/view.php:114
-msgid "Question Type"
-msgstr "Kérdés típusa"
-
-#: templates/Categories/view.php:89 templates/Difficulties/view.php:45
-#: templates/Tests/view.php:115
-msgid "Original Language Id"
-msgstr "Nyelv azonosító"
-
-#: templates/Categories/view.php:131 templates/Difficulties/view.php:87
-#: templates/Languages/view.php:211 templates/Tests/view.php:157
-#: templates/Users/view.php:223
-msgid "Related Test Attempts"
-msgstr "Kapcsolódó tesztpróbálkozások"
-
-#: templates/Categories/view.php:137 templates/Categories/view.php:233
-#: templates/Difficulties/view.php:93 templates/Languages/view.php:41
-#: templates/Languages/view.php:217 templates/Tests/view.php:61
-#: templates/Tests/view.php:163 templates/Tests/view.php:265
-#: templates/Users/view.php:88 templates/Users/view.php:132
-#: templates/Users/view.php:178 templates/Users/view.php:229
-#: templates/Users/view.php:281
-msgid "User Id"
-msgstr "Felhasználó azonosító"
-
-#: templates/Categories/view.php:142 templates/Difficulties/view.php:98
-#: templates/Languages/view.php:222 templates/TestAttempts/view.php:58
-#: templates/Tests/view.php:168 templates/Users/view.php:234
-msgid "Started At"
-msgstr "Kezdve"
-
-#: templates/Categories/view.php:143 templates/Difficulties/view.php:99
-#: templates/Languages/view.php:223 templates/TestAttempts/view.php:62
-#: templates/Tests/view.php:169 templates/Users/view.php:235
-msgid "Finished At"
-msgstr "Befejezve"
-
-#: templates/Categories/view.php:144 templates/Difficulties/view.php:100
-#: templates/Languages/view.php:224 templates/TestAttempts/view.php:46
-#: templates/Tests/view.php:170 templates/Users/view.php:236
-msgid "Score"
-msgstr "Pontszám"
-
-#: templates/Categories/view.php:145 templates/Difficulties/view.php:101
-#: templates/Languages/view.php:225 templates/TestAttempts/view.php:50
-#: templates/Tests/view.php:171 templates/Users/view.php:237
-msgid "Total Questions"
-msgstr "Összes kérdés"
-
-#: templates/Categories/view.php:146 templates/Difficulties/view.php:102
-#: templates/Languages/view.php:226 templates/TestAttempts/view.php:54
-#: templates/Tests/view.php:172 templates/Users/view.php:238
-msgid "Correct Answers"
-msgstr "Helyes válaszok"
-
-#: templates/Categories/view.php:183 templates/Difficulties/view.php:139
-#, fuzzy
-msgid "Related Tests"
-msgstr "Kapcsolódó felhasználók"
-
-#: templates/Categories/view.php:191 templates/Difficulties/view.php:147
-#: templates/Tests/view.php:34
-msgid "Number Of Questions"
-msgstr "Kérdések száma"
-
-#: templates/Categories/view.php:192 templates/Difficulties/view.php:148
-#: templates/Tests/add.php:40 templates/Tests/edit.php:45
-#: templates/Tests/view.php:50
-msgid "Is Public"
-msgstr "Nyilvános"
-
-#: templates/Categories/view.php:227
-#, fuzzy
-msgid "Related User Favorite Categories"
-msgstr "Kapcsolódó felhasználói tokenek"
 
 #: templates/CategoryTranslations/add.php:13
 #: templates/CategoryTranslations/edit.php:18
@@ -1990,14 +1829,8 @@ msgstr "Kategória fordítások"
 msgid "Delete Category Translation"
 msgstr "Kategória fordítás törlése"
 
-#: templates/CategoryTranslations/view.php:22 templates/Questions/view.php:26
-#: templates/TestAttempts/view.php:30 templates/Tests/index.php:63
-#: templates/Tests/view.php:22 templates/UserFavoriteCategories/view.php:26
-msgid "Category"
-msgstr "Kategória"
-
 #: templates/Dashboard/index.php:2 templates/Dashboard/index.php:5
-#: templates/element/navbar.php:108
+#: templates/element/navbar.php:172
 msgid "Dashboard"
 msgstr "Vezérlőpult"
 
@@ -2022,7 +1855,7 @@ msgid "Edit Device Log"
 msgstr "Kapcsolódó eszköznaplók"
 
 #: templates/DeviceLogs/index.php:10 templates/DeviceLogs/index.php:26
-#: templates/element/admin_sidebar.php:144
+#: templates/element/admin_sidebar.php:157
 msgid "Device Logs"
 msgstr "Eszköznaplók"
 
@@ -2104,21 +1937,23 @@ msgstr "Eszköztípus"
 msgid "Add Difficulty"
 msgstr "Nehézség azonosító"
 
-#: templates/Difficulties/edit.php:11 templates/Difficulties/view.php:11
+#: templates/Difficulties/edit.php:11
 #, fuzzy
 msgid "Edit Difficulty"
 msgstr "Nehézség szerkesztése"
 
 #: templates/Difficulties/index.php:9 templates/Difficulties/index.php:19
-#: templates/element/admin_sidebar.php:113
+#: templates/QuizCreator/Dashboard/index.php:53
+#: templates/element/admin_sidebar.php:126
+#: templates/element/admin_sidebar.php:178
 msgid "Difficulties"
 msgstr "Nehézségek"
 
-#: templates/Difficulties/index.php:44 templates/Difficulties/view.php:14
+#: templates/Difficulties/index.php:44
 msgid "New Difficulty"
 msgstr "Új nehézség"
 
-#: templates/Difficulties/index.php:63 templates/Difficulties/view.php:30
+#: templates/Difficulties/index.php:63 templates/Difficulties/view.php:39
 msgid "Level"
 msgstr "Szint"
 
@@ -2130,14 +1965,29 @@ msgstr "Nincs lefordítva"
 msgid "Select difficulty"
 msgstr "Nehézség kiválasztása"
 
-#: templates/Difficulties/view.php:12
-msgid "Delete Difficulty"
-msgstr "Nehézség törlése"
+#: templates/Difficulties/view.php:9 templates/Difficulties/view.php:15
+#: templates/Questions/add.php:47 templates/Questions/edit.php:57
+#: templates/Questions/index.php:64 templates/Questions/view.php:65
+#: templates/TestAttempts/view.php:34 templates/Tests/index.php:176
+#: templates/Tests/view.php:55
+msgid "Difficulty"
+msgstr "Nehézség"
 
-#: templates/Difficulties/view.php:13
+#: templates/Difficulties/view.php:47 templates/Difficulties/view.php:59
+#: templates/Tests/index.php:14 templates/Tests/index.php:131
+#: templates/element/admin_sidebar.php:131
+msgid "Tests"
+msgstr "Tesztek"
+
+#: templates/Difficulties/view.php:51 templates/TestAttempts/index.php:9
 #, fuzzy
-msgid "List Difficulties"
-msgstr "Nehézség azonosító"
+msgid "Test Attempts"
+msgstr "Kapcsolódó tesztpróbálkozások"
+
+#: templates/Difficulties/view.php:65 templates/Tests/index.php:178
+#: templates/Tests/view.php:75
+msgid "Public"
+msgstr "Nyilvános"
 
 #: templates/Languages/add.php:9
 #, fuzzy
@@ -2150,7 +2000,7 @@ msgid "Edit Language"
 msgstr "Nyelv azonosító"
 
 #: templates/Languages/index.php:9 templates/Languages/index.php:19
-#: templates/element/admin_sidebar.php:133
+#: templates/element/admin_sidebar.php:146
 msgid "Languages"
 msgstr "Nyelvek"
 
@@ -2177,112 +2027,295 @@ msgstr "Nyelv azonosító"
 msgid "List Languages"
 msgstr "Nyelv azonosító"
 
-#: templates/Languages/view.php:35 templates/Tests/view.php:55
-#: templates/Users/view.php:126
+#: templates/Languages/view.php:35 templates/Users/view.php:126
 msgid "Related Ai Requests"
 msgstr "Kapcsolódó MI-kérések"
 
-#: templates/Languages/view.php:44 templates/Tests/view.php:64
+#: templates/Languages/view.php:41 templates/Languages/view.php:217
+#: templates/Users/view.php:88 templates/Users/view.php:132
+#: templates/Users/view.php:178 templates/Users/view.php:229
+#: templates/Users/view.php:281
+msgid "User Id"
+msgstr "Felhasználó azonosító"
+
+#: templates/Languages/view.php:42 templates/Languages/view.php:218
+#: templates/Languages/view.php:269 templates/Users/view.php:133
+#: templates/Users/view.php:230
+msgid "Test Id"
+msgstr "Teszt azonosító"
+
+#: templates/Languages/view.php:44
 msgid "Source Medium"
 msgstr "Forrás közeg"
 
-#: templates/Languages/view.php:45 templates/Tests/view.php:65
+#: templates/Languages/view.php:45
 msgid "Source Reference"
 msgstr "Forrás referencia"
 
-#: templates/Languages/view.php:167 templates/Questions/view.php:107
+#: templates/Languages/view.php:85
+#, fuzzy
+msgid "Related Answer Translations"
+msgstr "Kapcsolódó felhasználói tokenek"
+
+#: templates/Languages/view.php:91 templates/TestAttempts/view.php:79
+#, fuzzy
+msgid "Answer Id"
+msgstr "Felhasználó azonosító"
+
+#: templates/Languages/view.php:127
+#, fuzzy
+msgid "Related Category Translations"
+msgstr "Kapcsolódó felhasználói tokenek"
+
+#: templates/Languages/view.php:133 templates/Languages/view.php:219
+#: templates/Users/view.php:231
+msgid "Category Id"
+msgstr "Kategória azonosító"
+
+#: templates/Languages/view.php:167
 msgid "Related Question Translations"
 msgstr "Kapcsolódó kérdés fordítások"
 
+#: templates/Languages/view.php:173 templates/TestAttempts/view.php:78
+#, fuzzy
+msgid "Question Id"
+msgstr "Összes kérdés"
+
 #: templates/Languages/view.php:176 templates/QuestionTranslations/view.php:53
-#: templates/Questions/view.php:116
 msgid "Explanation"
 msgstr "Magyarázat"
 
-#: templates/Languages/view.php:263 templates/Tests/view.php:209
+#: templates/Languages/view.php:211 templates/Users/view.php:223
+msgid "Related Test Attempts"
+msgstr "Kapcsolódó tesztpróbálkozások"
+
+#: templates/Languages/view.php:220 templates/Users/view.php:232
+msgid "Difficulty Id"
+msgstr "Nehézség azonosító"
+
+#: templates/Languages/view.php:222 templates/TestAttempts/view.php:58
+#: templates/Users/view.php:234
+msgid "Started At"
+msgstr "Kezdve"
+
+#: templates/Languages/view.php:223 templates/TestAttempts/view.php:62
+#: templates/Users/view.php:235
+msgid "Finished At"
+msgstr "Befejezve"
+
+#: templates/Languages/view.php:224 templates/TestAttempts/view.php:46
+#: templates/Tests/result.php:40 templates/Tests/review.php:67
+#: templates/Users/view.php:236 templates/element/users/stats.php:98
+msgid "Score"
+msgstr "Pontszám"
+
+#: templates/Languages/view.php:225 templates/TestAttempts/view.php:50
+#: templates/Users/view.php:237
+msgid "Total Questions"
+msgstr "Összes kérdés"
+
+#: templates/Languages/view.php:226 templates/TestAttempts/view.php:54
+#: templates/Users/view.php:238
+msgid "Correct Answers"
+msgstr "Helyes válaszok"
+
+#: templates/Languages/view.php:263
 msgid "Related Test Translations"
 msgstr "Kapcsolódó tesztpróbálkozások"
 
 #: templates/Languages/view.php:271 templates/TestTranslations/view.php:30
-#: templates/Tests/index.php:62 templates/Tests/view.php:217
+#: templates/Tests/index.php:174
 msgid "Title"
 msgstr "Cím"
 
 #: templates/Languages/view.php:272 templates/TestTranslations/view.php:34
-#: templates/Tests/view.php:218
 msgid "Slug"
 msgstr "Slug"
 
-#: templates/Languages/view.php:274 templates/Tests/view.php:220
+#: templates/Languages/view.php:274
 msgid "Translator Id"
 msgstr "Fordító azonosítója"
 
 #: templates/Languages/view.php:275 templates/TestTranslations/view.php:58
-#: templates/Tests/view.php:221
 msgid "Is Complete"
 msgstr "Kész"
 
 #: templates/Languages/view.php:276 templates/TestTranslations/view.php:46
-#: templates/Tests/view.php:222
 msgid "Translated At"
 msgstr "Létrehozva"
 
-#: templates/Pages/home.php:12
+#: templates/Languages/view.php:278 templates/Roles/view.php:49
+#: templates/TestTranslations/view.php:54 templates/Users/index.php:24
+#: templates/Users/view.php:67
+msgid "Updated At"
+msgstr "Frissítve"
+
+#: templates/Pages/home.php:13
 msgid "MindForge"
 msgstr "MindForge"
 
-#: templates/Pages/home.php:22
-msgid "Set up your username on the {0} link."
-msgstr "Állítsd be a felhasználóneved a {0} linken."
+#: templates/Pages/home.php:44
+msgid "AI-powered quiz engine"
+msgstr "AI-alapú kvízmotor"
 
-#: templates/Pages/home.php:23
-msgid "profile"
-msgstr "profil"
+#: templates/Pages/home.php:51
+msgid "Forge your learning into {0}."
+msgstr "Kovácsold a tanulást {0}."
 
-#: templates/Pages/home.php:28
-msgid "Welcome to MindForge"
-msgstr "Üdvözlünk a MindForge-ban"
+#: templates/Pages/home.php:51
+msgid "mastery"
+msgstr "tudássá"
 
-#: templates/Pages/home.php:30
+#: templates/Pages/home.php:57
 msgid ""
-"An AI-powered platform built to help you learn smarter, test faster, and "
-"improve continuously."
+"MindForge turns studying into a fast loop: build quizzes, test "
+"understanding, then sharpen weak spots with structured practice."
 msgstr ""
-"Egy MI-alapú platform, amely segít okosabban tanulni, gyorsabban tesztelni "
-"és folyamatosan fejlődni."
+"A MindForge gyors körfolyamattá alakítja a tanulást: készíts kvízeket, "
+"teszteld a megértést, majd csiszold a gyenge pontokat strukturált "
+"gyakorlással."
 
-#: templates/Pages/home.php:34
-msgid "Create and take intelligent tests"
-msgstr "Intelligens tesztek készítése és kitöltése"
-
-#: templates/Pages/home.php:35
-msgid "Track your progress over time"
-msgstr "Kövesd nyomon a fejlődésed"
-
-#: templates/Pages/home.php:36
-msgid "Learn with AI-assisted feedback"
-msgstr "Tanulj MI-támogatott visszajelzésekkel"
-
-#: templates/Pages/home.php:44 templates/Users/login.php:59
-#: templates/Users/register.php:96 templates/element/navbar.php:89
+#: templates/Pages/home.php:64 templates/Pages/home.php:197
+#: templates/Users/login.php:59 templates/Users/register.php:96
+#: templates/element/navbar.php:134
 msgid "Log In"
 msgstr "Bejelentkezés"
 
-#: templates/Pages/home.php:51
+#: templates/Pages/home.php:67 templates/Pages/home.php:200
 msgid "Create Account"
 msgstr "Fiók létrehozása"
 
-#: templates/Pages/home.php:64
-msgid "Build knowledge. Test understanding. Improve."
-msgstr "Építs tudást. Teszteld a megértést. Fejlődj."
+#: templates/Pages/home.php:70
+msgid "No credit card. No fluff. Start in under a minute."
+msgstr "Nincs bankkártya. Nincs mellébeszélés. Kezdd el egy percen belül."
 
-#: templates/Pages/home.php:67
+#: templates/Pages/home.php:74
+msgid "Continue"
+msgstr "Folytatás"
+
+#: templates/Pages/home.php:76
+msgid "You are signed in."
+msgstr "Be vagy jelentkezve."
+
+#: templates/Pages/home.php:92
+msgid "Live preview"
+msgstr "Élő előnézet"
+
+#: templates/Pages/home.php:101 templates/Pages/home.php:107
+msgid "What drives long-term memory?"
+msgstr "Mi segíti a hosszú távú memóriát?"
+
+#: templates/Pages/home.php:102
+msgid "Why does spaced repetition work?"
+msgstr "Miért működik az időzített ismétlés?"
+
+#: templates/Pages/home.php:103
+msgid "Which option best fits the definition?"
+msgstr "Melyik opció illik legjobban a definícióra?"
+
+#: templates/Pages/home.php:104
+msgid "What is the key idea in one sentence?"
+msgstr "Mi a lényege egy mondatban?"
+
+#: templates/Pages/home.php:111
+msgid "Spaced repetition"
+msgstr "Időzített ismétlés"
+
+#: templates/Pages/home.php:112
+msgid "Random guessing"
+msgstr "Véletlenszerű tippelés"
+
+#: templates/Pages/home.php:113
+msgid "Passive reading"
+msgstr "Passzív olvasás"
+
+#: templates/Pages/home.php:119 templates/Pages/home.php:137
+msgid "AI assistance"
+msgstr "AI támogatás"
+
+#: templates/Pages/home.php:120
+msgid "Built for safety"
+msgstr "Biztonságra tervezve"
+
+#: templates/Pages/home.php:123
+msgid "Generate, translate, then review. Always structured. Always yours."
+msgstr "Generálj, fordíts, majd ellenőrizd. Mindig strukturált. Mindig a tiéd."
+
+#: templates/Pages/home.php:138
 msgid ""
-"MindForge combines structured testing with AI to help you focus on what "
-"actually matters."
+"Generate drafts, translate content, and iterate quickly without breaking "
+"structure."
 msgstr ""
-"A MindForge a strukturált tesztelést MI-vel ötvözi, hogy arra fókuszálj, ami "
-"igazán számít."
+"Készíts vázlatokat, fordíts tartalmat, és iterálj gyorsan anélkül, hogy a "
+"struktúra szétesne."
+
+#: templates/Pages/home.php:143
+msgid "Mobile-ready auth"
+msgstr "Mobilra kész beléptetés"
+
+#: templates/Pages/home.php:144
+msgid "Access + refresh tokens, rotation, revoke, and device-aware logging."
+msgstr "Access + refresh tokenek, rotáció, visszavonás és eszköz-naplózás."
+
+#: templates/Pages/home.php:149
+msgid "Speed"
+msgstr "Sebesség"
+
+#: templates/Pages/home.php:150
+msgid "Less clicking. More learning. Admin-style tools where they matter."
+msgstr ""
+"Kevesebb kattintás. Több tanulás. Admin jellegű eszközök ott, ahol "
+"számítanak."
+
+#: templates/Pages/home.php:159
+msgid "One place for quizzes, questions, answers, translations."
+msgstr "Egy hely a kvízeknek, kérdéseknek, válaszoknak és fordításoknak."
+
+#: templates/Pages/home.php:162
+msgid ""
+"Create multilingual content, keep consistency across difficulties and "
+"categories, and ship clean question banks for mobile and web."
+msgstr ""
+"Készíts többnyelvű tartalmat, tartsd konzisztensen a nehézségeket és "
+"kategóriákat, és állíts össze tiszta kérdésbankot mobilra és webre."
+
+#: templates/Pages/home.php:167
+msgid "Rotation & revoke"
+msgstr "Rotáció és visszavonás"
+
+#: templates/Pages/home.php:174
+msgid "Fast loop"
+msgstr "Gyors kör"
+
+#: templates/Pages/home.php:176
+msgid ""
+"Write once, test repeatedly, improve daily. AI helps generate and translate, "
+"you keep control and review."
+msgstr ""
+"Írd meg egyszer, teszteld újra és újra, fejlődj naponta. Az AI segít "
+"generálni és fordítani, te pedig kézben tartod és felülvizsgálod."
+
+#: templates/Pages/home.php:180 templates/Tests/add.php:141
+#: templates/Tests/edit.php:146
+msgid "Generate"
+msgstr "Generálás"
+
+#: templates/Pages/home.php:181 templates/Tests/add.php:149
+#: templates/Tests/edit.php:154
+msgid "Translate"
+msgstr "Fordítás"
+
+#: templates/Pages/home.php:182
+msgid "Practice"
+msgstr "Gyakorlás"
+
+#: templates/Pages/home.php:192
+msgid "Ready to build your first quiz?"
+msgstr "Készen állsz az első kvízedre?"
+
+#: templates/Pages/home.php:193
+msgid "Start with AI, then refine by hand. You stay in control."
+msgstr "Indulj AI-val, majd finomíts kézzel. Te maradsz irányításban."
 
 #: templates/QuestionTranslations/add.php:13
 #: templates/QuestionTranslations/edit.php:18
@@ -2312,54 +2345,70 @@ msgstr "Kérdés fordítások"
 msgid "Delete Question Translation"
 msgstr "Kérdés fordítás törlése"
 
-#: templates/Questions/add.php:14 templates/Questions/edit.php:19
-#: templates/Questions/view.php:13
-#, fuzzy
-msgid "List Questions"
-msgstr "Összes kérdés"
-
-#: templates/Questions/add.php:21 templates/Tests/add.php:50
-#: templates/Tests/edit.php:55
+#: templates/Questions/add.php:12 templates/Questions/add.php:17
+#: templates/Tests/add.php:50 templates/Tests/edit.php:55
 msgid "Add Question"
 msgstr "Összes kérdés"
 
-#: templates/Questions/edit.php:26 templates/Questions/view.php:11
-#, fuzzy
-msgid "Edit Question"
-msgstr "Összes kérdés"
-
-#: templates/Questions/index.php:44 templates/Questions/view.php:14
-msgid "New Question"
-msgstr "Új kérdés"
-
-#: templates/Questions/index.php:78
-msgid "Select question"
-msgstr "Kérdés kiválasztása"
-
-#: templates/Questions/view.php:12
-msgid "Delete Question"
-msgstr "Kérdés törlése"
-
-#: templates/Questions/view.php:19
-msgid "Question # {0}"
-msgstr "Kérdés # {0}"
-
-#: templates/Questions/view.php:22 templates/TestAttempts/view.php:26
-#: templates/TestTranslations/view.php:22
-#: templates/UserFavoriteTests/view.php:26
+#: templates/Questions/add.php:30 templates/Questions/edit.php:40
+#: templates/Questions/view.php:35 templates/TestAttempts/view.php:26
+#: templates/TestTranslations/view.php:22 templates/Tests/view.php:9
+#: templates/Tests/view.php:20 templates/UserFavoriteTests/view.php:26
 #, fuzzy
 msgid "Test"
 msgstr "Teszt azonosító"
 
-#: templates/Questions/view.php:30 templates/TestAttempts/view.php:34
-#: templates/Tests/index.php:64 templates/Tests/view.php:26
-msgid "Difficulty"
-msgstr "Nehézség"
-
-#: templates/Questions/view.php:63
+#: templates/Questions/edit.php:12 templates/Questions/edit.php:17
 #, fuzzy
-msgid "Related Answers"
-msgstr "Kapcsolódó felhasználók"
+msgid "Edit Question"
+msgstr "Összes kérdés"
+
+#: templates/Questions/index.php:44
+msgid "New Question"
+msgstr "Új kérdés"
+
+#: templates/Questions/index.php:80
+msgid "Select question"
+msgstr "Kérdés kiválasztása"
+
+#: templates/QuizCreator/Dashboard/index.php:14
+msgid "Create and manage quizzes, questions and answers."
+msgstr "Készíts és kezeld a kvízeket, kérdéseket és válaszokat."
+
+#: templates/QuizCreator/Dashboard/index.php:21 templates/Tests/index.php:14
+#: templates/Tests/index.php:26 templates/element/admin_sidebar.php:183
+#: templates/element/navbar.php:179 templates/element/users/stats.php:43
+#: templates/element/users/stats.php:46
+msgid "Quizzes"
+msgstr "Kvízek"
+
+#: templates/QuizCreator/Dashboard/index.php:22
+msgid "Manage quizzes and generate content with AI."
+msgstr "Kvízek kezelése és tartalom generálása AI-val."
+
+#: templates/QuizCreator/Dashboard/index.php:23
+#: templates/QuizCreator/Dashboard/index.php:31
+#: templates/QuizCreator/Dashboard/index.php:39
+#: templates/QuizCreator/Dashboard/index.php:47
+#: templates/QuizCreator/Dashboard/index.php:55
+msgid "Open"
+msgstr "Megnyitás"
+
+#: templates/QuizCreator/Dashboard/index.php:30
+msgid "Review and edit the question bank."
+msgstr "Kérdésbank áttekintése és szerkesztése."
+
+#: templates/QuizCreator/Dashboard/index.php:38
+msgid "Maintain answer choices and translations."
+msgstr "Válaszlehetőségek és fordítások karbantartása."
+
+#: templates/QuizCreator/Dashboard/index.php:46
+msgid "Manage category taxonomy for filtering."
+msgstr "Kategóriák kezelése a szűréshez."
+
+#: templates/QuizCreator/Dashboard/index.php:54
+msgid "Manage difficulty levels used by quizzes."
+msgstr "A kvízek által használt nehézségi szintek kezelése."
 
 #: templates/Roles/add.php:11 templates/Roles/edit.php:16
 #: templates/Roles/view.php:13
@@ -2453,6 +2502,16 @@ msgstr "Kapcsolódó tesztpróbálkozások"
 msgid "Test Attempt"
 msgstr "Kapcsolódó tesztpróbálkozások"
 
+#: templates/TestAttemptAnswers/view.php:38 templates/TestAttempts/view.php:82
+#, fuzzy
+msgid "Answered At"
+msgstr "Felhasználva"
+
+#: templates/TestAttemptAnswers/view.php:47 templates/TestAttempts/view.php:80
+#, fuzzy
+msgid "User Answer Text"
+msgstr "User agent"
+
 #: templates/TestAttempts/add.php:16 templates/TestAttempts/edit.php:21
 #: templates/TestAttempts/view.php:13
 #, fuzzy
@@ -2474,14 +2533,19 @@ msgstr "Kapcsolódó tesztpróbálkozások"
 msgid "New Test Attempt"
 msgstr "Kapcsolódó tesztpróbálkozások"
 
-#: templates/TestAttempts/index.php:9
-#, fuzzy
-msgid "Test Attempts"
-msgstr "Kapcsolódó tesztpróbálkozások"
-
 #: templates/TestAttempts/view.php:12
 #, fuzzy
 msgid "Delete Test Attempt"
+msgstr "Kapcsolódó tesztpróbálkozások"
+
+#: templates/TestAttempts/view.php:71
+#, fuzzy
+msgid "Related Test Attempt Answers"
+msgstr "Kapcsolódó tesztpróbálkozások"
+
+#: templates/TestAttempts/view.php:77
+#, fuzzy
+msgid "Test Attempt Id"
 msgstr "Kapcsolódó tesztpróbálkozások"
 
 #: templates/TestTranslations/add.php:14 templates/TestTranslations/edit.php:19
@@ -2521,13 +2585,16 @@ msgid "Add Test"
 msgstr "Szerepkör hozzáadása"
 
 #: templates/Tests/add.php:18 templates/Tests/edit.php:18
-#: templates/Tests/view.php:13
 msgid "List Tests"
 msgstr "Tesztek listája"
 
 #: templates/Tests/add.php:27 templates/Tests/edit.php:32
 msgid "Basic Information"
 msgstr "Alapinformáció"
+
+#: templates/Tests/add.php:40 templates/Tests/edit.php:45
+msgid "Is Public"
+msgstr "Nyilvános"
 
 #: templates/Tests/add.php:78 templates/Tests/edit.php:83
 msgid "Title ({0})"
@@ -2537,8 +2604,8 @@ msgstr "Cím ({0})"
 msgid "Description ({0})"
 msgstr "Leírás ({0})"
 
-#: templates/Tests/add.php:96 templates/Tests/add.php:131
-#: templates/Tests/edit.php:133
+#: templates/Tests/add.php:96 templates/Tests/add.php:138
+#: templates/Tests/edit.php:143
 msgid "Generate Test with AI"
 msgstr "Teszt generálása AI-val"
 
@@ -2546,167 +2613,133 @@ msgstr "Teszt generálása AI-val"
 msgid "AI generations today: {0}/{1}"
 msgstr "AI generálások ma: {0}/{1}"
 
-#: templates/Tests/add.php:103
+#: templates/Tests/add.php:103 templates/Tests/add.php:148
+#: templates/Tests/edit.php:108 templates/Tests/edit.php:153
 msgid "Translate Test with AI"
 msgstr "Teszt fordítása AI-val"
-
-msgid "Translate"
-msgstr "Fordítás"
-
-msgid "This will translate the current test content into all configured languages."
-msgstr "Ez lefordítja a teszt jelenlegi tartalmát az összes beállított nyelvre."
-
-msgid "Translations updated."
-msgstr "A fordítások frissítve."
-
-msgid "Translation in progress..."
-msgstr "Fordítás folyamatban..."
-
-msgid "AI-powered quiz engine"
-msgstr "AI-alapú kvízmotor"
-
-msgid "Forge your learning into"
-msgstr "Kovácsold a tanulást"
-
-msgid "mastery"
-msgstr "tudássá"
-
-msgid "MindForge turns studying into a fast loop: build quizzes, test understanding, then sharpen weak spots with structured practice."
-msgstr "A MindForge gyors körfolyamattá alakítja a tanulást: készíts kvízeket, teszteld a megértést, majd csiszold a gyenge pontokat strukturált gyakorlással."
-
-msgid "Continue"
-msgstr "Folytatás"
-
-msgid "You are signed in."
-msgstr "Be vagy jelentkezve."
-
-msgid "One place for quizzes, questions, answers, translations."
-msgstr "Egy hely a kvízeknek, kérdéseknek, válaszoknak és fordításoknak."
-
-msgid "Create multilingual content, keep consistency across difficulties and categories, and ship clean question banks for mobile and web."
-msgstr "Készíts többnyelvű tartalmat, tartsd konzisztensen a nehézségeket és kategóriákat, és állíts össze tiszta kérdésbankot mobilra és webre."
-
-msgid "Fast loop"
-msgstr "Gyors kör"
-
-msgid "Write once, test repeatedly, improve daily. AI helps generate and translate, you keep control and review."
-msgstr "Írd meg egyszer, teszteld újra és újra, fejlődj naponta. Az AI segít generálni és fordítani, te pedig kézben tartod és felülvizsgálod."
-
-msgid "Practice"
-msgstr "Gyakorlás"
-
-msgid "AI assistance"
-msgstr "AI támogatás"
-
-msgid "Generate drafts, translate content, and iterate quickly without breaking structure."
-msgstr "Készíts vázlatokat, fordíts tartalmat, és iterálj gyorsan anélkül, hogy a struktúra szétesne."
-
-msgid "Built for safety"
-msgstr "Biztonságra tervezve"
-
-msgid "Role-based access, token auth for mobile, and audit-friendly system logs."
-msgstr "Szerepkör alapú hozzáférés, tokenes mobil auth, és auditálható rendszerlogok."
-
-msgid "Less clicking. More learning. Admin-style tools where they matter."
-msgstr "Kevesebb kattintás. Több tanulás. Admin jellegű eszközök ott, ahol számítanak."
-
-msgid "Forge your learning into {0}."
-msgstr "Kovácsold a tanulást {0}."
-
-msgid "No credit card. No fluff. Start in under a minute."
-msgstr "Nincs bankkártya. Nincs mellébeszélés. Kezdd el egy percen belül."
-
-msgid "Live preview"
-msgstr "Élő előnézet"
-
-msgid "What drives long-term memory?"
-msgstr "Mi segíti a hosszú távú memóriát?"
-
-msgid "Why does spaced repetition work?"
-msgstr "Miért működik az időzített ismétlés?"
-
-msgid "Which option best fits the definition?"
-msgstr "Melyik opció illik legjobban a definícióra?"
-
-msgid "What is the key idea in one sentence?"
-msgstr "Mi a lényege egy mondatban?"
-
-msgid "Spaced repetition"
-msgstr "Időzített ismétlés"
-
-msgid "Random guessing"
-msgstr "Véletlenszerű tippelés"
-
-msgid "Passive reading"
-msgstr "Passzív olvasás"
-
-msgid "Generate, translate, then review. Always structured. Always yours."
-msgstr "Generálj, fordíts, majd ellenőrizd. Mindig strukturált. Mindig a tiéd."
-
-msgid "Mobile-ready auth"
-msgstr "Mobilra kész beléptetés"
-
-msgid "Access + refresh tokens, rotation, revoke, and device-aware logging."
-msgstr "Access + refresh tokenek, rotáció, visszavonás és eszköz-naplózás."
-
-msgid "Rotation & revoke"
-msgstr "Rotáció és visszavonás"
-
-msgid "Ready to build your first quiz?"
-msgstr "Készen állsz az első kvízedre?"
-
-msgid "Start with AI, then refine by hand. You stay in control."
-msgstr "Indulj AI-val, majd finomíts kézzel. Te maradsz irányításban."
 
 #: templates/Tests/add.php:106
 msgid "Save Test"
 msgstr "Teszt mentése"
 
-#: templates/Tests/add.php:120 templates/Tests/edit.php:122
-msgid "True"
-msgstr "Igaz"
-
-#: templates/Tests/add.php:121 templates/Tests/edit.php:123
-msgid "False"
-msgstr "Hamis"
-
-#: templates/Tests/add.php:132
+#: templates/Tests/add.php:139
 msgid ""
 "Describe the test you want to create (topic, difficulty, number of "
 "questions, etc.)"
 msgstr ""
+"Írd le, milyen tesztet szeretnél létrehozni (téma, nehézség, kérdések száma "
+"stb.)."
 
-#: templates/Tests/add.php:133 templates/Tests/edit.php:135
+#: templates/Tests/add.php:140 templates/Tests/edit.php:145
 msgid ""
 "E.g., Create a 10-question test about Ancient Rome history, focused on "
 "military battles, medium difficulty."
 msgstr ""
+"Például: Készíts egy 10 kérdéses tesztet az ókori Róma történetéről, a "
+"katonai csatákra fókuszálva, közepes nehézséggel."
 
-#: templates/Tests/add.php:134 templates/Tests/edit.php:136
-msgid "Generate"
-msgstr "Generálás"
-
-#: templates/Tests/add.php:135 templates/Tests/edit.php:137
+#: templates/Tests/add.php:142 templates/Tests/edit.php:147
 msgid "Please enter a prompt"
-msgstr "Kérlek, add meg a jelszavad."
+msgstr "Kérlek, add meg a promptot."
 
-#: templates/Tests/add.php:136 templates/Tests/edit.php:138
+#: templates/Tests/add.php:143 templates/Tests/edit.php:148
 msgid "Success!"
 msgstr "Siker!"
 
-#: templates/Tests/add.php:137 templates/Tests/edit.php:139
+#: templates/Tests/add.php:144 templates/Tests/edit.php:149
 msgid "Test generated successfully."
 msgstr "A teszt generálása sikerült."
 
-#: templates/Tests/add.php:138 templates/Tests/edit.php:140
+#: templates/Tests/add.php:145 templates/Tests/edit.php:150
+#: templates/Error/error400.php:24 templates/Error/error500.php:34
 msgid "Error"
 msgstr "Hiba"
 
-#: templates/Tests/add.php:139 templates/Tests/edit.php:141
+#: templates/Tests/add.php:146 templates/Tests/edit.php:151
 msgid "Unknown error occurred"
 msgstr "Ismeretlen hiba történt"
 
-#: templates/Tests/edit.php:16 templates/Tests/view.php:11
+#: templates/Tests/add.php:150 templates/Tests/edit.php:155
+msgid ""
+"This will translate the current test content into all configured languages."
+msgstr ""
+"Ez lefordítja a teszt jelenlegi tartalmát az összes beállított nyelvre."
+
+#: templates/Tests/add.php:151 templates/Tests/edit.php:156
+msgid "Translations updated."
+msgstr "A fordítások frissítve."
+
+#: templates/Tests/add.php:152 templates/Tests/edit.php:157
+msgid "Translation in progress..."
+msgstr "Fordítás folyamatban..."
+
+#: templates/Tests/add.php:153 templates/Tests/edit.php:158
+msgid "True"
+msgstr "Igaz"
+
+#: templates/Tests/add.php:154 templates/Tests/edit.php:159
+msgid "False"
+msgstr "Hamis"
+
+#: templates/Tests/catalog_view.php:12 templates/Tests/take.php:32
+#: templates/element/users/stats.php:97
+msgid "Quiz"
+msgstr "Kvíz"
+
+#: templates/Tests/catalog_view.php:82 templates/Tests/index.php:95
+msgid "questions"
+msgstr "kérdés"
+
+#: templates/Tests/catalog_view.php:90 templates/Users/profile.php:74
+#: templates/Users/stats.php:13 templates/Users/stats.php:20
+#: templates/element/users/stats.php:38
+msgid "My Stats"
+msgstr "Statisztikáim"
+
+#: templates/Tests/catalog_view.php:92 templates/Tests/index.php:104
+msgid "Untitled quiz"
+msgstr "Cím nélküli kvíz"
+
+#: templates/Tests/catalog_view.php:96 templates/Tests/catalog_view.php:99
+#: templates/element/users/stats.php:59 templates/element/users/stats.php:62
+msgid "Attempts"
+msgstr "Próbálkozások"
+
+#: templates/Tests/catalog_view.php:102 templates/Tests/catalog_view.php:105
+#: templates/Tests/catalog_view.php:117 templates/Tests/catalog_view.php:129
+#: templates/Tests/result.php:46 templates/element/users/stats.php:64
+#: templates/element/users/stats.php:67 templates/element/users/stats.php:100
+#, fuzzy
+msgid "Finished"
+msgstr "Befejezve"
+
+#: templates/Tests/catalog_view.php:108 templates/Tests/catalog_view.php:111
+#: templates/element/users/stats.php:48 templates/element/users/stats.php:51
+msgid "Best Result"
+msgstr "Legjobb eredmény"
+
+#: templates/Tests/catalog_view.php:129 templates/element/users/stats.php:84
+msgid "Last {0}"
+msgstr "Utolsó {0}"
+
+#: templates/Tests/catalog_view.php:137 templates/Tests/index.php:113
+msgid "Start quiz"
+msgstr "Kvíz indítása"
+
+#: templates/Tests/catalog_view.php:144 templates/element/users/stats.php:129
+msgid "Result"
+msgstr "Eredmény"
+
+#: templates/Tests/catalog_view.php:149 templates/Tests/review.php:14
+#: templates/Tests/review.php:33 templates/element/users/stats.php:134
+msgid "Review"
+msgstr "Áttekintés"
+
+#: templates/Tests/catalog_view.php:156
+msgid "Back to Quizzes"
+msgstr "Vissza a kvízekhez"
+
+#: templates/Tests/edit.php:16
 msgid "Edit Test"
 msgstr "Teszt szerkesztése"
 
@@ -2714,46 +2747,123 @@ msgstr "Teszt szerkesztése"
 msgid "Generate Content with AI"
 msgstr "Tartalom generálása AI-val"
 
-#: templates/Tests/edit.php:108 templates/Users/profile_edit.php:66
-msgid "Save Changes"
-msgstr "Változások mentése"
-
-#: templates/Tests/edit.php:134
+#: templates/Tests/edit.php:144
 msgid ""
 "Describe the test you want to create or update (topic, difficulty, number of "
 "questions, etc.)"
 msgstr ""
+"Írd le, milyen tesztet szeretnél létrehozni vagy frissíteni (téma, nehézség, "
+"kérdések száma stb.)."
 
-#: templates/Tests/index.php:9 templates/Tests/index.php:19
-#: templates/element/admin_sidebar.php:118
-#: templates/element/admin_sidebar.php:160
-msgid "Tests"
-msgstr "Tesztek"
+#: templates/Tests/index.php:27
+msgid "Pick a quiz, skim the description, and start when you are ready."
+msgstr "Válassz egy kvízt, olvasd el röviden a leírást, és indulhat is."
 
-#: templates/Tests/index.php:44 templates/Tests/view.php:14
+#: templates/Tests/index.php:107
+msgid "No description yet."
+msgstr "Még nincs leírás."
+
+#: templates/Tests/index.php:118
+msgid "Open details"
+msgstr "Részletek"
+
+#: templates/Tests/index.php:156
 msgid "New Test"
 msgstr "Új teszt"
 
-#: templates/Tests/index.php:66
-msgid "Public"
-msgstr "Nyilvános"
-
-#: templates/Tests/index.php:81
+#: templates/Tests/index.php:193
 msgid "Select test"
 msgstr "Teszt kiválasztása"
 
-#: templates/Tests/index.php:86 templates/Tests/index.php:89
-#: templates/Tests/index.php:92
-msgid "N/A"
-msgstr "N/A"
+#: templates/Tests/result.php:9 templates/Tests/result.php:19
+#, fuzzy
+msgid "Quiz results"
+msgstr "Kvízkészítő"
 
-#: templates/Tests/view.php:12
-msgid "Delete Test"
-msgstr "Teszt törlése"
+#: templates/Tests/result.php:20 templates/Tests/review.php:36
+#: templates/Tests/take.php:29
+#, fuzzy
+msgid "Attempt"
+msgstr "Kapcsolódó tesztpróbálkozások"
 
-#: templates/Tests/view.php:259
-msgid "Related User Favorite Tests"
-msgstr "Kapcsolódó felhasználói tokenek"
+#: templates/Tests/result.php:24 templates/Tests/review.php:44
+#: templates/Tests/take.php:46
+#, fuzzy
+msgid "Back to quizzes"
+msgstr "Vissza a bejelentkezéshez"
+
+#: templates/Tests/result.php:34 templates/Tests/review.php:61
+#, fuzzy
+msgid "Correct answers"
+msgstr "Helyes válaszok"
+
+#: templates/Tests/result.php:56 templates/Tests/review.php:50
+msgid "Try again"
+msgstr "Próbáld újra"
+
+#: templates/Tests/result.php:61
+#, fuzzy
+msgid "Review answers"
+msgstr "Kapcsolódó felhasználók"
+
+#: templates/Tests/result.php:66
+msgid "View quiz details"
+msgstr "Kvíz részletei"
+
+#: templates/Tests/review.php:123 templates/Tests/take.php:72
+#, fuzzy
+msgid "Untitled question"
+msgstr "Kérdés kiválasztása"
+
+#: templates/Tests/review.php:130
+msgid "Wrong"
+msgstr "Hibás"
+
+#: templates/Tests/review.php:137
+#, fuzzy
+msgid "Your answer"
+msgstr "Helyes válaszok"
+
+#: templates/Tests/review.php:139
+msgid "(no answer)"
+msgstr "(nincs válasz)"
+
+#: templates/Tests/review.php:142
+#, fuzzy
+msgid "Correct answer"
+msgstr "Helyes válaszok"
+
+#: templates/Tests/review.php:144
+msgid "(not set)"
+msgstr "(nincs beállítva)"
+
+#: templates/Tests/review.php:178 templates/Tests/take.php:106
+msgid "(empty)"
+msgstr "(üres)"
+
+#: templates/Tests/review.php:182
+msgid "You"
+msgstr "Te"
+
+#: templates/Tests/review.php:193
+msgid "You did not answer this question."
+msgstr "Erre a kérdésre nem válaszoltál."
+
+#: templates/Tests/review.php:205 templates/Tests/take.php:125
+msgid "Next"
+msgstr "Következő"
+
+#: templates/Tests/take.php:13
+msgid "Take quiz"
+msgstr "Kvíz kitöltése"
+
+#: templates/Tests/take.php:80
+msgid "Type your answer…"
+msgstr "Írd be a válaszod…"
+
+#: templates/Tests/take.php:128
+msgid "Submit answers"
+msgstr "Válaszok beküldése"
 
 #: templates/UserFavoriteCategories/add.php:13
 #: templates/UserFavoriteCategories/edit.php:18
@@ -2922,7 +3032,7 @@ msgid "Don't have an account?"
 msgstr "Nincs még fiókod?"
 
 #: templates/Users/login.php:63 templates/Users/register.php:92
-#: templates/element/navbar.php:99
+#: templates/element/navbar.php:144
 msgid "Sign Up"
 msgstr "Regisztráció"
 
@@ -2940,20 +3050,24 @@ msgstr ""
 "MI-alapú tanulás és tesztelés, hogy gyorsabban és okosabban sajátíts el "
 "bármilyen témát."
 
-#: templates/Users/profile.php:42
+#: templates/Users/profile.php:48
 msgid "Joined"
 msgstr "Csatlakozott"
 
-#: templates/Users/profile.php:48
+#: templates/Users/profile.php:54
 #, fuzzy
 msgid "Last Login"
 msgstr "Utolsó bejelentkezés ideje"
 
-#: templates/Users/profile.php:56 templates/Users/profile_edit.php:7
+#: templates/Users/profile.php:62 templates/Users/profile_edit.php:7
 #: templates/Users/profile_edit.php:12
 #, fuzzy
 msgid "Edit Profile"
 msgstr "Szerepkör szerkesztése"
+
+#: templates/Users/profile.php:75 templates/Users/stats.php:21
+msgid "Your quiz history and performance overview."
+msgstr "A kvíz előzményeid és teljesítményed áttekintése."
 
 #: templates/Users/profile_edit.php:18
 msgid "Change Avatar"
@@ -3024,6 +3138,10 @@ msgstr "Új jelszó"
 msgid "Update Password"
 msgstr "Jelszó frissítése"
 
+#: templates/Users/stats.php:26
+msgid "Back to Profile"
+msgstr "Vissza a profilhoz"
+
 #: templates/Users/view.php:19
 msgid "Delete User"
 msgstr "Felhasználó törlése"
@@ -3062,59 +3180,74 @@ msgstr "Admin"
 msgid "Super Admin"
 msgstr "Admin"
 
-#: templates/element/admin_navbar.php:46 templates/element/navbar.php:120
+#: templates/element/admin_navbar.php:46 templates/element/navbar.php:210
 msgid "Logout"
 msgstr "Kijelentkezés"
 
-#: templates/element/admin_sidebar.php:100
+#: templates/element/admin_sidebar.php:113
 msgid "Management"
 msgstr "Kezelés"
 
-#: templates/element/admin_sidebar.php:157
+#: templates/element/admin_sidebar.php:114
+#, fuzzy
+msgid "Admin navigation"
+msgstr "Navigáció megnyitása"
+
+#: templates/element/admin_sidebar.php:155
+#, fuzzy
+msgid "System navigation"
+msgstr "Navigáció megnyitása"
+
+#: templates/element/admin_sidebar.php:170
 msgid "Quiz Tools"
 msgstr "Kvíz eszközök"
 
-msgid "English"
-msgstr "Angol"
+#: templates/element/admin_sidebar.php:171
+#, fuzzy
+msgid "Quiz tools navigation"
+msgstr "Navigáció megnyitása"
 
-msgid "Hungarian"
-msgstr "Magyar"
+#: templates/element/admin_sidebar.php:216
+#, fuzzy
+msgid "Navigation"
+msgstr "Lapozás"
 
-msgid "Quiz Creator"
-msgstr "Kvízkészítő"
-
-msgid "Create and manage quizzes, questions and answers."
-msgstr "Készíts és kezeld a kvízeket, kérdéseket és válaszokat."
-
-msgid "Open"
-msgstr "Megnyitás"
-
-msgid "Manage quizzes and generate content with AI."
-msgstr "Kvízek kezelése és tartalom generálása AI-val."
-
-msgid "Review and edit the question bank."
-msgstr "Kérdésbank áttekintése és szerkesztése."
-
-msgid "Maintain answer choices and translations."
-msgstr "Válaszlehetőségek és fordítások karbantartása."
-
-msgid "Manage category taxonomy for filtering."
-msgstr "Kategóriák kezelése a szűréshez."
-
-msgid "Manage difficulty levels used by quizzes."
-msgstr "A kvízek által használt nehézségi szintek kezelése."
-
-msgid "Quizzes"
-msgstr "Kvízek"
+#: templates/element/admin_sidebar.php:217
+msgid "Close"
+msgstr "Bezárás"
 
 #: templates/element/functions/scroll_to_top.php:32
 #: templates/element/functions/scroll_to_top.php:33
 msgid "Scroll to top"
 msgstr "Ugrás a tetejére"
 
-#: templates/element/navbar.php:73
+#: templates/element/navbar.php:118
 msgid "Toggle navigation"
 msgstr "Navigáció megnyitása"
+
+#: templates/element/navbar.php:155 templates/element/navbar.php:198
+msgid "English"
+msgstr "Angol"
+
+#: templates/element/navbar.php:160 templates/element/navbar.php:203
+msgid "Hungarian"
+msgstr "Magyar"
+
+#: templates/element/users/stats.php:69
+msgid "Avg: {0}"
+msgstr "Átlag: {0}"
+
+#: templates/element/users/stats.php:72
+msgid "Avg"
+msgstr "Átlag"
+
+#: templates/element/users/stats.php:83
+msgid "Recent Attempts"
+msgstr "Legutóbbi próbálkozások"
+
+#: templates/element/users/stats.php:90
+msgid "No finished attempts yet."
+msgstr "Még nincs befejezett próbálkozás."
 
 #: templates/email/html/activation.php:39 templates/email/text/activation.php:9
 msgid "Welcome to MindForge!"
@@ -3145,7 +3278,8 @@ msgstr "Ez a link 4 óra múlva lejár."
 #: templates/email/html/activation.php:99
 #: templates/email/text/activation.php:17
 msgid "If you did not create an account, please ignore this email."
-msgstr "Ha nem te hoztad létre a fiókot, kérlek hagyd figyelmen kívül ezt az emailt."
+msgstr ""
+"Ha nem te hoztad létre a fiókot, kérlek hagyd figyelmen kívül ezt az emailt."
 "Ha nem te hoztad létre a fiókot, kérjük, hagyd figyelmen kívül ezt az e-"
 "mailt."
 
@@ -3181,6 +3315,134 @@ msgstr "Jelszó-visszaállítást kértél a MindForge fiókodhoz."
 #: templates/email/text/password_reset.php:9
 msgid "Use the link below to set a new password:"
 msgstr "Használd az alábbi linket új jelszó beállításához:"
+
+#: templates/layout/admin.php:46
+msgid "Skip to content"
+msgstr "Ugrás a tartalomra"
+
+#: templates/layout/admin.php:65
+msgid "Menu"
+msgstr "Menü"
+
+#: templates/Error/error400.php:25
+msgid "The requested address {0} was not found on this server."
+msgstr "A kért cím ({0}) nem található ezen a szerveren."
+
+#: templates/Error/error500.php:32
+#, fuzzy
+msgid "An Internal Error Has Occurred."
+msgstr "Ismeretlen hiba történt"
+
+#, fuzzy
+#~ msgid "Uncategorized"
+#~ msgstr "Kategóriák"
+
+#~ msgid "Best Per Quiz"
+#~ msgstr "Kvízenkénti legjobb"
+
+#~ msgid "By Category"
+#~ msgstr "Kategóriánként"
+
+#~ msgid "Best Score"
+#~ msgstr "Legjobb pontszám"
+
+#, fuzzy
+#~ msgid "Delete Answer"
+#~ msgstr "Felhasználó törlése"
+
+#~ msgid "Delete Category"
+#~ msgstr "Kategória törlése"
+
+#, fuzzy
+#~ msgid "List Categories"
+#~ msgstr "Szerepkörök listája"
+
+#~ msgid "Related Questions"
+#~ msgstr "Kapcsolódó MI-kérések"
+
+#~ msgid "Question Type"
+#~ msgstr "Kérdés típusa"
+
+#~ msgid "Original Language Id"
+#~ msgstr "Nyelv azonosító"
+
+#, fuzzy
+#~ msgid "Related Tests"
+#~ msgstr "Kapcsolódó felhasználók"
+
+#~ msgid "Number Of Questions"
+#~ msgstr "Kérdések száma"
+
+#, fuzzy
+#~ msgid "Related User Favorite Categories"
+#~ msgstr "Kapcsolódó felhasználói tokenek"
+
+#~ msgid "Delete Difficulty"
+#~ msgstr "Nehézség törlése"
+
+#, fuzzy
+#~ msgid "List Difficulties"
+#~ msgstr "Nehézség azonosító"
+
+#~ msgid "Set up your username on the {0} link."
+#~ msgstr "Állítsd be a felhasználóneved a {0} linken."
+
+#~ msgid "profile"
+#~ msgstr "profil"
+
+#~ msgid "Welcome to MindForge"
+#~ msgstr "Üdvözlünk a MindForge-ban"
+
+#~ msgid ""
+#~ "An AI-powered platform built to help you learn smarter, test faster, and "
+#~ "improve continuously."
+#~ msgstr ""
+#~ "Egy MI-alapú platform, amely segít okosabban tanulni, gyorsabban "
+#~ "tesztelni és folyamatosan fejlődni."
+
+#~ msgid "Create and take intelligent tests"
+#~ msgstr "Intelligens tesztek készítése és kitöltése"
+
+#~ msgid "Track your progress over time"
+#~ msgstr "Kövesd nyomon a fejlődésed"
+
+#~ msgid "Learn with AI-assisted feedback"
+#~ msgstr "Tanulj MI-támogatott visszajelzésekkel"
+
+#~ msgid "Build knowledge. Test understanding. Improve."
+#~ msgstr "Építs tudást. Teszteld a megértést. Fejlődj."
+
+#~ msgid ""
+#~ "MindForge combines structured testing with AI to help you focus on what "
+#~ "actually matters."
+#~ msgstr ""
+#~ "A MindForge a strukturált tesztelést MI-vel ötvözi, hogy arra fókuszálj, "
+#~ "ami igazán számít."
+
+#, fuzzy
+#~ msgid "List Questions"
+#~ msgstr "Összes kérdés"
+
+#~ msgid "Delete Question"
+#~ msgstr "Kérdés törlése"
+
+#~ msgid "Question # {0}"
+#~ msgstr "Kérdés # {0}"
+
+#~ msgid "Forge your learning into"
+#~ msgstr "Kovácsold a tanulást"
+
+#~ msgid ""
+#~ "Role-based access, token auth for mobile, and audit-friendly system logs."
+#~ msgstr ""
+#~ "Szerepkör alapú hozzáférés, tokenes mobil auth, és auditálható "
+#~ "rendszerlogok."
+
+#~ msgid "Delete Test"
+#~ msgstr "Teszt törlése"
+
+#~ msgid "Related User Favorite Tests"
+#~ msgstr "Kapcsolódó felhasználói tokenek"
 
 #~ msgid ""
 #~ "Registration successful\n"
