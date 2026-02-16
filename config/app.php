@@ -460,4 +460,13 @@ return [
         'maxImages' => (int)env('AI_MAX_IMAGES', '6'),
         'maxImageBytes' => (int)env('AI_MAX_IMAGE_BYTES', (string)(6 * 1024 * 1024)),
     ],
+
+    /*
+     * IP enrichment configuration (device logs).
+     */
+    'IpEnrichment' => [
+        'provider' => env('IP_ENRICH_PROVIDER', 'iplocate'),
+        'cacheTtlDays' => (int)env('IP_ENRICH_CACHE_TTL_DAYS', '7'),
+        'iplocateApiKey' => env('IPLOCATE_API_KEY', ''),
+    ],
 ];

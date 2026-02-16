@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\IpEnrichmentService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
@@ -41,7 +42,11 @@ class DeviceLogsController extends AppController
         $since = FrozenTime::now()->subHours(24);
         $statsTotal = (int)$this->DeviceLogs->find()->count();
         $statsLast24h = (int)$this->DeviceLogs->find()->where(['DeviceLogs.created_at >=' => $since])->count();
-        $statsUniqueUsers = (int)$this->DeviceLogs->find()->select(['user_id'])->distinct(['user_id'])->where(['DeviceLogs.user_id IS NOT' => null])->count();
+        $statsUniqueUsers = (int)$this->DeviceLogs->find()
+            ->select(['user_id'])
+            ->distinct(['user_id'])
+            ->where(['DeviceLogs.user_id IS NOT' => null])
+            ->count();
         $statsUniqueIps24h = (int)$this->DeviceLogs->find()->select(['ip_address'])->distinct(['ip_address'])->where([
             'DeviceLogs.created_at >=' => $since,
             'DeviceLogs.ip_address IS NOT' => null,
@@ -118,7 +123,52 @@ class DeviceLogsController extends AppController
     public function view(?string $id = null)
     {
         $deviceLog = $this->DeviceLogs->get($id, contain: ['Users']);
-        $this->set(compact('deviceLog'));
+        $enrichment = [
+            'country' => $deviceLog->country,
+            'city' => $deviceLog->city,
+            'isp' => $deviceLog->isp ?? null,
+            'provider' => null,
+            'cached' => true,
+        ];
+
+        $ipAddress = trim((string)($deviceLog->ip_address ?? ''));
+        if ($ipAddress !== '') {
+            $hasCountry = trim((string)($deviceLog->country ?? '')) !== '';
+            $hasCity = trim((string)($deviceLog->city ?? '')) !== '';
+            $hasIsp = trim((string)($deviceLog->isp ?? '')) !== '';
+            if (!$hasCountry || !$hasCity || !$hasIsp) {
+                $ipEnrichment = (new IpEnrichmentService())->enrich($ipAddress);
+                $enrichment = $ipEnrichment;
+
+                $schema = $this->DeviceLogs->getSchema();
+                $changed = false;
+                if (!$hasCountry && $ipEnrichment['country'] !== null) {
+                    $deviceLog->country = $ipEnrichment['country'];
+                    $changed = true;
+                }
+                if (!$hasCity && $ipEnrichment['city'] !== null) {
+                    $deviceLog->city = $ipEnrichment['city'];
+                    $changed = true;
+                }
+                if (
+                    $schema->hasColumn('isp') &&
+                    !$hasIsp &&
+                    $ipEnrichment['isp'] !== null
+                ) {
+                    $deviceLog->set('isp', $ipEnrichment['isp']);
+                    $changed = true;
+                }
+
+                if ($changed) {
+                    $this->DeviceLogs->save($deviceLog, [
+                        'checkRules' => false,
+                        'validate' => false,
+                    ]);
+                }
+            }
+        }
+
+        $this->set(compact('deviceLog', 'enrichment'));
     }
 
     /**

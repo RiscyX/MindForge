@@ -82,6 +82,11 @@ class DeviceLogsTable extends Table
             ->allowEmptyString('city');
 
         $validator
+            ->scalar('isp')
+            ->maxLength('isp', 150)
+            ->allowEmptyString('isp');
+
+        $validator
             ->dateTime('created_at')
             ->notEmptyDateTime('created_at');
 

@@ -6,11 +6,11 @@ namespace App\Controller;
 use App\Model\Entity\ActivityLog;
 use App\Model\Entity\Role;
 use App\Model\Table\UsersTable;
+use App\Service\IpEnrichmentService;
 use App\Service\UserTokensService;
 use Authentication\IdentityInterface;
 use Cake\Cache\Cache;
 use Cake\Event\EventInterface;
-use Cake\Http\Client;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
 use Cake\I18n\I18n;
@@ -819,28 +819,10 @@ class UsersController extends AppController
         // Device Log
         $deviceType = $this->detectDeviceType($userAgent);
 
-        // IP Lookup via iplocate.io
-        $country = null;
-        $city = null;
-
-        try {
-            $http = new Client();
-
-            $apiKey = env('IPLOCATE_API_KEY', null);
-            $url = 'https://www.iplocate.io/api/lookup/' . $ip;
-            if ($apiKey) {
-                $url .= '?apikey=' . $apiKey;
-            }
-
-            $response = $http->get($url);
-            if ($response->isOk()) {
-                $json = $response->getJson();
-                $country = $json['country'] ?? null;
-                $city = $json['city'] ?? null;
-            }
-        } catch (Exception $e) {
-            Log::error('IP lookup failed: ' . $e->getMessage());
-        }
+        $ipEnrichment = (new IpEnrichmentService())->enrich($ip);
+        $country = $ipEnrichment['country'];
+        $city = $ipEnrichment['city'];
+        $isp = $ipEnrichment['isp'];
 
         $deviceLogsTable = $this->fetchTable('DeviceLogs');
         $deviceLog = $deviceLogsTable->newEntity([
@@ -850,6 +832,7 @@ class UsersController extends AppController
             'device_type' => $deviceType,
             'country' => $country,
             'city' => $city,
+            'isp' => $isp,
         ]);
 
         $deviceLogsTable->save($deviceLog);

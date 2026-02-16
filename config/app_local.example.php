@@ -105,9 +105,11 @@ return [
     ],
 
     /*
-     * Iplocate API configuration
+     * IP enrichment configuration
      */
-    'Iplocate' => [
-        'api_key' => env('IPLOCATE_API_KEY', null),
+    'IpEnrichment' => [
+        'provider' => env('IP_ENRICH_PROVIDER', 'iplocate'),
+        'cacheTtlDays' => (int)env('IP_ENRICH_CACHE_TTL_DAYS', '7'),
+        'iplocateApiKey' => env('IPLOCATE_API_KEY', null),
     ],
 ];

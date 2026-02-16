@@ -150,6 +150,11 @@ $deviceTypeLabels = [
                         </td>
                         <td>
                             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                <?= $this->Html->link(
+                                    __('View'),
+                                    ['action' => 'view', $deviceLog->id, 'lang' => $lang],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
                                 <?= $this->Form->postLink(
                                     __('Delete'),
                                     ['action' => 'delete', $deviceLog->id, 'lang' => $lang],
