@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -149,6 +150,35 @@ class QuestionsTable extends Table
                 'OriginalLanguages',
             ),
             ['errorField' => 'original_language_id'],
+        );
+        $rules->add(
+            function (EntityInterface $entity): bool {
+                if ($entity->has('answers') && is_iterable($entity->answers)) {
+                    foreach ($entity->answers as $answer) {
+                        if ((bool)($answer->is_correct ?? false)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                if (!$entity->has('id') || $entity->id === null) {
+                    return false;
+                }
+
+                return $this->Answers->find()
+                    ->where([
+                        'Answers.question_id' => (int)$entity->id,
+                        'Answers.is_correct' => true,
+                    ])
+                    ->count() > 0;
+            },
+            'atLeastOneCorrectAnswer',
+            [
+                'errorField' => 'answers',
+                'message' => __('At least one correct answer is required.'),
+            ],
         );
 
         return $rules;

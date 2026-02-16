@@ -134,14 +134,45 @@ class QuestionsController extends AppController
      */
     public function edit(?string $id = null)
     {
-        $question = $this->Questions->get($id, contain: []);
+        $question = $this->Questions->get($id, contain: [
+            'Answers' => function (SelectQuery $q): SelectQuery {
+                return $q
+                    ->orderByAsc('Answers.position')
+                    ->orderByAsc('Answers.id');
+            },
+        ]);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $question = $this->Questions->patchEntity($question, $this->request->getData());
-            if ($this->Questions->save($question)) {
+            $data = $this->request->getData();
+            $data['answers'] = $this->normalizeAnswersPayload((array)($data['answers'] ?? []));
+
+            $question = $this->Questions->patchEntity($question, $data, [
+                'associated' => [
+                    'Answers',
+                ],
+            ]);
+
+            $hasCorrectAnswer = false;
+            foreach ($question->answers as $answer) {
+                if ((bool)$answer->is_correct) {
+                    $hasCorrectAnswer = true;
+
+                    break;
+                }
+            }
+
+            if (!$hasCorrectAnswer) {
+                $question->setError('answers', [
+                    'correct' => __('At least one correct answer is required.'),
+                ]);
+            }
+
+            if (!$question->getErrors() && $this->Questions->save($question, ['associated' => ['Answers']])) {
                 $this->Flash->success(__('The question has been saved.'));
 
                 return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
             }
+
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
         $langCode = (string)$this->request->getParam('lang', 'en');
@@ -165,6 +196,57 @@ class QuestionsController extends AppController
         $this->set(compact('question', 'tests', 'categories', 'difficulties'));
     }
 
+    /**
+     * Normalize answer rows posted from inline edit form.
+     *
+     * @param array<int|string, mixed> $answers Raw answer rows.
+     * @return array<int, array<string, mixed>>
+     */
+    private function normalizeAnswersPayload(array $answers): array
+    {
+        $normalized = [];
+        foreach ($answers as $answer) {
+            if (!is_array($answer)) {
+                continue;
+            }
+
+            $id = isset($answer['id']) && is_numeric($answer['id']) ? (int)$answer['id'] : null;
+            $sourceText = trim((string)($answer['source_text'] ?? ''));
+            $sourceType = (string)($answer['source_type'] ?? 'human');
+            if (!in_array($sourceType, ['human', 'ai'], true)) {
+                $sourceType = 'human';
+            }
+            $position = isset($answer['position']) && $answer['position'] !== '' && is_numeric($answer['position'])
+                ? (int)$answer['position']
+                : null;
+            $isCorrect = (string)($answer['is_correct'] ?? '0') === '1';
+
+            $isMeaningful = $id !== null || $sourceText !== '' || $isCorrect || $position !== null;
+            if (!$isMeaningful) {
+                continue;
+            }
+
+            $row = [
+                'source_type' => $sourceType,
+                'source_text' => $sourceText,
+                'position' => $position,
+                'is_correct' => $isCorrect,
+            ];
+            if ($id !== null) {
+                $row['id'] = $id;
+            }
+            $normalized[] = $row;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Resolve current language id with fallback.
+     *
+     * @param string $langCode Requested language code.
+     * @return int|null
+     */
     private function resolveLanguageId(string $langCode): ?int
     {
         $language = $this->fetchTable('Languages')
