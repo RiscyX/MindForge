@@ -60,17 +60,14 @@ if ($identity) {
 
                 <div class="mf-landing__cta mf-reveal" style="transition-delay: 90ms;">
                     <?php if (!$identity) : ?>
-                        <a href="<?= $this->Url->build($loginUrl) ?>" class="btn btn-primary">
+                        <a href="<?= $this->Url->build($loginUrl) ?>" class="btn btn-primary mf-landing__btn mf-landing__btn--primary">
                             <i class="bi bi-box-arrow-in-right me-2"></i><?= __('Log In') ?>
                         </a>
-                        <a href="<?= $this->Url->build($registerUrl) ?>" class="btn btn-outline-light">
+                        <a href="<?= $this->Url->build($registerUrl) ?>" class="btn btn-outline-light mf-landing__btn mf-landing__btn--ghost">
                             <i class="bi bi-person-plus me-2"></i><?= __('Create Account') ?>
                         </a>
-                        <span class="mf-landing__hint">
-                            <?= __('No credit card. No fluff. Start in under a minute.') ?>
-                        </span>
                     <?php else : ?>
-                        <a href="<?= $this->Url->build($dashboardUrl) ?>" class="btn btn-primary">
+                        <a href="<?= $this->Url->build($dashboardUrl) ?>" class="btn btn-primary mf-landing__btn mf-landing__btn--primary">
                             <i class="bi bi-speedometer2 me-2"></i><?= __('Continue') ?>
                         </a>
                         <span class="mf-landing__hint"><?= __('You are signed in.') ?></span>
@@ -193,12 +190,18 @@ if ($identity) {
                     <div class="mf-landing__final-sub"><?= __('Start with AI, then refine by hand. You stay in control.') ?></div>
                 </div>
                 <div class="mf-landing__final-actions">
-                    <a href="<?= $this->Url->build($loginUrl) ?>" class="btn btn-primary">
-                        <?= __('Log In') ?>
-                    </a>
-                    <a href="<?= $this->Url->build($registerUrl) ?>" class="btn btn-outline-light">
-                        <?= __('Create Account') ?>
-                    </a>
+                    <?php if (!$identity) : ?>
+                        <a href="<?= $this->Url->build($loginUrl) ?>" class="btn btn-primary mf-landing__btn mf-landing__btn--primary">
+                            <?= __('Log In') ?>
+                        </a>
+                        <a href="<?= $this->Url->build($registerUrl) ?>" class="btn btn-outline-light mf-landing__btn mf-landing__btn--ghost">
+                            <?= __('Create Account') ?>
+                        </a>
+                    <?php else : ?>
+                        <a href="<?= $this->Url->build($dashboardUrl) ?>" class="btn btn-primary mf-landing__btn mf-landing__btn--primary">
+                            <?= __('Continue') ?>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

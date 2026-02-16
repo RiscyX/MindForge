@@ -15,25 +15,21 @@ msgstr ""
 
 #: src/Controller/ActivityLogsController.php:53
 #: src/Controller/ActivityLogsController.php:76
-#, fuzzy
 msgid "The activity log has been saved."
-msgstr "A szerepkör el lett mentve."
+msgstr "A naplóbejegyzés elmentve."
 
 #: src/Controller/ActivityLogsController.php:57
 #: src/Controller/ActivityLogsController.php:80
-#, fuzzy
 msgid "The activity log could not be saved. Please, try again."
-msgstr "A szerepkört nem sikerült elmenteni. Próbáld újra."
+msgstr "A naplóbejegyzést nem sikerült elmenteni. Kérjük, próbáld újra."
 
 #: src/Controller/ActivityLogsController.php:98
-#, fuzzy
 msgid "The activity log has been deleted."
-msgstr "A szerepkör törölve lett."
+msgstr "A naplóbejegyzés törölve."
 
 #: src/Controller/ActivityLogsController.php:100
-#, fuzzy
 msgid "The activity log could not be deleted. Please, try again."
-msgstr "A szerepkör törlése sikertelen. Próbáld újra."
+msgstr "A naplóbejegyzést nem sikerült törölni. Kérjük, próbáld újra."
 
 #: src/Controller/Admin/DashboardController.php:58
 #: src/Controller/AiRequestsController.php:124
@@ -108,9 +104,8 @@ msgid "{0} users updated."
 msgstr "{0} felhasználó frissítve."
 
 #: src/Controller/Admin/UsersController.php:102
-#, fuzzy
 msgid "No users were updated."
-msgstr "A felhasználó törölve lett."
+msgstr "Nem frissült egyetlen felhasználó sem."
 
 #: src/Controller/Admin/UsersController.php:118
 #: src/Controller/Admin/UsersController.php:517
@@ -118,26 +113,22 @@ msgid "You cannot delete the last admin account."
 msgstr "Nem törölheted az utolsó admin fiókot."
 
 #: src/Controller/Admin/UsersController.php:148
-#, fuzzy
 msgid "{0} users deleted."
-msgstr "A felhasználó törölve lett."
+msgstr "{0} felhasználó törölve."
 
 #: src/Controller/Admin/UsersController.php:150
-#, fuzzy
 msgid "No users were deleted."
-msgstr "A felhasználó törölve lett."
+msgstr "Nem lett törölve egyetlen felhasználó sem."
 
 #: src/Controller/Admin/UsersController.php:192
 #: src/Controller/UsersController.php:643
-#, fuzzy
 msgid "Your profile has been updated."
-msgstr "A szerepkör törölve lett."
+msgstr "A profilod frissítve lett."
 
 #: src/Controller/Admin/UsersController.php:200
 #: src/Controller/UsersController.php:648
-#, fuzzy
 msgid "Unable to update your profile. Please try again."
-msgstr "A fiók aktiválása sikertelen. Kérjük, próbáld újra."
+msgstr "Nem sikerült frissíteni a profilodat. Kérjük, próbáld újra."
 
 #: src/Controller/Admin/UsersController.php:251
 #: src/Controller/UsersController.php:504
@@ -145,54 +136,44 @@ msgid "Reset your MindForge password"
 msgstr "MindForge jelszó visszaállítása"
 
 #: src/Controller/Admin/UsersController.php:258
-#, fuzzy
 msgid "We sent a password reset link to your email."
-msgstr "Jelszó-visszaállítást kértél a MindForge fiókodhoz."
+msgstr "Elküldtük a jelszó-visszaállító linket az emailedre."
 
 #: src/Controller/Admin/UsersController.php:261
-#, fuzzy
 msgid "Could not send the password reset email. Please try again later."
-msgstr "A jelszó visszaállítása sikertelen. Kérlek, próbáld újra."
+msgstr "Nem sikerült elküldeni a jelszó-visszaállító emailt. Kérjük, próbáld újra később."
 
 #: src/Controller/Admin/UsersController.php:313
-#, fuzzy
 msgid "The user has been created."
-msgstr "A felhasználó törölve lett."
+msgstr "A felhasználó létrehozva."
 
 #: src/Controller/Admin/UsersController.php:321
-#, fuzzy
 msgid "The user could not be created. Please, try again."
-msgstr "A felhasználó törlése sikertelen. Próbáld újra."
+msgstr "A felhasználót nem sikerült létrehozni. Kérjük, próbáld újra."
 
 #: src/Controller/Admin/UsersController.php:354
-#, fuzzy
 msgid "The user has been updated."
-msgstr "A felhasználó törölve lett."
+msgstr "A felhasználó frissítve lett."
 
 #: src/Controller/Admin/UsersController.php:362
-#, fuzzy
 msgid "The user could not be updated. Please, try again."
-msgstr "A felhasználó törlése sikertelen. Próbáld újra."
+msgstr "A felhasználót nem sikerült frissíteni. Kérjük, próbáld újra."
 
 #: src/Controller/Admin/UsersController.php:388
-#, fuzzy
 msgid "User has been banned."
-msgstr "A felhasználó el lett mentve."
+msgstr "A felhasználó letiltva."
 
 #: src/Controller/Admin/UsersController.php:390
-#, fuzzy
 msgid "Could not ban user. Please, try again."
-msgstr "A felhasználót nem sikerült elmenteni. Próbáld újra."
+msgstr "Nem sikerült letiltani a felhasználót. Kérjük, próbáld újra."
 
 #: src/Controller/Admin/UsersController.php:416
-#, fuzzy
 msgid "User has been unbanned."
-msgstr "A felhasználó el lett mentve."
+msgstr "A felhasználó tiltása feloldva."
 
 #: src/Controller/Admin/UsersController.php:418
-#, fuzzy
 msgid "Could not unban user. Please, try again."
-msgstr "A felhasználót nem sikerült elmenteni. Próbáld újra."
+msgstr "Nem sikerült feloldani a felhasználó tiltását. Kérjük, próbáld újra."
 
 #: src/Controller/Admin/UsersController.php:450
 msgid "Avatar must be an image."

@@ -9,7 +9,7 @@ if (!isset($params['escape']) || $params['escape'] !== false) {
 }
 ?>
 <?php
-$flashClass = 'mf-flash';
+$flashClass = 'mf-flash mf-flash--error';
 if (!empty($params['class'])) {
     $flashClass .= ' ' . $params['class'];
 }

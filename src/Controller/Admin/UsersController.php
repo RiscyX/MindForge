@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Model\Entity\Role;
+use App\Service\ImageUploadGuard;
 use App\Service\UserTokensService;
+use Cake\Core\Configure;
 use Cake\Http\Response;
 use Cake\I18n\I18n;
 use Cake\Log\Log;
@@ -12,6 +14,7 @@ use Cake\Mailer\Mailer;
 use Cake\Routing\Router;
 use Exception;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use Throwable;
 use function Cake\Core\env;
 
@@ -441,29 +444,39 @@ class UsersController extends AppController
             return $data;
         }
 
-        if ($file->getError() !== UPLOAD_ERR_OK || $file->getSize() === 0) {
+        if ($file->getError() !== UPLOAD_ERR_OK && $file->getError() !== UPLOAD_ERR_NO_FILE) {
+            return $data;
+        }
+        if ($file->getError() === UPLOAD_ERR_NO_FILE) {
             return $data;
         }
 
-        $mime = (string)$file->getClientMediaType();
-        if ($mime === '' || !str_starts_with($mime, 'image/')) {
-            $this->Flash->error(__('Avatar must be an image.'));
+        $allowedTypes = (array)Configure::read(
+            'Uploads.avatarAllowedMimeTypes',
+            ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+        );
+        $maxBytes = (int)Configure::read('Uploads.avatarMaxBytes', 3 * 1024 * 1024);
+        $imageUploadGuard = new ImageUploadGuard();
 
-            return $data;
-        }
-
-        $originalName = (string)$file->getClientFilename();
-        $ext = strtolower((string)pathinfo($originalName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        if ($ext === '' || !in_array($ext, $allowedExts, true)) {
+        try {
+            $mime = $imageUploadGuard->assertImageUpload($file, $allowedTypes, $maxBytes);
+            $ext = ImageUploadGuard::extensionForMime($mime);
+        } catch (RuntimeException) {
             $this->Flash->error(__('Unsupported avatar image type.'));
 
             return $data;
         }
 
         $dir = WWW_ROOT . 'img' . DS . 'avatars' . DS;
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
+        if (!is_dir($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
+            $this->Flash->error(__('Failed to upload avatar.'));
+
+            return $data;
+        }
+        if (!is_writable($dir)) {
+            $this->Flash->error(__('Failed to upload avatar.'));
+
+            return $data;
         }
 
         $filename = bin2hex(random_bytes(16)) . '.' . $ext;

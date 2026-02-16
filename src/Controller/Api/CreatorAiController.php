@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 
 use App\Model\Entity\Role;
 use App\Service\AiQuizDraftService;
+use App\Service\ImageUploadGuard;
 use Cake\Core\Configure;
 use Cake\I18n\FrozenTime;
 use OpenApi\Attributes as OA;
@@ -25,6 +26,34 @@ class CreatorAiController extends AppController
         summary: 'Create an async AI test generation request (prompt + optional images)',
         tags: ['CreatorAi'],
         security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(
+                    required: ['prompt', 'category_id', 'difficulty_id'],
+                    properties: [
+                        new OA\Property(
+                            property: 'prompt',
+                            type: 'string',
+                            example: 'Generate a beginner JavaScript quiz focused on arrays.',
+                        ),
+                        new OA\Property(property: 'category_id', type: 'integer', example: 2),
+                        new OA\Property(property: 'difficulty_id', type: 'integer', example: 1),
+                        new OA\Property(property: 'question_count', type: 'integer', nullable: true, example: 10),
+                        new OA\Property(property: 'is_public', type: 'boolean', nullable: true, example: true),
+                        new OA\Property(property: 'language_id', type: 'integer', nullable: true, example: 2),
+                        new OA\Property(property: 'lang', type: 'string', nullable: true, example: 'en'),
+                        new OA\Property(
+                            property: 'images',
+                            type: 'array',
+                            description: 'Optional images (default max 6 files, 6 MB each; jpeg/png/webp).',
+                            items: new OA\Items(type: 'string', format: 'binary'),
+                        ),
+                    ],
+                ),
+            ),
+        ),
         responses: [
             new OA\Response(response: 202, description: 'Request accepted'),
             new OA\Response(response: 401, description: 'Missing/invalid token'),
@@ -584,12 +613,13 @@ class CreatorAiController extends AppController
             throw new RuntimeException('Too many images. Max: ' . $maxCount);
         }
 
-        $allowed = [
+        $allowed = (array)Configure::read('AI.allowedImageMimeTypes', [
             'image/jpeg',
             'image/png',
             'image/webp',
-        ];
+        ]);
         $maxBytes = (int)Configure::read('AI.maxImageBytes', 6 * 1024 * 1024);
+        $imageUploadGuard = new ImageUploadGuard();
 
         $baseDir = rtrim(TMP, DS) . DS . 'ai_assets' . DS . (string)$aiRequestId;
         if (!is_dir($baseDir) && !mkdir($baseDir, 0775, true) && !is_dir($baseDir)) {
@@ -603,24 +633,12 @@ class CreatorAiController extends AppController
             if (!$file instanceof UploadedFileInterface) {
                 continue;
             }
-            if ($file->getError() !== UPLOAD_ERR_OK) {
-                throw new RuntimeException('Upload failed.');
+            if ($file->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
             }
-            $mime = (string)$file->getClientMediaType();
-            if (!in_array($mime, $allowed, true)) {
-                throw new RuntimeException('Unsupported image type: ' . $mime);
-            }
-            $size = (int)$file->getSize();
-            if ($size <= 0 || $size > $maxBytes) {
-                throw new RuntimeException('Image is too large.');
-            }
+            $mime = $imageUploadGuard->assertImageUpload($file, $allowed, $maxBytes);
 
-            $ext = match ($mime) {
-                'image/jpeg' => 'jpg',
-                'image/png' => 'png',
-                'image/webp' => 'webp',
-                default => 'bin',
-            };
+            $ext = ImageUploadGuard::extensionForMime($mime);
             $name = bin2hex(random_bytes(16)) . '.' . $ext;
             $absPath = $baseDir . DS . $name;
             $file->moveTo($absPath);
@@ -629,6 +647,7 @@ class CreatorAiController extends AppController
             $sha256 = $hash !== false ? $hash : null;
             // Store as a workspace-relative path for the worker.
             $relPath = 'tmp/ai_assets/' . $aiRequestId . '/' . $name;
+            $size = (int)$file->getSize();
 
             $asset = $assetsTable->newEntity([
                 'ai_request_id' => $aiRequestId,

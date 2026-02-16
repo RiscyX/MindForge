@@ -164,18 +164,93 @@ body {
 .mf-flash {
     pointer-events: auto;
     display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    color: var(--bs-danger);
-    font-weight: 500;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.72rem 0.86rem;
+    border-radius: 0.82rem;
+    border: 1px solid rgba(var(--mf-text-rgb), 0.14);
+    background: linear-gradient(135deg, rgba(var(--mf-surface-rgb), 0.98), rgba(var(--mf-surface-rgb), 0.88));
+    backdrop-filter: blur(8px);
+    color: rgba(var(--mf-text-rgb), 0.93);
+    font-weight: 600;
     line-height: 1.25;
     cursor: pointer;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.24);
+    animation: mfFlashIn 220ms ease-out;
+}
+
+.mf-flash::before {
+    content: "";
+    width: 1.45rem;
+    height: 1.45rem;
+    border-radius: 999px;
+    flex: 0 0 1.45rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.mf-flash--error {
+    border-color: rgba(224, 77, 87, 0.52);
+    background: linear-gradient(135deg, rgba(76, 20, 26, 0.92), rgba(52, 17, 23, 0.9));
+}
+
+.mf-flash--error::before {
+    content: "!";
+    color: #ffd6da;
+    background: rgba(224, 77, 87, 0.24);
+}
+
+.mf-flash--success {
+    border-color: rgba(47, 180, 122, 0.55);
+    background: linear-gradient(135deg, rgba(16, 72, 55, 0.92), rgba(17, 60, 48, 0.9));
+}
+
+.mf-flash--success::before {
+    content: "\2713";
+    color: #d7ffe9;
+    background: rgba(47, 180, 122, 0.28);
+}
+
+.mf-flash--warning {
+    border-color: rgba(247, 186, 78, 0.58);
+    background: linear-gradient(135deg, rgba(88, 62, 14, 0.92), rgba(72, 54, 16, 0.9));
+}
+
+.mf-flash--warning::before {
+    content: "!";
+    color: #fff0c5;
+    background: rgba(247, 186, 78, 0.26);
+}
+
+.mf-flash--info {
+    border-color: rgba(98, 148, 236, 0.52);
+    background: linear-gradient(135deg, rgba(22, 45, 84, 0.92), rgba(22, 41, 74, 0.9));
+}
+
+.mf-flash--info::before {
+    content: "i";
+    color: #dce8ff;
+    background: rgba(98, 148, 236, 0.28);
 }
 
 .mf-flash__message {
     flex: 1;
     white-space: normal;
     overflow-wrap: anywhere;
+}
+
+@keyframes mfFlashIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 991.98px) {
