@@ -26,6 +26,27 @@ if ($encodedConfig === false) {
     const tableEl = document.getElementById(tableId);
     if (!tableEl) return;
 
+    const isMobileView = () => window.matchMedia('(max-width: 767.98px)').matches;
+
+    /* Mobile card-view: copy <thead> text into data-label on each <td>,
+       and strip DataTables inline width styles that break card layout */
+    const applyCellLabels = () => {
+        const ths = tableEl.querySelectorAll('thead th');
+        if (!ths.length) return;
+        const labels = Array.from(ths).map(th => (th.textContent || '').trim());
+        tableEl.querySelectorAll('tbody tr').forEach(row => {
+            Array.from(row.cells).forEach((td, i) => {
+                if (i < labels.length && labels[i]) td.setAttribute('data-label', labels[i]);
+            });
+        });
+
+        /* On mobile, strip inline width that DataTables sets on table/th/td */
+        if (isMobileView()) {
+            tableEl.style.width = '';
+            tableEl.querySelectorAll('th, td').forEach(cell => { cell.style.width = ''; });
+        }
+    };
+
     const searchInput = cfg.searchInputId ? document.getElementById(cfg.searchInputId) : null;
     const limitSelect = cfg.limitSelectId ? document.getElementById(cfg.limitSelectId) : null;
 
@@ -263,6 +284,9 @@ if ($encodedConfig === false) {
             });
         }
 
+        applyCellLabels();
+        dt.on('draw.labels', applyCellLabels);
+
         return;
     }
 
@@ -419,9 +443,11 @@ if ($encodedConfig === false) {
             });
         }
 
+        applyCellLabels();
         return;
     }
 
     applyView();
+    applyCellLabels();
 })();
 </script>

@@ -1688,10 +1688,312 @@ body.mf-admin-body {
     }
 }
 
-/* Responsive admin tables: keep classic table + horizontal scroll */
+/* ================================================================
+ *  MOBILE RESPONSIVE – Admin Panel
+ *  Follows mobilpelda/ patterns.  All rules live behind @media;
+ *  desktop (>= 1024 px) is pixel-identical.
+ * ================================================================ */
+
+/* 1. Navbar: semi-transparent when open on admin pages ........ */
+@media (max-width: 991.98px) {
+    /* Semi-transparent navbar dropdown background on admin pages */
+    body.mf-admin-body .mf-navbar.mf-nav-open .navbar-collapse,
+    body.mf-admin-body .mf-navbar.mf-nav-closing .navbar-collapse {
+        background: rgba(var(--mf-bg-rgb), 0.88) !important;
+        backdrop-filter: blur(18px) !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+    }
+
+    /* Admin sidebar nav links embedded in mobile navbar */
+    .mf-navbar-admin-nav {
+        padding: 0 0.5rem 0.5rem;
+    }
+    .mf-navbar-admin-nav .mf-admin-sidebar__section {
+        padding: 0.5rem 0.5rem;
+    }
+    .mf-navbar-admin-nav .mf-admin-sidebar__label {
+        font-size: 0.68rem;
+        margin-bottom: 0.5rem;
+        color: rgba(var(--mf-text-rgb), 0.45);
+    }
+    .mf-navbar-admin-nav .mf-admin-nav {
+        gap: 0.15rem;
+    }
+    .mf-navbar-admin-nav .mf-admin-nav__link {
+        padding: 0.55rem 0.75rem;
+        font-size: 0.92rem;
+        border-radius: 0.5rem;
+    }
+
+    /* Mobile language selector next to hamburger */
+    .mf-mobile-lang .btn {
+        color: rgba(var(--mf-text-rgb), 0.78) !important;
+        font-size: 0.88rem;
+        text-decoration: none;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+    }
+    .mf-mobile-lang .btn:hover,
+    .mf-mobile-lang .btn:focus {
+        color: var(--mf-text) !important;
+    }
+    .mf-mobile-lang .dropdown-menu {
+        min-width: 8rem;
+        background: rgba(var(--mf-bg-rgb), 0.96);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(var(--mf-text-rgb), 0.10);
+        border-radius: 0.6rem;
+    }
+    .mf-mobile-lang .dropdown-item {
+        font-size: 0.88rem;
+        padding: 0.5rem 0.85rem;
+        color: rgba(var(--mf-text-rgb), 0.85);
+        border-radius: 0.4rem;
+    }
+    .mf-mobile-lang .dropdown-item:hover {
+        background: rgba(var(--mf-text-rgb), 0.05);
+    }
+    .mf-mobile-lang .dropdown-item.active {
+        background: rgba(var(--mf-primary-rgb), 0.15);
+        color: var(--mf-text);
+    }
+}
+
+/* 2. KPI stat cards: 2-per-row on phones ....................... */
 @media (max-width: 767.98px) {
+    .mf-admin-kpi-grid {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+        margin-top: 0.75rem !important;
+    }
+    .mf-admin-kpi-grid .mf-admin-card {
+        padding: 0.75rem !important;
+    }
+    .mf-admin-kpi-grid .mf-admin-card .fw-semibold {
+        font-size: 1.1rem !important;
+        line-height: 1.2 !important;
+    }
+}
+/* Very small screens (< 360px): single column */
+@media (max-width: 359.98px) {
+    .mf-admin-kpi-grid > [class*="col-"] {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
+/* 3. Table → stacked event cards on mobile .................... */
+@media (max-width: 767.98px) {
+    /*
+     * Override the earlier "horizontal scroll" rules (lines ~472-501)
+     * that set min-width:860px, overflow-x:auto, white-space:nowrap.
+     * We replace them with a stacked-card layout.
+     */
+    .mf-admin-table-card {
+        overflow: visible !important;
+        border-radius: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+    }
+    .mf-admin-table-card .mf-admin-table-scroll {
+        overflow: visible !important;
+        max-height: none !important;
+    }
+    .mf-admin-table-card .mf-admin-table-scroll,
+    .mf-admin-table-card .dataTables_scrollBody {
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+    }
+    /* DataTables wrapper must not create its own overflow context */
+    .mf-admin-table-card .dataTables_wrapper {
+        overflow: visible !important;
+        width: 100% !important;
+    }
+    .mf-admin-table-card .table,
+    .mf-admin-table-card .dataTables_scrollHead table,
+    .mf-admin-table-card .dataTables_scrollBody table {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+    }
     .mf-admin-table-card td,
     .mf-admin-table-card th {
-        white-space: nowrap;
+        white-space: normal !important;
+    }
+    .mf-admin-table-card::after {
+        display: none !important;
+    }
+
+    /* Hide thead — labels are injected into cells via data-label */
+    .mf-admin-table-card .table thead {
+        display: none !important;
+    }
+    /* Also hide DT scroll-header clone */
+    .mf-admin-table-card .dataTables_scrollHead {
+        display: none !important;
+    }
+
+    .mf-admin-table-card .table {
+        display: block !important;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .mf-admin-table-card .table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .mf-admin-table-card .table tbody tr {
+        display: flex;
+        flex-direction: column;
+        padding: 0.85rem 1rem;
+        border: 1px solid rgba(var(--mf-text-rgb), 0.10);
+        border-radius: 0.75rem;
+        background: rgba(var(--mf-text-rgb), 0.03);
+        transition: background 0.15s;
+    }
+    .mf-admin-table-card .table tbody tr:hover {
+        background: rgba(var(--mf-text-rgb), 0.06);
+    }
+    .mf-admin-table-card .table tbody td {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.35rem 0 !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(var(--mf-text-rgb), 0.06) !important;
+        background: transparent !important;
+        text-align: right;
+        white-space: normal !important;
+        word-break: break-word;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+    .mf-admin-table-card .table tbody td:last-child {
+        border-bottom: none !important;
+    }
+    .mf-admin-table-card .table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.72rem;
+        color: rgba(var(--mf-text-rgb), 0.45);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        text-align: left;
+        flex-shrink: 0;
+        margin-right: 1rem;
+    }
+
+    /* Checkbox column — no label, top of card */
+    .mf-admin-table-card .table tbody td:first-child {
+        justify-content: flex-start;
+        padding-bottom: 0.5rem !important;
+        margin-bottom: 0.15rem;
+    }
+    .mf-admin-table-card .table tbody td:first-child::before {
+        content: none;
+    }
+    /* Enlarge checkbox for touch */
+    .mf-admin-table-card .table tbody .mf-row-select,
+    .mf-admin-table-card .table tbody .mf-user-select {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    /* Actions cell: stack buttons vertically, full width */
+    .mf-admin-table-card .table tbody td:last-child .d-flex {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem !important;
+    }
+    .mf-admin-table-card .table tbody td:last-child .d-flex .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    /* postLink hidden forms must stay hidden inside flex cell */
+    .mf-admin-table-card .table tbody td form[style*="display:none"],
+    .mf-admin-table-card .table tbody td form[style*="display: none"] {
+        position: absolute !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* colspan "no data" row */
+    .mf-admin-table-card .table tbody td[colspan] {
+        display: block !important;
+        text-align: center;
+        border: none !important;
+        padding: 1.25rem 0 !important;
+    }
+    .mf-admin-table-card .table tbody td[colspan]::before {
+        content: none;
+    }
+
+    /*
+     * Fix truncated / overflowing text in card cells.
+     * DeviceLogs: User Agent div.text-truncate max-width:420px
+     * AiRequests: Ref div.text-truncate max-width:220px
+     * Dashboard: Details span overflow:hidden
+     */
+    .mf-admin-table-card .table tbody td .text-truncate {
+        overflow: visible !important;
+        white-space: normal !important;
+        text-overflow: clip !important;
+        max-width: none !important;
+        word-break: break-word;
+    }
+    .mf-admin-table-card .table tbody td .text-nowrap {
+        white-space: normal !important;
+    }
+    .mf-admin-table-card .table tbody td div[style] {
+        max-width: none !important;
+        overflow: visible !important;
+        white-space: normal !important;
+        word-break: break-word;
+    }
+    .mf-admin-table-card .table tbody td span[style] {
+        max-width: none !important;
+        overflow: visible !important;
+        white-space: normal !important;
+        display: inline !important;
+        word-break: break-word;
+    }
+}
+
+/* 4. Bulk controls: stack on mobile ........................... */
+@media (max-width: 767.98px) {
+    .mf-admin-bulkbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+        padding: 0.85rem 0;
+    }
+    .mf-admin-bulkbar .mf-muted {
+        font-size: 0.82rem !important;
+    }
+    .mf-admin-bulkbar .d-flex.align-items-center.gap-2 {
+        flex-direction: column;
+        width: 100%;
+    }
+    .mf-admin-bulkbar .d-flex.align-items-center.gap-2 .btn {
+        width: 100%;
+    }
+}
+
+/* 5. Overall admin container: prevent any overflow ............ */
+@media (max-width: 767.98px) {
+    /* Ensure admin main never overflows viewport width */
+    .mf-admin-main > .container-fluid {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+    /* Toolbar: search input should shrink */
+    .mf-admin-toolbar__search {
+        min-width: 0 !important;
     }
 }

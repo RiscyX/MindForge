@@ -205,18 +205,3 @@ $renderNav = function () use (
 <aside class="mf-admin-sidebar d-none d-lg-flex flex-column">
     <?php $renderNav(); ?>
 </aside>
-
-<div
-    class="offcanvas offcanvas-start mf-admin-offcanvas d-lg-none"
-    tabindex="-1"
-    id="mfAdminNav"
-    aria-labelledby="mfAdminNavLabel"
->
-    <div class="offcanvas-header">
-        <div class="offcanvas-title" id="mfAdminNavLabel"><?= __('Navigation') ?></div>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="<?= h(__('Close')) ?>"></button>
-    </div>
-    <div class="offcanvas-body p-0">
-        <?php $renderNav(); ?>
-    </div>
-</div>
