@@ -7,7 +7,7 @@ use App\Controller\AppController as BaseController;
 use OpenApi\Attributes as OA;
 
 #[OA\Info(
-    version: '1.1.0',
+    version: '1.2.0',
     title: 'MindForge API',
     description: 'API documentation for MindForge Mobile Application',
 )]
@@ -23,6 +23,9 @@ use OpenApi\Attributes as OA;
 )]
 class AppController extends BaseController
 {
+    /**
+     * @return void
+     */
     public function initialize(): void
     {
         parent::initialize();

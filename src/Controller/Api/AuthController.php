@@ -8,15 +8,21 @@ use App\Service\ApiAuthErrorCodes;
 use App\Service\ApiAuthService;
 use App\Service\ApiRateLimiterService;
 use App\Service\ApiTokenService;
+use App\Service\ImageUploadGuard;
+use Cake\Core\Configure;
 use Cake\Routing\Router;
-use Laminas\Diactoros\UploadedFile;
 use OpenApi\Attributes as OA;
+use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use Throwable;
 use function Cake\Core\env;
 
 #[OA\Tag(name: 'Auth', description: 'Mobile authentication endpoints')]
 class AuthController extends AppController
 {
+    /**
+     * @return void
+     */
     public function initialize(): void
     {
         parent::initialize();
@@ -24,6 +30,9 @@ class AuthController extends AppController
         $this->Authentication->allowUnauthenticated(['login', 'register', 'refresh', 'logout', 'me', 'updateMe']);
     }
 
+    /**
+     * @return void
+     */
     #[OA\Post(
         path: '/api/v1/auth/register',
         summary: 'Register a mobile account',
@@ -114,6 +123,9 @@ class AuthController extends AppController
         ]);
     }
 
+    /**
+     * @return void
+     */
     #[OA\Post(
         path: '/api/v1/auth/login',
         summary: 'Login with email and password',
@@ -226,6 +238,9 @@ class AuthController extends AppController
         $this->jsonSuccess($payload);
     }
 
+    /**
+     * @return void
+     */
     #[OA\Post(
         path: '/api/v1/auth/refresh',
         summary: 'Rotate refresh token and issue new pair',
@@ -322,6 +337,9 @@ class AuthController extends AppController
         $this->jsonSuccess($payload);
     }
 
+    /**
+     * @return void
+     */
     #[OA\Post(
         path: '/api/v1/auth/logout',
         summary: 'Logout current session or all devices',
@@ -368,6 +386,9 @@ class AuthController extends AppController
         $this->response = $this->response->withStatus(204);
     }
 
+    /**
+     * @return void
+     */
     #[OA\Get(
         path: '/api/v1/auth/me',
         summary: 'Current authenticated user profile',
@@ -403,10 +424,30 @@ class AuthController extends AppController
         $this->jsonSuccess(['user' => $this->buildUserPayload($user)]);
     }
 
+    /**
+     * @return void
+     */
     #[OA\Patch(
         path: '/api/v1/auth/me',
         summary: 'Update current authenticated user profile',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: false,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(
+                    properties: [
+                        new OA\Property(property: 'username', type: 'string', example: 'mindforge_user'),
+                        new OA\Property(
+                            property: 'avatar_file',
+                            type: 'string',
+                            format: 'binary',
+                            description: 'Avatar image (jpg, png, gif, webp; max 3 MB by default).',
+                        ),
+                    ],
+                ),
+            ),
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -446,24 +487,45 @@ class AuthController extends AppController
         }
 
         $avatarFile = $this->request->getData('avatar_file');
-        if ($avatarFile instanceof UploadedFile && $avatarFile->getError() === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            $fileType = (string)$avatarFile->getClientMediaType();
-            if (!in_array($fileType, $allowedTypes, true)) {
-                $this->jsonError(422, ApiAuthErrorCodes::INVALID_AVATAR_FORMAT, 'Invalid image format. Allowed: JPG, PNG, GIF, WEBP.');
+        if ($avatarFile instanceof UploadedFileInterface) {
+            if ($avatarFile->getError() === UPLOAD_ERR_NO_FILE) {
+                $avatarFile = null;
+            }
+        }
+
+        if ($avatarFile instanceof UploadedFileInterface) {
+            $allowedTypes = (array)Configure::read(
+                'Uploads.avatarAllowedMimeTypes',
+                ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+            );
+            $maxBytes = (int)Configure::read('Uploads.avatarMaxBytes', 3 * 1024 * 1024);
+            $imageUploadGuard = new ImageUploadGuard();
+
+            try {
+                $mime = $imageUploadGuard->assertImageUpload($avatarFile, $allowedTypes, $maxBytes);
+                $ext = ImageUploadGuard::extensionForMime($mime);
+            } catch (RuntimeException) {
+                $this->jsonError(
+                    422,
+                    ApiAuthErrorCodes::INVALID_AVATAR_FORMAT,
+                    'Invalid image format. Allowed: JPG, PNG, GIF, WEBP.',
+                );
 
                 return;
             }
 
-            $ext = pathinfo((string)$avatarFile->getClientFilename(), PATHINFO_EXTENSION);
-            $filename = 'avatar_' . $user->id . '_' . time() . ($ext !== '' ? '.' . $ext : '');
+            $filename = 'avatar_' . $user->id . '_' . time() . '.' . $ext;
             $avatarsDir = WWW_ROOT . 'img' . DS . 'avatars';
             if (!is_dir($avatarsDir)) {
                 mkdir($avatarsDir, 0775, true);
             }
 
             if (!is_dir($avatarsDir) || !is_writable($avatarsDir)) {
-                $this->jsonError(500, ApiAuthErrorCodes::PROFILE_UPDATE_FAILED, 'Avatar upload directory is not writable.');
+                $this->jsonError(
+                    500,
+                    ApiAuthErrorCodes::PROFILE_UPDATE_FAILED,
+                    'Avatar upload directory is not writable.',
+                );
 
                 return;
             }
@@ -531,6 +593,10 @@ class AuthController extends AppController
         ];
     }
 
+    /**
+     * @param string $code Error code.
+     * @return int
+     */
     private function statusForErrorCode(string $code): int
     {
         return match ($code) {
@@ -547,6 +613,10 @@ class AuthController extends AppController
         };
     }
 
+    /**
+     * @param string $code Error code.
+     * @return string
+     */
     private function messageForErrorCode(string $code): string
     {
         return match ($code) {
@@ -567,6 +637,9 @@ class AuthController extends AppController
         };
     }
 
+    /**
+     * @return string|null
+     */
     private function extractBearerToken(): ?string
     {
         $header = trim((string)$this->request->getHeaderLine('Authorization'));

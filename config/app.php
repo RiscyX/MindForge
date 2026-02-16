@@ -456,8 +456,14 @@ return [
         'baseUrl' => env('AI_BASE_URL', 'https://api.openai.com/v1'),
         'defaultModel' => env('AI_DEFAULT_MODEL', 'gpt-4'),
         'visionModel' => env('AI_VISION_MODEL', ''),
+        'allowedImageMimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
         // Upload constraints for async image-based generation.
         'maxImages' => (int)env('AI_MAX_IMAGES', '6'),
         'maxImageBytes' => (int)env('AI_MAX_IMAGE_BYTES', (string)(6 * 1024 * 1024)),
+    ],
+
+    'Uploads' => [
+        'avatarAllowedMimeTypes' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+        'avatarMaxBytes' => (int)env('AVATAR_MAX_BYTES', (string)(3 * 1024 * 1024)),
     ],
 ];

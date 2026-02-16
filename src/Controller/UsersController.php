@@ -6,9 +6,11 @@ namespace App\Controller;
 use App\Model\Entity\ActivityLog;
 use App\Model\Entity\Role;
 use App\Model\Table\UsersTable;
+use App\Service\ImageUploadGuard;
 use App\Service\UserTokensService;
 use Authentication\IdentityInterface;
 use Cake\Cache\Cache;
+use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Http\Client;
 use Cake\Http\Response;
@@ -21,7 +23,8 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\Routing\Router;
 use Detection\MobileDetect;
 use Exception;
-use Laminas\Diactoros\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use Throwable;
 use function Cake\Core\env;
 
@@ -619,28 +622,57 @@ class UsersController extends AppController
 
             // Handle Avatar Upload
             $avatarFile = $data['avatar_file'] ?? null;
-            if ($avatarFile instanceof UploadedFile && $avatarFile->getError() === UPLOAD_ERR_OK) {
-                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                $fileType = $avatarFile->getClientMediaType();
+            if ($avatarFile instanceof UploadedFileInterface) {
+                if ($avatarFile->getError() === UPLOAD_ERR_NO_FILE) {
+                    $avatarFile = null;
+                }
+            }
 
-                if (in_array($fileType, $allowedTypes)) {
-                    $ext = pathinfo($avatarFile->getClientFilename(), PATHINFO_EXTENSION);
-                    $filename = 'avatar_' . $user->id . '_' . time() . '.' . $ext;
-                    $targetPath = WWW_ROOT . 'img' . DS . 'avatars' . DS . $filename;
+            if ($avatarFile instanceof UploadedFileInterface) {
+                $allowedTypes = (array)Configure::read(
+                    'Uploads.avatarAllowedMimeTypes',
+                    ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+                );
+                $maxBytes = (int)Configure::read('Uploads.avatarMaxBytes', 3 * 1024 * 1024);
+                $imageUploadGuard = new ImageUploadGuard();
 
-                    $avatarFile->moveTo($targetPath);
-
-                    // Delete old avatar if exists and is local
-                    if ($user->avatar_url && str_contains($user->avatar_url, 'avatars/')) {
-                        $oldFile = WWW_ROOT . 'img' . DS . $user->avatar_url;
-                        if (file_exists($oldFile) && is_file($oldFile)) {
-                            unlink($oldFile);
-                        }
-                    }
-
-                    $data['avatar_url'] = 'avatars/' . $filename;
-                } else {
+                $mime = null;
+                try {
+                    $mime = $imageUploadGuard->assertImageUpload($avatarFile, $allowedTypes, $maxBytes);
+                } catch (RuntimeException) {
                     $this->Flash->error(__('Invalid image format. Allowed: JPG, PNG, GIF, WEBP'));
+                }
+
+                if ($mime !== null) {
+                    try {
+                        $ext = ImageUploadGuard::extensionForMime($mime);
+                        $filename = 'avatar_' . $user->id . '_' . time() . '.' . $ext;
+
+                        $avatarsDir = WWW_ROOT . 'img' . DS . 'avatars';
+                        if (!is_dir($avatarsDir) && !mkdir($avatarsDir, 0775, true) && !is_dir($avatarsDir)) {
+                            throw new RuntimeException('Avatar upload directory is not writable.');
+                        }
+                        if (!is_writable($avatarsDir)) {
+                            throw new RuntimeException('Avatar upload directory is not writable.');
+                        }
+
+                        $targetPath = $avatarsDir . DS . $filename;
+                        $avatarFile->moveTo($targetPath);
+
+                        // Delete old avatar if exists and is local
+                        if ($user->avatar_url && str_contains((string)$user->avatar_url, 'avatars/')) {
+                            $oldRelative = ltrim((string)$user->avatar_url, '/');
+                            $oldRelative = preg_replace('#^img/#', '', $oldRelative) ?? $oldRelative;
+                            $oldFile = WWW_ROOT . 'img' . DS . str_replace('/', DS, $oldRelative);
+                            if (file_exists($oldFile) && is_file($oldFile)) {
+                                unlink($oldFile);
+                            }
+                        }
+
+                        $data['avatar_url'] = 'avatars/' . $filename;
+                    } catch (Throwable) {
+                        $this->Flash->error(__('Failed to upload avatar.'));
+                    }
                 }
             }
             unset($data['avatar_file']); // Remove file object from data to avoid patching issues if not handled by table

@@ -13,7 +13,7 @@ if (!isset($params['escape']) || $params['escape'] !== false) {
 }
 ?>
 <?php
-$flashClass = 'mf-flash';
+$flashClass = 'mf-flash mf-flash--info';
 if (!empty($params['class'])) {
     $flashClass .= ' ' . $params['class'];
 }

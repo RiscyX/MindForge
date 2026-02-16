@@ -110,4 +110,11 @@ return [
     'Iplocate' => [
         'api_key' => env('IPLOCATE_API_KEY', null),
     ],
+
+    /*
+     * Upload limits
+     */
+    'Uploads' => [
+        'avatarMaxBytes' => (int)env('AVATAR_MAX_BYTES', (string)(3 * 1024 * 1024)),
+    ],
 ];

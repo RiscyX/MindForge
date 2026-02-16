@@ -408,9 +408,46 @@
     align-items: center;
 }
 
-.mf-landing__cta .btn {
+.mf-landing__btn {
     border-radius: 0.8rem;
-    padding: 0.9rem 1.05rem;
+    padding: 0.9rem 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    border-width: 1px;
+    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.mf-landing__btn--primary {
+    background: linear-gradient(135deg, rgba(var(--mf-primary-rgb), 0.98), rgba(var(--mf-primary-rgb), 0.80));
+    border-color: rgba(var(--mf-primary-rgb), 0.92);
+    color: rgba(var(--mf-text-rgb), 0.98);
+    box-shadow: 0 10px 26px rgba(var(--mf-primary-rgb), 0.28);
+}
+
+.mf-landing__btn--primary:hover {
+    background: linear-gradient(135deg, rgba(var(--mf-primary-rgb), 1), rgba(var(--mf-primary-rgb), 0.88));
+    border-color: rgba(var(--mf-primary-rgb), 1);
+    color: rgba(var(--mf-text-rgb), 1);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(var(--mf-primary-rgb), 0.34);
+}
+
+.mf-landing__btn--ghost {
+    background: rgba(var(--mf-text-rgb), 0.02);
+    border-color: rgba(var(--mf-text-rgb), 0.26);
+    color: rgba(var(--mf-text-rgb), 0.9);
+}
+
+.mf-landing__btn--ghost:hover {
+    background: rgba(var(--mf-text-rgb), 0.08);
+    border-color: rgba(var(--mf-text-rgb), 0.36);
+    color: rgba(var(--mf-text-rgb), 0.98);
+    transform: translateY(-1px);
+}
+
+.mf-landing__btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(var(--mf-primary-rgb), 0.26);
 }
 
 .mf-landing__hint {
@@ -577,8 +614,8 @@
     align-items: center;
 }
 
-.mf-landing__final-actions .btn {
-    min-width: 10.5rem;
+.mf-landing__final-actions .mf-landing__btn {
+    min-width: 9.5rem;
     text-align: center;
 }
 
@@ -591,6 +628,11 @@
     .mf-landing__final-actions {
         width: 100%;
         justify-content: center;
+    }
+
+    .mf-landing__final-actions .mf-landing__btn {
+        width: 100%;
+        max-width: 18rem;
     }
 }
 
@@ -616,6 +658,10 @@
     }
 
     .mf-reveal {
+        transition: none !important;
+    }
+
+    .mf-landing__btn {
         transition: none !important;
     }
 }
