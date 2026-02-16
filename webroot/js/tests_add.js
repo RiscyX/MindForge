@@ -425,6 +425,8 @@ function addQuestion(data = null) {
         // else multiple_choice
     }
 
+    const questionSourceType = (data && data.source_type) ? data.source_type : 'human';
+
     let html = `
     <div class="card mb-3 bg-dark text-white border-secondary question-card" id="question-${index}" data-index="${index}">
         <div class="card-header d-flex justify-content-between align-items-center border-secondary">
@@ -436,7 +438,7 @@ function addQuestion(data = null) {
         </div>
         <div class="card-body">
             ${data && data.id ? `<input type="hidden" name="questions[${index}][id]" value="${data.id}">` : ''}
-            <input type="hidden" name="questions[${index}][source_type]" value="${data && data.source_type ? data.source_type : 'human'}">
+            <input type="hidden" name="questions[${index}][source_type]" value="${questionSourceType}">
             <input type="hidden" class="question-position" name="questions[${index}][position]" value="${index}">
             <input type="hidden" name="questions[${index}][is_active]" value="1">
 
@@ -560,6 +562,8 @@ function generateAnswerTranslationInputs(qIndex, aIndex, values = null) {
 function changeQuestionType(index, type, answersData = null) {
     const container = document.getElementById(`answers-container-${index}`);
     const addBtn = document.getElementById(`add-answer-btn-${index}`);
+    const sourceTypeInput = document.querySelector(`input[name="questions[${index}][source_type]"]`);
+    const questionSourceType = sourceTypeInput ? sourceTypeInput.value : 'human';
     container.innerHTML = ''; // Clear existing answers
     if (answerCounters[index] === undefined) {
          answerCounters[index] = 0;
@@ -607,24 +611,44 @@ function changeQuestionType(index, type, answersData = null) {
             }
         }
 
-        addFixedAnswer(index, 0, (aiStrings && aiStrings.trueLabel) ? aiStrings.trueLabel : 'True', trueCorrect, trueTransMap, trueId);
-        addFixedAnswer(index, 1, (aiStrings && aiStrings.falseLabel) ? aiStrings.falseLabel : 'False', falseCorrect, falseTransMap, falseId);
+        const fixedAnswerSourceType = (answersData && answersData.length >= 2)
+            ? ((answersData[0] && answersData[0].source_type) ? answersData[0].source_type : questionSourceType)
+            : questionSourceType;
+
+        addFixedAnswer(
+            index,
+            0,
+            (aiStrings && aiStrings.trueLabel) ? aiStrings.trueLabel : 'True',
+            trueCorrect,
+            trueTransMap,
+            trueId,
+            fixedAnswerSourceType,
+        );
+        addFixedAnswer(
+            index,
+            1,
+            (aiStrings && aiStrings.falseLabel) ? aiStrings.falseLabel : 'False',
+            falseCorrect,
+            falseTransMap,
+            falseId,
+            fixedAnswerSourceType,
+        );
     } else {
 
         addBtn.style.display = 'inline-block';
         
         if (answersData && Array.isArray(answersData)) {
             answersData.forEach(ans => {
-                addAnswer(index, ans);
+            addAnswer(index, ans, questionSourceType);
             });
         } else {
-            addAnswer(index); // Add at least one option
-            addAnswer(index);
+            addAnswer(index, null, questionSourceType); // Add at least one option
+            addAnswer(index, null, questionSourceType);
         }
     }
 }
 
-function addFixedAnswer(qIndex, aIndex, defaultText, isCorrect, translations = null, id = null) {
+function addFixedAnswer(qIndex, aIndex, defaultText, isCorrect, translations = null, id = null, sourceType = 'human') {
     const container = document.getElementById(`answers-container-${qIndex}`);
     
     // Determine checkbox state
@@ -645,7 +669,7 @@ function addFixedAnswer(qIndex, aIndex, defaultText, isCorrect, translations = n
                 <!-- Hidden input that actually submits the 1/0 value -->
                 ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${id}">` : ''}
                 <input type="hidden" class="fixed-answer-correct-input" name="questions[${qIndex}][answers][${aIndex}][is_correct]" value="${isCorrect ? 1 : 0}">
-                <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="human">
+                <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${sourceType}">
              </div>
              ${generateAnswerTranslationInputs(qIndex, aIndex, translations)}
          </div>
@@ -672,7 +696,7 @@ function updateFixedAnswerCorrectness(qIndex, selectedAIndex) {
     });
 }
 
-function addAnswer(qIndex, data = null) {
+function addAnswer(qIndex, data = null, questionSourceType = null) {
     if (answerCounters[qIndex] === undefined) answerCounters[qIndex] = 0;
     const aIndex = answerCounters[qIndex]++;
     const container = document.getElementById(`answers-container-${qIndex}`);
@@ -680,6 +704,11 @@ function addAnswer(qIndex, data = null) {
     let isCorrect = data ? data.is_correct : false;
     let id = data ? data.id : null;
     
+    const sourceTypeInput = document.querySelector(`input[name="questions[${qIndex}][source_type]"]`);
+    const fallbackQuestionSourceType = sourceTypeInput ? sourceTypeInput.value : 'human';
+    const effectiveQuestionSourceType = questionSourceType || fallbackQuestionSourceType;
+    const answerSourceType = (data && data.source_type) ? data.source_type : effectiveQuestionSourceType;
+
     let html = `
     <div class="card mb-2 bg-secondary text-white" id="q${qIndex}-a${aIndex}">
         <div class="card-body p-2">
@@ -692,7 +721,7 @@ function addAnswer(qIndex, data = null) {
                 <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeAnswer(${qIndex}, ${aIndex})">Remove</button>
              </div>
              ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${id}">` : ''}
-             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${data ? 'ai' : 'human'}">
+             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${answerSourceType}">
              ${generateAnswerTranslationInputs(qIndex, aIndex, data ? data.translations : null)}
         </div>
     </div>
