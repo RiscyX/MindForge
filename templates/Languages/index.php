@@ -93,6 +93,13 @@ $this->assign('title', __('Languages'));
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($languages) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No languages found.'),
+                        'ctaUrl' => ['action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New Language'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

@@ -125,6 +125,13 @@ $this->assign('title', __('Answers'));
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($answers) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No answers found.'),
+                        'ctaUrl' => ['action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New Answer'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
