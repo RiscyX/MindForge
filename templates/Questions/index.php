@@ -19,11 +19,6 @@ $selectedIsActive = (string)($filters['is_active'] ?? '');
 $selectedSourceType = (string)($filters['source_type'] ?? '');
 
 $this->assign('title', __('Questions'));
-
-$this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
-$this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
 ?>
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">

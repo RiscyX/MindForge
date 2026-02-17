@@ -976,12 +976,27 @@ body.mf-admin-body {
     backdrop-filter: blur(10px);
     border-bottom-color: rgba(var(--mf-text-rgb), 0.12);
     z-index: 1;
+    text-align: center !important;
+    vertical-align: middle !important;
 }
 
 /* DataTables integration (Admin tables) */
 .mf-admin-table-card .dataTables_wrapper {
     padding: 0;
 }
+
+/* Ensure DataTables sortable headers maintain center alignment */
+.mf-admin-table-card table.dataTable thead th.sorting,
+.mf-admin-table-card table.dataTable thead th.sorting_asc,
+.mf-admin-table-card table.dataTable thead th.sorting_desc {
+    text-align: center !important;
+    vertical-align: middle !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+}
+
+
+
 
 .mf-admin-table-card .dataTables_scrollHead {
     background: rgba(var(--mf-bg-rgb), 0.65);

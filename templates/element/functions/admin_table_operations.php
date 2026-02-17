@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Reusable table JS operations: search, limit, sorting (vanilla), select-all (page/visible),
  * and optional DataTables integration when available.
