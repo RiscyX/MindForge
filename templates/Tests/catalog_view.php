@@ -6,6 +6,7 @@
  * @var int $finishedCount
  * @var \App\Model\Entity\TestAttempt|null $bestAttempt
  * @var \App\Model\Entity\TestAttempt|null $lastAttempt
+ * @var iterable<\App\Model\Entity\TestAttempt> $attemptHistory
  */
 
 $lang = $this->request->getParam('lang', 'en');
@@ -49,6 +50,7 @@ $formatScore = static function (?float $score): string {
 
 $bestFinished = $bestAttempt?->finished_at ? $bestAttempt->finished_at->i18nFormat('yyyy. MMM d. HH:mm') : '-';
 $lastFinished = $lastAttempt?->finished_at ? $lastAttempt->finished_at->i18nFormat('yyyy. MMM d. HH:mm') : '-';
+$attemptHistory = isset($attemptHistory) ? $attemptHistory : [];
 
 ?>
 
@@ -141,11 +143,6 @@ $lastFinished = $lastAttempt?->finished_at ? $lastAttempt->finished_at->i18nForm
 
             <?php if ($bestAttempt) : ?>
                 <?= $this->Html->link(
-                    __('Result'),
-                    ['controller' => 'Tests', 'action' => 'result', (string)$bestAttempt->id, 'lang' => $lang],
-                    ['class' => 'btn btn-outline-light'],
-                ) ?>
-                <?= $this->Html->link(
                     __('Review'),
                     ['controller' => 'Tests', 'action' => 'review', (string)$bestAttempt->id, 'lang' => $lang],
                     ['class' => 'btn btn-outline-light'],
@@ -160,3 +157,70 @@ $lastFinished = $lastAttempt?->finished_at ? $lastAttempt->finished_at->i18nForm
         </div>
     </article>
 </div>
+
+<?php if (count($attemptHistory) > 0) : ?>
+<div class="pb-4">
+    <div class="mf-stats-panel">
+        <div class="mf-stats-panel__header">
+            <div class="d-flex align-items-center justify-content-between gap-3">
+                <h2 class="h5 text-white mb-0"><?= __('My Attempts') ?></h2>
+                <div class="text-white-50 small"><?= __('Last {0}', 20) ?></div>
+            </div>
+        </div>
+        <div class="mf-stats-panel__body">
+            <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><?= __('Status') ?></th>
+                                    <th scope="col" class="text-end"><?= __('Score') ?></th>
+                                    <th scope="col" class="text-end"><?= __('Correct') ?></th>
+                                    <th scope="col" class="text-end"><?= __('Finished') ?></th>
+                                    <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($attemptHistory as $attempt) : ?>
+                            <?php
+                            $isFinished = $attempt->finished_at !== null;
+                            $finishedLabel = $isFinished ? (string)$attempt->finished_at->i18nFormat('yyyy. MMM d. HH:mm') : '-';
+                            ?>
+                            <tr>
+                                <td>
+                                    <span class="badge <?= $isFinished ? 'bg-success-subtle text-success-emphasis' : 'bg-warning-subtle text-warning-emphasis' ?>">
+                                        <?= $isFinished ? __('Finished') : __('In progress') ?>
+                                    </span>
+                                </td>
+                                <td class="text-end"><?= h($formatScore($attempt->score !== null ? (float)$attempt->score : null)) ?></td>
+                                <td class="text-end">
+                                    <?= $attempt->correct_answers !== null && $attempt->total_questions !== null
+                                        ? h((string)$attempt->correct_answers . '/' . (string)$attempt->total_questions)
+                                        : '-' ?>
+                                </td>
+                                <td class="text-end text-white-50"><?= h($finishedLabel) ?></td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2 flex-wrap justify-content-end mf-stats-actions">
+                                        <?php if ($isFinished) : ?>
+                                            <?= $this->Html->link(
+                                                __('Review'),
+                                                ['controller' => 'Tests', 'action' => 'review', (string)$attempt->id, 'lang' => $lang],
+                                                ['class' => 'btn btn-sm btn-primary'],
+                                            ) ?>
+                                        <?php else : ?>
+                                            <?= $this->Html->link(
+                                                __('Continue'),
+                                                ['controller' => 'Tests', 'action' => 'take', (string)$attempt->id, 'lang' => $lang],
+                                                ['class' => 'btn btn-sm btn-outline-light'],
+                                            ) ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

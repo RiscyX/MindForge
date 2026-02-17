@@ -41,7 +41,7 @@ $usersRoute = ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'index'
 $categoriesRoute = ['prefix' => false, 'controller' => 'Categories', 'action' => 'index', 'lang' => $lang];
 $difficultiesRoute = ['prefix' => false, 'controller' => 'Difficulties', 'action' => 'index', 'lang' => $lang];
 $languagesRoute = ['prefix' => false, 'controller' => 'Languages', 'action' => 'index', 'lang' => $lang];
-$testsRoute = ['prefix' => false, 'controller' => 'Tests', 'action' => 'index', 'lang' => $lang];
+$testsRoute = ['prefix' => $isAdmin ? 'Admin' : false, 'controller' => 'Tests', 'action' => 'index', 'lang' => $lang];
 $questionsRoute = ['prefix' => false, 'controller' => 'Questions', 'action' => 'index', 'lang' => $lang];
 $answersRoute = ['prefix' => false, 'controller' => 'Answers', 'action' => 'index', 'lang' => $lang];
 $deviceLogsRoute = ['prefix' => false, 'controller' => 'DeviceLogs', 'action' => 'index', 'lang' => $lang];

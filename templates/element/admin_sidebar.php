@@ -60,7 +60,7 @@ $languagesRoute = [
 ];
 
 $testsRoute = [
-    'prefix' => false,
+    'prefix' => $isAdmin ? 'Admin' : false,
     'controller' => 'Tests',
     'action' => 'index',
     'lang' => $lang,

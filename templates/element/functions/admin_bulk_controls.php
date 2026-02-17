@@ -27,7 +27,7 @@ $containerClass = $containerClass ?? 'd-flex align-items-center gap-3 flex-wrap 
     <button
         id="<?= h($selectAllLinkId) ?>"
         type="button"
-        class="btn btn-sm btn-outline-light"
+        class="btn btn-sm btn-outline-light mf-admin-action mf-admin-action--neutral"
     >
         <?= h('↑ ') ?><?= h($selectAllText) ?>
     </button>
@@ -36,7 +36,7 @@ $containerClass = $containerClass ?? 'd-flex align-items-center gap-3 flex-wrap 
         <?= h($bulkLabel) ?>
     </span>
 
-    <div class="d-flex align-items-center gap-2 flex-wrap">
+    <div class="mf-admin-bulk-actions">
         <?php foreach ($buttons as $button) : ?>
             <?php
                 $attrs = $button['attrs'] ?? [];
@@ -44,7 +44,7 @@ $containerClass = $containerClass ?? 'd-flex align-items-center gap-3 flex-wrap 
                     'type' => 'submit',
                     'name' => $button['name'] ?? 'bulk_action',
                     'value' => $button['value'] ?? '',
-                    'class' => $button['class'] ?? 'btn btn-sm btn-outline-light',
+                    'class' => ($button['class'] ?? 'btn btn-sm btn-outline-light') . ' mf-admin-action',
                 ];
                 if ($bulkFormId) {
                     $attrs['form'] = $bulkFormId;

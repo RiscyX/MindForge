@@ -104,6 +104,16 @@ class AppController extends Controller
                 throw new ForbiddenException();
             }
         }
+
+        if ($identity !== null && (int)$identity->get('role_id') === Role::USER) {
+            $prefix = (string)$this->request->getParam('prefix', '');
+            $controller = (string)$this->request->getParam('controller', '');
+            $action = (string)$this->request->getParam('action', '');
+
+            if (!$this->isRegularUserRouteAllowed($prefix, $controller, $action)) {
+                throw new ForbiddenException();
+            }
+        }
     }
 
     /**
@@ -133,11 +143,72 @@ class AppController extends Controller
         }
 
         if ($controller === 'Users') {
-            return in_array($action, ['profile', 'profileEdit', 'stats', 'logout'], true);
+            return in_array(
+                $action,
+                [
+                    'profile',
+                    'profileEdit',
+                    'stats',
+                    'logout',
+                    'login',
+                    'register',
+                    'forgotPassword',
+                    'resetPassword',
+                    'confirm',
+                ],
+                true,
+            );
         }
 
         if ($controller === 'Pages') {
             return in_array($action, ['display', 'redirectToQuizCreator', 'redirectToDefaultLanguage'], true);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether a regular user can access the requested route.
+     *
+     * @param string $prefix Route prefix.
+     * @param string $controller Route controller.
+     * @param string $action Route action.
+     * @return bool
+     */
+    private function isRegularUserRouteAllowed(string $prefix, string $controller, string $action): bool
+    {
+        if ($prefix === 'Api') {
+            return true;
+        }
+
+        if ($prefix === 'Admin' || $prefix === 'QuizCreator') {
+            return false;
+        }
+
+        if ($controller === 'Tests') {
+            return true;
+        }
+
+        if ($controller === 'Users') {
+            return in_array(
+                $action,
+                [
+                    'profile',
+                    'profileEdit',
+                    'stats',
+                    'logout',
+                    'login',
+                    'register',
+                    'forgotPassword',
+                    'resetPassword',
+                    'confirm',
+                ],
+                true,
+            );
+        }
+
+        if ($controller === 'Pages') {
+            return in_array($action, ['display', 'redirectToDefaultLanguage'], true);
         }
 
         return false;

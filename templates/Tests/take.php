@@ -26,7 +26,7 @@ $totalQuestions = count($questionsList);
         <header class="mf-quiz-runner__header">
             <div class="mf-quiz-runner__titlewrap">
                 <div class="mf-quiz-runner__kicker">
-                    <?= __('Attempt') ?> #<?= h((string)$attempt->id) ?>
+                    <?= __('Attempt') ?>
                 </div>
                 <h1 class="mf-quiz-runner__title">
                     <?= $testTitle !== '' ? h($testTitle) : __('Quiz') ?>
@@ -42,6 +42,23 @@ $totalQuestions = count($questionsList);
                     <div class="mf-quiz-runner__progress-fill" data-mf-runner-progress></div>
                 </div>
                 <div class="mf-quiz-runner__actions">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        id="mf-abort-attempt-trigger"
+                        data-mf-title="<?= h(__('Abort attempt')) ?>"
+                        data-mf-text="<?= h(__('Are you sure you want to abort this attempt? Your current progress will be lost.')) ?>"
+                        data-mf-confirm="<?= h(__('Abort attempt')) ?>"
+                        data-mf-cancel="<?= h(__('Cancel')) ?>"
+                    >
+                        <?= __('Abort attempt') ?>
+                    </button>
+                    <?= $this->Form->create(null, [
+                        'url' => ['controller' => 'Tests', 'action' => 'abort', (string)$attempt->id, 'lang' => $lang],
+                        'id' => 'mf-abort-attempt-form',
+                        'style' => 'display:none;',
+                    ]) ?>
+                    <?= $this->Form->end() ?>
                     <?= $this->Html->link(
                         __('Back to quizzes'),
                         ['controller' => 'Tests', 'action' => 'index', 'lang' => $lang],
@@ -145,6 +162,8 @@ $totalQuestions = count($questionsList);
   const currentEl = document.querySelector('[data-mf-runner-current]');
   const totalEl = document.querySelector('[data-mf-runner-total]');
   const barFill = document.querySelector('[data-mf-runner-progress]');
+  const abortTrigger = document.getElementById('mf-abort-attempt-trigger');
+  const abortForm = document.getElementById('mf-abort-attempt-form');
 
   if (!steps.length || !prevBtn || !nextBtn || !submitBtn) return;
 
@@ -185,6 +204,41 @@ $totalQuestions = count($questionsList);
       render();
     }
   });
+
+  if (abortTrigger && abortForm && window.Swal) {
+    abortTrigger.addEventListener('click', () => {
+      Swal.fire({
+        title: abortTrigger.dataset.mfTitle || 'Abort attempt',
+        text: abortTrigger.dataset.mfText || 'Are you sure you want to abort this attempt?',
+        icon: 'warning',
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: `<i class="bi bi-x-octagon"></i><span>${abortTrigger.dataset.mfConfirm || 'Abort attempt'}</span>`,
+        cancelButtonText: `<i class="bi bi-arrow-left"></i><span>${abortTrigger.dataset.mfCancel || 'Cancel'}</span>`,
+        buttonsStyling: false,
+        customClass: {
+          container: 'mf-swal2-container',
+          popup: 'mf-swal2-popup',
+          title: 'mf-swal2-title',
+          htmlContainer: 'mf-swal2-html',
+          actions: 'mf-swal2-actions',
+          confirmButton: 'btn btn-primary mf-swal2-confirm',
+          cancelButton: 'btn btn-outline-light mf-swal2-cancel',
+          icon: 'mf-swal2-icon'
+        },
+        showClass: {
+          popup: 'mf-swal2-animate-in'
+        },
+        hideClass: {
+          popup: 'mf-swal2-animate-out'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          abortForm.submit();
+        }
+      });
+    });
+  }
 
   render();
 })();

@@ -11,25 +11,52 @@ use App\Model\Entity\Question;
 
 $aiGenerateLimited = !((bool)($aiGenerationLimit['allowed'] ?? true));
 $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
+$lang = $this->request->getParam('lang');
+$categoryOptions = is_array($categories) ? $categories : $categories->toArray();
+$currentCategoryId = (int)($test->category_id ?? 0);
+$currentCategoryLabel = $currentCategoryId > 0 && isset($categoryOptions[$currentCategoryId])
+    ? (string)$categoryOptions[$currentCategoryId]
+    : '';
+
+$this->Html->css('tests_builder', ['block' => 'css']);
 ?>
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2"><?= __('Add Test') ?></h1>
+<div class="mf-test-builder">
+<div class="mf-test-builder__header">
+    <div>
+        <h1 class="h2 mf-test-builder__title"><?= __('Create Quiz') ?></h1>
+        <div class="mf-test-builder__subtitle"><?= __('Build questions, translations, and publishing settings in one flow.') ?></div>
+    </div>
     <div class="btn-toolbar mb-2 mb-md-0">
-        <?= $this->Html->link(__('List Tests'), ['action' => 'index', 'lang' => $this->request->getParam('lang')], ['class' => 'btn btn-sm btn-secondary']) ?>
+        <?= $this->Html->link(__('Back to Tests'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-sm btn-outline-light']) ?>
     </div>
 </div>
 
-<?= $this->Form->create($test, ['class' => 'needs-validation']) ?>
-<div class="row">
+<?= $this->Form->create($test, ['class' => 'needs-validation mf-test-builder__form']) ?>
+<div class="row g-4">
     <div class="col-md-8">
-        <div class="card mb-4 bg-dark text-white">
-            <div class="card-header">
+        <div class="card mb-4 mf-test-builder__panel">
+            <div class="mf-test-builder__panel-header">
                 <h5 class="mb-0"><?= __('Basic Information') ?></h5>
             </div>
-            <div class="card-body">
+            <div class="mf-test-builder__panel-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                         <?= $this->Form->control('category_id', ['options' => $categories, 'class' => 'form-select', 'label' => ['class' => 'form-label']]) ?>
+                        <label class="form-label" for="category-combobox-input"><?= __('Category') ?></label>
+                        <?= $this->Form->hidden('category_id', ['id' => 'category-id-hidden', 'value' => $currentCategoryId > 0 ? $currentCategoryId : null]) ?>
+                        <div class="mf-test-combobox" id="category-combobox" data-mf-combobox="category">
+                            <input
+                                id="category-combobox-input"
+                                type="text"
+                                class="form-control"
+                                autocomplete="off"
+                                spellcheck="false"
+                                placeholder="<?= h(__('Start typing category...')) ?>"
+                                value="<?= h($currentCategoryLabel) ?>"
+                                aria-expanded="false"
+                                aria-controls="category-combobox-list"
+                            >
+                            <div class="mf-test-combobox__panel" id="category-combobox-list" role="listbox"></div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <?= $this->Form->control('difficulty_id', ['options' => $difficulties, 'empty' => false, 'class' => 'form-select', 'label' => ['class' => 'form-label']]) ?>
@@ -44,12 +71,12 @@ $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
             </div>
         </div>
 
-        <div class="card mb-4 bg-dark text-white">
-            <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card mb-4 mf-test-builder__panel">
+            <div class="mf-test-builder__panel-header">
                  <h5 class="mb-0"><?= __('Questions') ?></h5>
-                 <button type="button" class="btn btn-sm btn-primary" onclick="addQuestion()"><?= __('Add Question') ?></button>
+                 <button type="button" class="btn btn-sm btn-primary" onclick="addQuestion()"><i class="bi bi-plus-circle me-1"></i><?= __('Add Question') ?></button>
             </div>
-            <div class="card-body">
+            <div class="mf-test-builder__panel-body">
                  <div id="questions-container">
                     <!-- Questions will be added here dynamically -->
                  </div>
@@ -58,22 +85,22 @@ $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
     </div>
     
     <div class="col-md-4">
-         <div class="card mb-4 bg-dark text-white">
-            <div class="card-header">
+         <div class="card mb-4 mf-test-builder__panel">
+            <div class="mf-test-builder__panel-header">
                 <h5 class="mb-0"><?= __('Translations') ?></h5>
             </div>
-            <div class="card-body">
+            <div class="mf-test-builder__panel-body">
                 <div class="accordion" id="accordionTranslations">
                 <?php foreach ($languages as $langId => $langName): ?>
-                    <div class="accordion-item bg-dark border-secondary">
+                    <div class="accordion-item">
                         <h2 class="accordion-header" id="heading<?= $langId ?>">
-                            <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= $langId ?>" aria-expanded="false" aria-controls="collapse<?= $langId ?>">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= $langId ?>" aria-expanded="false" aria-controls="collapse<?= $langId ?>">
 
                                 <?= h($langName) ?>
                             </button>
                         </h2>
                          <div id="collapse<?= $langId ?>" class="accordion-collapse collapse" aria-labelledby="heading<?= $langId ?>" data-bs-parent="#accordionTranslations">
-                            <div class="accordion-body bg-dark text-white">
+                            <div class="accordion-body">
                                 <?= $this->Form->hidden("test_translations.$langId.language_id", ['value' => $langId]) ?>
                                 <?= $this->Form->control("test_translations.$langId.title", ['class' => 'form-control mb-2', 'label' => __('Title ({0})', $langName)]) ?>
                                 <?= $this->Form->control("test_translations.$langId.description", ['class' => 'form-control', 'label' => __('Description ({0})', $langName), 'type' => 'textarea', 'rows' => 3]) ?>
@@ -84,11 +111,11 @@ $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
                 </div>
             </div>
          </div>
-         <div class="d-grid gap-2">
+         <div class="d-grid gap-2 mf-test-builder__actions">
              <span class="d-block" title="<?= h($aiGenerateLimited ? $aiLimitMessage : '') ?>">
                  <button
                      type="button"
-                     class="btn btn-outline-info w-100"
+                     class="btn btn-outline-light w-100"
                      id="ai-generate-test"
                      <?= $aiGenerateLimited ? 'disabled aria-disabled="true"' : '' ?>
                      title="<?= h($aiGenerateLimited ? $aiLimitMessage : '') ?>"
@@ -99,7 +126,7 @@ $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
              <small class="text-muted">
                  <?= __('AI generations today: {0}/{1}', (int)($aiGenerationLimit['used'] ?? 0), (int)($aiGenerationLimit['limit'] ?? 0)) ?>
              </small>
-             <button type="button" class="btn btn-outline-warning" id="ai-translate-test">
+             <button type="button" class="btn btn-outline-light" id="ai-translate-test">
                 <i class="bi bi-translate"></i> <?= __('Translate Test with AI') ?>
              </button>
              <hr>
@@ -108,6 +135,7 @@ $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
     </div>
 </div>
 <?= $this->Form->end() ?>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -115,6 +143,10 @@ $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
     // Pass PHP data to JS
     const languages = <?= json_encode($languages) ?>;
     const languagesMeta = <?= json_encode($languagesMeta ?? []) ?>;
+    const categoryComboboxMap = <?= json_encode($categoryOptions) ?>;
+    const categoryComboboxSelectedId = <?= (int)$currentCategoryId ?>;
+    const categoryComboboxNoResults = '<?= __('No category found') ?>';
+    const categoryComboboxInvalid = '<?= __('Please choose a category from the list.') ?>';
     const trueFalseTranslations = (() => {
         const out = {};
         (languagesMeta || []).forEach(lang => {
@@ -164,4 +196,5 @@ $aiLimitMessage = __('AI generation limit reached. Limit resets tomorrow.');
     let questionIndex = 0;
     let answerCounters = {};
 </script>
+<?= $this->Html->script('tests_category_autocomplete') ?>
 <?= $this->Html->script('tests_add') ?>

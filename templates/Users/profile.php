@@ -77,6 +77,6 @@ $this->assign('title', __('My Profile'));
     </div>
 
     <div class="mt-3">
-        <?= $this->element('users/stats') ?>
+        <?= $this->element('users/stats', ['showRecentAttempts' => false]) ?>
     </div>
 </div>

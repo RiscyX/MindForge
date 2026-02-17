@@ -13,6 +13,7 @@
 
 $lang = $this->request->getParam('lang', 'en');
 $accentAlpha = '0.16';
+$showRecentAttempts = isset($showRecentAttempts) ? (bool)$showRecentAttempts : true;
 
 $formatScore = static function (?float $score): string {
     if ($score === null) {
@@ -75,6 +76,7 @@ $formatScore = static function (?float $score): string {
     </div>
 </article>
 
+<?php if ($showRecentAttempts) : ?>
 <div class="row g-3 mt-2">
     <div class="col-12">
         <div class="mf-stats-panel h-100">
@@ -147,3 +149,4 @@ $formatScore = static function (?float $score): string {
         </div>
     </div>
 </div>
+<?php endif; ?>

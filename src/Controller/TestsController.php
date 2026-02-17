@@ -33,14 +33,7 @@ class TestsController extends AppController
     {
         parent::beforeRender($event);
 
-        $identity = $this->Authentication->getIdentity();
-        $roleId = $identity ? (int)$identity->get('role_id') : null;
-
-        // Public/consumer-facing pages use the default layout.
-        if (
-            !$this->request->getParam('prefix') &&
-            ($roleId === null || $roleId === Role::USER || $roleId === Role::CREATOR)
-        ) {
+        if (!$this->request->getParam('prefix')) {
             $this->viewBuilder()->setLayout('default');
 
             return;
@@ -68,6 +61,7 @@ class TestsController extends AppController
         $roleId = $identity ? (int)$identity->get('role_id') : null;
         $userId = $identity ? (int)$identity->getIdentifier() : null;
         $isCreatorCatalog = $roleId === Role::CREATOR && !$this->request->getParam('prefix');
+        $isCatalog = !$this->request->getParam('prefix');
 
         $langCode = $this->request->getParam('lang');
         $language = $this->fetchTable('Languages')->find()
@@ -95,7 +89,7 @@ class TestsController extends AppController
             ->orderByAsc('Tests.id');
 
         // Catalog for regular users: only public tests.
-        if ($roleId === Role::USER && !$this->request->getParam('prefix')) {
+        if ($isCatalog && !$isCreatorCatalog) {
             $query->where(['Tests.is_public' => true]);
         }
 
@@ -450,6 +444,52 @@ class TestsController extends AppController
             ->all();
 
         $this->set(compact('attempt', 'test', 'questions'));
+    }
+
+    /**
+     * Abort an in-progress quiz attempt.
+     *
+     * @param string|null $id TestAttempt id.
+     * @return \Cake\Http\Response|null
+     */
+    public function abort(?string $id = null): ?Response
+    {
+        $this->request->allowMethod(['post']);
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $identity = $this->Authentication->getIdentity();
+        $userId = $identity ? (int)$identity->getIdentifier() : null;
+        if ($userId === null) {
+            $this->Flash->error(__('Please log in to manage attempts.'));
+
+            return $this->redirect(['controller' => 'Users', 'action' => 'login', 'lang' => $lang]);
+        }
+
+        $attempts = $this->fetchTable('TestAttempts');
+        $attempt = $attempts->get($id);
+        if ((int)$attempt->user_id !== $userId) {
+            return $this->response->withStatus(403);
+        }
+
+        if ($attempt->finished_at !== null) {
+            $this->Flash->error(__('This attempt is already finished and cannot be aborted.'));
+
+            return $this->redirect(['action' => 'result', $attempt->id, 'lang' => $lang]);
+        }
+
+        $testId = (int)($attempt->test_id ?? 0);
+        if ($attempts->delete($attempt)) {
+            $this->Flash->success(__('Attempt aborted.'));
+        } else {
+            $this->Flash->error(__('Could not abort this attempt. Please try again.'));
+        }
+
+        $roleId = (int)($identity->get('role_id') ?? 0);
+        if ($testId > 0 && $roleId !== Role::CREATOR) {
+            return $this->redirect(['action' => 'details', $testId, 'lang' => $lang]);
+        }
+
+        return $this->redirect(['action' => 'index', 'lang' => $lang]);
     }
 
     /**
@@ -811,6 +851,71 @@ class TestsController extends AppController
     }
 
     /**
+     * Build aggregate quiz statistics from attempts.
+     *
+     * @param int $testId Test id.
+     * @return array<string, float|int>
+     */
+    private function buildQuizStats(int $testId): array
+    {
+        $attemptsTable = $this->fetchTable('TestAttempts');
+        $quizAttempts = $attemptsTable->find()->where(['TestAttempts.test_id' => $testId]);
+
+        $attemptsCount = (int)(clone $quizAttempts)->count();
+        $finishedCount = (int)(clone $quizAttempts)
+            ->where(['TestAttempts.finished_at IS NOT' => null])
+            ->count();
+
+        $finishedWithScore = (clone $quizAttempts)
+            ->where([
+                'TestAttempts.finished_at IS NOT' => null,
+                'TestAttempts.score IS NOT' => null,
+            ]);
+
+        $avgScoreRow = (clone $finishedWithScore)
+            ->select(['avg_score' => $attemptsTable->find()->func()->avg('TestAttempts.score')])
+            ->enableHydration(false)
+            ->first();
+
+        $bestScoreRow = (clone $finishedWithScore)
+            ->select(['best_score' => $attemptsTable->find()->func()->max('TestAttempts.score')])
+            ->enableHydration(false)
+            ->first();
+
+        $correctnessRow = (clone $quizAttempts)
+            ->where([
+                'TestAttempts.finished_at IS NOT' => null,
+                'TestAttempts.correct_answers IS NOT' => null,
+                'TestAttempts.total_questions IS NOT' => null,
+                'TestAttempts.total_questions >' => 0,
+            ])
+            ->select([
+                'sum_correct' => $attemptsTable->find()->func()->sum('TestAttempts.correct_answers'),
+                'sum_total' => $attemptsTable->find()->func()->sum('TestAttempts.total_questions'),
+            ])
+            ->enableHydration(false)
+            ->first();
+
+        $uniqueUsers = (int)(clone $quizAttempts)
+            ->select(['user_id'])
+            ->distinct(['user_id'])
+            ->count();
+
+        $sumCorrect = (float)($correctnessRow['sum_correct'] ?? 0);
+        $sumTotal = (float)($correctnessRow['sum_total'] ?? 0);
+
+        return [
+            'attempts' => $attemptsCount,
+            'finished' => $finishedCount,
+            'completionRate' => $attemptsCount > 0 ? $finishedCount / $attemptsCount * 100.0 : 0.0,
+            'avgScore' => (float)($avgScoreRow['avg_score'] ?? 0.0),
+            'bestScore' => (float)($bestScoreRow['best_score'] ?? 0.0),
+            'avgCorrectRate' => $sumTotal > 0 ? $sumCorrect / $sumTotal * 100.0 : 0.0,
+            'uniqueUsers' => $uniqueUsers,
+        ];
+    }
+
+    /**
      * View method
      *
      * @param string|null $id Test id.
@@ -822,8 +927,8 @@ class TestsController extends AppController
         $identity = $this->Authentication->getIdentity();
         $roleId = $identity ? (int)$identity->get('role_id') : null;
 
-        // Regular user detail page: keep it minimal and focused on user stats.
-        if (!$this->request->getParam('prefix') && ($roleId === null || $roleId === Role::USER)) {
+        // Public/user-facing details page for non-creator users on non-prefixed routes.
+        if (!$this->request->getParam('prefix') && $roleId !== Role::CREATOR) {
             $lang = (string)$this->request->getParam('lang', 'en');
             $language = $this->resolveLanguage();
             $languageId = $language ? (int)$language->id : null;
@@ -857,6 +962,7 @@ class TestsController extends AppController
             $finishedCount = 0;
             $bestAttempt = null;
             $lastAttempt = null;
+            $attemptHistory = [];
 
             if ($userId !== null) {
                 $attemptsTable = $this->fetchTable('TestAttempts');
@@ -897,9 +1003,26 @@ class TestsController extends AppController
                     ->orderByDesc('TestAttempts.finished_at')
                     ->orderByDesc('TestAttempts.id')
                     ->first();
+
+                $attemptHistory = $attemptsTable->find()
+                    ->where([
+                        'TestAttempts.user_id' => $userId,
+                        'TestAttempts.test_id' => (int)$test->id,
+                    ])
+                    ->orderByDesc('TestAttempts.started_at')
+                    ->orderByDesc('TestAttempts.id')
+                    ->limit(20)
+                    ->all();
             }
 
-            $this->set(compact('test', 'attemptsCount', 'finishedCount', 'bestAttempt', 'lastAttempt'));
+            $this->set(compact(
+                'test',
+                'attemptsCount',
+                'finishedCount',
+                'bestAttempt',
+                'lastAttempt',
+                'attemptHistory',
+            ));
             $this->viewBuilder()->setTemplate('catalog_view');
 
             return;
@@ -935,54 +1058,7 @@ class TestsController extends AppController
                 return $this->redirect(['action' => 'index', 'lang' => $lang]);
             }
 
-            $attemptsTable = $this->fetchTable('TestAttempts');
-            $quizAttempts = $attemptsTable->find()->where(['TestAttempts.test_id' => (int)$test->id]);
-
-            $attemptsCount = (int)(clone $quizAttempts)->count();
-            $finishedCount = (int)(clone $quizAttempts)
-                ->where(['TestAttempts.finished_at IS NOT' => null])
-                ->count();
-
-            $finishedWithScore = (clone $quizAttempts)
-                ->where([
-                    'TestAttempts.finished_at IS NOT' => null,
-                    'TestAttempts.score IS NOT' => null,
-                ]);
-
-            $avgScoreRow = (clone $finishedWithScore)
-                ->select(['avg_score' => $attemptsTable->find()->func()->avg('TestAttempts.score')])
-                ->enableHydration(false)
-                ->first();
-            $bestScoreRow = (clone $finishedWithScore)
-                ->select(['best_score' => $attemptsTable->find()->func()->max('TestAttempts.score')])
-                ->enableHydration(false)
-                ->first();
-
-            $correctnessRow = (clone $quizAttempts)
-                ->where([
-                    'TestAttempts.finished_at IS NOT' => null,
-                    'TestAttempts.correct_answers IS NOT' => null,
-                    'TestAttempts.total_questions IS NOT' => null,
-                    'TestAttempts.total_questions >' => 0,
-                ])
-                ->select([
-                    'sum_correct' => $attemptsTable->find()->func()->sum('TestAttempts.correct_answers'),
-                    'sum_total' => $attemptsTable->find()->func()->sum('TestAttempts.total_questions'),
-                ])
-                ->enableHydration(false)
-                ->first();
-
-            $sumCorrect = (float)($correctnessRow['sum_correct'] ?? 0);
-            $sumTotal = (float)($correctnessRow['sum_total'] ?? 0);
-
-            $stats = [
-                'attempts' => $attemptsCount,
-                'finished' => $finishedCount,
-                'completionRate' => $attemptsCount > 0 ? $finishedCount / $attemptsCount * 100.0 : 0.0,
-                'avgScore' => (float)($avgScoreRow['avg_score'] ?? 0.0),
-                'bestScore' => (float)($bestScoreRow['best_score'] ?? 0.0),
-                'avgCorrectRate' => $sumTotal > 0 ? $sumCorrect / $sumTotal * 100.0 : 0.0,
-            ];
+            $stats = $this->buildQuizStats((int)$test->id);
 
             $this->set(compact('test', 'stats'));
             $this->viewBuilder()->setTemplate('creator_view');
@@ -1013,6 +1089,59 @@ class TestsController extends AppController
     public function details(?string $id = null)
     {
         return $this->view($id);
+    }
+
+    /**
+     * Quiz statistics page for admins/creators.
+     *
+     * @param string|null $id Test id.
+     * @return \Cake\Http\Response|null|void
+     */
+    public function stats(?string $id = null)
+    {
+        $identity = $this->Authentication->getIdentity();
+        $userId = $identity ? (int)$identity->getIdentifier() : null;
+        $roleId = $identity ? (int)$identity->get('role_id') : null;
+        $lang = (string)$this->request->getParam('lang', 'en');
+
+        if ($userId === null || !in_array($roleId, [Role::ADMIN, Role::CREATOR], true)) {
+            $this->Flash->error(__('You do not have access to quiz statistics.'));
+
+            return $this->redirect(['action' => 'index', 'lang' => $lang]);
+        }
+
+        $language = $this->resolveLanguage();
+        $languageId = $language ? (int)$language->id : null;
+
+        $conditions = ['Tests.id' => $id];
+        if ($roleId === Role::CREATOR) {
+            $conditions['Tests.created_by'] = $userId;
+        }
+
+        $test = $this->Tests->find()
+            ->where($conditions)
+            ->contain([
+                'Categories.CategoryTranslations' => function ($q) use ($languageId) {
+                    return $languageId ? $q->where(['CategoryTranslations.language_id' => $languageId]) : $q;
+                },
+                'Difficulties.DifficultyTranslations' => function ($q) use ($languageId) {
+                    return $languageId ? $q->where(['DifficultyTranslations.language_id' => $languageId]) : $q;
+                },
+                'TestTranslations' => function ($q) use ($languageId) {
+                    return $languageId ? $q->where(['TestTranslations.language_id' => $languageId]) : $q;
+                },
+            ])
+            ->first();
+
+        if (!$test) {
+            $this->Flash->error(__('Quiz not found.'));
+
+            return $this->redirect(['action' => 'index', 'lang' => $lang]);
+        }
+
+        $stats = $this->buildQuizStats((int)$test->id);
+        $this->set(compact('test', 'stats'));
+        $this->viewBuilder()->setTemplate('creator_view');
     }
 
     /**

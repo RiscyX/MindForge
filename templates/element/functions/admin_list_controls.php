@@ -26,6 +26,10 @@ $limitOptions = $limit['options'] ?? [
     '-1' => __('All'),
 ];
 $limitDefault = (string)($limit['default'] ?? '10');
+
+$createLabelRaw = (string)($create['label'] ?? __('Create'));
+$createLabelClean = trim(preg_replace('/\s*\+\s*$/', '', $createLabelRaw) ?? $createLabelRaw);
+$createLabelClean = $createLabelClean !== '' ? $createLabelClean : (string)__('Create');
 ?>
 
 <div class="mf-admin-toolbar mt-4">
@@ -66,9 +70,13 @@ $limitDefault = (string)($limit['default'] ?? '10');
 
         <?php if ($create) : ?>
             <?= $this->Html->link(
-                $create['label'] ?? __('Create') . ' +',
+                '<i class="bi bi-plus-lg" aria-hidden="true"></i><span>' . h($createLabelClean) . '</span>',
                 $create['url'] ?? '#',
-                ['class' => ($create['class'] ?? 'btn btn-sm btn-primary') . ' mf-admin-toolbar__create'],
+                [
+                    'class' => ($create['class'] ?? 'btn btn-sm btn-primary') . ' mf-admin-toolbar__create',
+                    'escape' => false,
+                    'aria-label' => $createLabelClean,
+                ],
             ) ?>
         <?php endif; ?>
     </div>

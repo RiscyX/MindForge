@@ -193,14 +193,14 @@ $langRouteHu = $buildLangRoute('hu');
                                 <?= __('Dashboard') ?>
                             </a>
                         </li>
-                    <?php else : ?>
-                        <li class="nav-item">
-                            <a class="nav-link<?= $isQuizzesActive ? ' active' : '' ?>"
-                               href="<?= $this->Url->build($quizzesUrl) ?>">
-                                <?= __('Quizzes') ?>
-                            </a>
-                        </li>
                     <?php endif; ?>
+
+                    <li class="nav-item">
+                        <a class="nav-link<?= $isQuizzesActive ? ' active' : '' ?>"
+                           href="<?= $this->Url->build($quizzesUrl) ?>">
+                            <?= __('Quizzes') ?>
+                        </a>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link<?= $isProfileActive ? ' active' : '' ?>"
