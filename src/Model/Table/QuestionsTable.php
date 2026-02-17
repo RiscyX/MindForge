@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\Question;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -89,10 +90,6 @@ class QuestionsTable extends Table
         $this->belongsTo('Difficulties', [
             'foreignKey' => 'difficulty_id',
         ]);
-        $this->belongsTo('OriginalLanguages', [
-            'foreignKey' => 'original_language_id',
-            'className' => 'Languages',
-        ]);
         $this->hasMany('Answers', [
             'foreignKey' => 'question_id',
         ]);
@@ -127,11 +124,16 @@ class QuestionsTable extends Table
         $validator
             ->scalar('question_type')
             ->maxLength('question_type', 50)
-            ->notEmptyString('question_type');
-
-        $validator
-            ->nonNegativeInteger('original_language_id')
-            ->allowEmptyString('original_language_id');
+            ->notEmptyString('question_type')
+            ->add('question_type', 'inList', [
+                'rule' => ['inList', [
+                    Question::TYPE_MULTIPLE_CHOICE,
+                    Question::TYPE_TRUE_FALSE,
+                    Question::TYPE_TEXT,
+                    Question::TYPE_MATCHING,
+                ]],
+                'message' => __('Invalid question type.'),
+            ]);
 
         $validator
             ->scalar('source_type')
@@ -177,14 +179,102 @@ class QuestionsTable extends Table
         $rules->add($rules->existsIn(['category_id'], 'Categories'), ['errorField' => 'category_id']);
         $rules->add($rules->existsIn(['difficulty_id'], 'Difficulties'), ['errorField' => 'difficulty_id']);
         $rules->add(
-            $rules->existsIn(
-                ['original_language_id'],
-                'OriginalLanguages',
-            ),
-            ['errorField' => 'original_language_id'],
-        );
-        $rules->add(
             function (EntityInterface $entity): bool {
+                $questionType = (string)($entity->get('question_type') ?? '');
+                $hasMatchingMarkers = false;
+
+                if ($entity->has('answers') && is_iterable($entity->answers)) {
+                    foreach ($entity->answers as $answer) {
+                        $side = trim((string)($answer->match_side ?? ''));
+                        $group = $answer->match_group ?? null;
+                        if ($side !== '' || $group !== null) {
+                            $hasMatchingMarkers = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($questionType === Question::TYPE_MATCHING || $hasMatchingMarkers) {
+                    $answers = [];
+                    if ($entity->has('answers') && is_iterable($entity->answers)) {
+                        foreach ($entity->answers as $answer) {
+                            $answers[] = $answer;
+                        }
+                    } elseif ($entity->has('id') && $entity->id !== null) {
+                        $answers = $this->Answers->find()
+                            ->select(['id', 'match_side', 'match_group'])
+                            ->where(['Answers.question_id' => (int)$entity->id])
+                            ->all()
+                            ->toArray();
+                    }
+
+                    if (!$answers) {
+                        return false;
+                    }
+
+                    $groups = [];
+                    foreach ($answers as $answer) {
+                        $side = trim((string)($answer->match_side ?? ''));
+                        $group = $answer->match_group ?? null;
+                        if ($side === '' || $group === null || !in_array($side, ['left', 'right'], true)) {
+                            return false;
+                        }
+
+                        $groupId = (int)$group;
+                        if ($groupId <= 0) {
+                            return false;
+                        }
+
+                        if (!isset($groups[$groupId])) {
+                            $groups[$groupId] = ['left' => 0, 'right' => 0];
+                        }
+                        $groups[$groupId][$side] += 1;
+                    }
+
+                    foreach ($groups as $counts) {
+                        if ($counts['left'] !== 1 || $counts['right'] !== 1) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+
+                if ($questionType === Question::TYPE_TEXT) {
+                    $answers = [];
+                    if ($entity->has('answers') && is_iterable($entity->answers)) {
+                        foreach ($entity->answers as $answer) {
+                            $answers[] = $answer;
+                        }
+                    } elseif ($entity->has('id') && $entity->id !== null) {
+                        $answers = $this->Answers->find()
+                            ->where(['Answers.question_id' => (int)$entity->id])
+                            ->contain(['AnswerTranslations'])
+                            ->all()
+                            ->toArray();
+                    }
+
+                    if (!$answers) {
+                        return false;
+                    }
+
+                    foreach ($answers as $answer) {
+                        if (trim((string)($answer->source_text ?? '')) !== '') {
+                            return true;
+                        }
+
+                        if (!empty($answer->answer_translations) && is_iterable($answer->answer_translations)) {
+                            foreach ($answer->answer_translations as $translation) {
+                                if (trim((string)($translation->content ?? '')) !== '') {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+
                 if ($entity->has('answers') && is_iterable($entity->answers)) {
                     foreach ($entity->answers as $answer) {
                         if ((bool)($answer->is_correct ?? false)) {
@@ -209,7 +299,7 @@ class QuestionsTable extends Table
             'atLeastOneCorrectAnswer',
             [
                 'errorField' => 'answers',
-                'message' => __('At least one correct answer is required.'),
+                'message' => __('Provide at least one correct/accepted answer, or valid matching pairs.'),
             ],
         );
 

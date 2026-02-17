@@ -13,7 +13,6 @@ use Cake\ORM\Entity;
  * @property int $category_id
  * @property int|null $difficulty_id
  * @property string $question_type
- * @property int|null $original_language_id
  * @property string $source_type
  * @property int|null $created_by
  * @property bool $is_active
@@ -34,6 +33,7 @@ class Question extends Entity
     public const TYPE_TRUE_FALSE = 'true_false';
     public const TYPE_MULTIPLE_CHOICE = 'multiple_choice';
     public const TYPE_TEXT = 'text';
+    public const TYPE_MATCHING = 'matching';
 
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -49,7 +49,6 @@ class Question extends Entity
         'category_id' => true,
         'difficulty_id' => true,
         'question_type' => true,
-        'original_language_id' => true,
         'source_type' => true,
         'created_by' => true,
         'is_active' => true,

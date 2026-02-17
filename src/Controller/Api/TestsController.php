@@ -9,6 +9,11 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: 'Tests', description: 'Operations about tests')]
 class TestsController extends AppController
 {
+    /**
+     * List public tests for the catalog.
+     *
+     * @return void
+     */
     #[OA\Get(
         path: '/api/v1/tests',
         summary: 'List all tests',
@@ -136,6 +141,12 @@ class TestsController extends AppController
         $this->jsonSuccess(['tests' => $tests]);
     }
 
+    /**
+     * Start a public test and create attempt.
+     *
+     * @param string|null $id Test id.
+     * @return void
+     */
     #[OA\Post(
         path: '/api/v1/tests/{id}/start',
         summary: 'Start a test (creates an attempt)',
@@ -154,8 +165,18 @@ class TestsController extends AppController
             required: false,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'lang', type: 'string', description: 'Language code (en, hu)', example: 'en'),
-                    new OA\Property(property: 'language_id', type: 'integer', description: 'Language id override', example: 2),
+                    new OA\Property(
+                        property: 'lang',
+                        type: 'string',
+                        description: 'Language code (en, hu)',
+                        example: 'en',
+                    ),
+                    new OA\Property(
+                        property: 'language_id',
+                        type: 'integer',
+                        description: 'Language id override',
+                        example: 2,
+                    ),
                 ],
             ),
         ),
@@ -245,6 +266,12 @@ class TestsController extends AppController
         ]);
     }
 
+    /**
+     * View a single public test with questions.
+     *
+     * @param string|null $id Test id.
+     * @return void
+     */
     #[OA\Get(
         path: '/api/v1/tests/{id}',
         summary: 'Get details of a specific test',
@@ -376,10 +403,15 @@ class TestsController extends AppController
             $answers = [];
             foreach ($question->answers as $answer) {
                 $aTrans = $answer->answer_translations[0] ?? null;
-                    $answers[] = [
-                        'id' => $answer->id,
-                        'content' => $aTrans?->content ?? 'No content',
-                    ];
+                $answerRow = [
+                    'id' => $answer->id,
+                    'content' => $aTrans?->content ?? 'No content',
+                ];
+                $matchSide = trim((string)($answer->match_side ?? ''));
+                if ($matchSide !== '') {
+                    $answerRow['match_side'] = $matchSide;
+                }
+                $answers[] = $answerRow;
             }
 
             $testResult['questions'][] = [

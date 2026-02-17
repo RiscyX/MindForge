@@ -124,7 +124,7 @@ return [
          */
         '_cake_model_' => [
             'className' => FileEngine::class,
-            'prefix' => 'myapp_cake_model_',
+            'prefix' => 'myapp_cake_model_v2_',
             'path' => CACHE . 'models' . DS,
             'serialize' => true,
             'duration' => '+1 years',
@@ -457,9 +457,24 @@ return [
         'defaultModel' => env('AI_DEFAULT_MODEL', 'gpt-4'),
         'visionModel' => env('AI_VISION_MODEL', ''),
         'allowedImageMimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
+        'allowedDocumentMimeTypes' => [
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.oasis.opendocument.text',
+            'text/plain',
+            'text/markdown',
+            'text/csv',
+            'application/json',
+            'application/xml',
+            'text/xml',
+        ],
+        'promptCacheConfig' => env('AI_PROMPT_CACHE_CONFIG', 'default'),
         // Upload constraints for async image-based generation.
         'maxImages' => (int)env('AI_MAX_IMAGES', '6'),
         'maxImageBytes' => (int)env('AI_MAX_IMAGE_BYTES', (string)(6 * 1024 * 1024)),
+        'maxDocuments' => (int)env('AI_MAX_DOCUMENTS', '4'),
+        'maxDocumentBytes' => (int)env('AI_MAX_DOCUMENT_BYTES', (string)(8 * 1024 * 1024)),
+        'maxDocumentExtractChars' => (int)env('AI_MAX_DOCUMENT_EXTRACT_CHARS', '20000'),
     ],
 
     'Uploads' => [

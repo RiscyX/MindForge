@@ -114,6 +114,31 @@ $this->Html->css('tests_builder', ['block' => 'css']);
                     </div>
                 <?php endforeach; ?>
                 </div>
+
+                <hr class="my-3">
+                <div>
+                    <label for="ai-supporting-documents" class="form-label mb-1">
+                        <?= __('Optional source files for AI generation') ?>
+                    </label>
+                    <input
+                        id="ai-supporting-documents"
+                        class="d-none"
+                        type="file"
+                        multiple
+                        accept=".pdf,.docx,.odt,.txt,.md,.csv,.json,.xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text,text/plain,text/markdown,text/csv,application/json,application/xml,text/xml"
+                    >
+                    <div class="mf-doc-upload mt-2" data-mf-doc-upload>
+                        <button type="button" class="btn btn-outline-light btn-sm" data-mf-doc-trigger>
+                            <?= __('Choose files') ?>
+                        </button>
+                        <div class="mf-doc-upload__meta" data-mf-doc-meta data-empty-label="<?= h(__('No files selected (optional).')) ?>" data-selected-label="<?= h(__('selected files')) ?>">
+                            <?= __('No files selected (optional).') ?>
+                        </div>
+                    </div>
+                    <div class="form-text">
+                        <?= __('Optional. Upload PDFs, DOCX, or text-like files to help AI generate more accurate quiz content.') ?>
+                    </div>
+                </div>
             </div>
          </div>
          <div class="d-grid gap-2 mf-test-builder__actions">
@@ -169,7 +194,8 @@ $this->Html->css('tests_builder', ['block' => 'css']);
     const questionTypes = {
         TRUE_FALSE: '<?= Question::TYPE_TRUE_FALSE ?>',
         MULTIPLE_CHOICE: '<?= Question::TYPE_MULTIPLE_CHOICE ?>',
-        TEXT: '<?= Question::TYPE_TEXT ?>'
+        TEXT: '<?= Question::TYPE_TEXT ?>',
+        MATCHING: '<?= Question::TYPE_MATCHING ?>'
     };
     const aiStrings = {
         generateTitle: '<?= __('Generate Test with AI') ?>',
@@ -180,6 +206,7 @@ $this->Html->css('tests_builder', ['block' => 'css']);
         successTitle: '<?= __('Success!') ?>',
         successMessage: '<?= __('Test generated successfully.') ?>',
         errorTitle: '<?= __('Error') ?>',
+        requestFailedPrefix: '<?= __('Request failed:') ?>',
         unknownError: '<?= __('Unknown error occurred') ?>',
         limitReachedMessage: '<?= __('AI generation limit reached. Limit resets tomorrow.') ?>',
         translateTitle: '<?= __('Translate Test with AI') ?>',

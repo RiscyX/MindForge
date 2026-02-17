@@ -3449,3 +3449,117 @@ msgstr "Ismeretlen hiba történt"
 
 #~ msgid "Os"
 #~ msgstr "Operációs rendszer"
+
+msgid "Optional source files for AI generation"
+msgstr "Opcionális forrásfájlok AI-generáláshoz"
+
+msgid "No files selected (optional)."
+msgstr "Nincs fájl kiválasztva (opcionális)."
+
+msgid "Choose files"
+msgstr "Fájlok kiválasztása"
+
+msgid "selected files"
+msgstr "kiválasztott fájl"
+
+msgid "Optional. Upload PDFs, DOCX, or text-like files to help AI generate more accurate quiz content."
+msgstr "Opcionális. Tölts fel PDF, DOCX vagy szöveges fájlokat, hogy az AI pontosabb kvíztartalmat tudjon generálni."
+
+msgid "(no match)"
+msgstr "(nincs párosítás)"
+
+msgid "Abort attempt"
+msgstr "Próbálkozás megszakítása"
+
+msgid "AI explanation limit reached for today. Please try again tomorrow."
+msgstr "A mai AI-magyarázat limit elfogyott. Próbáld újra holnap."
+
+msgid "Answer record not found."
+msgstr "A válasz rekord nem található."
+
+msgid "Are you sure you want to abort this attempt? Your current progress will be lost."
+msgstr "Biztosan megszakítod ezt a próbálkozást? Az aktuális haladás elveszik."
+
+msgid "Attempt aborted."
+msgstr "A próbálkozás megszakítva."
+
+msgid "Back to Tests"
+msgstr "Vissza a tesztekhez"
+
+msgid "Build questions, translations, and publishing settings in one flow."
+msgstr "Építsd fel a kérdéseket, fordításokat és publikálási beállításokat egy folyamatban."
+
+msgid "Choose a match"
+msgstr "Válassz párost"
+
+msgid "Could not abort this attempt. Please try again."
+msgstr "Nem sikerült megszakítani ezt a próbálkozást. Kérjük, próbáld újra."
+
+msgid "Create Quiz"
+msgstr "Kvíz létrehozása"
+
+msgid "Describe the test you want to create (topic, difficulty, number of questions, etc.)"
+msgstr "Írd le a létrehozni kívánt tesztet (téma, nehézség, kérdések száma stb.)."
+
+msgid "Describe the test you want to create or update (topic, difficulty, number of questions, etc.)"
+msgstr "Írd le a létrehozni vagy frissíteni kívánt tesztet (téma, nehézség, kérdések száma stb.)."
+
+msgid "E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty."
+msgstr "Pl.: Készíts 10 kérdéses tesztet az ókori Róma történelméről, katonai csatákra fókuszálva, közepes nehézséggel."
+
+msgid "Edit Quiz"
+msgstr "Kvíz szerkesztése"
+
+msgid "Explain with AI"
+msgstr "Magyarázat AI-val"
+
+msgid "Explanation is available after submission."
+msgstr "Magyarázat csak beküldés után érhető el."
+
+msgid "Generating..."
+msgstr "Generálás..."
+
+msgid "Matching options are not configured for this question."
+msgstr "Ehhez a kérdéshez nincs beállítva párosítási opció."
+
+msgid "Matching pairs"
+msgstr "Párosítások"
+
+msgid "No category found"
+msgstr "Nincs találat kategóriára"
+
+msgid "Please choose a category from the list."
+msgstr "Kérjük, válassz kategóriát a listából."
+
+msgid "Please log in to manage attempts."
+msgstr "Kérjük, jelentkezz be a próbálkozások kezeléséhez."
+
+msgid "Please log in."
+msgstr "Kérjük, jelentkezz be."
+
+msgid "Question #{0}"
+msgstr "Kérdés #{0}"
+
+msgid "Question not found."
+msgstr "A kérdés nem található."
+
+msgid "Request failed:"
+msgstr "A kérés sikertelen:"
+
+msgid "Start typing category..."
+msgstr "Kezdd el gépelni a kategóriát..."
+
+msgid "This attempt is already finished and cannot be aborted."
+msgstr "Ez a próbálkozás már lezárult, nem szakítható meg."
+
+msgid "This will translate the current test content into all configured languages."
+msgstr "Ez lefordítja az aktuális teszttartalmat az összes beállított nyelvre."
+
+msgid "Update quiz details, questions, and translations with consistent styling."
+msgstr "Frissítsd a kvíz adatait, kérdéseit és fordításait egységes megjelenéssel."
+
+msgid "Useful when you want to understand why your answer was wrong/right."
+msgstr "Hasznos, ha szeretnéd megérteni, miért volt helyes vagy hibás a válaszod."
+
+msgid "You do not have access to quiz statistics."
+msgstr "Nincs hozzáférésed a kvíz statisztikáihoz."

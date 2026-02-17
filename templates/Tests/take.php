@@ -82,6 +82,18 @@ $totalQuestions = count($questionsList);
             if (!empty($question->question_translations)) {
                 $qText = (string)($question->question_translations[0]->content ?? '');
             }
+
+            $answerText = static function ($answer): string {
+                $txt = '';
+                if (!empty($answer->answer_translations)) {
+                    $txt = (string)($answer->answer_translations[0]->content ?? '');
+                }
+                if ($txt === '' && isset($answer->source_text)) {
+                    $txt = (string)$answer->source_text;
+                }
+
+                return $txt;
+            };
         ?>
             <section class="mf-quiz-step" data-mf-step="<?= h((string)($i - 1)) ?>" <?= $i === 1 ? '' : 'hidden' ?> >
                 <div class="mf-quiz-question">
@@ -96,9 +108,99 @@ $totalQuestions = count($questionsList);
                         rows="3"
                         placeholder="<?= h(__('Type your answer…')) ?>"
                     ></textarea>
+                    <?php elseif ((string)$question->question_type === Question::TYPE_MATCHING) : ?>
+                    <?php
+                    $leftAnswers = [];
+                    $rightAnswers = [];
+                    $allAnswers = array_values((array)($question->answers ?? []));
+                    foreach ($allAnswers as $idx => $answer) {
+                        $side = trim((string)($answer->match_side ?? ''));
+                        if ($side === '') {
+                            $side = ($idx % 2 === 0) ? 'left' : 'right';
+                        }
+                        if ($side === 'left') {
+                            $leftAnswers[] = $answer;
+                        } elseif ($side === 'right') {
+                            $rightAnswers[] = $answer;
+                        }
+                    }
+
+                    usort($rightAnswers, static function ($a, $b) use ($attempt, $qid): int {
+                        $attemptId = (int)($attempt->id ?? 0);
+                        $aId = (int)($a->id ?? 0);
+                        $bId = (int)($b->id ?? 0);
+                        $aKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $qid . ':right:' . $aId);
+                        $bKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $qid . ':right:' . $bId);
+
+                        if ($aKey === $bKey) {
+                            return $aId <=> $bId;
+                        }
+
+                        return $aKey <=> $bKey;
+                    });
+                    usort($leftAnswers, static function ($a, $b) use ($attempt, $qid): int {
+                        $attemptId = (int)($attempt->id ?? 0);
+                        $aId = (int)($a->id ?? 0);
+                        $bId = (int)($b->id ?? 0);
+                        $aKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $qid . ':left:' . $aId);
+                        $bKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $qid . ':left:' . $bId);
+
+                        if ($aKey === $bKey) {
+                            return $aId <=> $bId;
+                        }
+
+                        return $aKey <=> $bKey;
+                    });
+                    ?>
+                    <?php if (!$leftAnswers || !$rightAnswers) : ?>
+                        <div class="mf-muted"><?= __('Matching options are not configured for this question.') ?></div>
                     <?php else : ?>
+                        <div class="row g-3 mt-1">
+                            <?php foreach ($leftAnswers as $left) : ?>
+                                <?php $leftId = (int)$left->id; ?>
+                                <div class="col-12">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <div class="text-white" style="min-width: 220px; font-weight: 600;">
+                                            <?= h($answerText($left) !== '' ? $answerText($left) : __('(empty)')) ?>
+                                        </div>
+                                        <div class="mf-muted">&rarr;</div>
+                                        <select
+                                            class="form-select"
+                                            style="max-width: 360px;"
+                                            name="answers[<?= h((string)$qid) ?>][pairs][<?= h((string)$leftId) ?>]"
+                                        >
+                                            <option value=""><?= h(__('Choose a match')) ?></option>
+                                            <?php foreach ($rightAnswers as $right) : ?>
+                                                <?php $rightId = (int)$right->id; ?>
+                                                <option value="<?= h((string)$rightId) ?>">
+                                                    <?= h($answerText($right) !== '' ? $answerText($right) : __('(empty)')) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php else : ?>
+                    <?php
+                    $optionAnswers = array_values((array)($question->answers ?? []));
+                    usort($optionAnswers, static function ($a, $b) use ($attempt, $qid): int {
+                        $attemptId = (int)($attempt->id ?? 0);
+                        $aId = (int)($a->id ?? 0);
+                        $bId = (int)($b->id ?? 0);
+                        $aKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $qid . ':option:' . $aId);
+                        $bKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $qid . ':option:' . $bId);
+
+                        if ($aKey === $bKey) {
+                            return $aId <=> $bId;
+                        }
+
+                        return $aKey <=> $bKey;
+                    });
+                    ?>
                     <div class="mf-quiz-options">
-                        <?php foreach (($question->answers ?? []) as $answer) : ?>
+                        <?php foreach ($optionAnswers as $answer) : ?>
                         <?php
                         $aid = (int)$answer->id;
                         $aText = '';

@@ -12,6 +12,8 @@ use Cake\ORM\Entity;
  * @property int $question_id
  * @property string $source_type
  * @property bool $is_correct
+ * @property string|null $match_side
+ * @property int|null $match_group
  * @property string|null $source_text
  * @property int|null $position
  * @property \Cake\I18n\DateTime $created_at
@@ -36,6 +38,8 @@ class Answer extends Entity
         'question_id' => true,
         'source_type' => true,
         'is_correct' => true,
+        'match_side' => true,
+        'match_group' => true,
         'source_text' => true,
         'position' => true,
         'created_at' => true,
