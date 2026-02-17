@@ -233,10 +233,10 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
             'selectAll' => [
                 'checkboxId' => 'mfAiRequestsSelectAll',
                 'linkId' => 'mfAiRequestsSelectAllLink',
-                'text' => __('Összes bejelölése'),
+                'text' => __('Select all'),
             ],
             'bulk' => [
-                'label' => __('A kijelöltekkel végzendő művelet:'),
+                'label' => __('Action for selected items:'),
                 'formId' => 'mfAiRequestsBulkForm',
                 'buttons' => [
                     [

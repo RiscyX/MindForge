@@ -15,6 +15,6 @@ if (!empty($params['class'])) {
 }
 ?>
 
-<div class="<?= h($flashClass) ?>" data-mf-flash role="alert" onclick="this.remove();">
+<div class="<?= h($flashClass) ?>" data-mf-flash role="alert">
     <div class="mf-flash__message"><?= $message ?></div>
 </div>

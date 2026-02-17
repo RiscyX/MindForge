@@ -12,9 +12,9 @@ $bulk = $bulk ?? [];
 
 $selectAllCheckboxId = $selectAll['checkboxId'] ?? 'mfSelectAll';
 $selectAllLinkId = $selectAll['linkId'] ?? 'mfSelectAllLink';
-$selectAllText = $selectAll['text'] ?? __('Összes bejelölése');
+$selectAllText = $selectAll['text'] ?? __('Select all');
 
-$bulkLabel = $bulk['label'] ?? __('A kijelöltekkel végzendő művelet:');
+$bulkLabel = $bulk['label'] ?? __('Action for selected items:');
 $bulkFormId = $bulk['formId'] ?? null;
 $buttons = $bulk['buttons'] ?? [];
 
@@ -40,6 +40,7 @@ $containerClass = $containerClass ?? 'd-flex align-items-center gap-3 flex-wrap 
         <?php foreach ($buttons as $button) : ?>
             <?php
                 $attrs = $button['attrs'] ?? [];
+                $escapeTitle = array_key_exists('escapeTitle', $button) ? (bool)$button['escapeTitle'] : true;
                 $attrs += [
                     'type' => 'submit',
                     'name' => $button['name'] ?? 'bulk_action',
@@ -52,7 +53,7 @@ $containerClass = $containerClass ?? 'd-flex align-items-center gap-3 flex-wrap 
             ?>
             <?= $this->Form->button(
                 (string)($button['label'] ?? ''),
-                $attrs + ['escapeTitle' => true],
+                $attrs + ['escapeTitle' => $escapeTitle],
             ) ?>
         <?php endforeach; ?>
     </div>

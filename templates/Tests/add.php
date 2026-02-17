@@ -74,7 +74,7 @@ $this->Html->css('tests_builder', ['block' => 'css']);
         <div class="card mb-4 mf-test-builder__panel">
             <div class="mf-test-builder__panel-header">
                  <h5 class="mb-0"><?= __('Questions') ?></h5>
-                 <button type="button" class="btn btn-sm btn-primary" onclick="addQuestion()"><i class="bi bi-plus-circle me-1"></i><?= __('Add Question') ?></button>
+                 <button type="button" class="btn btn-sm btn-primary" data-mf-add-question><i class="bi bi-plus-circle me-1"></i><?= __('Add Question') ?></button>
             </div>
             <div class="mf-test-builder__panel-body">
                  <div id="questions-container">
@@ -164,64 +164,57 @@ $this->Html->css('tests_builder', ['block' => 'css']);
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    // Pass PHP data to JS
-    const languages = <?= json_encode($languages) ?>;
-    const languagesMeta = <?= json_encode($languagesMeta ?? []) ?>;
-    const categoryComboboxMap = <?= json_encode($categoryOptions) ?>;
-    const categoryComboboxSelectedId = <?= (int)$currentCategoryId ?>;
-    const categoryComboboxNoResults = '<?= __('No category found') ?>';
-    const categoryComboboxInvalid = '<?= __('Please choose a category from the list.') ?>';
-    const trueFalseTranslations = (() => {
-        const out = {};
-        (languagesMeta || []).forEach(lang => {
-            const id = Number(lang.id);
-            const code = String(lang.code || '').toLowerCase();
-            if (!id) return;
-            if (code.startsWith('hu')) {
-                out[id] = { true: 'Igaz', false: 'Hamis' };
-            } else {
-                out[id] = { true: 'True', false: 'False' };
-            }
-        });
-        return out;
-    })();
-    const questionTypes = {
-        TRUE_FALSE: '<?= Question::TYPE_TRUE_FALSE ?>',
-        MULTIPLE_CHOICE: '<?= Question::TYPE_MULTIPLE_CHOICE ?>',
-        TEXT: '<?= Question::TYPE_TEXT ?>',
-        MATCHING: '<?= Question::TYPE_MATCHING ?>'
-    };
-    const aiStrings = {
-        generateTitle: '<?= __('Generate Test with AI') ?>',
-        inputLabel: '<?= __('Describe the test you want to create (topic, difficulty, number of questions, etc.)') ?>',
-        inputPlaceholder: '<?= __('E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty.') ?>',
-        confirmButtonText: '<?= __('Generate') ?>',
-        validationMessage: '<?= __('Please enter a prompt') ?>',
-        successTitle: '<?= __('Success!') ?>',
-        successMessage: '<?= __('Test generated successfully.') ?>',
-        errorTitle: '<?= __('Error') ?>',
-        requestFailedPrefix: '<?= __('Request failed:') ?>',
-        unknownError: '<?= __('Unknown error occurred') ?>',
-        limitReachedMessage: '<?= __('AI generation limit reached. Limit resets tomorrow.') ?>',
-        translateTitle: '<?= __('Translate Test with AI') ?>',
-        translateConfirmText: '<?= __('Translate') ?>',
-        translateInfo: '<?= __('This will translate the current test content into all configured languages.') ?>',
-        translateSuccess: '<?= __('Translations updated.') ?>',
-        translationInProgress: '<?= __('Translation in progress...') ?>'
-        ,trueLabel: '<?= __('True') ?>'
-        ,falseLabel: '<?= __('False') ?>'
-    };
-    const config = {
-        generateAiUrl: '<?= $this->Url->build(['action' => 'generateWithAi', 'lang' => $this->request->getParam('lang')]) ?>',
-        translateAiUrl: '<?= $this->Url->build(['action' => 'translateWithAi', 'lang' => $this->request->getParam('lang')]) ?>',
-        currentLanguageId: <?= (int)($currentLanguageId ?? 0) ?>,
-        aiGenerateLimited: <?= $aiGenerateLimited ? 'true' : 'false' ?>
-    };
-    
-    // Global state variables used by external JS
-    let questionIndex = 0;
-    let answerCounters = {};
-</script>
+<?php
+$builderConfig = [
+    'languages' => $languages,
+    'languagesMeta' => $languagesMeta ?? [],
+    'categoryComboboxMap' => $categoryOptions,
+    'categoryComboboxSelectedId' => (int)$currentCategoryId,
+    'categoryComboboxNoResults' => __('No category found'),
+    'categoryComboboxInvalid' => __('Please choose a category from the list.'),
+    'questionTypes' => [
+        'TRUE_FALSE' => Question::TYPE_TRUE_FALSE,
+        'MULTIPLE_CHOICE' => Question::TYPE_MULTIPLE_CHOICE,
+        'TEXT' => Question::TYPE_TEXT,
+        'MATCHING' => Question::TYPE_MATCHING,
+    ],
+    'aiStrings' => [
+        'generateTitle' => __('Generate Test with AI'),
+        'inputLabel' => __('Describe the test you want to create (topic, difficulty, number of questions, etc.)'),
+        'inputPlaceholder' => __('E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty.'),
+        'confirmButtonText' => __('Generate'),
+        'validationMessage' => __('Please enter a prompt'),
+        'successTitle' => __('Success!'),
+        'successMessage' => __('Test generated successfully.'),
+        'errorTitle' => __('Error'),
+        'requestFailedPrefix' => __('Request failed:'),
+        'unknownError' => __('Unknown error occurred'),
+        'limitReachedMessage' => __('AI generation limit reached. Limit resets tomorrow.'),
+        'translateTitle' => __('Translate Test with AI'),
+        'translateConfirmText' => __('Translate'),
+        'translateInfo' => __('This will translate the current test content into all configured languages.'),
+        'translateSuccess' => __('Translations updated.'),
+        'translationInProgress' => __('Translation in progress...'),
+        'trueLabel' => __('True'),
+        'falseLabel' => __('False'),
+    ],
+    'config' => [
+        'generateAiUrl' => $this->Url->build(['action' => 'generateWithAi', 'lang' => $this->request->getParam('lang')]),
+        'translateAiUrl' => $this->Url->build(['action' => 'translateWithAi', 'lang' => $this->request->getParam('lang')]),
+        'currentLanguageId' => (int)($currentLanguageId ?? 0),
+        'aiGenerateLimited' => $aiGenerateLimited,
+    ],
+];
+
+$builderConfigJson = json_encode(
+    $builderConfig,
+    JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES
+);
+if ($builderConfigJson === false) {
+    $builderConfigJson = '{}';
+}
+?>
+<script type="application/json" id="mf-tests-builder-config"><?= $builderConfigJson ?></script>
+<?= $this->Html->script('tests_builder_bootstrap') ?>
 <?= $this->Html->script('tests_category_autocomplete') ?>
 <?= $this->Html->script('tests_add') ?>

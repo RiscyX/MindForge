@@ -32,6 +32,11 @@ class AiRequestsController extends AppController
      */
     public function index()
     {
+        $redirect = $this->redirectToAdminPrefix();
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
         $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
 
         $contain = ['Users', 'Languages'];
@@ -113,6 +118,11 @@ class AiRequestsController extends AppController
      */
     public function bulk(): ?Response
     {
+        $redirect = $this->redirectToAdminPrefix();
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
         $this->request->allowMethod(['post']);
 
         $action = (string)$this->request->getData('bulk_action');
@@ -166,6 +176,11 @@ class AiRequestsController extends AppController
      */
     public function view(?string $id = null)
     {
+        $redirect = $this->redirectToAdminPrefix();
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
         $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
 
         $contain = ['Users', 'Languages'];
@@ -184,6 +199,11 @@ class AiRequestsController extends AppController
      */
     public function add()
     {
+        $redirect = $this->redirectToAdminPrefix();
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
         $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
 
         $aiRequest = $this->AiRequests->newEmptyEntity();
@@ -211,6 +231,11 @@ class AiRequestsController extends AppController
      */
     public function edit(?string $id = null)
     {
+        $redirect = $this->redirectToAdminPrefix();
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
         $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
 
         $aiRequest = $this->AiRequests->get($id, contain: []);
@@ -238,6 +263,11 @@ class AiRequestsController extends AppController
      */
     public function delete(?string $id = null): ?Response
     {
+        $redirect = $this->redirectToAdminPrefix();
+        if ($redirect !== null) {
+            return $redirect;
+        }
+
         $this->request->allowMethod(['post', 'delete']);
         $aiRequest = $this->AiRequests->get($id);
         if ($this->AiRequests->delete($aiRequest)) {
@@ -247,5 +277,34 @@ class AiRequestsController extends AppController
         }
 
         return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
+    }
+
+    /**
+     * @return \Cake\Http\Response|null
+     */
+    private function redirectToAdminPrefix(): ?Response
+    {
+        $prefix = (string)$this->request->getParam('prefix', '');
+        if ($prefix === 'Admin') {
+            return null;
+        }
+
+        $route = [
+            'prefix' => 'Admin',
+            'controller' => 'AiRequests',
+            'action' => (string)$this->request->getParam('action', 'index'),
+            'lang' => (string)$this->request->getParam('lang', 'en'),
+        ];
+
+        foreach ((array)$this->request->getParam('pass', []) as $arg) {
+            $route[] = $arg;
+        }
+
+        $query = (array)$this->request->getQueryParams();
+        if ($query !== []) {
+            $route['?'] = $query;
+        }
+
+        return $this->redirect($route);
     }
 }

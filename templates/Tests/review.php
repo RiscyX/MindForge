@@ -28,7 +28,7 @@ $questionsList = is_array($questions) ? $questions : iterator_to_array($question
 $totalQuestions = count($questionsList);
 ?>
 
-<div class="container py-3 py-lg-4">
+<div class="container py-3 py-lg-4" data-mf-csrf-token="<?= h($csrfToken) ?>">
     <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
         <div>
             <h1 class="h3 mb-1 text-white">
@@ -273,6 +273,7 @@ $totalQuestions = count($questionsList);
                                     type="button"
                                     class="btn btn-sm btn-outline-info"
                                     data-mf-ai-explain
+                                    data-loading-label="<?= h(__('Generating...')) ?>"
                                     data-url="<?= h($this->Url->build(['controller' => 'Tests', 'action' => 'explainAnswer', $attempt->id, $qid, 'lang' => $lang])) ?>"
                                     data-target="#<?= h($explanationTargetId) ?>"
                                 >
@@ -301,67 +302,5 @@ $totalQuestions = count($questionsList);
 </div>
 
 <?php $this->start('script'); ?>
-<script>
-(() => {
-  const steps = Array.from(document.querySelectorAll('[data-mf-step]'));
-  const prevBtn = document.querySelector('[data-mf-prev]');
-  const nextBtn = document.querySelector('[data-mf-next]');
-  if (!steps.length || !prevBtn || !nextBtn) return;
-
-  let idx = 0;
-  const render = () => {
-    steps.forEach((el, i) => { el.hidden = i !== idx; });
-    prevBtn.disabled = idx === 0;
-    nextBtn.disabled = idx === steps.length - 1;
-    steps[idx].scrollIntoView({ block: 'start', behavior: 'smooth' });
-  };
-
-  prevBtn.addEventListener('click', () => { if (idx > 0) { idx -= 1; render(); } });
-  nextBtn.addEventListener('click', () => { if (idx < steps.length - 1) { idx += 1; render(); } });
-
-  const csrfToken = <?= json_encode($csrfToken) ?>;
-  const explainButtons = Array.from(document.querySelectorAll('[data-mf-ai-explain]'));
-  explainButtons.forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const url = btn.getAttribute('data-url');
-      const targetSelector = btn.getAttribute('data-target');
-      if (!url || !targetSelector) return;
-      const target = document.querySelector(targetSelector);
-      if (!target) return;
-
-      const original = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = '<?= h(__('Generating...')) ?>';
-
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': csrfToken,
-          },
-          body: JSON.stringify({ force: false }),
-          credentials: 'same-origin',
-        });
-
-        const payload = await response.json();
-        if (!response.ok || !payload || !payload.success) {
-          throw new Error(payload && payload.message ? payload.message : 'Request failed');
-        }
-
-        target.hidden = false;
-        target.textContent = String(payload.explanation || '');
-      } catch (err) {
-        target.hidden = false;
-        target.textContent = String(err);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = original;
-      }
-    });
-  });
-
-  render();
-})();
-</script>
+<?= $this->Html->script('tests_review') ?>
 <?php $this->end(); ?>

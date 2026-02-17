@@ -7,14 +7,39 @@
  * @var array<string, string>|null $filters
  * @var array<int, string>|null $categoryOptions
  * @var array<int, string>|null $difficultyOptions
+ * @var array<string, mixed>|null $catalogPagination
+ * @var array<int, \App\Model\Entity\TestAttempt>|null $recentAttempts
+ * @var array<int, \App\Model\Entity\Test>|null $topQuizzes
  */
 
 $lang = $this->request->getParam('lang', 'en');
 
 $isCreatorCatalog = (bool)($isCreatorCatalog ?? false);
-$isCatalog = !$this->request->getParam('prefix');
+$prefix = (string)$this->request->getParam('prefix', '');
+$isCatalog = $prefix === '' || $prefix === 'QuizCreator';
+
+$catalogPagination = is_array($catalogPagination ?? null) ? $catalogPagination : [];
+$page = (int)($catalogPagination['page'] ?? 1);
+$perPage = (int)($catalogPagination['perPage'] ?? 12);
+$perPageOptions = (array)($catalogPagination['perPageOptions'] ?? [12, 24, 48]);
+$totalItems = (int)($catalogPagination['totalItems'] ?? 0);
+$totalPages = (int)($catalogPagination['totalPages'] ?? 1);
+$queryParams = (array)$this->request->getQueryParams();
+$recentAttempts = is_array($recentAttempts ?? null) ? $recentAttempts : [];
+$topQuizzes = is_array($topQuizzes ?? null) ? $topQuizzes : [];
+
+$q = (string)($filters['q'] ?? '');
+$selectedCategory = (string)($filters['category'] ?? '');
+$selectedDifficulty = (string)($filters['difficulty'] ?? '');
+$selectedVisibility = (string)($filters['visibility'] ?? '');
+$selectedSort = (string)($filters['sort'] ?? 'latest');
+
+$catalogTests = $isCatalog
+    ? (is_array($tests) ? $tests : iterator_to_array($tests))
+    : [];
 
 $this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
+$this->Html->css('tests_catalog', ['block' => 'css']);
 
 $this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
 $this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
@@ -35,16 +60,204 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             </div>
         </div>
 
-        <?php if ($isCreatorCatalog) : ?>
-            <?php
-            $q = (string)($filters['q'] ?? '');
-            $selectedCategory = (string)($filters['category'] ?? '');
-            $selectedDifficulty = (string)($filters['difficulty'] ?? '');
-            $selectedVisibility = (string)($filters['visibility'] ?? '');
-            $selectedSort = (string)($filters['sort'] ?? 'latest');
-            ?>
+        <?php if (!$isCreatorCatalog && $topQuizzes) : ?>
+            <section class="mf-quiz-card mf-top-quizzes mt-3" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.14;" aria-label="<?= h(__('Top quizzes')) ?>">
+                <div class="mf-quiz-card__cover">
+                    <div class="mf-quiz-card__cover-inner">
+                        <div class="mf-quiz-card__icon" aria-hidden="true">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
+                        <div class="mf-quiz-card__cover-meta">
+                            <h2 class="h5 text-white mb-1"><?= __('Top 10 quizzes') ?></h2>
+                            <div class="mf-muted small"><?= __('Most played') ?></div>
+                        </div>
+                        <div class="mf-quiz-card__rightmeta">
+                            <span class="mf-top-quizzes__count">
+                                <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                                <?= h((string)count($topQuizzes)) ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mf-quiz-card__content pt-0">
+                    <div class="mf-top-quizzes__list">
+                    <?php foreach ($topQuizzes as $idx => $topQuiz) : ?>
+                        <?php
+                        $topTitle = !empty($topQuiz->test_translations) ? (string)$topQuiz->test_translations[0]->title : __('Untitled quiz');
+                        $topCategory = $topQuiz->hasValue('category') && !empty($topQuiz->category->category_translations)
+                            ? (string)$topQuiz->category->category_translations[0]->name
+                            : __('Uncategorized');
+                        $topDifficulty = $topQuiz->hasValue('difficulty') && !empty($topQuiz->difficulty->difficulty_translations)
+                            ? (string)$topQuiz->difficulty->difficulty_translations[0]->name
+                            : '';
+                        $topAttempts = (int)($topQuiz->get('attempt_count') ?? 0);
+                        ?>
+                        <article class="mf-top-quiz-item">
+                            <div class="mf-top-quiz-item__left">
+                                <span class="mf-top-quiz-item__rank">#<?= h((string)($idx + 1)) ?></span>
+                                <div class="mf-top-quiz-item__meta">
+                                    <div class="mf-top-quiz-item__title" title="<?= h($topTitle) ?>"><?= h($topTitle) ?></div>
+                                    <div class="mf-top-quiz-item__sub">
+                                        <span><i class="bi bi-tag" aria-hidden="true"></i> <?= h($topCategory) ?></span>
+                                        <?php if ($topDifficulty !== '') : ?>
+                                            <span><i class="bi bi-speedometer2" aria-hidden="true"></i> <?= h($topDifficulty) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mf-top-quiz-item__right">
+                                <span class="mf-top-quiz-item__attempts" title="<?= h(__('Attempts')) ?>">
+                                    <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                                    <?= h((string)$topAttempts) ?>
+                                </span>
+                                <?= $this->Html->link(
+                                    __('Open'),
+                                    ['controller' => 'Tests', 'action' => 'details', $topQuiz->id, 'lang' => $lang],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
+
+        <?php if (!$isCreatorCatalog) : ?>
+            <div class="mf-quiz-card mf-attempt-widget mt-3" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.12;">
+                <div class="mf-attempt-widget__head">
+                    <div>
+                        <h2 class="h5 mb-1 text-white"><?= __('Last 5 attempts') ?></h2>
+                        <div class="mf-muted small"><?= __('Quick access to your latest results and scores.') ?></div>
+                    </div>
+                </div>
+
+                <?php if ($recentAttempts) : ?>
+                    <div class="mf-attempt-list mt-3">
+                        <?php foreach ($recentAttempts as $attempt) : ?>
+                            <?php
+                            $categoryName = $attempt->hasValue('category') && !empty($attempt->category->category_translations)
+                                ? (string)$attempt->category->category_translations[0]->name
+                                : __('Uncategorized');
+                            $quizTitle = $attempt->hasValue('test') && !empty($attempt->test->test_translations)
+                                ? (string)$attempt->test->test_translations[0]->title
+                                : __('Quiz');
+                            $scoreValue = $attempt->score !== null ? (float)$attempt->score : 0.0;
+                            $scoreLabel = $attempt->score !== null
+                                ? rtrim(rtrim((string)$attempt->score, '0'), '.') . '%'
+                                : '—';
+                            $scoreTone = $scoreValue >= 80 ? 'good' : ($scoreValue >= 50 ? 'mid' : 'low');
+                            ?>
+                            <article class="mf-attempt-item mf-attempt-item--<?= h($scoreTone) ?>">
+                                <div class="mf-attempt-item__left">
+                                    <div class="mf-attempt-item__title"><?= h($quizTitle) ?></div>
+                                    <div class="mf-attempt-item__meta">
+                                        <span><i class="bi bi-calendar3" aria-hidden="true"></i> <?= $attempt->finished_at ? h($attempt->finished_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?></span>
+                                        <span><i class="bi bi-tag" aria-hidden="true"></i> <?= h($categoryName) ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="mf-attempt-item__right">
+                                    <div class="mf-attempt-item__score" title="<?= h(__('Score')) ?>"><?= h($scoreLabel) ?></div>
+                                    <?= $this->Html->link(
+                                        __('Open result'),
+                                        ['controller' => 'Tests', 'action' => 'result', $attempt->id, 'lang' => $lang],
+                                        ['class' => 'btn btn-sm btn-primary'],
+                                    ) ?>
+                                </div>
+                            </article>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else : ?>
+                    <div class="mf-attempt-empty mt-3">
+                        <div class="mf-attempt-empty__title"><?= __('No attempts yet') ?></div>
+                        <div class="mf-muted mb-3"><?= __('Start your first test and your latest results will appear here.') ?></div>
+                        <?= $this->Html->link(
+                            __('Start test'),
+                            '#mf-catalog-quizzes',
+                            ['class' => 'btn btn-primary'],
+                        ) ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
             <div class="mf-admin-card p-3 mt-3">
                 <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
+                    <input type="hidden" name="per_page" value="<?= h((string)$perPage) ?>">
+
+                    <div class="col-12 col-xl-4">
+                        <?= $this->Form->control('q', [
+                            'label' => __('Search'),
+                            'value' => $q,
+                            'class' => 'form-control',
+                            'placeholder' => __('Title or description'),
+                        ]) ?>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-3">
+                        <label class="form-label" for="mf-category-combobox-input"><?= __('Category') ?></label>
+                        <?= $this->Form->hidden('category', ['id' => 'mf-category-id-hidden', 'value' => $selectedCategory !== '' ? (int)$selectedCategory : null]) ?>
+                        <div class="mf-test-combobox" id="mf-category-combobox" data-mf-combobox="category-filter">
+                            <input
+                                id="mf-category-combobox-input"
+                                type="text"
+                                class="form-control"
+                                autocomplete="off"
+                                spellcheck="false"
+                                placeholder="<?= h(__('Start typing category...')) ?>"
+                                value="<?= h($selectedCategory !== '' && isset($categoryOptions[(int)$selectedCategory]) ? (string)$categoryOptions[(int)$selectedCategory] : '') ?>"
+                                aria-expanded="false"
+                                aria-controls="mf-category-combobox-list"
+                            >
+                            <div class="mf-test-combobox__panel" id="mf-category-combobox-list" role="listbox"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-2">
+                        <?= $this->Form->control('difficulty', [
+                            'label' => __('Difficulty'),
+                            'type' => 'select',
+                            'empty' => __('All'),
+                            'options' => $difficultyOptions ?? [],
+                            'value' => $selectedDifficulty,
+                            'class' => 'form-select',
+                        ]) ?>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-2">
+                        <?= $this->Form->control('sort', [
+                            'label' => __('Sort'),
+                            'type' => 'select',
+                            'options' => [
+                                'latest' => __('Latest'),
+                                'oldest' => __('Oldest'),
+                                'updated' => __('Recently updated'),
+                            ],
+                            'value' => $selectedSort,
+                            'class' => 'form-select',
+                        ]) ?>
+                    </div>
+
+                    <div class="col-12 col-xl-1 d-grid">
+                        <?= $this->Form->button(__('Apply'), ['class' => 'btn mf-catalog-apply-btn']) ?>
+                    </div>
+                    <div class="col-12">
+                        <?= $this->Html->link(
+                            __('Reset filters'),
+                            ['action' => 'index', 'lang' => $lang, '?' => ['per_page' => $perPage]],
+                            ['class' => 'btn btn-sm btn-outline-light mf-catalog-reset-btn'],
+                        ) ?>
+                    </div>
+                <?= $this->Form->end() ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($isCreatorCatalog) : ?>
+            <div class="mf-admin-card p-3 mt-3">
+                <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
+                    <input type="hidden" name="per_page" value="<?= h((string)$perPage) ?>">
                     <div class="col-12 col-xl-3">
                         <?= $this->Form->control('q', [
                             'label' => __('Search'),
@@ -100,17 +313,17 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                         ]) ?>
                     </div>
                     <div class="col-12 col-xl-1 d-grid">
-                        <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
+                        <?= $this->Form->button(__('Apply'), ['class' => 'btn mf-catalog-apply-btn']) ?>
                     </div>
                     <div class="col-12">
-                        <?= $this->Html->link(__('Reset filters'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-sm btn-outline-light']) ?>
+                        <?= $this->Html->link(__('Reset filters'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-sm btn-outline-light mf-catalog-reset-btn']) ?>
                     </div>
                 <?= $this->Form->end() ?>
             </div>
         <?php endif; ?>
 
-        <div class="mf-quiz-grid mt-3">
-            <?php foreach ($tests as $test) : ?>
+        <div id="mf-catalog-quizzes" class="mf-quiz-grid mt-3">
+            <?php foreach ($catalogTests as $test) : ?>
                 <?php
                 $title = !empty($test->test_translations) ? (string)$test->test_translations[0]->title : '';
                 $description = !empty($test->test_translations) ? (string)$test->test_translations[0]->description : '';
@@ -221,7 +434,115 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                     </div>
                 </article>
             <?php endforeach; ?>
+
+            <?php if (count($catalogTests) === 0) : ?>
+                <div class="mf-admin-card p-4">
+                    <div class="h5 text-white mb-2"><?= __('No quizzes found') ?></div>
+                    <div class="mf-muted mb-3">
+                        <?= $isCreatorCatalog
+                            ? __('You have not created any quizzes yet.')
+                            : __('There are no available quizzes right now.') ?>
+                    </div>
+                    <?= $this->Html->link(
+                        $isCreatorCatalog ? __('Create quiz') : __('Start a quiz'),
+                        $isCreatorCatalog
+                            ? ['controller' => 'Tests', 'action' => 'add', 'lang' => $lang]
+                            : ['controller' => 'Tests', 'action' => 'index', 'lang' => $lang],
+                        ['class' => 'btn btn-primary'],
+                    ) ?>
+                </div>
+            <?php endif; ?>
         </div>
+
+        <?php
+        $shownCount = count($catalogTests);
+        $windowSize = 5;
+        $startPage = max(1, $page - (int)floor($windowSize / 2));
+        $endPage = min($totalPages, $startPage + $windowSize - 1);
+        $startPage = max(1, $endPage - $windowSize + 1);
+        ?>
+        <div class="mf-catalog-footer d-flex align-items-center justify-content-between gap-3 flex-wrap mt-3">
+            <div class="mf-catalog-footer__meta mf-muted small">
+                <?= __('Showing {0} of {1}', $shownCount, $totalItems) ?>
+            </div>
+
+            <div class="mf-catalog-per-page">
+                <?= $this->Form->create(null, ['type' => 'get', 'class' => 'd-flex align-items-center gap-2']) ?>
+                    <?php foreach ($queryParams as $queryKey => $queryValue) : ?>
+                        <?php if ($queryKey === 'per_page' || $queryKey === 'page') : ?>
+                            <?php continue; ?>
+                        <?php endif; ?>
+                        <?php if (is_scalar($queryValue)) : ?>
+                            <input type="hidden" name="<?= h((string)$queryKey) ?>" value="<?= h((string)$queryValue) ?>">
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+
+                    <label class="small mf-muted" for="mfCatalogPerPage"><?= __('Show') ?></label>
+                    <select id="mfCatalogPerPage" name="per_page" class="form-select form-select-sm">
+                        <?php foreach ($perPageOptions as $option) : ?>
+                            <?php $optionValue = (int)$option; ?>
+                            <option value="<?= $optionValue ?>" <?= $perPage === $optionValue ? 'selected' : '' ?>>
+                                <?= $optionValue ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="btn btn-sm mf-catalog-apply-btn mf-catalog-apply-btn--compact"><?= __('Apply') ?></button>
+                <?= $this->Form->end() ?>
+            </div>
+
+            <?php if ($totalPages > 1) : ?>
+                <nav class="mf-catalog-pagination" aria-label="<?= h(__('Quizzes pagination')) ?>">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                            <?= $this->Html->link(
+                                __('Previous'),
+                                ['action' => 'index', 'lang' => $lang, '?' => array_merge($queryParams, ['page' => max(1, $page - 1), 'per_page' => $perPage])],
+                                ['class' => 'page-link'],
+                            ) ?>
+                        </li>
+
+                        <?php for ($p = $startPage; $p <= $endPage; $p++) : ?>
+                            <li class="page-item <?= $p === $page ? 'active' : '' ?>">
+                                <?= $this->Html->link(
+                                    (string)$p,
+                                    ['action' => 'index', 'lang' => $lang, '?' => array_merge($queryParams, ['page' => $p, 'per_page' => $perPage])],
+                                    ['class' => 'page-link'],
+                                ) ?>
+                            </li>
+                        <?php endfor; ?>
+
+                        <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+                            <?= $this->Html->link(
+                                __('Next'),
+                                ['action' => 'index', 'lang' => $lang, '?' => array_merge($queryParams, ['page' => min($totalPages, $page + 1), 'per_page' => $perPage])],
+                                ['class' => 'page-link'],
+                            ) ?>
+                        </li>
+                    </ul>
+                </nav>
+            <?php endif; ?>
+        </div>
+
+        <?php if (!$isCreatorCatalog) : ?>
+            <?php
+            $catalogFilterConfig = [
+                'categoryComboboxMap' => $categoryOptions ?? [],
+                'categoryComboboxSelectedId' => $selectedCategory !== '' ? (int)$selectedCategory : 0,
+                'categoryComboboxAllLabel' => __('All categories'),
+                'categoryComboboxNoResults' => __('No category found'),
+                'categoryComboboxInvalid' => __('Please choose a category from the list.'),
+            ];
+            $catalogFilterConfigJson = json_encode(
+                $catalogFilterConfig,
+                JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES,
+            );
+            if ($catalogFilterConfigJson === false) {
+                $catalogFilterConfigJson = '{}';
+            }
+            ?>
+            <script type="application/json" id="mf-tests-catalog-filter-config"><?= $catalogFilterConfigJson ?></script>
+            <?= $this->Html->script('tests_catalog_filters') ?>
+        <?php endif; ?>
     </div>
 
 <?php else : ?>
@@ -351,10 +672,10 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
         'selectAll' => [
             'checkboxId' => 'mfTestsSelectAll',
             'linkId' => 'mfTestsSelectAllLink',
-            'text' => __('Összes bejelölése'),
+            'text' => __('Select all'),
         ],
         'bulk' => [
-            'label' => __('A kijelöltekkel végzendő művelet:'),
+            'label' => __('Action for selected items:'),
             'formId' => 'mfTestsBulkForm',
             'buttons' => [
                 [

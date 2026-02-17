@@ -65,7 +65,7 @@ $this->assign('title', __('Quiz Creator'));
             <div class="mf-quiz-card__actions">
                 <?= $this->Html->link(
                     __('Open Quizzes'),
-                    ['prefix' => false, 'controller' => 'Tests', 'action' => 'index', 'lang' => $lang],
+                    ['prefix' => 'QuizCreator', 'controller' => 'Tests', 'action' => 'index', 'lang' => $lang],
                     ['class' => 'btn btn-primary mf-quiz-card__cta'],
                 ) ?>
             </div>

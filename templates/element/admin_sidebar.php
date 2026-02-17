@@ -41,19 +41,19 @@ $usersRoute = [
     'lang' => $lang,
 ];
 $categoriesRoute = [
-    'prefix' => false,
+    'prefix' => $isAdmin ? 'Admin' : false,
     'controller' => 'Categories',
     'action' => 'index',
     'lang' => $lang,
 ];
 $difficultiesRoute = [
-    'prefix' => false,
+    'prefix' => $isAdmin ? 'Admin' : false,
     'controller' => 'Difficulties',
     'action' => 'index',
     'lang' => $lang,
 ];
 $languagesRoute = [
-    'prefix' => false,
+    'prefix' => $isAdmin ? 'Admin' : false,
     'controller' => 'Languages',
     'action' => 'index',
     'lang' => $lang,
@@ -65,28 +65,16 @@ $testsRoute = [
     'action' => 'index',
     'lang' => $lang,
 ];
-$questionsRoute = [
-    'prefix' => false,
-    'controller' => 'Questions',
-    'action' => 'index',
-    'lang' => $lang,
-];
-$answersRoute = [
-    'prefix' => false,
-    'controller' => 'Answers',
-    'action' => 'index',
-    'lang' => $lang,
-];
 
 $deviceLogsRoute = [
-    'prefix' => false,
+    'prefix' => 'Admin',
     'controller' => 'DeviceLogs',
     'action' => 'index',
     'lang' => $lang,
 ];
 
 $aiRequestsRoute = [
-    'prefix' => false,
+    'prefix' => 'Admin',
     'controller' => 'AiRequests',
     'action' => 'index',
     'lang' => $lang,
@@ -100,8 +88,6 @@ $renderNav = function () use (
     $categoriesRoute,
     $difficultiesRoute,
     $testsRoute,
-    $questionsRoute,
-    $answersRoute,
     $languagesRoute,
     $deviceLogsRoute,
     $aiRequestsRoute
@@ -131,16 +117,6 @@ $renderNav = function () use (
                     __('Tests'),
                     $testsRoute,
                     ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : '')],
-                ) ?>
-                <?= $this->Html->link(
-                    __('Questions'),
-                    $questionsRoute,
-                    ['class' => 'mf-admin-nav__link' . ($isRoute($questionsRoute) ? ' active' : '')],
-                ) ?>
-                <?= $this->Html->link(
-                    __('Answers'),
-                    $answersRoute,
-                    ['class' => 'mf-admin-nav__link' . ($isRoute($answersRoute) ? ' active' : '')],
                 ) ?>
                 <?= $this->Html->link(
                     __('Languages'),
@@ -183,16 +159,6 @@ $renderNav = function () use (
                     __('Quizzes'),
                     $testsRoute,
                     ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : '')],
-                ) ?>
-                <?= $this->Html->link(
-                    __('Questions'),
-                    $questionsRoute,
-                    ['class' => 'mf-admin-nav__link' . ($isRoute($questionsRoute) ? ' active' : '')],
-                ) ?>
-                <?= $this->Html->link(
-                    __('Answers'),
-                    $answersRoute,
-                    ['class' => 'mf-admin-nav__link' . ($isRoute($answersRoute) ? ' active' : '')],
                 ) ?>
             </nav>
         </div>

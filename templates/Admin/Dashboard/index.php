@@ -161,10 +161,10 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
             'selectAll' => [
                 'checkboxId' => 'mfEventsSelectAll',
                 'linkId' => 'mfEventsSelectAllLink',
-                'text' => __('Összes bejelölése'),
+                'text' => __('Select all'),
             ],
             'bulk' => [
-                'label' => __('A kijelöltekkel végzendő művelet:'),
+                'label' => __('Action for selected items:'),
                 'formId' => 'mfEventsBulkForm',
                 'buttons' => [
                     [

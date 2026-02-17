@@ -277,13 +277,40 @@ class UsersController extends AppController
      */
     public function index(): void
     {
-        $users = $this->fetchTable('Users')
+        $filters = [
+            'q' => trim((string)$this->request->getQuery('q', '')),
+        ];
+
+        $limitOptions = [10, 25, 50, 100];
+        $limit = (int)$this->request->getQuery('limit', 10);
+        if (!in_array($limit, $limitOptions, true)) {
+            $limit = 10;
+        }
+
+        $query = $this->fetchTable('Users')
             ->find()
             ->contain(['Roles'])
-            ->orderDesc('Users.created_at')
-            ->all();
+            ->orderDesc('Users.created_at');
 
-        $this->set(compact('users'));
+        if ($filters['q'] !== '') {
+            $qLike = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $filters['q']) . '%';
+            $query->where([
+                'OR' => [
+                    'Users.username LIKE' => $qLike,
+                    'Users.email LIKE' => $qLike,
+                ],
+            ]);
+        }
+
+        $this->paginate = [
+            'limit' => $limit,
+            'maxLimit' => 100,
+            'order' => ['Users.created_at' => 'DESC'],
+        ];
+
+        $users = $this->paginate($query);
+
+        $this->set(compact('users', 'filters', 'limit', 'limitOptions'));
     }
 
     /**

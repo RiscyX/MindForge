@@ -131,7 +131,7 @@ class AppController extends Controller
         }
 
         if ($prefix === 'QuizCreator') {
-            return $controller === 'Dashboard';
+            return in_array($controller, ['Dashboard', 'Tests'], true);
         }
 
         if ($prefix === 'Admin') {

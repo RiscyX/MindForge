@@ -64,11 +64,11 @@
                             <td><?= h($aiRequest->status) ?></td>
                             <td><?= h($aiRequest->created_at) ?></td>
                             <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'AiRequests', 'action' => 'view', $aiRequest->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'AiRequests', 'action' => 'edit', $aiRequest->id]) ?>
+                                <?= $this->Html->link(__('View'), ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' => 'view', $aiRequest->id, 'lang' => $lang ?? 'en']) ?>
+                                <?= $this->Html->link(__('Edit'), ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' => 'edit', $aiRequest->id, 'lang' => $lang ?? 'en']) ?>
                                 <?= $this->Form->postLink(
                                     __('Delete'),
-                                    ['controller' => 'AiRequests', 'action' => 'delete', $aiRequest->id],
+                                    ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' => 'delete', $aiRequest->id, 'lang' => $lang ?? 'en'],
                                     [
                                         'method' => 'delete',
                                         'confirm' => __('Are you sure you want to delete # {0}?', $aiRequest->id),

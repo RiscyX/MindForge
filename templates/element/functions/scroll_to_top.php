@@ -29,6 +29,10 @@ $scrollContainerSelector = is_string($scrollContainerSelector) && $scrollContain
     id="<?= h($buttonId) ?>"
     type="button"
     class="mf-scroll-top"
+    data-mf-scroll-top="1"
+    data-mf-show-after-px="<?= h((string)$showAfterPx) ?>"
+    data-mf-scroll-behavior="<?= h($scrollBehavior) ?>"
+    <?= $scrollContainerSelector !== null ? 'data-mf-scroll-container-selector="' . h($scrollContainerSelector) . '"' : '' ?>
     aria-label="<?= h(__('Scroll to top')) ?>"
     title="<?= h(__('Scroll to top')) ?>"
 >
@@ -96,70 +100,4 @@ $scrollContainerSelector = is_string($scrollContainerSelector) && $scrollContain
 }
 </style>
 
-<script>
-(() => {
-    const buttonId = <?= json_encode($buttonId, JSON_UNESCAPED_SLASHES) ?>;
-    const showAfterPx = <?= json_encode($showAfterPx, JSON_UNESCAPED_SLASHES) ?>;
-    const scrollBehavior = <?= json_encode($scrollBehavior, JSON_UNESCAPED_SLASHES) ?>;
-    const scrollContainerSelector = <?= json_encode($scrollContainerSelector, JSON_UNESCAPED_SLASHES) ?>;
-
-    const button = document.getElementById(buttonId);
-    if (!button) return;
-
-    const primaryContainer = scrollContainerSelector ? (document.querySelector(scrollContainerSelector) || null) : null;
-
-    const getWindowScrollTop = () => window.scrollY || document.documentElement.scrollTop || 0;
-    const getElementScrollTop = (el) => (el && typeof el.scrollTop === 'number') ? el.scrollTop : 0;
-
-    const getEffectiveScrollTop = () => {
-        return Math.max(getWindowScrollTop(), getElementScrollTop(primaryContainer));
-    };
-
-    const updateVisibility = () => {
-        const top = getEffectiveScrollTop();
-        button.classList.toggle('is-visible', top > showAfterPx);
-    };
-
-    const scrollElementToTop = (el) => {
-        if (!el) return false;
-        if (getElementScrollTop(el) <= 0) return false;
-
-        try {
-            el.scrollTo({ top: 0, behavior: scrollBehavior });
-        } catch {
-            el.scrollTop = 0;
-        }
-
-        return true;
-    };
-
-    const bind = () => {
-        // Listen to both: depending on layout, either window or a container actually scrolls.
-        window.addEventListener('scroll', updateVisibility, { passive: true });
-        if (primaryContainer) {
-            primaryContainer.addEventListener('scroll', updateVisibility, { passive: true });
-        }
-
-        // Fallback: some layouts/browsers may not reliably fire scroll on the expected node.
-        // Keep it lightweight.
-        const pollId = window.setInterval(updateVisibility, 350);
-        window.setTimeout(() => window.clearInterval(pollId), 12000);
-
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Prefer scrolling the inner container if it exists and is scrolled.
-            if (scrollElementToTop(primaryContainer)) return;
-            window.scrollTo({ top: 0, behavior: scrollBehavior });
-        });
-
-        updateVisibility();
-    };
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', bind);
-    } else {
-        bind();
-    }
-})();
-</script>
+<?= $this->Html->script('scroll_to_top') ?>
