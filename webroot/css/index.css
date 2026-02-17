@@ -496,6 +496,107 @@ body.mf-admin-body {
     justify-content: center;
 }
 
+.mf-admin-actions,
+.mf-admin-bulk-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.mf-admin-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.38rem;
+    border-radius: 0.62rem;
+    border: 1px solid rgba(var(--mf-text-rgb), 0.16);
+    background: rgba(var(--mf-text-rgb), 0.03);
+    color: rgba(var(--mf-text-rgb), 0.92);
+    min-height: 2rem;
+    padding: 0.28rem 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.mf-admin-action i {
+    font-size: 0.88rem;
+    line-height: 1;
+}
+
+.mf-admin-action:hover {
+    background: rgba(var(--mf-text-rgb), 0.08);
+    border-color: rgba(var(--mf-text-rgb), 0.24);
+    color: rgba(var(--mf-text-rgb), 0.98);
+    transform: translateY(-1px);
+}
+
+.mf-admin-action:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(var(--mf-primary-rgb), 0.24);
+}
+
+.mf-admin-action[disabled],
+.mf-admin-action.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.mf-admin-action--neutral {
+    border-color: rgba(var(--mf-text-rgb), 0.22);
+}
+
+.mf-admin-action--primary {
+    border-color: rgba(var(--mf-primary-rgb), 0.52);
+    background: rgba(var(--mf-primary-rgb), 0.16);
+    color: rgba(var(--mf-text-rgb), 0.98);
+}
+
+.mf-admin-action--primary:hover {
+    border-color: rgba(var(--mf-primary-rgb), 0.72);
+    background: rgba(var(--mf-primary-rgb), 0.24);
+}
+
+.mf-admin-action--success {
+    border-color: rgba(47, 180, 122, 0.56);
+    background: rgba(47, 180, 122, 0.14);
+    color: #d9ffeb;
+}
+
+.mf-admin-action--success:hover {
+    border-color: rgba(47, 180, 122, 0.74);
+    background: rgba(47, 180, 122, 0.22);
+    color: #edfff6;
+}
+
+.mf-admin-action--warning {
+    border-color: rgba(247, 186, 78, 0.62);
+    background: rgba(247, 186, 78, 0.14);
+    color: #fff4d5;
+}
+
+.mf-admin-action--warning:hover {
+    border-color: rgba(247, 186, 78, 0.78);
+    background: rgba(247, 186, 78, 0.22);
+    color: #fff8e6;
+}
+
+.mf-admin-action--danger {
+    border-color: rgba(224, 77, 87, 0.62);
+    background: rgba(224, 77, 87, 0.14);
+    color: #ffdfe2;
+}
+
+.mf-admin-action--danger:hover {
+    border-color: rgba(224, 77, 87, 0.8);
+    background: rgba(224, 77, 87, 0.22);
+    color: #ffeff1;
+}
+
 /* File input button styling (remove default white button) */
 .mf-admin-input[type="file"]::file-selector-button {
     appearance: none;
@@ -678,6 +779,52 @@ body.mf-admin-body {
 }
 
 .mf-admin-toolbar__create {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    white-space: nowrap;
+    border-radius: 0.68rem;
+    border-color: rgba(var(--mf-primary-rgb), 0.62);
+    background: linear-gradient(135deg, rgba(var(--mf-primary-rgb), 0.92), rgba(var(--mf-primary-rgb), 0.74));
+    color: rgba(var(--mf-text-rgb), 0.98);
+    box-shadow: 0 10px 24px rgba(var(--mf-primary-rgb), 0.24);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.mf-admin-toolbar__create:hover {
+    border-color: rgba(var(--mf-primary-rgb), 0.8);
+    background: linear-gradient(135deg, rgba(var(--mf-primary-rgb), 0.98), rgba(var(--mf-primary-rgb), 0.82));
+    color: rgba(var(--mf-text-rgb), 1);
+    transform: translateY(-1px);
+}
+
+.mf-admin-toolbar__create i {
+    font-size: 0.82rem;
+}
+
+.mf-admin-toolbar__create:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(var(--mf-primary-rgb), 0.28);
+}
+
+.mf-admin-toolbar__create.btn-primary,
+.mf-admin-toolbar__create.btn.btn-primary {
+    --bs-btn-border-color: rgba(var(--mf-primary-rgb), 0.62);
+    --bs-btn-bg: transparent;
+    --bs-btn-color: rgba(var(--mf-text-rgb), 0.98);
+    --bs-btn-hover-border-color: rgba(var(--mf-primary-rgb), 0.8);
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-color: rgba(var(--mf-text-rgb), 1);
+    --bs-btn-active-border-color: rgba(var(--mf-primary-rgb), 0.86);
+    --bs-btn-active-bg: transparent;
+}
+
+.mf-admin-toolbar__create.btn-sm {
+    padding-inline: 0.74rem;
+}
+
+.mf-admin-toolbar__create span {
     white-space: nowrap;
 }
 

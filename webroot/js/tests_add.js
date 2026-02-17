@@ -1,4 +1,26 @@
 function initTestBuilderAiTools() {
+    const swalTheme = {
+        buttonsStyling: false,
+        reverseButtons: true,
+        customClass: {
+            container: 'mf-swal2-container',
+            popup: 'mf-swal2-popup',
+            title: 'mf-swal2-title',
+            htmlContainer: 'mf-swal2-html',
+            actions: 'mf-swal2-actions',
+            confirmButton: 'btn btn-primary mf-swal2-confirm',
+            cancelButton: 'btn btn-outline-light mf-swal2-cancel',
+            icon: 'mf-swal2-icon'
+        },
+        showClass: {
+            popup: 'mf-swal2-animate-in'
+        },
+        hideClass: {
+            popup: 'mf-swal2-animate-out'
+        }
+    };
+    const themedSwal = (options) => Swal.fire(Object.assign({}, swalTheme, options || {}));
+
     const container = document.getElementById('questions-container');
     if (container) {
         Sortable.create(container, {
@@ -17,21 +39,16 @@ function initTestBuilderAiTools() {
         if (config.aiGenerateLimited) {
             aiBtn.addEventListener('click', function(event) {
                 event.preventDefault();
-                Swal.fire({
+                themedSwal({
                     title: aiStrings.errorTitle,
                     text: aiStrings.limitReachedMessage,
-                    icon: 'warning',
-                    background: '#19191a',
-                    color: '#fff',
-                    customClass: {
-                        popup: 'border border-secondary'
-                    }
+                    icon: 'warning'
                 });
             });
 
         } else {
             aiBtn.addEventListener('click', function() {
-            Swal.fire({
+            themedSwal({
                 title: aiStrings.generateTitle,
                 input: 'textarea',
                 inputLabel: aiStrings.inputLabel,
@@ -39,11 +56,6 @@ function initTestBuilderAiTools() {
                 showCancelButton: true,
                 confirmButtonText: aiStrings.confirmButtonText,
                 showLoaderOnConfirm: true,
-                background: '#19191a',
-                color: '#fff',
-                customClass: {
-                    popup: 'border border-secondary p-5'
-                },
                 preConfirm: (prompt) => {
                     if (!prompt) {
                         Swal.showValidationMessage(aiStrings.validationMessage);
@@ -91,26 +103,16 @@ function initTestBuilderAiTools() {
                 if (result.isConfirmed) {
                     if (result.value && result.value.success) {
                         fillFormWithAiData(result.value.data);
-                        Swal.fire({
+                        themedSwal({
                             title: aiStrings.successTitle,
                             text: aiStrings.successMessage,
-                            icon: 'success',
-                            background: '#19191a',
-                            color: '#fff',
-                            customClass: {
-                                popup: 'border border-secondary'
-                            }
+                            icon: 'success'
                         });
                     } else {
-                         Swal.fire({
+                         themedSwal({
                             title: aiStrings.errorTitle,
                             text: result.value ? result.value.message : aiStrings.unknownError,
-                            icon: 'error',
-                            background: '#19191a',
-                            color: '#fff',
-                            customClass: {
-                                popup: 'border border-secondary'
-                            }
+                            icon: 'error'
                         });
                     }
                 }
@@ -123,16 +125,11 @@ function initTestBuilderAiTools() {
     const translateBtn = document.getElementById('ai-translate-test');
     if (translateBtn && config.translateAiUrl) {
         translateBtn.addEventListener('click', function() {
-            Swal.fire({
+            themedSwal({
                 title: aiStrings.translateTitle || 'Translate',
                 text: aiStrings.translateInfo || '',
                 showCancelButton: true,
-                confirmButtonText: aiStrings.translateConfirmText || 'Translate',
-                background: '#19191a',
-                color: '#fff',
-                customClass: {
-                    popup: 'border border-secondary p-5'
-                }
+                confirmButtonText: aiStrings.translateConfirmText || 'Translate'
             }).then((confirmResult) => {
                 if (!confirmResult.isConfirmed) return;
 
@@ -143,7 +140,7 @@ function initTestBuilderAiTools() {
                 let pct = 8;
                 let timer = null;
 
-                Swal.fire({
+                themedSwal({
                     title: aiStrings.translationInProgress || 'Translation in progress...',
                     html: `
                         <div style="text-align:left;">
@@ -158,11 +155,6 @@ function initTestBuilderAiTools() {
                     showConfirmButton: false,
                     allowOutsideClick: false,
                     allowEscapeKey: false,
-                    background: '#19191a',
-                    color: '#fff',
-                    customClass: {
-                        popup: 'border border-secondary p-5'
-                    },
                     didOpen: () => {
                         timer = window.setInterval(() => {
                             // Indeterminate-ish: creep up to 92%
@@ -211,15 +203,10 @@ function initTestBuilderAiTools() {
 
                     if (body && body.success) {
                         applyAiTranslations(body.data);
-                        Swal.fire({
+                        themedSwal({
                             title: aiStrings.successTitle,
                             text: aiStrings.translateSuccess || aiStrings.successMessage,
-                            icon: 'success',
-                            background: '#19191a',
-                            color: '#fff',
-                            customClass: {
-                                popup: 'border border-secondary'
-                            }
+                            icon: 'success'
                         });
                     } else {
                         throw new Error(body && body.message ? body.message : aiStrings.unknownError);
@@ -227,15 +214,10 @@ function initTestBuilderAiTools() {
                 })
                 .catch((err) => {
                     Swal.close();
-                    Swal.fire({
+                    themedSwal({
                         title: aiStrings.errorTitle,
                         text: String(err),
-                        icon: 'error',
-                        background: '#19191a',
-                        color: '#fff',
-                        customClass: {
-                            popup: 'border border-secondary'
-                        }
+                        icon: 'error'
                     });
                 });
             });
@@ -428,13 +410,15 @@ function addQuestion(data = null) {
     const questionSourceType = (data && data.source_type) ? data.source_type : 'human';
 
     let html = `
-    <div class="card mb-3 bg-dark text-white border-secondary question-card" id="question-${index}" data-index="${index}">
-        <div class="card-header d-flex justify-content-between align-items-center border-secondary">
+    <div class="card mb-3 question-card mf-test-builder__question" id="question-${index}" data-index="${index}">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <span class="drag-handle me-2" style="cursor: grab; color: #6c757d;"><i class="bi bi-grip-vertical fs-5"></i></span>
                 <h6 class="mb-0 question-number">Question ${index + 1}</h6>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeQuestion(${index})">&times;</button>
+            <button type="button" class="btn btn-sm mf-test-builder__icon-btn mf-test-builder__icon-btn--danger" onclick="removeQuestion(${index})" aria-label="Remove question">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+            </button>
         </div>
         <div class="card-body">
             ${data && data.id ? `<input type="hidden" name="questions[${index}][id]" value="${data.id}">` : ''}
@@ -460,7 +444,7 @@ function addQuestion(data = null) {
                 <!-- Answers will be loaded here based on type -->
             </div>
             
-            <button type="button" id="add-answer-btn-${index}" class="btn btn-sm btn-outline-secondary" onclick="addAnswer(${index})">
+            <button type="button" id="add-answer-btn-${index}" class="btn btn-sm btn-outline-secondary mf-test-builder__add-answer" onclick="addAnswer(${index})">
                 <i class="bi bi-plus-circle"></i> Add Answer Option
             </button>
         </div>
@@ -518,10 +502,10 @@ function generateTranslationInputs(baseName, index, subName, fieldName, values =
 
         html += `
         <div class="input-group mb-2">
-            <span class="input-group-text bg-secondary text-white border-secondary" style="width: 100px;">${langName}</span>
+            <span class="input-group-text" style="width: 100px;">${langName}</span>
             ${translationId ? `<input type="hidden" name="${baseName}[${index}][${subName}][${langId}][id]" value="${translationId}">` : ''}
             <input type="hidden" name="${baseName}[${index}][${subName}][${langId}][language_id]" value="${langId}">
-            <input type="text" class="form-control bg-dark text-white border-secondary" name="${baseName}[${index}][${subName}][${langId}][${fieldName}]" placeholder="Translation for ${langName}" value="${val}">
+            <input type="text" class="form-control" name="${baseName}[${index}][${subName}][${langId}][${fieldName}]" placeholder="Translation for ${langName}" value="${val}">
         </div>
         `;
     }
@@ -549,10 +533,10 @@ function generateAnswerTranslationInputs(qIndex, aIndex, values = null) {
 
         html += `
         <div class="input-group input-group-sm mb-1">
-            <span class="input-group-text bg-secondary text-white border-secondary" style="width: 80px;">${langName}</span>
+            <span class="input-group-text" style="width: 80px;">${langName}</span>
             ${translationId ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][id]" value="${translationId}">` : ''}
             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][language_id]" value="${langId}">
-            <input type="text" class="form-control bg-dark text-white border-secondary" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][content]" placeholder="Answer text..." value="${val}">
+            <input type="text" class="form-control" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][content]" placeholder="Answer text..." value="${val}">
         </div>
         `;
     }
@@ -655,7 +639,7 @@ function addFixedAnswer(qIndex, aIndex, defaultText, isCorrect, translations = n
     const checked = isCorrect ? 'checked' : '';
 
     let html = `
-    <div class="card mb-2 bg-secondary text-white">
+    <div class="card mb-2 mf-test-builder__answer">
          <div class="card-body p-2">
              <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="d-flex align-items-center">
@@ -710,7 +694,7 @@ function addAnswer(qIndex, data = null, questionSourceType = null) {
     const answerSourceType = (data && data.source_type) ? data.source_type : effectiveQuestionSourceType;
 
     let html = `
-    <div class="card mb-2 bg-secondary text-white" id="q${qIndex}-a${aIndex}">
+    <div class="card mb-2 mf-test-builder__answer" id="q${qIndex}-a${aIndex}">
         <div class="card-body p-2">
              <div class="d-flex align-items-center justify-content-between mb-2">
                  <div class="form-check">
@@ -718,7 +702,9 @@ function addAnswer(qIndex, data = null, questionSourceType = null) {
                     <input class="form-check-input" type="checkbox" name="questions[${qIndex}][answers][${aIndex}][is_correct]" value="1" ${isCorrect ? 'checked' : ''}>
                     <label class="form-check-label">Correct</label>
                 </div>
-                <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeAnswer(${qIndex}, ${aIndex})">Remove</button>
+                <button type="button" class="btn btn-sm mf-test-builder__icon-btn mf-test-builder__icon-btn--danger" onclick="removeAnswer(${qIndex}, ${aIndex})" aria-label="Remove answer">
+                    <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
              </div>
              ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${id}">` : ''}
              <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${answerSourceType}">

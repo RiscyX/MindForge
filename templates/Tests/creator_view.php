@@ -6,6 +6,7 @@
  */
 
 $lang = $this->request->getParam('lang', 'en');
+$isAdminPrefix = (string)$this->request->getParam('prefix', '') === 'Admin';
 $this->assign('title', __('Quiz stats'));
 
 $title = '';
@@ -99,12 +100,17 @@ $accentAlpha = '0.18';
                     <span class="mf-quiz-stat__value"><?= h($formatPercent((float)($stats['avgCorrectRate'] ?? 0.0))) ?></span>
                     <span class="mf-quiz-stat__label"><?= __('Correct Rate') ?></span>
                 </div>
+                <div class="mf-quiz-stat" title="<?= h(__('Unique Users')) ?>">
+                    <i class="bi bi-people" aria-hidden="true"></i>
+                    <span class="mf-quiz-stat__value"><?= (int)($stats['uniqueUsers'] ?? 0) ?></span>
+                    <span class="mf-quiz-stat__label"><?= __('Unique Users') ?></span>
+                </div>
             </div>
         </div>
 
         <div class="mf-quiz-card__actions">
             <?= $this->Html->link(
-                __('Back to My Quizzes'),
+                $isAdminPrefix ? __('Back to Tests') : __('Back to My Quizzes'),
                 ['controller' => 'Tests', 'action' => 'index', 'lang' => $lang],
                 ['class' => 'btn btn-outline-light mf-quiz-card__secondary'],
             ) ?>

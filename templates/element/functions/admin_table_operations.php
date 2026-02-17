@@ -58,12 +58,213 @@ if ($encodedConfig === false) {
 
     const paginationContainer = cfg.paginationContainerId ? document.getElementById(cfg.paginationContainerId) : null;
 
+    const isHu = (document.documentElement.lang || '').toLowerCase().startsWith('hu');
+
     const strings = Object.assign({
-        selectAtLeastOne: 'Select at least one item.',
-        confirmDelete: 'Are you sure you want to delete the selected items?',
+        selectAtLeastOne: isHu ? 'Jelolj ki legalabb egy elemet.' : 'Select at least one item.',
+        confirmDelete: isHu ? 'Biztosan torolni szeretned a kijelolt elemeket?' : 'Are you sure you want to delete the selected items?',
+        actionRequiredTitle: isHu ? 'Szukseges muvelet' : 'Action required',
+        confirmDeleteTitle: isHu ? 'Torles megerositese' : 'Confirm delete',
+        ok: 'OK',
+        delete: isHu ? 'Torles' : 'Delete',
+        cancel: isHu ? 'Megse' : 'Cancel',
     }, cfg.strings || {});
 
     const bulkDeleteValues = Array.isArray(cfg.bulkDeleteValues) ? cfg.bulkDeleteValues : ['delete'];
+
+    const swalClasses = {
+        container: 'mf-swal2-container',
+        popup: 'mf-swal2-popup',
+        title: 'mf-swal2-title',
+        htmlContainer: 'mf-swal2-html',
+        actions: 'mf-swal2-actions',
+        confirmButton: 'btn btn-primary mf-swal2-confirm',
+        cancelButton: 'btn btn-outline-light mf-swal2-cancel',
+        icon: 'mf-swal2-icon',
+    };
+
+    const runSwal = (options) => {
+        if (!window.Swal) {
+            return null;
+        }
+
+        return window.Swal.fire(Object.assign({
+            buttonsStyling: false,
+            reverseButtons: true,
+            customClass: swalClasses,
+            showClass: { popup: 'mf-swal2-animate-in' },
+            hideClass: { popup: 'mf-swal2-animate-out' },
+        }, options || {}));
+    };
+
+    const detectActionIntent = (button, text) => {
+        const cls = button.className || '';
+        const value = (button.value || '').toLowerCase();
+        const t = (text || '').toLowerCase();
+
+        if (cls.includes('danger') || value.includes('delete') || t.includes('delete') || t.includes('ban')) {
+            return 'danger';
+        }
+        if (cls.includes('warning') || value.includes('deactivate') || t.includes('deactivate')) {
+            return 'warning';
+        }
+        if (cls.includes('success') || value.includes('activate') || value.includes('unban') || t.includes('activate') || t.includes('unban')) {
+            return 'success';
+        }
+        if (cls.includes('primary')) {
+            return 'primary';
+        }
+
+        return 'neutral';
+    };
+
+    const detectActionIcon = (text, value, intent) => {
+        const t = (text || '').toLowerCase();
+        const v = (value || '').toLowerCase();
+
+        if (v.includes('delete') || t.includes('delete')) return 'bi-trash3';
+        if (v.includes('activate') || t.includes('activate')) return 'bi-check-circle';
+        if (v.includes('deactivate') || t.includes('deactivate')) return 'bi-slash-circle';
+        if (v.includes('ban') || t.includes('ban')) return 'bi-person-x';
+        if (v.includes('unban') || t.includes('unban')) return 'bi-person-check';
+        if (t.includes('edit')) return 'bi-pencil-square';
+        if (t.includes('view') || t.includes('details') || t.includes('review') || t.includes('result')) return 'bi-eye';
+        if (t.includes('select')) return 'bi-check2-square';
+        if (intent === 'danger') return 'bi-exclamation-triangle';
+        if (intent === 'warning') return 'bi-exclamation-circle';
+        if (intent === 'success') return 'bi-check2';
+
+        return 'bi-gear';
+    };
+
+    const getInlineConfirmMessage = (element) => {
+        const direct = (element.dataset.mfConfirm || '').trim();
+        if (direct !== '') {
+            return direct;
+        }
+
+        const onClick = element.getAttribute('onclick') || '';
+        if (!onClick.includes('confirm(')) {
+            return '';
+        }
+
+        const match = onClick.match(/confirm\((['"])(.*?)\1\)/);
+        if (!match || typeof match[2] !== 'string') {
+            return '';
+        }
+
+        return match[2]
+            .replace(/\\'/g, "'")
+            .replace(/\\"/g, '"')
+            .replace(/\\n/g, '\n')
+            .trim();
+    };
+
+    const withNativeConfirmBypass = (callback) => {
+        const original = window.confirm;
+        window.confirm = () => true;
+        try {
+            callback();
+        } finally {
+            window.confirm = original;
+        }
+    };
+
+    const bindRowActionConfirms = () => {
+        const targets = Array.from(document.querySelectorAll('td .btn.btn-sm, td button.btn.btn-sm, td a.btn.btn-sm'));
+        for (const el of targets) {
+            if (!(el instanceof HTMLButtonElement || el instanceof HTMLAnchorElement)) continue;
+            if (el.dataset.mfConfirmBound === '1') continue;
+
+            const confirmMessage = getInlineConfirmMessage(el);
+            if (confirmMessage === '') {
+                el.dataset.mfConfirmBound = '1';
+                continue;
+            }
+
+            el.dataset.mfConfirmBound = '1';
+            el.addEventListener('click', (event) => {
+                if (el.dataset.mfSwalConfirmed === '1') {
+                    el.dataset.mfSwalConfirmed = '0';
+
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                const actionLabel = (el.textContent || '').trim();
+                const intent = detectActionIntent(el, actionLabel);
+                const confirmLabel = intent === 'danger'
+                    ? strings.delete
+                    : (actionLabel || strings.ok);
+                const iconClass = intent === 'danger'
+                    ? 'bi-trash3'
+                    : 'bi-check2';
+
+                const dialog = runSwal({
+                    title: strings.actionRequiredTitle,
+                    text: confirmMessage,
+                    icon: intent === 'danger' ? 'warning' : 'question',
+                    showCancelButton: true,
+                    confirmButtonText: `<i class="bi ${iconClass}"></i><span>${confirmLabel}</span>`,
+                    cancelButtonText: `<i class="bi bi-arrow-left"></i><span>${strings.cancel}</span>`,
+                });
+
+                if (!dialog) {
+                    const ok = confirm(confirmMessage);
+                    if (!ok) {
+                        return;
+                    }
+
+                    el.dataset.mfSwalConfirmed = '1';
+                    withNativeConfirmBypass(() => el.click());
+
+                    return;
+                }
+
+                dialog.then((result) => {
+                    if (!result.isConfirmed) {
+                        return;
+                    }
+
+                    el.dataset.mfSwalConfirmed = '1';
+                    withNativeConfirmBypass(() => el.click());
+                });
+            }, true);
+        }
+    };
+
+    const decorateActionButtons = () => {
+        const targets = Array.from(document.querySelectorAll('td .btn.btn-sm, .mf-admin-bulkbar .btn.btn-sm'));
+        for (const button of targets) {
+            if (!(button instanceof HTMLButtonElement || button instanceof HTMLAnchorElement)) continue;
+            if (button.dataset.mfActionEnhanced === '1') continue;
+
+            const text = (button.textContent || '').trim();
+            const isSelectAll = selectAllLink && button.id === selectAllLink.id;
+            const intent = isSelectAll ? 'neutral' : detectActionIntent(button, text);
+
+            button.classList.add('mf-admin-action', `mf-admin-action--${intent}`);
+
+            const parent = button.parentElement;
+            if (parent && parent.matches('.d-flex')) {
+                parent.classList.add('mf-admin-actions');
+            }
+
+            if (!isSelectAll && !button.querySelector('i.bi')) {
+                const icon = document.createElement('i');
+                icon.className = `bi ${detectActionIcon(text, button.value, intent)}`;
+                icon.setAttribute('aria-hidden', 'true');
+                button.prepend(icon);
+            }
+
+            button.dataset.mfActionEnhanced = '1';
+        }
+    };
+
+    decorateActionButtons();
+    bindRowActionConfirms();
 
     if (bulkForm) {
         bulkForm.addEventListener('submit', (e) => {
@@ -72,15 +273,57 @@ if ($encodedConfig === false) {
                 return;
             }
 
+            if (submitter.dataset.mfSwalConfirmed === '1') {
+                submitter.dataset.mfSwalConfirmed = '0';
+
+                return;
+            }
+
             const anyChecked = !!bulkForm.querySelector(`${rowCheckboxSelector}:checked`);
             if (!anyChecked) {
                 e.preventDefault();
-                alert(strings.selectAtLeastOne);
+                const alertPopup = runSwal({
+                    title: strings.actionRequiredTitle,
+                    text: strings.selectAtLeastOne,
+                    icon: 'warning',
+                    confirmButtonText: `<i class="bi bi-check2"></i><span>${strings.ok}</span>`,
+                });
+                if (!alertPopup) {
+                    alert(strings.selectAtLeastOne);
+                }
+
                 return;
             }
 
             const isDelete = bulkDeleteValues.includes(submitter.value) || submitter.hasAttribute('data-mf-bulk-delete');
             if (isDelete) {
+                const confirmPopup = runSwal({
+                    title: strings.confirmDeleteTitle,
+                    text: strings.confirmDelete,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: `<i class="bi bi-trash3"></i><span>${strings.delete}</span>`,
+                    cancelButtonText: `<i class="bi bi-arrow-left"></i><span>${strings.cancel}</span>`,
+                });
+
+                if (confirmPopup) {
+                    e.preventDefault();
+                    confirmPopup.then((result) => {
+                        if (!result.isConfirmed) {
+                            return;
+                        }
+
+                        submitter.dataset.mfSwalConfirmed = '1';
+                        if (typeof bulkForm.requestSubmit === 'function') {
+                            bulkForm.requestSubmit(submitter);
+                        } else {
+                            submitter.click();
+                        }
+                    });
+
+                    return;
+                }
+
                 const ok = confirm(strings.confirmDelete);
                 if (!ok) {
                     e.preventDefault();
@@ -286,6 +529,10 @@ if ($encodedConfig === false) {
 
         applyCellLabels();
         dt.on('draw.labels', applyCellLabels);
+        dt.on('draw.mfActions', decorateActionButtons);
+        decorateActionButtons();
+        dt.on('draw.mfConfirms', bindRowActionConfirms);
+        bindRowActionConfirms();
 
         return;
     }
@@ -370,6 +617,9 @@ if ($encodedConfig === false) {
                 th.removeAttribute('aria-sort');
             }
         });
+
+        decorateActionButtons();
+        bindRowActionConfirms();
     };
 
     headers.forEach((th, idx) => {
@@ -449,5 +699,7 @@ if ($encodedConfig === false) {
 
     applyView();
     applyCellLabels();
+    decorateActionButtons();
+    bindRowActionConfirms();
 })();
 </script>

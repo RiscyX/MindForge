@@ -9,13 +9,10 @@
  * @var array<int, string>|null $difficultyOptions
  */
 
-use App\Model\Entity\Role;
-
 $lang = $this->request->getParam('lang', 'en');
 
 $isCreatorCatalog = (bool)($isCreatorCatalog ?? false);
-$isCatalog = !$this->request->getParam('prefix')
-    && ((int)($roleId ?? 0) === Role::USER || $isCreatorCatalog);
+$isCatalog = !$this->request->getParam('prefix');
 
 $this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
 
@@ -200,6 +197,11 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                                 ['class' => 'btn btn-primary mf-quiz-card__cta'],
                             ) ?>
                             <?= $this->Html->link(
+                                __('Stats'),
+                                ['action' => 'stats', $test->id, 'lang' => $lang],
+                                ['class' => 'btn btn-outline-light mf-quiz-card__secondary'],
+                            ) ?>
+                            <?= $this->Html->link(
                                 __('Edit'),
                                 ['action' => 'edit', $test->id, 'lang' => $lang],
                                 ['class' => 'btn btn-outline-light mf-quiz-card__secondary'],
@@ -314,6 +316,11 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                         </td>
                         <td>
                             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                <?= $this->Html->link(
+                                    __('Stats'),
+                                    ['action' => 'stats', $test->id, 'lang' => $lang],
+                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                ) ?>
                                 <?= $this->Html->link(
                                     __('Edit'),
                                     ['action' => 'edit', $test->id, 'lang' => $lang],
