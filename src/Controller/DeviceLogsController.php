@@ -39,17 +39,10 @@ class DeviceLogsController extends AppController
         }
 
         $filters = [
-            'q' => trim((string)$this->request->getQuery('q', '')),
             'device_type' => (string)$this->request->getQuery('device_type', ''),
             'from' => (string)$this->request->getQuery('from', ''),
             'to' => (string)$this->request->getQuery('to', ''),
         ];
-
-        $limitOptions = [25, 50, 100, 200];
-        $limit = (int)$this->request->getQuery('limit', 50);
-        if (!in_array($limit, $limitOptions, true)) {
-            $limit = 50;
-        }
 
         $query = $this->DeviceLogs->find()
             ->select([
@@ -80,29 +73,7 @@ class DeviceLogsController extends AppController
             $query->where(['DeviceLogs.created_at <=' => $filters['to'] . ' 23:59:59']);
         }
 
-        if ($filters['q'] !== '') {
-            $qLike = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $filters['q']) . '%';
-            $query
-                ->leftJoinWith('Users')
-                ->where([
-                    'OR' => [
-                        'DeviceLogs.ip_address LIKE' => $qLike,
-                        'DeviceLogs.country LIKE' => $qLike,
-                        'DeviceLogs.city LIKE' => $qLike,
-                        'DeviceLogs.user_agent LIKE' => $qLike,
-                        'Users.email LIKE' => $qLike,
-                    ],
-                ])
-                ->distinct(['DeviceLogs.id']);
-        }
-
-        $this->paginate = [
-            'limit' => $limit,
-            'maxLimit' => 200,
-            'order' => ['DeviceLogs.created_at' => 'DESC'],
-        ];
-
-        $deviceLogs = $this->paginate($query);
+        $deviceLogs = $query->all();
 
         $since = FrozenTime::now()->subHours(24);
         $statsTotal = (int)$this->DeviceLogs->find()->count();
@@ -124,7 +95,7 @@ class DeviceLogsController extends AppController
             'uniqueIps24h' => $statsUniqueIps24h,
         ];
 
-        $this->set(compact('deviceLogs', 'stats', 'filters', 'limit', 'limitOptions'));
+        $this->set(compact('deviceLogs', 'stats', 'filters'));
     }
 
     /**
