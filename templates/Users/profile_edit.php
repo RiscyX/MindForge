@@ -81,28 +81,4 @@ $this->assign('title', __('Edit Profile'));
     }
 </style>
 
-<script>
-document.getElementById('avatar-file').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.querySelector('.avatar-preview');
-            const placeholder = document.querySelector('.avatar-preview-placeholder');
-            
-            if (preview) {
-                preview.src = e.target.result;
-            } else if (placeholder) {
-                // If there was no image before, we need to replace the placeholder with an img tag
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.alt = 'Avatar Preview';
-                img.className = 'rounded-circle img-thumbnail shadow-sm avatar-preview';
-                img.style = 'width: 150px; height: 150px; object-fit: cover;';
-                placeholder.parentNode.replaceChild(img, placeholder);
-            }
-        }
-        reader.readAsDataURL(file);
-    }
-});
-</script>
+<?= $this->Html->script('profile_avatar_preview') ?>

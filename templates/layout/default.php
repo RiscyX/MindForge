@@ -33,7 +33,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     <?= $this->Html->css('index.css?v=33') ?>
 
     <?php if ($isAuthPage) : ?>
-        <script>document.documentElement.classList.add('mf-auth-js');</script>
+        <?= $this->Html->script('auth_page_flag') ?>
         <?= $this->Html->css('auth_transitions.css?v=1') ?>
     <?php endif; ?>
 
@@ -67,6 +67,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/sweetalert2@11') ?>
     <?= $this->Html->script('flash.js?v=1') ?>
     <?= $this->Html->script('logout_confirmation.js?v=3') ?>
+    <?= $this->Html->script('history_back.js?v=1') ?>
     <?php if ($isAuthPage) : ?>
         <?= $this->Html->script('auth_transitions.js?v=1') ?>
     <?php endif; ?>

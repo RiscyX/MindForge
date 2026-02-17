@@ -29,6 +29,35 @@ class DashboardController extends AppController
 
         $this->viewBuilder()->setLayout('default');
 
+        $recentAttempts = [];
+        $userId = $identity ? (int)$identity->getIdentifier() : 0;
+        if ($userId > 0) {
+            $langCode = (string)$this->request->getParam('lang', 'en');
+            $language = $this->fetchTable('Languages')->find()
+                ->where(['code LIKE' => $langCode . '%'])
+                ->first();
+            if ($language === null) {
+                $language = $this->fetchTable('Languages')->find()->first();
+            }
+
+            $recentAttempts = $this->fetchTable('TestAttempts')->find()
+                ->where([
+                    'TestAttempts.user_id' => $userId,
+                    'TestAttempts.finished_at IS NOT' => null,
+                ])
+                ->contain([
+                    'Categories.CategoryTranslations' => function ($q) use ($language) {
+                        return $q->where(['CategoryTranslations.language_id' => $language->id ?? null]);
+                    },
+                ])
+                ->orderByDesc('TestAttempts.finished_at')
+                ->limit(5)
+                ->all()
+                ->toList();
+        }
+
+        $this->set(compact('recentAttempts'));
+
         return null;
     }
 }

@@ -151,11 +151,11 @@ $isAdmin = $isLoggedIn && (int)$identity->get('role_id') === Role::ADMIN;
                             <td><?= h($aiRequest->status) ?></td>
                             <td><?= h($aiRequest->created_at) ?></td>
                             <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'AiRequests', 'action' => 'view', $aiRequest->id, 'lang' => $lang]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'AiRequests', 'action' => 'edit', $aiRequest->id, 'lang' => $lang]) ?>
+                                <?= $this->Html->link(__('View'), ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' => 'view', $aiRequest->id, 'lang' => $lang]) ?>
+                                <?= $this->Html->link(__('Edit'), ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' => 'edit', $aiRequest->id, 'lang' => $lang]) ?>
                                 <?= $this->Form->postLink(
                                     __('Delete'),
-                                    ['controller' => 'AiRequests', 'action' => 'delete', $aiRequest->id, 'lang' => $lang],
+                                    ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' => 'delete', $aiRequest->id, 'lang' => $lang],
                                     [
                                         'method' => 'delete',
                                         'confirm' => __('Are you sure you want to delete # {0}?', $aiRequest->id),
@@ -202,11 +202,11 @@ $isAdmin = $isLoggedIn && (int)$identity->get('role_id') === Role::ADMIN;
                             <td><?= h($deviceLog->city) ?></td>
                             <td><?= h($deviceLog->created_at) ?></td>
                             <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'DeviceLogs', 'action' => 'view', $deviceLog->id, 'lang' => $lang]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'DeviceLogs', 'action' => 'edit', $deviceLog->id, 'lang' => $lang]) ?>
+                                <?= $this->Html->link(__('View'), ['prefix' => 'Admin', 'controller' => 'DeviceLogs', 'action' => 'view', $deviceLog->id, 'lang' => $lang]) ?>
+                                <?= $this->Html->link(__('Edit'), ['prefix' => 'Admin', 'controller' => 'DeviceLogs', 'action' => 'edit', $deviceLog->id, 'lang' => $lang]) ?>
                                 <?= $this->Form->postLink(
                                     __('Delete'),
-                                    ['controller' => 'DeviceLogs', 'action' => 'delete', $deviceLog->id, 'lang' => $lang],
+                                    ['prefix' => 'Admin', 'controller' => 'DeviceLogs', 'action' => 'delete', $deviceLog->id, 'lang' => $lang],
                                     [
                                         'method' => 'delete',
                                         'confirm' => __('Are you sure you want to delete # {0}?', $deviceLog->id),

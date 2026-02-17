@@ -52,6 +52,7 @@ $htmlLang = str_starts_with($locale, 'hu') ? 'hu' : 'en';
 
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js') ?>
     <?= $this->Html->script('flash.js?v=1') ?>
+    <?= $this->Html->script('history_back.js?v=1') ?>
     <?= $this->fetch('script') ?>
 </body>
 </html>

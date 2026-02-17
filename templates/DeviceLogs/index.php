@@ -2,23 +2,32 @@
 /**
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\DeviceLog> $deviceLogs
- * @var array $stats
+ * @var array<string, int> $stats
+ * @var array<string, string> $filters
+ * @var int $limit
+ * @var array<int, int> $limitOptions
  */
 
 $lang = $this->request->getParam('lang', 'en');
 
 $this->assign('title', __('Device Logs'));
 
-$this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
-$this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
-
 $deviceTypeLabels = [
     0 => __('Mobile'),
     1 => __('Tablet'),
     2 => __('Desktop'),
 ];
+
+$q = (string)($filters['q'] ?? '');
+$selectedDeviceType = (string)($filters['device_type'] ?? '');
+$from = (string)($filters['from'] ?? '');
+$to = (string)($filters['to'] ?? '');
+
+$pagination = (array)$this->Paginator->params();
+$currentPage = (int)($pagination['page'] ?? 1);
+$pageCount = (int)($pagination['pageCount'] ?? 1);
+$recordCount = (int)($pagination['count'] ?? 0);
+$queryParams = (array)$this->request->getQueryParams();
 ?>
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
@@ -55,30 +64,67 @@ $deviceTypeLabels = [
     </div>
 </div>
 
-<?= $this->element('functions/admin_list_controls', [
-    'search' => [
-        'id' => 'mfDeviceLogsSearch',
-        'label' => __('Search'),
-        'placeholder' => __('Search…'),
-        'maxWidth' => '420px',
-    ],
-    'limit' => [
-        'id' => 'mfDeviceLogsLimit',
-        'label' => __('Show'),
-        'default' => '10',
-        'options' => [
-            '10' => '10',
-            '50' => '50',
-            '100' => '100',
-            '-1' => __('All'),
-        ],
-    ],
-    'create' => null,
-]) ?>
+<div class="mf-admin-card p-3 mt-3">
+    <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
+        <div class="col-12 col-xl-4">
+            <?= $this->Form->control('q', [
+                'label' => __('Search'),
+                'value' => $q,
+                'class' => 'form-control',
+                'placeholder' => __('IP, location, user agent, user email'),
+            ]) ?>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-2">
+            <?= $this->Form->control('device_type', [
+                'label' => __('Device'),
+                'type' => 'select',
+                'empty' => __('All'),
+                'options' => [
+                    '0' => __('Mobile'),
+                    '1' => __('Tablet'),
+                    '2' => __('Desktop'),
+                ],
+                'value' => $selectedDeviceType,
+                'class' => 'form-select',
+            ]) ?>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-2">
+            <?= $this->Form->control('from', [
+                'label' => __('From'),
+                'type' => 'date',
+                'value' => $from,
+                'class' => 'form-control',
+            ]) ?>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-2">
+            <?= $this->Form->control('to', [
+                'label' => __('To'),
+                'type' => 'date',
+                'value' => $to,
+                'class' => 'form-control',
+            ]) ?>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-1">
+            <?= $this->Form->control('limit', [
+                'label' => __('Show'),
+                'type' => 'select',
+                'options' => array_combine(array_map('strval', $limitOptions), array_map('strval', $limitOptions)),
+                'value' => (string)$limit,
+                'class' => 'form-select',
+            ]) ?>
+        </div>
+        <div class="col-12 col-xl-1 d-grid">
+            <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
+        </div>
+        <div class="col-12">
+            <?= $this->Html->link(__('Reset filters'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-sm btn-outline-light']) ?>
+        </div>
+    <?= $this->Form->end() ?>
+</div>
 
 <div class="mf-admin-table-card mt-3">
     <?= $this->Form->create(null, [
-        'url' => ['action' => 'bulk', 'lang' => $lang],
+        'url' => ['action' => 'bulk', 'lang' => $lang, '?' => $this->request->getQueryParams()],
         'id' => 'mfDeviceLogsBulkForm',
     ]) ?>
 
@@ -99,7 +145,6 @@ $deviceTypeLabels = [
             <tbody>
                 <?php foreach ($deviceLogs as $deviceLog) : ?>
                     <?php
-                        $createdOrder = $deviceLog->created_at ? $deviceLog->created_at->format('Y-m-d H:i:s') : '0';
                         $createdLabel = $deviceLog->created_at ? $deviceLog->created_at->i18nFormat('yyyy-MM-dd HH:mm') : '—';
                         $userAgent = (string)($deviceLog->user_agent ?? '');
                         $deviceType = (int)($deviceLog->device_type ?? 0);
@@ -118,9 +163,7 @@ $deviceTypeLabels = [
                                 aria-label="<?= h(__('Select log')) ?>"
                             />
                         </td>
-                        <td class="mf-muted" data-order="<?= h($createdOrder) ?>">
-                            <?= h($createdLabel) ?>
-                        </td>
+                        <td class="mf-muted"><?= h($createdLabel) ?></td>
                         <td>
                             <?php if ($deviceLog->user !== null) : ?>
                                 <?= $this->Html->link(
@@ -134,16 +177,14 @@ $deviceTypeLabels = [
                                 <span class="mf-muted"><?= __('Guest') ?></span>
                             <?php endif; ?>
                         </td>
-                        <td class="mf-muted" data-order="<?= h((string)($deviceLog->ip_address ?? '')) ?>">
-                            <?= h((string)($deviceLog->ip_address ?? '—')) ?>
-                        </td>
+                        <td class="mf-muted"><?= h((string)($deviceLog->ip_address ?? '—')) ?></td>
                         <td>
                             <span class="mf-admin-pill"><?= h($deviceLabel) ?></span>
                         </td>
-                        <td class="mf-muted" data-order="<?= h($location) ?>">
+                        <td class="mf-muted">
                             <?= $location !== '' ? h($location) : '—' ?>
                         </td>
-                        <td class="mf-muted" data-order="<?= h($userAgent) ?>">
+                        <td class="mf-muted">
                             <div class="text-truncate" style="max-width: 420px;" title="<?= h($userAgent) ?>">
                                 <?= $userAgent !== '' ? h($userAgent) : '—' ?>
                             </div>
@@ -152,7 +193,7 @@ $deviceTypeLabels = [
                             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
                                 <?= $this->Form->postLink(
                                     __('Delete'),
-                                    ['action' => 'delete', $deviceLog->id, 'lang' => $lang],
+                                    ['action' => 'delete', $deviceLog->id, 'lang' => $lang, '?' => $this->request->getQueryParams()],
                                     [
                                         'confirm' => __('Are you sure you want to delete # {0}?', $deviceLog->id),
                                         'class' => 'btn btn-sm btn-outline-danger',
@@ -175,10 +216,10 @@ $deviceTypeLabels = [
         'selectAll' => [
             'checkboxId' => 'mfDeviceLogsSelectAll',
             'linkId' => 'mfDeviceLogsSelectAllLink',
-            'text' => __('Összes bejelölése'),
+            'text' => __('Select all'),
         ],
         'bulk' => [
-            'label' => __('A kijelöltekkel végzendő művelet:'),
+            'label' => __('Action for selected items:'),
             'formId' => 'mfDeviceLogsBulkForm',
             'buttons' => [
                 [
@@ -193,47 +234,47 @@ $deviceTypeLabels = [
         ],
     ]) ?>
 
-    <nav aria-label="<?= h(__('Pagination')) ?>">
-        <div id="mfDeviceLogsPagination"></div>
-    </nav>
+    <?php if ($pageCount > 1) : ?>
+        <?php
+        $prevPage = max(1, $currentPage - 1);
+        $nextPage = min($pageCount, $currentPage + 1);
+        $startPage = max(1, $currentPage - 2);
+        $endPage = min($pageCount, $currentPage + 2);
+        ?>
+        <nav aria-label="<?= h(__('Pagination')) ?>">
+            <ul class="pagination pagination-sm mb-0 mf-admin-pagination">
+                <li class="page-item <?= $this->Paginator->hasPrev() ? '' : 'disabled' ?>">
+                    <?= $this->Html->link(
+                        __('Previous'),
+                        ['action' => 'index', 'lang' => $lang, '?' => array_merge($queryParams, ['page' => $prevPage])],
+                        ['class' => 'page-link'],
+                    ) ?>
+                </li>
+                <?php for ($p = $startPage; $p <= $endPage; $p++) : ?>
+                    <li class="page-item <?= $p === $currentPage ? 'active' : '' ?>">
+                        <?= $this->Html->link(
+                            (string)$p,
+                            ['action' => 'index', 'lang' => $lang, '?' => array_merge($queryParams, ['page' => $p])],
+                            ['class' => 'page-link'],
+                        ) ?>
+                    </li>
+                <?php endfor; ?>
+                <li class="page-item <?= $this->Paginator->hasNext() ? '' : 'disabled' ?>">
+                    <?= $this->Html->link(
+                        __('Next'),
+                        ['action' => 'index', 'lang' => $lang, '?' => array_merge($queryParams, ['page' => $nextPage])],
+                        ['class' => 'page-link'],
+                    ) ?>
+                </li>
+            </ul>
+        </nav>
+    <?php endif; ?>
+</div>
+
+<div class="mf-muted small mt-2">
+    <?= __('Total records: {0}', $recordCount) ?>
 </div>
 
 <?php $this->start('script'); ?>
-<?= $this->element('functions/admin_table_operations', [
-    'config' => [
-        'tableId' => 'mfDeviceLogsTable',
-        'searchInputId' => 'mfDeviceLogsSearch',
-        'limitSelectId' => 'mfDeviceLogsLimit',
-        'bulkFormId' => 'mfDeviceLogsBulkForm',
-        'rowCheckboxSelector' => '.mf-row-select',
-        'selectAllCheckboxId' => 'mfDeviceLogsSelectAll',
-        'selectAllLinkId' => 'mfDeviceLogsSelectAllLink',
-        'paginationContainerId' => 'mfDeviceLogsPagination',
-        'pagination' => [
-            'windowSize' => 3,
-            'jumpSize' => 3,
-        ],
-        'strings' => [
-            'selectAtLeastOne' => (string)__('Select at least one item.'),
-            'confirmDelete' => (string)__('Are you sure you want to delete the selected items?'),
-        ],
-        'bulkDeleteValues' => ['delete'],
-        'dataTables' => [
-            'enabled' => true,
-            'searching' => true,
-            'lengthChange' => false,
-            'pageLength' => 10,
-            'order' => [[1, 'desc']],
-            'nonOrderableTargets' => [0, -1],
-            'nonSearchableTargets' => [0, -1],
-            'dom' => 'rt',
-        ],
-        'vanilla' => [
-            'defaultSortCol' => 1,
-            'defaultSortDir' => 'desc',
-            'excludedSortCols' => [0, 7],
-            'searchCols' => [1, 2, 3, 4, 5, 6],
-        ],
-    ],
-]) ?>
+<?= $this->Html->script('device_logs_index') ?>
 <?php $this->end(); ?>

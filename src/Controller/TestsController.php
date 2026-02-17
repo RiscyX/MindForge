@@ -64,8 +64,9 @@ class TestsController extends AppController
         $identity = $this->Authentication->getIdentity();
         $roleId = $identity ? (int)$identity->get('role_id') : null;
         $userId = $identity ? (int)$identity->getIdentifier() : null;
-        $isCreatorCatalog = $roleId === Role::CREATOR && !$this->request->getParam('prefix');
-        $isCatalog = !$this->request->getParam('prefix');
+        $prefix = (string)$this->request->getParam('prefix', '');
+        $isCreatorCatalog = $roleId === Role::CREATOR && $prefix === 'QuizCreator';
+        $isCatalog = $prefix === '' || $prefix === 'QuizCreator';
 
         $langCode = $this->request->getParam('lang');
         $language = $this->fetchTable('Languages')->find()
@@ -92,8 +93,9 @@ class TestsController extends AppController
             ])
             ->orderByAsc('Tests.id');
 
-        // Catalog for regular users: only public tests.
-        if ($isCatalog && !$isCreatorCatalog) {
+        // Public catalog for regular users only.
+        $canSeeAllCatalogTests = in_array($roleId, [Role::ADMIN, Role::CREATOR], true);
+        if ($isCatalog && !$isCreatorCatalog && !$canSeeAllCatalogTests) {
             $query->where(['Tests.is_public' => true]);
         }
 
@@ -107,6 +109,65 @@ class TestsController extends AppController
 
         $categoryOptions = [];
         $difficultyOptions = [];
+        $catalogPagination = null;
+        $recentAttempts = [];
+        $topQuizzes = [];
+
+        if ($isCatalog && !$isCreatorCatalog && $userId !== null) {
+            $recentAttempts = $this->fetchTable('TestAttempts')->find()
+                ->where([
+                    'TestAttempts.user_id' => $userId,
+                    'TestAttempts.finished_at IS NOT' => null,
+                ])
+                ->contain([
+                    'Categories.CategoryTranslations' => function ($q) use ($language) {
+                        return $q->where(['CategoryTranslations.language_id' => $language->id ?? null]);
+                    },
+                    'Tests.TestTranslations' => function ($q) use ($language) {
+                        return $q->where(['TestTranslations.language_id' => $language->id ?? null]);
+                    },
+                ])
+                ->orderByDesc('TestAttempts.finished_at')
+                ->limit(5)
+                ->all()
+                ->toList();
+        }
+
+        if ($isCatalog && !$isCreatorCatalog) {
+            $attemptsTable = $this->fetchTable('TestAttempts');
+            $attemptCountSubquery = $attemptsTable->find()
+                ->select([
+                    'cnt' => $attemptsTable->find()->func()->count('*'),
+                ])
+                ->where(function ($exp) {
+                    return $exp->equalFields('TestAttempts.test_id', 'Tests.id');
+                });
+
+            $topQuery = $this->Tests
+                ->find()
+                ->select(['attempt_count' => $attemptCountSubquery])
+                ->enableAutoFields(true)
+                ->contain([
+                    'Categories.CategoryTranslations' => function ($q) use ($language) {
+                        return $q->where(['CategoryTranslations.language_id' => $language->id ?? null]);
+                    },
+                    'Difficulties.DifficultyTranslations' => function ($q) use ($language) {
+                        return $q->where(['DifficultyTranslations.language_id' => $language->id ?? null]);
+                    },
+                    'TestTranslations' => function ($q) use ($language) {
+                        return $q->where(['TestTranslations.language_id' => $language->id ?? null]);
+                    },
+                ])
+                ->orderByDesc('attempt_count')
+                ->orderByDesc('Tests.id')
+                ->limit(10);
+
+            if (!$canSeeAllCatalogTests) {
+                $topQuery->where(['Tests.is_public' => true]);
+            }
+
+            $topQuizzes = $topQuery->all()->toList();
+        }
 
         if ($isCreatorCatalog && $userId !== null) {
             $query->where(['Tests.created_by' => $userId]);
@@ -224,6 +285,144 @@ class TestsController extends AppController
                 $query->orderByDesc('Tests.id');
                 $filters['sort'] = 'latest';
             }
+        } elseif ($isCatalog) {
+            $catalogBase = $this->Tests->find();
+            if (!$canSeeAllCatalogTests) {
+                $catalogBase->where(['Tests.is_public' => true]);
+            }
+
+            $categoryRows = (clone $catalogBase)
+                ->select(['category_id'])
+                ->where(['Tests.category_id IS NOT' => null])
+                ->distinct(['Tests.category_id'])
+                ->enableHydration(false)
+                ->all();
+            $categoryIds = [];
+            foreach ($categoryRows as $row) {
+                $cid = (int)($row['category_id'] ?? 0);
+                if ($cid > 0) {
+                    $categoryIds[] = $cid;
+                }
+            }
+
+            $difficultyRows = (clone $catalogBase)
+                ->select(['difficulty_id'])
+                ->where(['Tests.difficulty_id IS NOT' => null])
+                ->distinct(['Tests.difficulty_id'])
+                ->enableHydration(false)
+                ->all();
+            $difficultyIds = [];
+            foreach ($difficultyRows as $row) {
+                $did = (int)($row['difficulty_id'] ?? 0);
+                if ($did > 0) {
+                    $difficultyIds[] = $did;
+                }
+            }
+
+            if ($categoryIds) {
+                $categoryTranslations = $this->fetchTable('CategoryTranslations')->find()
+                    ->select(['category_id', 'name'])
+                    ->where([
+                        'CategoryTranslations.category_id IN' => $categoryIds,
+                        'CategoryTranslations.language_id' => $language->id ?? null,
+                    ])
+                    ->enableHydration(false)
+                    ->all();
+
+                foreach ($categoryTranslations as $row) {
+                    $cid = (int)($row['category_id'] ?? 0);
+                    $name = trim((string)($row['name'] ?? ''));
+                    if ($cid > 0 && $name !== '') {
+                        $categoryOptions[$cid] = $name;
+                    }
+                }
+                asort($categoryOptions);
+            }
+
+            if ($difficultyIds) {
+                $difficultyTranslations = $this->fetchTable('DifficultyTranslations')->find()
+                    ->select(['difficulty_id', 'name'])
+                    ->where([
+                        'DifficultyTranslations.difficulty_id IN' => $difficultyIds,
+                        'DifficultyTranslations.language_id' => $language->id ?? null,
+                    ])
+                    ->enableHydration(false)
+                    ->all();
+
+                foreach ($difficultyTranslations as $row) {
+                    $did = (int)($row['difficulty_id'] ?? 0);
+                    $name = trim((string)($row['name'] ?? ''));
+                    if ($did > 0 && $name !== '') {
+                        $difficultyOptions[$did] = $name;
+                    }
+                }
+                asort($difficultyOptions);
+            }
+
+            if ($filters['category'] !== '' && ctype_digit($filters['category'])) {
+                $query->where(['Tests.category_id' => (int)$filters['category']]);
+            }
+
+            if ($filters['difficulty'] !== '' && ctype_digit($filters['difficulty'])) {
+                $query->where(['Tests.difficulty_id' => (int)$filters['difficulty']]);
+            }
+
+            if ($filters['q'] !== '') {
+                $qLike = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $filters['q']) . '%';
+                $query
+                    ->matching('TestTranslations', function ($q) use ($language, $qLike) {
+                        $query = $q->where([
+                            'OR' => [
+                                'TestTranslations.title LIKE' => $qLike,
+                                'TestTranslations.description LIKE' => $qLike,
+                            ],
+                        ]);
+                        if ($language && $language->id !== null) {
+                            $query = $query->where(['TestTranslations.language_id' => (int)$language->id]);
+                        }
+
+                        return $query;
+                    })
+                    ->distinct(['Tests.id']);
+            }
+
+            $sort = $filters['sort'];
+            if ($sort === 'oldest') {
+                $query->orderByAsc('Tests.id');
+            } elseif ($sort === 'updated') {
+                $query->orderByDesc('Tests.updated_at')->orderByDesc('Tests.id');
+            } else {
+                $query->orderByDesc('Tests.id');
+                $filters['sort'] = 'latest';
+            }
+        }
+
+        if ($isCatalog) {
+            $perPageOptions = [12, 24, 48];
+            $defaultPerPage = 12;
+            $perPage = (int)$this->request->getQuery('per_page', $defaultPerPage);
+            if (!in_array($perPage, $perPageOptions, true)) {
+                $perPage = $defaultPerPage;
+            }
+
+            $page = max(1, (int)$this->request->getQuery('page', 1));
+            $totalItems = (int)(clone $query)->count();
+            $totalPages = max(1, (int)ceil($totalItems / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+            }
+
+            $query
+                ->limit($perPage)
+                ->offset(($page - 1) * $perPage);
+
+            $catalogPagination = [
+                'page' => $page,
+                'perPage' => $perPage,
+                'perPageOptions' => $perPageOptions,
+                'totalItems' => $totalItems,
+                'totalPages' => $totalPages,
+            ];
         }
 
         $tests = $query->all();
@@ -262,6 +461,9 @@ class TestsController extends AppController
             'filters',
             'categoryOptions',
             'difficultyOptions',
+            'catalogPagination',
+            'recentAttempts',
+            'topQuizzes',
         ));
     }
 

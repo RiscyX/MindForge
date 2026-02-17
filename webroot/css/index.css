@@ -904,6 +904,49 @@ body.mf-admin-body {
     white-space: nowrap;
 }
 
+.mf-admin-apply-btn {
+    color: rgba(var(--mf-text-rgb), 0.98);
+    border: 1px solid rgba(var(--mf-primary-rgb), 0.45);
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 0.36rem 0.85rem;
+    background:
+        radial-gradient(120% 140% at 20% 10%, rgba(var(--mf-primary-rgb), 0.34), transparent 58%),
+        linear-gradient(165deg, rgba(var(--mf-primary-rgb), 0.3), rgba(var(--mf-panel-rgb), 0.88));
+    box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.28),
+        0 0 0 1px rgba(var(--mf-primary-rgb), 0.16) inset;
+    transition: transform 160ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.mf-admin-apply-btn:hover {
+    color: rgba(var(--mf-text-rgb), 0.98);
+    border-color: rgba(var(--mf-primary-rgb), 0.6);
+    transform: translateY(-1px);
+    box-shadow:
+        0 16px 28px rgba(0, 0, 0, 0.34),
+        0 0 0 1px rgba(var(--mf-primary-rgb), 0.24) inset;
+}
+
+.mf-admin-apply-btn:focus-visible {
+    color: rgba(var(--mf-text-rgb), 0.98);
+    outline: 2px solid rgba(var(--mf-primary-rgb), 0.58);
+    outline-offset: 2px;
+}
+
+.mf-admin-reset-btn {
+    border-radius: 999px;
+    border-color: rgba(var(--mf-text-rgb), 0.2);
+    color: rgba(var(--mf-text-rgb), 0.86);
+}
+
+.mf-admin-reset-btn:hover {
+    border-color: rgba(var(--mf-text-rgb), 0.35);
+    color: rgba(var(--mf-text-rgb), 0.98);
+    background: rgba(var(--mf-text-rgb), 0.06);
+}
+
 @media (max-width: 575.98px) {
     .mf-admin-toolbar__search .mf-admin-input {
         max-width: none;
@@ -960,26 +1003,59 @@ body.mf-admin-body {
     padding: 0.75rem 1rem;
 }
 
-.mf-admin-table-card .page-link {
-    background: rgba(var(--mf-text-rgb), 0.03);
-    border-color: rgba(var(--mf-text-rgb), 0.10);
-    color: rgba(var(--mf-text-rgb), 0.90);
+.mf-admin-pagination {
+    gap: 0.35rem;
 }
 
-.mf-admin-table-card .page-link:hover {
-    background: rgba(var(--mf-text-rgb), 0.05);
-    border-color: rgba(var(--mf-text-rgb), 0.12);
-    color: var(--mf-text);
+.mf-admin-pagination .page-item {
+    margin: 0;
 }
 
-.mf-admin-table-card .page-item.active .page-link {
-    color: var(--mf-primary);
-    background: rgba(var(--mf-primary-rgb), 0.12);
-    border-color: rgba(var(--mf-primary-rgb), 0.30);
+.mf-admin-pagination .page-link {
+    min-width: 2.1rem;
+    height: 2.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.62rem;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--mf-text-rgb), 0.14);
+    background: linear-gradient(160deg, rgba(var(--mf-panel-rgb), 0.86), rgba(var(--mf-panel-rgb), 0.7));
+    color: rgba(var(--mf-text-rgb), 0.92);
+    font-weight: 600;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24);
+    transition: transform 160ms ease, border-color 180ms ease, background 180ms ease, color 160ms ease;
 }
 
-.mf-admin-table-card .page-item.disabled .page-link {
-    color: rgba(var(--mf-text-rgb), 0.35);
+.mf-admin-pagination .page-link:hover {
+    border-color: rgba(var(--mf-primary-rgb), 0.45);
+    background: linear-gradient(160deg, rgba(var(--mf-primary-rgb), 0.2), rgba(var(--mf-panel-rgb), 0.72));
+    color: rgba(var(--mf-text-rgb), 0.98);
+    transform: translateY(-1px);
+}
+
+.mf-admin-pagination .page-link:focus-visible {
+    outline: 2px solid rgba(var(--mf-primary-rgb), 0.5);
+    outline-offset: 1px;
+}
+
+.mf-admin-pagination .page-item.active .page-link {
+    color: rgba(var(--mf-text-rgb), 0.98);
+    border-color: rgba(var(--mf-primary-rgb), 0.55);
+    background:
+        radial-gradient(120% 120% at 20% 20%, rgba(var(--mf-primary-rgb), 0.35), transparent 55%),
+        linear-gradient(160deg, rgba(var(--mf-primary-rgb), 0.28), rgba(var(--mf-panel-rgb), 0.86));
+    box-shadow:
+        0 14px 26px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(var(--mf-primary-rgb), 0.18) inset;
+}
+
+.mf-admin-pagination .page-item.disabled .page-link {
+    opacity: 0.45;
+    color: rgba(var(--mf-text-rgb), 0.58);
+    background: rgba(var(--mf-panel-rgb), 0.55);
+    border-color: rgba(var(--mf-text-rgb), 0.08);
+    box-shadow: none;
 }
 
 

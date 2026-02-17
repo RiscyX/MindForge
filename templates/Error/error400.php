@@ -39,7 +39,7 @@ $code = $code ?? 404;
         <a href="<?= $this->Url->build('/') ?>" class="btn btn-primary px-4 py-2">
             <i class="bi bi-house-door me-1"></i> <?= __('Go Home') ?>
         </a>
-        <button onclick="history.back()" class="btn btn-outline-light px-4 py-2">
+        <button type="button" data-mf-history-back class="btn btn-outline-light px-4 py-2">
             <i class="bi bi-arrow-left me-1"></i> <?= __('Go Back') ?>
         </button>
     </div>
