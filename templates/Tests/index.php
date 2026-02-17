@@ -41,10 +41,12 @@ $catalogTests = $isCatalog
 $this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
 $this->Html->css('tests_catalog', ['block' => 'css']);
 
-$this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
-$this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
+if (!$this->request->getParam('prefix')) {
+    $this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
+    $this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
+    $this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
+    $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
+}
 ?>
 
 <?php if ($isCatalog) : ?>

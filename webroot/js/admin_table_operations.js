@@ -343,12 +343,28 @@
                 columnDefs.push({ searchable: false, targets: dtCfg.nonSearchableTargets });
             }
 
+            const dtLang = isHu ? {
+                emptyTable: 'Nincs elérhető adat',
+                info: '_TOTAL_ bejegyzésből _START_ - _END_ megjelenítése',
+                infoEmpty: 'Nincs megjeleníthető bejegyzés',
+                infoFiltered: '(szűrve _MAX_ összes bejegyzésből)',
+                lengthMenu: '_MENU_ bejegyzés megjelenítése',
+                loadingRecords: 'Betöltés...',
+                processing: 'Feldolgozás...',
+                search: 'Keresés:',
+                zeroRecords: 'Nincs egyező bejegyzés',
+                paginate: { first: 'Első', last: 'Utolsó', next: 'Következő', previous: 'Előző' },
+                aria: { sortAscending: ': növekvő rendezés', sortDescending: ': csökkenő rendezés' },
+            } : {};
+
             const dt = $table.DataTable({
                 searching: !!dtCfg.searching,
                 lengthChange: !!dtCfg.lengthChange,
                 pageLength: Number.isFinite(dtCfg.pageLength) ? dtCfg.pageLength : 10,
                 order: dtCfg.order || [[1, 'asc']],
                 columnDefs,
+                autoWidth: false,
+                language: dtLang,
                 dom: paginationContainer ? 'rt' : dtCfg.dom,
             });
 
