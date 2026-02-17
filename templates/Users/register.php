@@ -36,15 +36,21 @@ $this->Html->script('register.js?v=3', ['block' => 'script']);
                             data-mf-email
                             name="email"
                             type="email"
-                            class="form-control"
+                            class="form-control<?= $user->hasErrors() && $user->getError('email') ? ' is-invalid' : '' ?>"
                             placeholder="you@example.com"
                             autocomplete="email"
                             value="<?= h($user->email ?? '') ?>"
                             required
                         />
-                        <div class="invalid-feedback">
-                            <?= __('Please enter a valid email address.') ?>
-                        </div>
+                        <?php if ($user->getError('email')) : ?>
+                            <div class="invalid-feedback d-block">
+                                <?= h(implode(' ', $user->getError('email'))) ?>
+                            </div>
+                        <?php else : ?>
+                            <div class="invalid-feedback">
+                                <?= __('Please enter a valid email address.') ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-3">
@@ -54,7 +60,7 @@ $this->Html->script('register.js?v=3', ['block' => 'script']);
                             data-mf-password
                             name="password"
                             type="password"
-                            class="form-control"
+                            class="form-control<?= $user->hasErrors() && $user->getError('password') ? ' is-invalid' : '' ?>"
                             placeholder="<?= h(__('Create a strong password')) ?>"
                             autocomplete="new-password"
                             minlength="8"
@@ -67,9 +73,15 @@ $this->Html->script('register.js?v=3', ['block' => 'script']);
                             </div>
                         </div>
 
-                        <div class="invalid-feedback">
-                            <?= __('Password must be at least 8 characters.') ?>
-                        </div>
+                        <?php if ($user->getError('password')) : ?>
+                            <div class="invalid-feedback d-block">
+                                <?= h(implode(' ', $user->getError('password'))) ?>
+                            </div>
+                        <?php else : ?>
+                            <div class="invalid-feedback">
+                                <?= __('Password must be at least 8 characters.') ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-4">

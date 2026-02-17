@@ -261,6 +261,82 @@ body {
     }
 }
 
+/* ──────────────────────────────────────────────
+   Error pages (404 / 500)
+   ────────────────────────────────────────────── */
+.mf-error-page {
+    max-width: 480px;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.mf-error-glow {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    translate: -50% 0;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--mf-primary-rgb), 0.18) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.mf-error-glow--danger {
+    background: radial-gradient(circle, rgba(224, 77, 87, 0.16) 0%, transparent 70%);
+}
+
+.mf-error-code {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(6rem, 18vw, 10rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, rgba(var(--mf-primary-rgb), 1), rgba(var(--mf-text-rgb), 0.45));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.15em;
+}
+
+.mf-error-heading {
+    position: relative;
+    z-index: 1;
+    font-weight: 600;
+    color: rgba(var(--mf-text-rgb), 0.92);
+}
+
+.mf-error-text {
+    position: relative;
+    z-index: 1;
+    color: rgba(var(--mf-text-rgb), 0.55);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* ──────────────────────────────────────────────
+   Server-side form validation errors (CakePHP)
+   ────────────────────────────────────────────── */
+.form-group.error .form-control,
+.form-group.error .form-select,
+.input.error input,
+.input.error select,
+.input.error textarea {
+    border-color: #e04d57 !important;
+    box-shadow: 0 0 0 0.2rem rgba(224, 77, 87, 0.18) !important;
+}
+
+.form-group .error-message,
+.input .error-message {
+    display: block;
+    color: #f87171;
+    font-size: 0.82rem;
+    margin-top: 0.3rem;
+    font-weight: 500;
+}
+
 /* Admin dashboard */
 .mf-admin-wrapper {
     overflow-x: hidden;

@@ -37,5 +37,20 @@ class AppView extends View
      */
     public function initialize(): void
     {
+        /*
+         * Bootstrap 5 integration for CakePHP FormHelper.
+         *
+         * - errorClass → 'is-invalid' so Bootstrap draws the red border.
+         * - error template → 'invalid-feedback' so the message is styled + visible.
+         */
+        $this->addHelper('Form', [
+            'templates' => [
+                // When a field has a validation error CakePHP adds this CSS class
+                // to the <input>/<select>/<textarea>.  Bootstrap needs 'is-invalid'.
+                'error' => '<div class="invalid-feedback d-block" id="{{id}}">{{content}}</div>',
+                'inputContainerError' => '<div class="{{containerClass}} {{type}}{{required}} error mb-3">{{content}}{{error}}</div>',
+            ],
+            'errorClass' => 'is-invalid',
+        ]);
     }
 }
