@@ -74,7 +74,7 @@ $this->assign('title', __('Categories'));
                             />
                         </td>
                         <td class="mf-muted" data-order="<?= h((string)$category->id) ?>"><?= $this->Number->format($category->id) ?></td>
-                        <td class="text-start">
+                        <td>
                             <?php foreach ($category->category_translations as $translation) : ?>
                                 <?php if ($translation->hasValue('language')) : ?>
                                     <div>

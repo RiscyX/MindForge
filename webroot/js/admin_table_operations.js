@@ -79,7 +79,7 @@
             const value = (button.value || '').toLowerCase();
             const t = (text || '').toLowerCase();
 
-            if (cls.includes('danger') || value.includes('delete') || t.includes('delete') || t.includes('ban')) {
+            if (cls.includes('danger') || value.includes('delete') || t.includes('delete') || (t.includes('ban') && !t.includes('unban'))) {
                 return 'danger';
             }
             if (cls.includes('warning') || value.includes('deactivate') || t.includes('deactivate')) {
@@ -102,8 +102,8 @@
             if (v.includes('delete') || t.includes('delete')) return 'bi-trash3';
             if (v.includes('activate') || t.includes('activate')) return 'bi-check-circle';
             if (v.includes('deactivate') || t.includes('deactivate')) return 'bi-slash-circle';
-            if (v.includes('ban') || t.includes('ban')) return 'bi-person-x';
             if (v.includes('unban') || t.includes('unban')) return 'bi-person-check';
+            if (v.includes('ban') || t.includes('ban')) return 'bi-person-x';
             if (t.includes('edit')) return 'bi-pencil-square';
             if (t.includes('view') || t.includes('details') || t.includes('review') || t.includes('result')) return 'bi-eye';
             if (t.includes('select')) return 'bi-check2-square';
