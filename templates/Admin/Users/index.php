@@ -164,6 +164,13 @@ $this->assign('title', __('Users'));
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($users) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No users found.'),
+                        'ctaUrl' => ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New User'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

@@ -234,6 +234,13 @@ $this->assign('title', __('Questions'));
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($questions) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No questions found.'),
+                        'ctaUrl' => ['action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New Question'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

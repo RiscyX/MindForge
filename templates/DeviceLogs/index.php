@@ -196,6 +196,11 @@ $to = (string)($filters['to'] ?? '');
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($deviceLogs) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No device logs found.'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

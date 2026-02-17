@@ -1024,6 +1024,38 @@ body.mf-admin-body {
     padding: 0.75rem 1rem;
 }
 
+/* ── Empty-state row ──────────────────────────── */
+.mf-admin-empty-state {
+    padding: 3rem 1rem !important;
+    text-align: center !important;
+    background: transparent !important;
+}
+
+.mf-admin-empty-state-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.mf-admin-empty-state-icon {
+    font-size: 2.5rem;
+    color: rgba(var(--mf-text-rgb), 0.22);
+    line-height: 1;
+}
+
+.mf-admin-empty-state-msg {
+    margin: 0;
+    color: rgba(var(--mf-text-rgb), 0.45);
+    font-size: 0.93rem;
+}
+
+@media (max-width: 767.98px) {
+    .mf-admin-empty-state-row td.mf-admin-empty-state::before {
+        content: none !important;
+    }
+}
+
 .mf-admin-pagination {
     gap: 0.35rem;
 }

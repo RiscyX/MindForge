@@ -109,6 +109,13 @@ $this->assign('title', __('Difficulties'));
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($difficulties) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No difficulties found.'),
+                        'ctaUrl' => ['action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New Difficulty'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

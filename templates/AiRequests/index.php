@@ -215,6 +215,11 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
                             </td>
                         </tr>
                     <?php endforeach; ?>
+                    <?php if (count($aiRequests) === 0) : ?>
+                        <?= $this->element('functions/admin_empty_state', [
+                            'message' => __('No AI requests found.'),
+                        ]) ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

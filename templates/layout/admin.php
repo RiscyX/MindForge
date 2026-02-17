@@ -30,7 +30,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     <?= $this->Html->css('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css') ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?= $this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css') ?>
-    <?= $this->Html->css('index.css?v=34') ?>
+    <?= $this->Html->css('index.css?v=35') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>

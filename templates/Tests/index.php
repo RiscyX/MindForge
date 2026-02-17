@@ -661,6 +661,13 @@ if (!$this->request->getParam('prefix')) {
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($tests) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No tests found.'),
+                        'ctaUrl' => ['action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New Test'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

@@ -116,6 +116,13 @@ $this->assign('title', __('Categories'));
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($categories) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No categories found.'),
+                        'ctaUrl' => ['action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New Category'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
