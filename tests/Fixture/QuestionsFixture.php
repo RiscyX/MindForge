@@ -24,7 +24,6 @@ class QuestionsFixture extends TestFixture
                 'category_id' => 1,
                 'difficulty_id' => 1,
                 'question_type' => 'Lorem ipsum dolor sit amet',
-                'original_language_id' => 1,
                 'source_type' => 'Lorem ipsum dolor sit amet',
                 'created_by' => 1,
                 'is_active' => 1,

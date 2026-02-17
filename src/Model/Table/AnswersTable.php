@@ -80,6 +80,19 @@ class AnswersTable extends Table
             ->notEmptyString('is_correct');
 
         $validator
+            ->scalar('match_side')
+            ->maxLength('match_side', 10)
+            ->allowEmptyString('match_side')
+            ->add('match_side', 'inList', [
+                'rule' => ['inList', ['left', 'right']],
+                'message' => __('Match side must be left or right.'),
+            ]);
+
+        $validator
+            ->nonNegativeInteger('match_group')
+            ->allowEmptyString('match_group');
+
+        $validator
             ->scalar('source_text')
             ->allowEmptyString('source_text');
 
@@ -108,6 +121,21 @@ class AnswersTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['question_id'], 'Questions'), ['errorField' => 'question_id']);
+        $rules->add(
+            function ($entity): bool {
+                $side = trim((string)($entity->get('match_side') ?? ''));
+                $group = $entity->get('match_group');
+                $hasSide = $side !== '';
+                $hasGroup = $group !== null && $group !== '';
+
+                return $hasSide === $hasGroup;
+            },
+            'matchingPairFields',
+            [
+                'errorField' => 'match_side',
+                'message' => __('Both match side and match group are required for matching answers.'),
+            ],
+        );
 
         return $rules;
     }

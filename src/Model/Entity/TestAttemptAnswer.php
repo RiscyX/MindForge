@@ -13,12 +13,14 @@ use Cake\ORM\Entity;
  * @property int $question_id
  * @property int|null $answer_id
  * @property string|null $user_answer_text
+ * @property string|null $user_answer_payload
  * @property bool $is_correct
  * @property \Cake\I18n\DateTime $answered_at
  *
  * @property \App\Model\Entity\TestAttempt $test_attempt
  * @property \App\Model\Entity\Question $question
  * @property \App\Model\Entity\Answer $answer
+ * @property \App\Model\Entity\AttemptAnswerExplanation[] $attempt_answer_explanations
  */
 class TestAttemptAnswer extends Entity
 {
@@ -36,10 +38,12 @@ class TestAttemptAnswer extends Entity
         'question_id' => true,
         'answer_id' => true,
         'user_answer_text' => true,
+        'user_answer_payload' => true,
         'is_correct' => true,
         'answered_at' => true,
         'test_attempt' => true,
         'question' => true,
         'answer' => true,
+        'attempt_answer_explanations' => true,
     ];
 }

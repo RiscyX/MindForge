@@ -23,7 +23,7 @@ class CreatorAiController extends AppController
      */
     #[OA\Post(
         path: '/api/v1/creator/ai/test-generation',
-        summary: 'Create an async AI test generation request (prompt + optional images)',
+        summary: 'Create an async AI test generation request (prompt + optional assets)',
         tags: ['CreatorAi'],
         security: [['bearerAuth' => []]],
         requestBody: new OA\RequestBody(
@@ -48,6 +48,12 @@ class CreatorAiController extends AppController
                             property: 'images',
                             type: 'array',
                             description: 'Optional images (default max 6 files, 6 MB each; jpeg/png/webp).',
+                            items: new OA\Items(type: 'string', format: 'binary'),
+                        ),
+                        new OA\Property(
+                            property: 'documents',
+                            type: 'array',
+                            description: 'Optional documents (pdf/docx/odt/txt/md/csv/json/xml).',
                             items: new OA\Items(type: 'string', format: 'binary'),
                         ),
                     ],
@@ -168,7 +174,7 @@ class CreatorAiController extends AppController
         }
 
         try {
-            $this->saveUploadedImages((int)$req->id);
+            $this->saveUploadedAssets((int)$req->id);
         } catch (RuntimeException $e) {
             $req->status = 'failed';
             $req->error_code = 'UPLOAD_FAILED';
@@ -182,11 +188,11 @@ class CreatorAiController extends AppController
         } catch (Throwable) {
             $req->status = 'failed';
             $req->error_code = 'UPLOAD_FAILED';
-            $req->error_message = 'Failed to store uploaded images.';
+            $req->error_message = 'Failed to store uploaded assets.';
             $req->updated_at = FrozenTime::now();
             $aiRequests->save($req);
 
-            $this->jsonError(500, 'UPLOAD_FAILED', 'Failed to store uploaded images.');
+            $this->jsonError(500, 'UPLOAD_FAILED', 'Failed to store uploaded assets.');
 
             return;
         }
@@ -460,7 +466,45 @@ class CreatorAiController extends AppController
                     $q['category_id'] = $testData['category_id'];
                 }
                 $q['created_by'] = $userId;
+
+                if (!empty($q['answers']) && is_array($q['answers'])) {
+                    $position = 1;
+                    foreach ($q['answers'] as &$a) {
+                        if (!is_array($a)) {
+                            continue;
+                        }
+
+                        $a['position'] = $position;
+                        $position += 1;
+                        $a['source_type'] = (string)($a['source_type'] ?? 'ai');
+
+                        $sourceText = '';
+                        if (!empty($a['answer_translations']) && is_array($a['answer_translations'])) {
+                            foreach ($a['answer_translations'] as &$at) {
+                                if (!is_array($at)) {
+                                    continue;
+                                }
+                                $at['source_type'] = (string)($at['source_type'] ?? $a['source_type']);
+                                $at['created_by'] = (int)$userId;
+
+                                if ($sourceText === '') {
+                                    $candidate = trim((string)($at['content'] ?? ''));
+                                    if ($candidate !== '') {
+                                        $sourceText = $candidate;
+                                    }
+                                }
+                            }
+                            unset($at);
+                        }
+
+                        if ($sourceText !== '') {
+                            $a['source_text'] = $sourceText;
+                        }
+                    }
+                    unset($a);
+                }
             }
+            unset($q);
         }
 
         $tests = $this->fetchTable('Tests');
@@ -587,15 +631,16 @@ class CreatorAiController extends AppController
     }
 
     /**
-     * Persist uploaded images for AI request.
+     * Persist uploaded images/documents for AI request.
      *
      * @param int $aiRequestId AI request identifier.
      * @return void
      */
-    private function saveUploadedImages(int $aiRequestId): void
+    private function saveUploadedAssets(int $aiRequestId): void
     {
         $files = $this->request->getUploadedFiles();
         $images = $files['images'] ?? null;
+        $documents = $files['documents'] ?? null;
 
         $imageFiles = [];
         if (is_array($images)) {
@@ -604,7 +649,14 @@ class CreatorAiController extends AppController
             $imageFiles = [$images];
         }
 
-        if (!$imageFiles) {
+        $documentFiles = [];
+        if (is_array($documents)) {
+            $documentFiles = $documents;
+        } elseif ($documents instanceof UploadedFileInterface) {
+            $documentFiles = [$documents];
+        }
+
+        if (!$imageFiles && !$documentFiles) {
             return;
         }
 
@@ -620,6 +672,13 @@ class CreatorAiController extends AppController
         ]);
         $maxBytes = (int)Configure::read('AI.maxImageBytes', 6 * 1024 * 1024);
         $imageUploadGuard = new ImageUploadGuard();
+
+        $maxDocumentCount = (int)Configure::read('AI.maxDocuments', 4);
+        if (count($documentFiles) > $maxDocumentCount) {
+            throw new RuntimeException('Too many documents. Max: ' . $maxDocumentCount);
+        }
+        $allowedDocumentMimes = (array)Configure::read('AI.allowedDocumentMimeTypes', []);
+        $maxDocumentBytes = (int)Configure::read('AI.maxDocumentBytes', 8 * 1024 * 1024);
 
         $baseDir = rtrim(TMP, DS) . DS . 'ai_assets' . DS . (string)$aiRequestId;
         if (!is_dir($baseDir) && !mkdir($baseDir, 0775, true) && !is_dir($baseDir)) {
@@ -661,5 +720,112 @@ class CreatorAiController extends AppController
                 throw new RuntimeException('Failed to store image metadata.');
             }
         }
+
+        foreach ($documentFiles as $file) {
+            if (!$file instanceof UploadedFileInterface) {
+                continue;
+            }
+            if ($file->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            if ($file->getError() !== UPLOAD_ERR_OK) {
+                throw new RuntimeException('Document upload failed.');
+            }
+
+            $size = (int)$file->getSize();
+            if ($size <= 0) {
+                throw new RuntimeException('Uploaded document is empty.');
+            }
+            if ($size > $maxDocumentBytes) {
+                throw new RuntimeException('Uploaded document is too large.');
+            }
+
+            $mime = $this->detectUploadedMime($file);
+            if ($mime === '' || !in_array($mime, $allowedDocumentMimes, true)) {
+                throw new RuntimeException('Unsupported document type: ' . ($mime !== '' ? $mime : 'unknown'));
+            }
+
+            $ext = $this->extensionForDocumentMime($mime);
+            $name = bin2hex(random_bytes(16)) . '.' . $ext;
+            $absPath = $baseDir . DS . $name;
+            $file->moveTo($absPath);
+
+            $hash = hash_file('sha256', $absPath);
+            $sha256 = $hash !== false ? $hash : null;
+            $relPath = 'tmp/ai_assets/' . $aiRequestId . '/' . $name;
+
+            $asset = $assetsTable->newEntity([
+                'ai_request_id' => $aiRequestId,
+                'storage_path' => $relPath,
+                'mime_type' => $mime,
+                'size_bytes' => $size,
+                'sha256' => $sha256,
+                'created_at' => $now,
+            ]);
+            if (!$assetsTable->save($asset)) {
+                throw new RuntimeException('Failed to store document metadata.');
+            }
+        }
+    }
+
+    /**
+     * Map allowed document MIME types to extension.
+     *
+     * @param string $mime MIME type.
+     * @return string
+     */
+    private function extensionForDocumentMime(string $mime): string
+    {
+        return match ($mime) {
+            'application/pdf' => 'pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+            'application/vnd.oasis.opendocument.text' => 'odt',
+            'text/plain' => 'txt',
+            'text/markdown' => 'md',
+            'text/csv' => 'csv',
+            'application/json' => 'json',
+            'application/xml', 'text/xml' => 'xml',
+            default => throw new RuntimeException('Unsupported document type: ' . $mime),
+        };
+    }
+
+    /**
+     * Detect uploaded file MIME type from content.
+     *
+     * @param \Psr\Http\Message\UploadedFileInterface $file Uploaded file.
+     * @return string
+     */
+    private function detectUploadedMime(UploadedFileInterface $file): string
+    {
+        try {
+            $stream = $file->getStream();
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+            $content = $stream->getContents();
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+        } catch (Throwable) {
+            $content = '';
+        }
+
+        $detected = '';
+        if (is_string($content) && $content !== '') {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo !== false) {
+                $tmp = finfo_buffer($finfo, $content);
+                finfo_close($finfo);
+                if (is_string($tmp)) {
+                    $detected = strtolower(trim($tmp));
+                }
+            }
+        }
+
+        if ($detected === '') {
+            $detected = strtolower(trim((string)$file->getClientMediaType()));
+        }
+
+        return $detected;
     }
 }

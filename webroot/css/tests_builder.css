@@ -215,6 +215,21 @@
     font-weight: 600;
 }
 
+.mf-doc-upload {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.mf-doc-upload__meta {
+    color: rgba(var(--mf-text-rgb), 0.72);
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
 .mf-test-combobox {
     position: relative;
 }

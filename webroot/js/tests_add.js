@@ -21,6 +21,8 @@ function initTestBuilderAiTools() {
     };
     const themedSwal = (options) => Swal.fire(Object.assign({}, swalTheme, options || {}));
 
+    initSupportingDocumentsPicker();
+
     const container = document.getElementById('questions-container');
     if (container) {
         Sortable.create(container, {
@@ -57,19 +59,30 @@ function initTestBuilderAiTools() {
                 confirmButtonText: aiStrings.confirmButtonText,
                 showLoaderOnConfirm: true,
                 preConfirm: (prompt) => {
-                    if (!prompt) {
+                    const docsEl = document.getElementById('ai-supporting-documents');
+                    const promptText = String(prompt || '').trim();
+
+                    if (!promptText) {
                         Swal.showValidationMessage(aiStrings.validationMessage);
                         return false;
                     }
+
+                    const formData = new FormData();
+                    formData.append('prompt', promptText);
+                    if (docsEl && docsEl.files) {
+                        Array.from(docsEl.files).forEach((f) => {
+                            formData.append('documents[]', f);
+                        });
+                    }
+
                     const csrfToken = document.querySelector('input[name="_csrfToken"]').value;
                     return fetch(config.generateAiUrl, {
                         method: 'POST',
                         credentials: 'same-origin',
                         headers: {
-                            'Content-Type': 'application/json',
                             'X-CSRF-Token': csrfToken
                         },
-                        body: JSON.stringify({ prompt: prompt })
+                        body: formData
                     })
                     .then(response => {
                         return response.text().then(raw => {
@@ -94,7 +107,7 @@ function initTestBuilderAiTools() {
                     })
                     .catch(error => {
                         Swal.showValidationMessage(
-                            `Request failed: ${error}`
+                            `${aiStrings.requestFailedPrefix || 'Request failed:'} ${error}`
                         );
                     });
                 },
@@ -225,6 +238,37 @@ function initTestBuilderAiTools() {
     }
 }
 
+function initSupportingDocumentsPicker() {
+    const input = document.getElementById('ai-supporting-documents');
+    const trigger = document.querySelector('[data-mf-doc-trigger]');
+    const meta = document.querySelector('[data-mf-doc-meta]');
+    if (!input || !trigger || !meta) {
+        return;
+    }
+
+    const emptyLabel = meta.getAttribute('data-empty-label') || 'No files selected (optional).';
+    const selectedLabel = meta.getAttribute('data-selected-label') || 'selected files';
+
+    const updateMeta = () => {
+        const files = input.files ? Array.from(input.files) : [];
+        if (!files.length) {
+            meta.textContent = emptyLabel;
+            return;
+        }
+
+        if (files.length === 1) {
+            meta.textContent = files[0].name;
+            return;
+        }
+
+        meta.textContent = `${files.length} ${selectedLabel}: ${files.slice(0, 2).map(f => f.name).join(', ')}${files.length > 2 ? '…' : ''}`;
+    };
+
+    trigger.addEventListener('click', () => input.click());
+    input.addEventListener('change', updateMeta);
+    updateMeta();
+}
+
 // Initialize on load (and handle scripts loaded late)
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initTestBuilderAiTools);
@@ -279,9 +323,19 @@ function buildTranslatePayload() {
             const aId = Number(idEl.value);
             const aCorrectEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][is_correct]"]`);
             const aTextEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][answer_translations][${sourceLanguageId}][content]"]`);
+            const aSideEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][match_side]"]`);
+            const aGroupEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][match_group]"]`);
             const isCorrect = aCorrectEl ? (aCorrectEl.value === '1' || aCorrectEl.checked) : false;
             const aContent = aTextEl ? aTextEl.value : '';
-            question.answers.push({ id: aId, is_correct: isCorrect, content: aContent });
+            const matchSide = aSideEl ? String(aSideEl.value || '') : '';
+            const rawGroup = aGroupEl ? Number(aGroupEl.value) : null;
+            question.answers.push({
+                id: aId,
+                is_correct: isCorrect,
+                content: aContent,
+                match_side: matchSide || null,
+                match_group: Number.isFinite(rawGroup) && rawGroup > 0 ? rawGroup : null
+            });
         });
 
         // Fallback for non-fixed answers where id is not present yet
@@ -293,8 +347,18 @@ function buildTranslatePayload() {
                 if (!m) return;
                 const aIndex = Number(m[2]);
                 const aCorrectEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][is_correct]"]`);
+                const aSideEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][match_side]"]`);
+                const aGroupEl = card.querySelector(`input[name="questions[${qIndex}][answers][${aIndex}][match_group]"]`);
                 const isCorrect = aCorrectEl ? (aCorrectEl.value === '1' || aCorrectEl.checked) : false;
-                question.answers.push({ id: null, is_correct: isCorrect, content: aTextEl.value });
+                const matchSide = aSideEl ? String(aSideEl.value || '') : '';
+                const rawGroup = aGroupEl ? Number(aGroupEl.value) : null;
+                question.answers.push({
+                    id: null,
+                    is_correct: isCorrect,
+                    content: aTextEl.value,
+                    match_side: matchSide || null,
+                    match_group: Number.isFinite(rawGroup) && rawGroup > 0 ? rawGroup : null
+                });
             });
         }
 
@@ -390,9 +454,46 @@ function fillFormWithAiData(data) {
         answerCounters = {};
 
         data.questions.forEach(qData => {
-            addQuestion(qData);
+            addQuestion(normalizeAiQuestionData(qData));
         });
     }
+}
+
+function normalizeAiQuestionData(question) {
+    if (!question || typeof question !== 'object') {
+        return question;
+    }
+    if (question.type !== 'matching' || !Array.isArray(question.pairs) || Array.isArray(question.answers)) {
+        return question;
+    }
+
+    const normalized = Object.assign({}, question);
+    normalized.answers = [];
+    let group = 1;
+    question.pairs.forEach((pair) => {
+        if (!pair || typeof pair !== 'object') return;
+        const leftTranslations = pair.left_translations || pair.left || {};
+        const rightTranslations = pair.right_translations || pair.right || {};
+        normalized.answers.push({
+            id: null,
+            source_type: 'ai',
+            is_correct: false,
+            match_side: 'left',
+            match_group: group,
+            translations: leftTranslations,
+        });
+        normalized.answers.push({
+            id: null,
+            source_type: 'ai',
+            is_correct: false,
+            match_side: 'right',
+            match_group: group,
+            translations: rightTranslations,
+        });
+        group += 1;
+    });
+
+    return normalized;
 }
 
 function addQuestion(data = null) {
@@ -404,6 +505,7 @@ function addQuestion(data = null) {
     if (data && data.type) {
         if (data.type === 'true_false') defaultType = questionTypes.TRUE_FALSE;
         else if (data.type === 'text') defaultType = questionTypes.TEXT;
+        else if (data.type === 'matching') defaultType = questionTypes.MATCHING;
         // else multiple_choice
     }
 
@@ -432,6 +534,7 @@ function addQuestion(data = null) {
                     <option value="${questionTypes.MULTIPLE_CHOICE}" ${defaultType === questionTypes.MULTIPLE_CHOICE ? 'selected' : ''}>Multiple Choice</option>
                     <option value="${questionTypes.TRUE_FALSE}" ${defaultType === questionTypes.TRUE_FALSE ? 'selected' : ''}>True/False</option>
                     <option value="${questionTypes.TEXT}" ${defaultType === questionTypes.TEXT ? 'selected' : ''}>Text</option>
+                    <option value="${questionTypes.MATCHING}" ${defaultType === questionTypes.MATCHING ? 'selected' : ''}>Matching</option>
                 </select>
             </div>
 
@@ -556,8 +659,16 @@ function changeQuestionType(index, type, answersData = null) {
     }
     
     if (type === questionTypes.TEXT) {
-        addBtn.style.display = 'none';
-        container.innerHTML = '<p class="text-muted fst-italic">Text questions do not have predefined answers in this form currently.</p>';
+        addBtn.style.display = 'inline-block';
+        addBtn.innerHTML = '<i class="bi bi-plus-circle"></i> Add Accepted Answer';
+
+        if (answersData && Array.isArray(answersData) && answersData.length > 0) {
+            answersData.forEach(ans => {
+                addTextAcceptedAnswer(index, ans, questionSourceType);
+            });
+        } else {
+            addTextAcceptedAnswer(index, null, questionSourceType);
+        }
     } else if (type === questionTypes.TRUE_FALSE) {
         addBtn.style.display = 'none';
         
@@ -617,9 +728,38 @@ function changeQuestionType(index, type, answersData = null) {
             falseId,
             fixedAnswerSourceType,
         );
-    } else {
-
+    } else if (type === questionTypes.MATCHING) {
         addBtn.style.display = 'inline-block';
+        addBtn.innerHTML = '<i class="bi bi-plus-circle"></i> Add Matching Pair';
+
+        const grouped = {};
+        if (Array.isArray(answersData)) {
+            answersData.forEach(ans => {
+                if (!ans || typeof ans !== 'object') return;
+                const side = String(ans.match_side || '');
+                const group = Number(ans.match_group);
+                if (!['left', 'right'].includes(side) || !Number.isFinite(group) || group <= 0) return;
+                if (!grouped[group]) grouped[group] = {};
+                grouped[group][side] = ans;
+            });
+        }
+
+        const groups = Object.keys(grouped)
+            .map(Number)
+            .filter(v => Number.isFinite(v) && v > 0)
+            .sort((a, b) => a - b);
+
+        if (groups.length > 0) {
+            groups.forEach(group => {
+                addMatchingPair(index, grouped[group], questionSourceType, group);
+            });
+        } else {
+            addMatchingPair(index, null, questionSourceType, 1);
+            addMatchingPair(index, null, questionSourceType, 2);
+        }
+    } else {
+        addBtn.style.display = 'inline-block';
+        addBtn.innerHTML = '<i class="bi bi-plus-circle"></i> Add Answer Option';
         
         if (answersData && Array.isArray(answersData)) {
             answersData.forEach(ans => {
@@ -630,6 +770,105 @@ function changeQuestionType(index, type, answersData = null) {
             addAnswer(index, null, questionSourceType);
         }
     }
+}
+
+function addMatchingPair(qIndex, pairData = null, questionSourceType = 'human', forcedGroup = null) {
+    if (answerCounters[qIndex] === undefined) answerCounters[qIndex] = 0;
+
+    const leftIndex = answerCounters[qIndex]++;
+    const rightIndex = answerCounters[qIndex]++;
+    const pairGroup = Number.isFinite(Number(forcedGroup)) && Number(forcedGroup) > 0
+        ? Number(forcedGroup)
+        : Math.max(1, Math.floor((leftIndex / 2) + 1));
+
+    const left = pairData && pairData.left ? pairData.left : null;
+    const right = pairData && pairData.right ? pairData.right : null;
+
+    const leftId = left && left.id ? left.id : '';
+    const rightId = right && right.id ? right.id : '';
+    const leftSourceType = left && left.source_type ? left.source_type : questionSourceType;
+    const rightSourceType = right && right.source_type ? right.source_type : questionSourceType;
+    const leftTranslations = left && left.translations ? left.translations : null;
+    const rightTranslations = right && right.translations ? right.translations : null;
+
+    const container = document.getElementById(`answers-container-${qIndex}`);
+    const rowId = `q${qIndex}-pair-${pairGroup}-${leftIndex}`;
+
+    const html = `
+    <div class="card mb-2 mf-test-builder__answer" id="${rowId}">
+        <div class="card-body p-2">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <strong>Matching Pair #${pairGroup}</strong>
+                <button type="button" class="btn btn-sm mf-test-builder__icon-btn mf-test-builder__icon-btn--danger" onclick="removeMatchingPair('${rowId}')" aria-label="Remove pair">
+                    <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <div class="text-muted mb-1">Left side</div>
+                    ${leftId ? `<input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][id]" value="${leftId}">` : ''}
+                    <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][source_type]" value="${leftSourceType}">
+                    <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][is_correct]" value="0">
+                    <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][match_side]" value="left">
+                    <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][match_group]" value="${pairGroup}">
+                    ${generateAnswerTranslationInputs(qIndex, leftIndex, leftTranslations)}
+                </div>
+                <div class="col-md-6">
+                    <div class="text-muted mb-1">Right side</div>
+                    ${rightId ? `<input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][id]" value="${rightId}">` : ''}
+                    <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][source_type]" value="${rightSourceType}">
+                    <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][is_correct]" value="0">
+                    <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][match_side]" value="right">
+                    <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][match_group]" value="${pairGroup}">
+                    ${generateAnswerTranslationInputs(qIndex, rightIndex, rightTranslations)}
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    container.appendChild(div.firstElementChild);
+}
+
+function addTextAcceptedAnswer(qIndex, data = null, questionSourceType = null) {
+    if (answerCounters[qIndex] === undefined) answerCounters[qIndex] = 0;
+    const aIndex = answerCounters[qIndex]++;
+    const container = document.getElementById(`answers-container-${qIndex}`);
+
+    const sourceTypeInput = document.querySelector(`input[name="questions[${qIndex}][source_type]"]`);
+    const fallbackQuestionSourceType = sourceTypeInput ? sourceTypeInput.value : 'human';
+    const effectiveQuestionSourceType = questionSourceType || fallbackQuestionSourceType;
+    const answerSourceType = (data && data.source_type) ? data.source_type : effectiveQuestionSourceType;
+    const id = data ? data.id : null;
+
+    const html = `
+    <div class="card mb-2 mf-test-builder__answer" id="q${qIndex}-a${aIndex}">
+        <div class="card-body p-2">
+             <div class="d-flex align-items-center justify-content-between mb-2">
+                 <strong>Accepted Answer</strong>
+                 <button type="button" class="btn btn-sm mf-test-builder__icon-btn mf-test-builder__icon-btn--danger" onclick="removeAnswer(${qIndex}, ${aIndex})" aria-label="Remove accepted answer">
+                     <i class="bi bi-trash3" aria-hidden="true"></i>
+                 </button>
+             </div>
+             ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${id}">` : ''}
+             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][is_correct]" value="1">
+             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${answerSourceType}">
+             ${generateAnswerTranslationInputs(qIndex, aIndex, data ? data.translations : null)}
+        </div>
+    </div>
+    `;
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    container.appendChild(div.firstElementChild);
+}
+
+function removeMatchingPair(rowId) {
+    const el = document.getElementById(rowId);
+    if (el) el.remove();
 }
 
 function addFixedAnswer(qIndex, aIndex, defaultText, isCorrect, translations = null, id = null, sourceType = 'human') {
@@ -681,6 +920,16 @@ function updateFixedAnswerCorrectness(qIndex, selectedAIndex) {
 }
 
 function addAnswer(qIndex, data = null, questionSourceType = null) {
+    const typeSelect = document.querySelector(`select[name="questions[${qIndex}][question_type]"]`);
+    if (typeSelect && typeSelect.value === questionTypes.MATCHING) {
+        addMatchingPair(qIndex, null, questionSourceType || 'human');
+        return;
+    }
+    if (typeSelect && typeSelect.value === questionTypes.TEXT) {
+        addTextAcceptedAnswer(qIndex, data, questionSourceType || 'human');
+        return;
+    }
+
     if (answerCounters[qIndex] === undefined) answerCounters[qIndex] = 0;
     const aIndex = answerCounters[qIndex]++;
     const container = document.getElementById(`answers-container-${qIndex}`);

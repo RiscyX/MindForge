@@ -5,6 +5,8 @@
  * @var \App\Model\Entity\Test|null $test
  * @var \Cake\Datasource\ResultSetInterface|iterable<\App\Model\Entity\Question> $questions
  * @var array<int, \App\Model\Entity\TestAttemptAnswer> $attemptAnswers
+ * @var array<int, \App\Model\Entity\AttemptAnswerExplanation> $explanationsByAttemptAnswer
+ * @var string $csrfToken
  */
 
 use App\Model\Entity\Question;
@@ -86,6 +88,10 @@ $totalQuestions = count($questionsList);
             $qid = (int)$question->id;
             $attemptAnswer = $attemptAnswers[$qid] ?? null;
             $isCorrect = $attemptAnswer ? (bool)$attemptAnswer->is_correct : false;
+            $attemptAnswerId = (int)($attemptAnswer->id ?? 0);
+            $existingExplanation = $attemptAnswerId > 0 && isset($explanationsByAttemptAnswer[$attemptAnswerId])
+                ? trim((string)($explanationsByAttemptAnswer[$attemptAnswerId]->explanation_text ?? ''))
+                : '';
 
             $qText = '';
             if (!empty($question->question_translations)) {
@@ -94,6 +100,26 @@ $totalQuestions = count($questionsList);
 
             $chosenAnswerId = $attemptAnswer?->answer_id !== null ? (int)$attemptAnswer->answer_id : null;
             $userText = $attemptAnswer?->user_answer_text !== null ? trim((string)$attemptAnswer->user_answer_text) : '';
+            $userPayload = $attemptAnswer?->user_answer_payload !== null ? (string)$attemptAnswer->user_answer_payload : '';
+            $userPairs = [];
+            if ($userPayload !== '') {
+                $decodedPayload = json_decode($userPayload, true);
+                if (is_array($decodedPayload) && isset($decodedPayload['pairs']) && is_array($decodedPayload['pairs'])) {
+                    $userPairs = $decodedPayload['pairs'];
+                }
+            }
+
+            $answerText = static function ($answer): string {
+                $txt = '';
+                if (!empty($answer->answer_translations)) {
+                    $txt = (string)($answer->answer_translations[0]->content ?? '');
+                }
+                if ($txt === '' && isset($answer->source_text)) {
+                    $txt = (string)$answer->source_text;
+                }
+
+                return trim($txt);
+            };
 
             $correctAnswerTexts = [];
             foreach (($question->answers ?? []) as $ans) {
@@ -143,6 +169,51 @@ $totalQuestions = count($questionsList);
                         <div class="mf-answer-box mf-answer-box--correct">
                             <?= $correctAnswerTexts ? h(implode(' / ', $correctAnswerTexts)) : __('(not set)') ?>
                         </div>
+                    <?php elseif ((string)$question->question_type === Question::TYPE_MATCHING) : ?>
+                        <?php
+                        $leftById = [];
+                        $rightById = [];
+                        foreach (array_values((array)($question->answers ?? [])) as $idx => $ans) {
+                            $side = trim((string)($ans->match_side ?? ''));
+                            if ($side === '') {
+                                $side = ($idx % 2 === 0) ? 'left' : 'right';
+                            }
+                            $aid = (int)$ans->id;
+                            if ($side === 'left') {
+                                $leftById[$aid] = $ans;
+                            } elseif ($side === 'right') {
+                                $rightById[$aid] = $ans;
+                            }
+                        }
+                        ?>
+                        <div class="mf-muted mb-2"><?= __('Matching pairs') ?></div>
+
+                        <?php foreach ($leftById as $leftId => $leftAnswer) : ?>
+                            <?php
+                            $chosenRightRaw = $userPairs[(string)$leftId] ?? ($userPairs[$leftId] ?? null);
+                            $chosenRightId = is_numeric($chosenRightRaw) ? (int)$chosenRightRaw : null;
+                            $chosenRight = $chosenRightId !== null && isset($rightById[$chosenRightId]) ? $rightById[$chosenRightId] : null;
+
+                            $leftGroup = (int)($leftAnswer->match_group ?? 0);
+                            $isPairCorrect = $chosenRight !== null && $leftGroup > 0 && $leftGroup === (int)($chosenRight->match_group ?? 0);
+                            ?>
+                            <div class="mf-answer-choice <?= $isPairCorrect ? 'mf-answer-choice--correct' : 'mf-answer-choice--wrong' ?>">
+                                <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                                    <div class="text-white">
+                                        <strong><?= h($answerText($leftAnswer) !== '' ? $answerText($leftAnswer) : __('(empty)')) ?></strong>
+                                        <span class="mf-muted"> &rarr; </span>
+                                        <?= h($chosenRight ? ($answerText($chosenRight) !== '' ? $answerText($chosenRight) : __('(empty)')) : __('(no match)')) ?>
+                                    </div>
+                                    <div>
+                                        <?php if ($isPairCorrect) : ?>
+                                            <span class="badge bg-success"><?= __('Correct') ?></span>
+                                        <?php else : ?>
+                                            <span class="badge bg-danger"><?= __('Wrong') ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     <?php else : ?>
                         <div class="mf-muted mb-2"><?= __('Answers') ?></div>
 
@@ -193,6 +264,27 @@ $totalQuestions = count($questionsList);
                             <div class="mf-muted mt-2"><?= __('You did not answer this question.') ?></div>
                         <?php endif; ?>
                     <?php endif; ?>
+
+                    <?php if ($attemptAnswerId > 0) : ?>
+                        <?php $explanationTargetId = 'mf-ai-explanation-' . $qid; ?>
+                        <div class="mt-3">
+                            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-info"
+                                    data-mf-ai-explain
+                                    data-url="<?= h($this->Url->build(['controller' => 'Tests', 'action' => 'explainAnswer', $attempt->id, $qid, 'lang' => $lang])) ?>"
+                                    data-target="#<?= h($explanationTargetId) ?>"
+                                >
+                                    <?= __('Explain with AI') ?>
+                                </button>
+                                <span class="mf-muted small"><?= __('Useful when you want to understand why your answer was wrong/right.') ?></span>
+                            </div>
+                            <div id="<?= h($explanationTargetId) ?>" class="mf-answer-box"<?= $existingExplanation === '' ? ' hidden' : '' ?>>
+                                <?= $existingExplanation !== '' ? nl2br(h($existingExplanation)) : '' ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </section>
         <?php endforeach; ?>
@@ -226,6 +318,49 @@ $totalQuestions = count($questionsList);
 
   prevBtn.addEventListener('click', () => { if (idx > 0) { idx -= 1; render(); } });
   nextBtn.addEventListener('click', () => { if (idx < steps.length - 1) { idx += 1; render(); } });
+
+  const csrfToken = <?= json_encode($csrfToken) ?>;
+  const explainButtons = Array.from(document.querySelectorAll('[data-mf-ai-explain]'));
+  explainButtons.forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const url = btn.getAttribute('data-url');
+      const targetSelector = btn.getAttribute('data-target');
+      if (!url || !targetSelector) return;
+      const target = document.querySelector(targetSelector);
+      if (!target) return;
+
+      const original = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '<?= h(__('Generating...')) ?>';
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken,
+          },
+          body: JSON.stringify({ force: false }),
+          credentials: 'same-origin',
+        });
+
+        const payload = await response.json();
+        if (!response.ok || !payload || !payload.success) {
+          throw new Error(payload && payload.message ? payload.message : 'Request failed');
+        }
+
+        target.hidden = false;
+        target.textContent = String(payload.explanation || '');
+      } catch (err) {
+        target.hidden = false;
+        target.textContent = String(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    });
+  });
+
   render();
 })();
 </script>

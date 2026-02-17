@@ -196,7 +196,6 @@ CREATE TABLE `questions` (
   `category_id` int(10) UNSIGNED NOT NULL,
   `difficulty_id` int(10) UNSIGNED DEFAULT NULL,
   `question_type` varchar(50) NOT NULL DEFAULT 'single_choice',
-  `original_language_id` int(10) UNSIGNED DEFAULT NULL,
   `source_type` enum('human','ai') NOT NULL DEFAULT 'human',
   `created_by` int(10) UNSIGNED DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
@@ -464,8 +463,7 @@ ALTER TABLE `questions`
   ADD KEY `idx_questions_test_id` (`test_id`),
   ADD KEY `idx_questions_category_id` (`category_id`),
   ADD KEY `idx_questions_difficulty_id` (`difficulty_id`),
-  ADD KEY `idx_questions_created_by` (`created_by`),
-  ADD KEY `fk_questions_original_language` (`original_language_id`);
+  ADD KEY `idx_questions_created_by` (`created_by`);
 
 --
 -- Indexes for table `question_translations`
@@ -742,7 +740,6 @@ ALTER TABLE `difficulty_translations`
 ALTER TABLE `questions`
   ADD CONSTRAINT `fk_questions_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_difficulties` FOREIGN KEY (`difficulty_id`) REFERENCES `difficulties` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_questions_original_language` FOREIGN KEY (`original_language_id`) REFERENCES `languages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_tests` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 

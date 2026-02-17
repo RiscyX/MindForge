@@ -13,6 +13,7 @@ use Cake\Validation\Validator;
  * @property \App\Model\Table\TestAttemptsTable&\Cake\ORM\Association\BelongsTo $TestAttempts
  * @property \App\Model\Table\QuestionsTable&\Cake\ORM\Association\BelongsTo $Questions
  * @property \App\Model\Table\AnswersTable&\Cake\ORM\Association\BelongsTo $Answers
+ * @property \App\Model\Table\AttemptAnswerExplanationsTable&\Cake\ORM\Association\HasMany $AttemptAnswerExplanations
  * @method \App\Model\Entity\TestAttemptAnswer newEmptyEntity()
  * @method \App\Model\Entity\TestAttemptAnswer newEntity(array $data, array $options = [])
  * @method array<\App\Model\Entity\TestAttemptAnswer> newEntities(array $data, array $options = [])
@@ -54,6 +55,9 @@ class TestAttemptAnswersTable extends Table
         $this->belongsTo('Answers', [
             'foreignKey' => 'answer_id',
         ]);
+        $this->hasMany('AttemptAnswerExplanations', [
+            'foreignKey' => 'test_attempt_answer_id',
+        ]);
     }
 
     /**
@@ -79,6 +83,10 @@ class TestAttemptAnswersTable extends Table
         $validator
             ->scalar('user_answer_text')
             ->allowEmptyString('user_answer_text');
+
+        $validator
+            ->scalar('user_answer_payload')
+            ->allowEmptyString('user_answer_payload');
 
         $validator
             ->boolean('is_correct')

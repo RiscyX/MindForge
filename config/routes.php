@@ -210,6 +210,11 @@ return function (RouteBuilder $routes): void {
             ->setPatterns(['lang' => 'en|hu', 'id' => '\\d+'])
             ->setPass(['id']);
 
+        $builder->connect('/tests/{attemptId}/review/{questionId}/explain', ['controller' => 'Tests', 'action' => 'explainAnswer'])
+            ->setPatterns(['lang' => 'en|hu', 'attemptId' => '\\d+', 'questionId' => '\\d+'])
+            ->setPass(['attemptId', 'questionId'])
+            ->setMethods(['POST']);
+
         $builder->connect('/pages/*', 'Pages::display')
             ->setPatterns(['lang' => 'en|hu']);
 

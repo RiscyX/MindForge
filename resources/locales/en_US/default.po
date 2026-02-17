@@ -3487,3 +3487,117 @@ msgstr "Unknown error occurred"
 
 #~ msgid "Please activate your account using the link below:"
 #~ msgstr "Please activate your account using the link below:"
+
+msgid "Optional source files for AI generation"
+msgstr "Optional source files for AI generation"
+
+msgid "No files selected (optional)."
+msgstr "No files selected (optional)."
+
+msgid "Choose files"
+msgstr "Choose files"
+
+msgid "selected files"
+msgstr "selected files"
+
+msgid "Optional. Upload PDFs, DOCX, or text-like files to help AI generate more accurate quiz content."
+msgstr "Optional. Upload PDFs, DOCX, or text-like files to help AI generate more accurate quiz content."
+
+msgid "(no match)"
+msgstr "(no match)"
+
+msgid "Abort attempt"
+msgstr "Abort attempt"
+
+msgid "AI explanation limit reached for today. Please try again tomorrow."
+msgstr "AI explanation limit reached for today. Please try again tomorrow."
+
+msgid "Answer record not found."
+msgstr "Answer record not found."
+
+msgid "Are you sure you want to abort this attempt? Your current progress will be lost."
+msgstr "Are you sure you want to abort this attempt? Your current progress will be lost."
+
+msgid "Attempt aborted."
+msgstr "Attempt aborted."
+
+msgid "Back to Tests"
+msgstr "Back to Tests"
+
+msgid "Build questions, translations, and publishing settings in one flow."
+msgstr "Build questions, translations, and publishing settings in one flow."
+
+msgid "Choose a match"
+msgstr "Choose a match"
+
+msgid "Could not abort this attempt. Please try again."
+msgstr "Could not abort this attempt. Please try again."
+
+msgid "Create Quiz"
+msgstr "Create Quiz"
+
+msgid "Describe the test you want to create (topic, difficulty, number of questions, etc.)"
+msgstr "Describe the test you want to create (topic, difficulty, number of questions, etc.)"
+
+msgid "Describe the test you want to create or update (topic, difficulty, number of questions, etc.)"
+msgstr "Describe the test you want to create or update (topic, difficulty, number of questions, etc.)"
+
+msgid "E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty."
+msgstr "E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty."
+
+msgid "Edit Quiz"
+msgstr "Edit Quiz"
+
+msgid "Explain with AI"
+msgstr "Explain with AI"
+
+msgid "Explanation is available after submission."
+msgstr "Explanation is available after submission."
+
+msgid "Generating..."
+msgstr "Generating..."
+
+msgid "Matching options are not configured for this question."
+msgstr "Matching options are not configured for this question."
+
+msgid "Matching pairs"
+msgstr "Matching pairs"
+
+msgid "No category found"
+msgstr "No category found"
+
+msgid "Please choose a category from the list."
+msgstr "Please choose a category from the list."
+
+msgid "Please log in to manage attempts."
+msgstr "Please log in to manage attempts."
+
+msgid "Please log in."
+msgstr "Please log in."
+
+msgid "Question #{0}"
+msgstr "Question #{0}"
+
+msgid "Question not found."
+msgstr "Question not found."
+
+msgid "Request failed:"
+msgstr "Request failed:"
+
+msgid "Start typing category..."
+msgstr "Start typing category..."
+
+msgid "This attempt is already finished and cannot be aborted."
+msgstr "This attempt is already finished and cannot be aborted."
+
+msgid "This will translate the current test content into all configured languages."
+msgstr "This will translate the current test content into all configured languages."
+
+msgid "Update quiz details, questions, and translations with consistent styling."
+msgstr "Update quiz details, questions, and translations with consistent styling."
+
+msgid "Useful when you want to understand why your answer was wrong/right."
+msgstr "Useful when you want to understand why your answer was wrong/right."
+
+msgid "You do not have access to quiz statistics."
+msgstr "You do not have access to quiz statistics."

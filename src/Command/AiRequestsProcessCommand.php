@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Service\AiQuizDraftService;
+use App\Service\AiQuizPromptService;
 use App\Service\AiService;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
@@ -12,6 +13,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\I18n\FrozenTime;
 use RuntimeException;
 use Throwable;
+use ZipArchive;
 
 class AiRequestsProcessCommand extends Command
 {
@@ -55,46 +57,8 @@ class AiRequestsProcessCommand extends Command
         $langs = $languagesTable->find('list', keyField: 'id', valueField: 'name')
             ->orderByAsc('Languages.id')
             ->toArray();
-        $langIds = array_keys($langs);
-        $languagesList = implode(', ', array_map(
-            static fn($id, $name) => $id . ':' . $name,
-            $langIds,
-            array_values($langs),
-        ));
-
-        $systemMessage = "You are a professional test creator assistant.
-The user will provide a description of a test and optional images.
-You MUST return a valid JSON object representing the test questions, answers, and translations.
-
-The available languages are: {$languagesList}.
-You MUST provide translations for ALL these languages for every text field
-(title, description, question text, answer text).
-
-Expected JSON format:
-{
-  \"translations\": {
-    \"[language_id]\": { \"title\": \"...\", \"description\": \"...\" }
-  },
-  \"questions\": [
-    {
-      \"type\": \"multiple_choice\" | \"true_false\" | \"text\",
-      \"translations\": { \"[language_id]\": \"Question\" },
-      \"answers\": [
-        {
-          \"is_correct\": true|false,
-          \"translations\": { \"[language_id]\": \"Answer\" }
-        }
-      ]
-    }
-  ]
-}
-
-Rules:
-1) Use ONLY integer language IDs as keys: " . implode(', ', $langIds) . "
-2) For true_false provide exactly 2 answers.
-3) For multiple_choice provide 4 answers.
-4) Ensure at least one correct answer for non-text questions.
-5) Output ONLY the JSON object (no markdown).";
+        $promptService = new AiQuizPromptService();
+        $systemMessage = $promptService->getGenerationSystemPrompt($langs);
 
         $aiService = new AiService();
         $draftService = new AiQuizDraftService();
@@ -130,9 +94,7 @@ Rules:
             $questionCount = isset($opts['question_count']) && is_numeric($opts['question_count'])
                 ? (int)$opts['question_count']
                 : null;
-            if ($questionCount !== null && $questionCount > 0) {
-                $prompt .= "\n\nGenerate exactly {$questionCount} questions.";
-            }
+            $prompt = $promptService->buildGenerationUserPrompt($prompt, $questionCount);
 
             try {
                 $draft = null;
@@ -150,24 +112,55 @@ Rules:
                     ->toList();
 
                 $dataUrls = [];
+                $documentBlocks = [];
+                $maxExtractChars = max(2000, (int)env('AI_MAX_DOCUMENT_EXTRACT_CHARS', '20000'));
+                $remainingChars = $maxExtractChars;
                 foreach ($assets as $asset) {
                     $rel = (string)$asset->storage_path;
                     $abs = ROOT . DS . str_replace('/', DS, $rel);
                     if (!is_file($abs)) {
                         continue;
                     }
-                    $bytes = file_get_contents($abs);
-                    if ($bytes === false) {
+                    $mime = (string)$asset->mime_type;
+
+                    if (str_starts_with($mime, 'image/')) {
+                        $bytes = file_get_contents($abs);
+                        if ($bytes === false) {
+                            continue;
+                        }
+                        $b64 = base64_encode($bytes);
+                        $dataUrls[] = 'data:' . $mime . ';base64,' . $b64;
+
                         continue;
                     }
-                    $b64 = base64_encode($bytes);
-                    $mime = (string)$asset->mime_type;
-                    $dataUrls[] = 'data:' . $mime . ';base64,' . $b64;
+
+                    if ($remainingChars <= 0) {
+                        continue;
+                    }
+
+                    $extracted = $this->extractDocumentText($abs, $mime);
+                    if ($extracted === '') {
+                        continue;
+                    }
+
+                    if (mb_strlen($extracted) > $remainingChars) {
+                        $extracted = mb_substr($extracted, 0, $remainingChars);
+                    }
+                    $remainingChars -= mb_strlen($extracted);
+
+                    $documentBlocks[] = "Source: {$rel} ({$mime})\n" . $extracted;
+                }
+
+                $augmentedPrompt = $prompt;
+                if ($documentBlocks) {
+                    $augmentedPrompt .= "\n\nUse these uploaded documents as additional context. "
+                        . "Prioritize factual consistency with this material:\n\n"
+                        . implode("\n\n---\n\n", $documentBlocks);
                 }
 
                 if (!$applyOnly) {
                     $content = $aiService->generateVisionContent(
-                        $prompt,
+                        $augmentedPrompt,
                         $dataUrls,
                         $systemMessage,
                         0.7,
@@ -210,7 +203,45 @@ Rules:
                     foreach ($testData['questions'] as &$q) {
                         $q['category_id'] = $testData['category_id'];
                         $q['created_by'] = (int)$req->user_id;
+
+                        if (!empty($q['answers']) && is_array($q['answers'])) {
+                            $position = 1;
+                            foreach ($q['answers'] as &$a) {
+                                if (!is_array($a)) {
+                                    continue;
+                                }
+
+                                $a['position'] = $position;
+                                $position += 1;
+                                $a['source_type'] = (string)($a['source_type'] ?? 'ai');
+
+                                $sourceText = '';
+                                if (!empty($a['answer_translations']) && is_array($a['answer_translations'])) {
+                                    foreach ($a['answer_translations'] as &$at) {
+                                        if (!is_array($at)) {
+                                            continue;
+                                        }
+                                        $at['source_type'] = (string)($at['source_type'] ?? $a['source_type']);
+                                        $at['created_by'] = (int)$req->user_id;
+
+                                        if ($sourceText === '') {
+                                            $candidate = trim((string)($at['content'] ?? ''));
+                                            if ($candidate !== '') {
+                                                $sourceText = $candidate;
+                                            }
+                                        }
+                                    }
+                                    unset($at);
+                                }
+
+                                if ($sourceText !== '') {
+                                    $a['source_text'] = $sourceText;
+                                }
+                            }
+                            unset($a);
+                        }
                     }
+                    unset($q);
                 }
 
                 $test = $testsTable->newEmptyEntity();
@@ -269,6 +300,152 @@ Rules:
         }
 
         return static::CODE_SUCCESS;
+    }
+
+    /**
+     * Extract normalized text from a supported document type.
+     *
+     * @param string $absolutePath Absolute file path.
+     * @param string $mime Detected MIME type.
+     * @return string
+     */
+    private function extractDocumentText(string $absolutePath, string $mime): string
+    {
+        $mime = strtolower(trim($mime));
+
+        $text = match ($mime) {
+            'text/plain', 'text/markdown', 'text/csv', 'application/json', 'application/xml', 'text/xml'
+                => $this->readPlainTextFile($absolutePath),
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                => $this->extractDocxText($absolutePath),
+            'application/vnd.oasis.opendocument.text'
+                => $this->extractOdtText($absolutePath),
+            'application/pdf'
+                => $this->extractPdfText($absolutePath),
+            default => '',
+        };
+
+        return $this->normalizeExtractedText($text);
+    }
+
+    /**
+     * Read plain text-like documents.
+     *
+     * @param string $absolutePath Absolute file path.
+     * @return string
+     */
+    private function readPlainTextFile(string $absolutePath): string
+    {
+        $content = file_get_contents($absolutePath);
+        if (!is_string($content)) {
+            return '';
+        }
+
+        return $content;
+    }
+
+    /**
+     * Extract text from a DOCX file.
+     *
+     * @param string $absolutePath Absolute file path.
+     * @return string
+     */
+    private function extractDocxText(string $absolutePath): string
+    {
+        if (!class_exists('ZipArchive')) {
+            return '';
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($absolutePath) !== true) {
+            return '';
+        }
+
+        $chunks = [];
+        foreach (
+            [
+                'word/document.xml',
+                'word/header1.xml',
+                'word/header2.xml',
+                'word/footer1.xml',
+                'word/footer2.xml',
+            ] as $entry
+        ) {
+            $xml = $zip->getFromName($entry);
+            if (!is_string($xml) || $xml === '') {
+                continue;
+            }
+            $chunks[] = trim(html_entity_decode(strip_tags($xml)));
+        }
+        $zip->close();
+
+        return implode("\n", array_filter($chunks, static fn($v) => $v !== ''));
+    }
+
+    /**
+     * Extract text from an ODT file.
+     *
+     * @param string $absolutePath Absolute file path.
+     * @return string
+     */
+    private function extractOdtText(string $absolutePath): string
+    {
+        if (!class_exists('ZipArchive')) {
+            return '';
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($absolutePath) !== true) {
+            return '';
+        }
+
+        $xml = $zip->getFromName('content.xml');
+        $zip->close();
+        if (!is_string($xml) || $xml === '') {
+            return '';
+        }
+
+        return trim(html_entity_decode(strip_tags($xml)));
+    }
+
+    /**
+     * Extract text from a PDF file.
+     *
+     * @param string $absolutePath Absolute file path.
+     * @return string
+     */
+    private function extractPdfText(string $absolutePath): string
+    {
+        if (!function_exists('shell_exec')) {
+            return '';
+        }
+
+        $escaped = escapeshellarg($absolutePath);
+        $cmd = 'pdftotext -layout -nopgbrk ' . $escaped . ' - 2>/dev/null';
+        $output = shell_exec($cmd);
+
+        return is_string($output) ? $output : '';
+    }
+
+    /**
+     * Normalize extracted text for prompt usage.
+     *
+     * @param string $text Raw extracted text.
+     * @return string
+     */
+    private function normalizeExtractedText(string $text): string
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+
+        $text = preg_replace('/\r\n?/', "\n", $text) ?? $text;
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', ' ', $text) ?? $text;
+        $text = preg_replace('/[ \t]+/', ' ', $text) ?? $text;
+        $text = preg_replace('/\n{3,}/', "\n\n", $text) ?? $text;
+
+        return trim($text);
     }
 
     /**

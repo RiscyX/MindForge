@@ -7,6 +7,7 @@ use App\Model\Entity\ActivityLog;
 use App\Model\Entity\Language;
 use App\Model\Entity\Question;
 use App\Model\Entity\Role;
+use App\Service\AiQuizPromptService;
 use App\Service\AiService;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
@@ -15,7 +16,10 @@ use Cake\I18n\FrozenTime;
 use Cake\Routing\Router;
 use Cake\View\JsonView;
 use Exception;
+use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use Throwable;
+use ZipArchive;
 use function Cake\Core\env;
 
 /**
@@ -441,7 +445,10 @@ class TestsController extends AppController
                     return $q->where(['AnswerTranslations.language_id' => $languageId]);
                 },
             ])
-            ->all();
+            ->all()
+            ->toList();
+
+        $questions = $this->orderQuestionsForAttempt($questions, (int)$attempt->id);
 
         $this->set(compact('attempt', 'test', 'questions'));
     }
@@ -583,12 +590,79 @@ class TestsController extends AppController
             $chosen = $answersInput[$qid] ?? null;
             $chosenAnswerId = null;
             $userAnswerText = null;
+            $userAnswerPayload = null;
             $isCorrect = false;
 
-            if ($questionType === Question::TYPE_TEXT) {
+            if ($questionType === Question::TYPE_MATCHING) {
+                $leftById = [];
+                $rightById = [];
+                foreach (array_values((array)($question->answers ?? [])) as $index => $answer) {
+                    $aid = (int)$answer->id;
+                    $side = trim((string)($answer->match_side ?? ''));
+                    if ($side === '') {
+                        $side = $index % 2 === 0 ? 'left' : 'right';
+                    }
+                    $group = (int)($answer->match_group ?? 0);
+                    if ($group <= 0) {
+                        $group = (int)floor($index / 2) + 1;
+                        $answer->match_group = $group;
+                    }
+                    if ($aid <= 0 || !in_array($side, ['left', 'right'], true)) {
+                        continue;
+                    }
+                    if ($side === 'left') {
+                        $leftById[$aid] = $answer;
+                    } else {
+                        $rightById[$aid] = $answer;
+                    }
+                }
+
+                $pairsInput = [];
+                if (is_array($chosen) && isset($chosen['pairs']) && is_array($chosen['pairs'])) {
+                    $pairsInput = $chosen['pairs'];
+                }
+
+                $normalizedPairs = [];
+                $seenRights = [];
+                $allValid = !empty($leftById) && !empty($rightById) && count($leftById) === count($rightById);
+
+                if ($allValid) {
+                    foreach ($leftById as $leftId => $leftAnswer) {
+                        $rawRight = $pairsInput[(string)$leftId] ?? ($pairsInput[$leftId] ?? null);
+                        $rightId = is_numeric($rawRight) ? (int)$rawRight : null;
+                        if (
+                            $rightId === null
+                            || $rightId <= 0
+                            || !isset($rightById[$rightId])
+                            || isset($seenRights[$rightId])
+                        ) {
+                            $allValid = false;
+                            break;
+                        }
+
+                        $seenRights[$rightId] = true;
+                        $normalizedPairs[(string)$leftId] = $rightId;
+
+                        $leftGroup = (int)($leftAnswer->match_group ?? 0);
+                        $rightGroup = (int)($rightById[$rightId]->match_group ?? 0);
+                        if ($leftGroup <= 0 || $rightGroup <= 0 || $leftGroup !== $rightGroup) {
+                            $allValid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if ($allValid && count($normalizedPairs) === count($leftById)) {
+                    $isCorrect = true;
+                }
+
+                $encoded = json_encode(['pairs' => $normalizedPairs], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $userAnswerPayload = is_string($encoded) ? $encoded : null;
+            } elseif ($questionType === Question::TYPE_TEXT) {
                 $userAnswerText = trim((string)$chosen);
 
                 $correctTexts = [];
+                $correctTextsRaw = [];
                 foreach ($question->answers ?? [] as $answer) {
                     if (!$answer->is_correct) {
                         continue;
@@ -602,11 +676,22 @@ class TestsController extends AppController
                     }
                     $t = trim($t);
                     if ($t !== '') {
-                        $correctTexts[] = strtolower($t);
+                        $correctTextsRaw[] = $t;
+                        $correctTexts[] = $this->normalizeTextAnswerForCompare($t);
                     }
                 }
                 if ($userAnswerText !== '' && $correctTexts) {
-                    $isCorrect = in_array(strtolower($userAnswerText), $correctTexts, true);
+                    $normalizedUser = $this->normalizeTextAnswerForCompare($userAnswerText);
+                    $isCorrect = in_array($normalizedUser, $correctTexts, true);
+                    if (!$isCorrect && $normalizedUser !== '' && $userId !== null) {
+                        $isCorrect = $this->evaluateTextAnswerWithAi(
+                            $userId,
+                            $question,
+                            $userAnswerText,
+                            $correctTextsRaw,
+                            $lang,
+                        );
+                    }
                 }
             } else {
                 $chosenAnswerId = is_numeric($chosen) ? (int)$chosen : null;
@@ -633,6 +718,7 @@ class TestsController extends AppController
                 'question_id' => $qid,
                 'answer_id' => $chosenAnswerId,
                 'user_answer_text' => $userAnswerText,
+                'user_answer_payload' => $userAnswerPayload,
                 'is_correct' => $isCorrect,
                 'answered_at' => $now,
             ]);
@@ -769,7 +855,10 @@ class TestsController extends AppController
                     return $q->where(['AnswerTranslations.language_id' => $languageId]);
                 },
             ])
-            ->all();
+            ->all()
+            ->toList();
+
+        $questions = $this->orderQuestionsForAttempt($questions, (int)$attempt->id);
 
         $attemptAnswers = $this->fetchTable('TestAttemptAnswers')->find()
             ->where(['test_attempt_id' => (int)$attempt->id])
@@ -777,7 +866,501 @@ class TestsController extends AppController
             ->indexBy('question_id')
             ->toArray();
 
-        $this->set(compact('attempt', 'test', 'questions', 'attemptAnswers'));
+        $attemptAnswerIds = [];
+        foreach ($attemptAnswers as $attemptAnswer) {
+            $idValue = (int)($attemptAnswer->id ?? 0);
+            if ($idValue > 0) {
+                $attemptAnswerIds[] = $idValue;
+            }
+        }
+
+        $explanationsByAttemptAnswer = [];
+        if ($attemptAnswerIds) {
+            $explanations = $this->fetchTable('AttemptAnswerExplanations')->find()
+                ->where(['test_attempt_answer_id IN' => $attemptAnswerIds])
+                ->all();
+            foreach ($explanations as $explanation) {
+                $taaId = (int)($explanation->test_attempt_answer_id ?? 0);
+                $langOfExplanation = $explanation->language_id !== null ? (int)$explanation->language_id : null;
+
+                if (!isset($explanationsByAttemptAnswer[$taaId])) {
+                    $explanationsByAttemptAnswer[$taaId] = $explanation;
+                    continue;
+                }
+
+                $existingLang = $explanationsByAttemptAnswer[$taaId]->language_id !== null
+                    ? (int)$explanationsByAttemptAnswer[$taaId]->language_id
+                    : null;
+                if ($languageId !== null && $langOfExplanation === $languageId && $existingLang !== $languageId) {
+                    $explanationsByAttemptAnswer[$taaId] = $explanation;
+                }
+            }
+        }
+
+        $csrfToken = (string)($this->request->getAttribute('csrfToken') ?? '');
+        $this->set(compact(
+            'attempt',
+            'test',
+            'questions',
+            'attemptAnswers',
+            'explanationsByAttemptAnswer',
+            'csrfToken',
+        ));
+    }
+
+    /**
+     * Generate or retrieve AI explanation for a reviewed answer.
+     *
+     * @param string|null $attemptId Attempt id.
+     * @param string|null $questionId Question id.
+     * @return \Cake\Http\Response
+     */
+    public function explainAnswer(?string $attemptId = null, ?string $questionId = null): Response
+    {
+        $this->request->allowMethod(['post']);
+        $this->viewBuilder()->disableAutoLayout();
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $identity = $this->Authentication->getIdentity();
+        $userId = $identity ? (int)$identity->getIdentifier() : null;
+        if ($userId === null) {
+            return $this->response
+                ->withStatus(401)
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => false,
+                    'message' => __('Please log in.'),
+                ]));
+        }
+
+        $attempts = $this->fetchTable('TestAttempts');
+        $attempt = $attempts->get((int)$attemptId);
+        if ((int)$attempt->user_id !== $userId) {
+            return $this->response->withStatus(403);
+        }
+        if ($attempt->finished_at === null) {
+            return $this->response
+                ->withStatus(409)
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => false,
+                    'message' => __('Explanation is available after submission.'),
+                ]));
+        }
+
+        $language = $this->resolveLanguage();
+        $languageId = $language ? (int)$language->id : null;
+        $attemptAnswersTable = $this->fetchTable('TestAttemptAnswers');
+        $attemptAnswer = $attemptAnswersTable->find()
+            ->where([
+                'test_attempt_id' => (int)$attempt->id,
+                'question_id' => (int)$questionId,
+            ])
+            ->first();
+        if (!$attemptAnswer) {
+            return $this->response
+                ->withStatus(404)
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => false,
+                    'message' => __('Answer record not found.'),
+                ]));
+        }
+
+        $force = (bool)$this->request->getData('force', false);
+        $explanationsTable = $this->fetchTable('AttemptAnswerExplanations');
+        $existingExplanation = null;
+        if ($languageId !== null) {
+            $existingExplanation = $explanationsTable->find()
+                ->where([
+                    'test_attempt_answer_id' => (int)$attemptAnswer->id,
+                    'language_id' => $languageId,
+                ])
+                ->first();
+        }
+        if ($existingExplanation === null) {
+            $existingExplanation = $explanationsTable->find()
+                ->where(['test_attempt_answer_id' => (int)$attemptAnswer->id])
+                ->orderByDesc('id')
+                ->first();
+        }
+
+        if ($existingExplanation && !$force) {
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => true,
+                    'cached' => true,
+                    'explanation' => (string)$existingExplanation->explanation_text,
+                ]));
+        }
+
+        $aiExplanationLimit = $this->getAiExplanationLimitInfo($userId);
+        if (!$aiExplanationLimit['allowed']) {
+            return $this->response
+                ->withStatus(429)
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => false,
+                    'limit_reached' => true,
+                    'message' => __('AI explanation limit reached for today. Please try again tomorrow.'),
+                    'resets_at' => $aiExplanationLimit['resets_at_iso'],
+                    'used' => $aiExplanationLimit['used'],
+                    'limit' => $aiExplanationLimit['limit'],
+                    'remaining' => $aiExplanationLimit['remaining'],
+                ]));
+        }
+
+        $question = $this->fetchTable('Questions')->find()
+            ->where([
+                'Questions.id' => (int)$questionId,
+                'Questions.test_id' => (int)$attempt->test_id,
+            ])
+            ->contain([
+                'QuestionTranslations' => function ($q) use ($languageId) {
+                    if ($languageId === null) {
+                        return $q;
+                    }
+
+                    return $q->where(['QuestionTranslations.language_id' => $languageId]);
+                },
+                'Answers' => function ($q) {
+                    return $q->orderByAsc('Answers.position')->orderByAsc('Answers.id');
+                },
+                'Answers.AnswerTranslations' => function ($q) use ($languageId) {
+                    if ($languageId === null) {
+                        return $q;
+                    }
+
+                    return $q->where(['AnswerTranslations.language_id' => $languageId]);
+                },
+            ])
+            ->first();
+        if (!$question) {
+            return $this->response
+                ->withStatus(404)
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => false,
+                    'message' => __('Question not found.'),
+                ]));
+        }
+
+        $questionText = '';
+        if (!empty($question->question_translations)) {
+            $questionText = trim((string)($question->question_translations[0]->content ?? ''));
+        }
+        if ($questionText === '') {
+            $questionText = __('Question #{0}', (int)$question->id);
+        }
+
+        $answerText = static function ($answer): string {
+            $txt = '';
+            if (!empty($answer->answer_translations)) {
+                $txt = (string)($answer->answer_translations[0]->content ?? '');
+            }
+            if ($txt === '' && isset($answer->source_text)) {
+                $txt = (string)$answer->source_text;
+            }
+
+            return trim($txt);
+        };
+
+        $questionType = (string)$question->question_type;
+        $correctInfo = [];
+        $userInfo = [];
+        if ($questionType === Question::TYPE_TEXT) {
+            foreach (($question->answers ?? []) as $ans) {
+                if (!(bool)$ans->is_correct) {
+                    continue;
+                }
+                $txt = $answerText($ans);
+                if ($txt !== '') {
+                    $correctInfo[] = $txt;
+                }
+            }
+            $userInfo[] = trim((string)($attemptAnswer->user_answer_text ?? ''));
+        } elseif ($questionType === Question::TYPE_MATCHING) {
+            $leftMap = [];
+            $rightMap = [];
+            foreach (($question->answers ?? []) as $ans) {
+                $aid = (int)$ans->id;
+                $side = trim((string)($ans->match_side ?? ''));
+                if ($side === 'left') {
+                    $leftMap[$aid] = ['text' => $answerText($ans), 'group' => (int)($ans->match_group ?? 0)];
+                } elseif ($side === 'right') {
+                    $rightMap[$aid] = ['text' => $answerText($ans), 'group' => (int)($ans->match_group ?? 0)];
+                }
+            }
+            foreach ($leftMap as $left) {
+                foreach ($rightMap as $right) {
+                    if ($left['group'] > 0 && $left['group'] === $right['group']) {
+                        $correctInfo[] = $left['text'] . ' -> ' . $right['text'];
+                        break;
+                    }
+                }
+            }
+
+            $payload = (string)($attemptAnswer->user_answer_payload ?? '');
+            $pairs = [];
+            if ($payload !== '') {
+                $decoded = json_decode($payload, true);
+                if (is_array($decoded) && isset($decoded['pairs']) && is_array($decoded['pairs'])) {
+                    $pairs = $decoded['pairs'];
+                }
+            }
+            foreach ($pairs as $leftId => $rightId) {
+                $leftIdInt = is_numeric($leftId) ? (int)$leftId : 0;
+                $rightIdInt = is_numeric($rightId) ? (int)$rightId : 0;
+                $leftText = $leftMap[$leftIdInt]['text'] ?? '#' . $leftIdInt;
+                $rightText = $rightMap[$rightIdInt]['text'] ?? '#' . $rightIdInt;
+                $userInfo[] = $leftText . ' -> ' . $rightText;
+            }
+        } else {
+            foreach (($question->answers ?? []) as $ans) {
+                if ((bool)$ans->is_correct) {
+                    $correctInfo[] = $answerText($ans);
+                }
+                if ($attemptAnswer->answer_id !== null && (int)$attemptAnswer->answer_id === (int)$ans->id) {
+                    $userInfo[] = $answerText($ans);
+                }
+            }
+        }
+
+        $langCode = strtolower(trim((string)$lang));
+        $outputLanguage = $langCode === 'hu' ? 'Hungarian' : 'English';
+        $promptPayload = [
+            'question_type' => $questionType,
+            'question' => $questionText,
+            'user_answer' => $userInfo,
+            'correct_answer' => $correctInfo,
+            'is_correct' => (bool)$attemptAnswer->is_correct,
+            'language' => $outputLanguage,
+        ];
+        $promptJson = (string)json_encode($promptPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        $systemMessage =
+            'You are a quiz tutor assistant. Explain clearly and briefly why '
+            . 'the submitted answer is correct or incorrect. '
+            .
+            'Keep the explanation educational, respectful, and actionable. Return ONLY valid JSON in this format: ' .
+            '{"explanation":"..."}';
+
+        try {
+            $aiService = new AiService();
+            $responseContent = $aiService->generateContent(
+                $promptJson,
+                $systemMessage,
+                0.2,
+                ['response_format' => ['type' => 'json_object']],
+            );
+
+            $decoded = json_decode((string)$responseContent, true);
+            $explanationText = '';
+            if (is_array($decoded)) {
+                $explanationText = trim((string)($decoded['explanation'] ?? ''));
+            }
+            if ($explanationText === '') {
+                $explanationText = trim((string)$responseContent);
+            }
+
+            if ($explanationText === '') {
+                throw new Exception('Empty explanation from AI.');
+            }
+
+            $aiRequestsTable = $this->fetchTable('AiRequests');
+            $aiRequest = $aiRequestsTable->newEmptyEntity();
+            $aiRequestOutputPayload = json_encode(
+                ['raw' => (string)$responseContent],
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
+            );
+            $aiRequest = $aiRequestsTable->patchEntity($aiRequest, [
+                'user_id' => $userId,
+                'language_id' => $languageId,
+                'source_medium' => 'attempt_review',
+                'source_reference' => 'attempt:' . (int)$attempt->id . ':question:' . (int)$question->id,
+                'type' => 'attempt_answer_explanation',
+                'input_payload' => $promptJson,
+                'output_payload' => is_string($aiRequestOutputPayload) ? $aiRequestOutputPayload : '{}',
+                'status' => 'success',
+            ]);
+            $aiRequestsTable->save($aiRequest);
+
+            $now = FrozenTime::now();
+            if ($existingExplanation) {
+                $explanationEntity = $existingExplanation;
+            } else {
+                $explanationEntity = $explanationsTable->newEmptyEntity();
+            }
+
+            $patchData = [
+                'test_attempt_answer_id' => (int)$attemptAnswer->id,
+                'language_id' => $languageId,
+                'ai_request_id' => $aiRequest?->id,
+                'source' => 'ai',
+                'explanation_text' => $explanationText,
+                'updated_at' => $now,
+            ];
+            if (!$existingExplanation) {
+                $patchData['created_at'] = $now;
+            }
+
+            $explanationEntity = $explanationsTable->patchEntity($explanationEntity, $patchData);
+            $explanationsTable->save($explanationEntity);
+
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => true,
+                    'cached' => false,
+                    'explanation' => $explanationText,
+                ]));
+        } catch (Throwable $e) {
+            $fallbackExplanation = $this->buildFallbackExplanation(
+                $questionType,
+                $questionText,
+                $userInfo,
+                $correctInfo,
+                (bool)$attemptAnswer->is_correct,
+                $lang,
+            );
+
+            $aiRequestsTable = $this->fetchTable('AiRequests');
+            $aiRequest = $aiRequestsTable->newEmptyEntity();
+            $errorPayload = json_encode([
+                'error' => $e->getMessage(),
+                'trace_hint' => 'attempt_answer_explanation',
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $aiRequest = $aiRequestsTable->patchEntity($aiRequest, [
+                'user_id' => $userId,
+                'language_id' => $languageId,
+                'source_medium' => 'attempt_review',
+                'source_reference' => 'attempt:' . (int)$attempt->id . ':question:' . (int)$question->id,
+                'type' => 'attempt_answer_explanation',
+                'input_payload' => $promptJson,
+                'output_payload' => is_string($errorPayload) ? $errorPayload : '{}',
+                'status' => 'failed',
+            ]);
+            $aiRequestsTable->save($aiRequest);
+
+            $now = FrozenTime::now();
+            $explanationEntity = $existingExplanation ?: $explanationsTable->newEmptyEntity();
+            $patchData = [
+                'test_attempt_answer_id' => (int)$attemptAnswer->id,
+                'language_id' => $languageId,
+                'ai_request_id' => $aiRequest?->id,
+                'source' => 'fallback',
+                'explanation_text' => $fallbackExplanation,
+                'updated_at' => $now,
+            ];
+            if (!$existingExplanation) {
+                $patchData['created_at'] = $now;
+            }
+            $explanationEntity = $explanationsTable->patchEntity($explanationEntity, $patchData);
+            $explanationsTable->save($explanationEntity);
+
+            return $this->response
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => true,
+                    'cached' => false,
+                    'fallback' => true,
+                    'explanation' => $fallbackExplanation,
+                ]));
+        }
+    }
+
+    /**
+     * @param string $questionType
+     * @param string $questionText
+     * @param array<int, string> $userInfo
+     * @param array<int, string> $correctInfo
+     * @param bool $isCorrect
+     * @param string $lang
+     * @return string
+     */
+    private function buildFallbackExplanation(
+        string $questionType,
+        string $questionText,
+        array $userInfo,
+        array $correctInfo,
+        bool $isCorrect,
+        string $lang,
+    ): string {
+        $isHu = strtolower(trim($lang)) === 'hu';
+        $userJoined = $userInfo
+            ? implode('; ', array_filter(array_map('trim', $userInfo), static fn($v) => $v !== ''))
+            : '';
+        $correctJoined = $correctInfo
+            ? implode('; ', array_filter(array_map('trim', $correctInfo), static fn($v) => $v !== ''))
+            : '';
+
+        if ($isHu) {
+            $parts = [];
+            $parts[] = $isCorrect
+                ? 'A valaszod helyes, mert megfelel a kerdes elvart felteteleinek.'
+                : 'A valaszod most nem egyezik a vart megoldassal.';
+            if ($questionType === Question::TYPE_TEXT) {
+                $parts[] = 'Text kerdesnel az elfogadott valaszokkal hasonlitjuk ossze a beirt szoveget '
+                    . '(kis-nagybetu fuggetlenul).';
+            } elseif ($questionType === Question::TYPE_MATCHING) {
+                $parts[] = 'Matchingnel minden parnak helyesen kell osszeallnia, kulonben a kerdes hibas.';
+            } else {
+                $parts[] = 'Valasztasos kerdesnel a helyesnek jelolt opciok szamitanak jo megoldasnak.';
+            }
+            if ($userJoined !== '') {
+                $parts[] = 'A te valaszod: ' . $userJoined . '.';
+            }
+            if ($correctJoined !== '') {
+                $parts[] = 'A vart megoldas: ' . $correctJoined . '.';
+            }
+
+            return implode(' ', $parts);
+        }
+
+        $parts = [];
+        $parts[] = $isCorrect
+            ? 'Your answer is correct because it matches the expected solution criteria.'
+            : 'Your answer does not match the expected solution in this case.';
+        if ($questionType === Question::TYPE_TEXT) {
+            $parts[] = 'For text questions, we compare your input against accepted answers (case-insensitive).';
+        } elseif ($questionType === Question::TYPE_MATCHING) {
+            $parts[] = 'For matching questions, all pairs must be matched correctly '
+                . 'for the question to be marked correct.';
+        } else {
+            $parts[] = 'For choice-based questions, correctness is determined by the answer options marked as correct.';
+        }
+        if ($userJoined !== '') {
+            $parts[] = 'Your answer: ' . $userJoined . '.';
+        }
+        if ($correctJoined !== '') {
+            $parts[] = 'Expected answer: ' . $correctJoined . '.';
+        }
+
+        return implode(' ', $parts);
+    }
+
+    /**
+     * @param array<int, object> $questions
+     * @param int $attemptId
+     * @return array<int, object>
+     */
+    private function orderQuestionsForAttempt(array $questions, int $attemptId): array
+    {
+        usort($questions, static function ($a, $b) use ($attemptId): int {
+            $aId = (int)($a->id ?? 0);
+            $bId = (int)($b->id ?? 0);
+            $aKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $aId);
+            $bKey = hash('sha256', 'attempt:' . $attemptId . ':question:' . $bId);
+
+            if ($aKey === $bKey) {
+                return $aId <=> $bId;
+            }
+
+            return $aKey <=> $bKey;
+        });
+
+        return $questions;
     }
 
     /**
@@ -848,6 +1431,97 @@ class TestsController extends AppController
         }
 
         return $this->fetchTable('Languages')->find()->first();
+    }
+
+    /**
+     * Enrich incoming question payload before patching entities.
+     *
+     * @param array<string, mixed> $data Form data.
+     * @param int|null $userId Authenticated user id.
+     * @return void
+     */
+    private function enrichQuestionsForSave(array &$data, ?int $userId): void
+    {
+        if (empty($data['questions']) || !is_array($data['questions'])) {
+            return;
+        }
+
+        $categoryId = !empty($data['category_id']) && is_numeric($data['category_id'])
+            ? (int)$data['category_id']
+            : null;
+        $languageId = (int)($this->resolveLanguage()?->id ?? 0);
+
+        foreach ($data['questions'] as &$question) {
+            if (!is_array($question)) {
+                continue;
+            }
+
+            if ($categoryId !== null) {
+                $question['category_id'] = $categoryId;
+            }
+            if (empty($question['id']) && $userId !== null) {
+                $question['created_by'] = $userId;
+            }
+
+            if (empty($question['answers']) || !is_array($question['answers'])) {
+                continue;
+            }
+
+            $questionSourceType = (string)($question['source_type'] ?? 'human');
+            $position = 1;
+
+            foreach ($question['answers'] as &$answer) {
+                if (!is_array($answer)) {
+                    continue;
+                }
+
+                $answer['position'] = $position;
+                $position += 1;
+
+                if (empty($answer['source_type'])) {
+                    $answer['source_type'] = $questionSourceType;
+                }
+
+                $sourceText = '';
+                $translations = $answer['answer_translations'] ?? null;
+                if (is_array($translations) && $translations) {
+                    if ($languageId > 0 && isset($translations[$languageId]) && is_array($translations[$languageId])) {
+                        $sourceText = trim((string)($translations[$languageId]['content'] ?? ''));
+                    }
+                    if ($sourceText === '') {
+                        foreach ($translations as $translation) {
+                            if (!is_array($translation)) {
+                                continue;
+                            }
+                            $candidate = trim((string)($translation['content'] ?? ''));
+                            if ($candidate !== '') {
+                                $sourceText = $candidate;
+                                break;
+                            }
+                        }
+                    }
+
+                    foreach ($translations as &$translation) {
+                        if (!is_array($translation)) {
+                            continue;
+                        }
+                        if (empty($translation['source_type'])) {
+                            $translation['source_type'] = (string)$answer['source_type'];
+                        }
+                        if ($userId !== null && empty($translation['created_by'])) {
+                            $translation['created_by'] = $userId;
+                        }
+                    }
+                    unset($translation);
+                }
+
+                if ($sourceText !== '') {
+                    $answer['source_text'] = $sourceText;
+                }
+            }
+            unset($answer);
+        }
+        unset($question);
     }
 
     /**
@@ -1154,17 +1828,13 @@ class TestsController extends AppController
         $test = $this->Tests->newEmptyEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $userId = $this->Authentication->getIdentity()?->getIdentifier();
+            $identityUserId = $this->Authentication->getIdentity()?->getIdentifier();
+            $userId = is_numeric($identityUserId) ? (int)$identityUserId : null;
             $data['created_by'] = $userId;
 
-            // Inject category_id into questions if present in test data
-            if (!empty($data['category_id']) && !empty($data['questions'])) {
+            if (!empty($data['questions']) && is_array($data['questions'])) {
                 $data['number_of_questions'] = count($data['questions']);
-                foreach ($data['questions'] as &$question) {
-                    $question['category_id'] = $data['category_id'];
-                    // Propagate created_by as well
-                    $question['created_by'] = $userId;
-                }
+                $this->enrichQuestionsForSave($data, $userId);
             }
 
             $test = $this->Tests->patchEntity($test, $data, [
@@ -1267,18 +1937,12 @@ class TestsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
 
-            $userId = $this->Authentication->getIdentity()?->getIdentifier();
+            $identityUserId = $this->Authentication->getIdentity()?->getIdentifier();
+            $userId = is_numeric($identityUserId) ? (int)$identityUserId : null;
 
-            if (!empty($data['questions'])) {
+            if (!empty($data['questions']) && is_array($data['questions'])) {
                 $data['number_of_questions'] = count($data['questions']);
-                foreach ($data['questions'] as &$question) {
-                    if (!empty($data['category_id'])) {
-                        $question['category_id'] = $data['category_id'];
-                    }
-                    if (empty($question['id'])) {
-                        $question['created_by'] = $userId;
-                    }
-                }
+                $this->enrichQuestionsForSave($data, $userId);
             }
 
             // Set save strategy to replace to handle deletions
@@ -1374,6 +2038,8 @@ class TestsController extends AppController
                     'id' => $answer->id,
                     'source_type' => (string)$answer->source_type,
                     'is_correct' => $answer->is_correct,
+                    'match_side' => $answer->match_side,
+                    'match_group' => $answer->match_group,
                     'translations' => [],
                 ];
                 foreach ($answer->answer_translations as $at) {
@@ -1431,7 +2097,9 @@ class TestsController extends AppController
     public function generateWithAi()
     {
         $this->request->allowMethod(['post']);
-        $prompt = $this->request->getData('prompt');
+        $prompt = (string)$this->request->getData('prompt');
+        $requestedCount = $this->request->getData('question_count');
+        $questionCount = is_numeric($requestedCount) ? (int)$requestedCount : null;
         $identity = $this->Authentication->getIdentity();
         $userId = $identity ? (int)$identity->getIdentifier() : null;
 
@@ -1467,63 +2135,21 @@ class TestsController extends AppController
 
             // Get languages to inform AI about required translations
             $languages = $this->fetchTable('Languages')->find('list')->toArray();
-            $languagesList = implode(', ', $languages);
-            $langIds = array_keys($languages);
-
-            $systemMessage = "You are a professional test creator assistant.
-            The user will provide a description of a test.
-            You must return a valid JSON object representing the test questions, answers, and translations.
-
-            The available languages are: $languagesList.
-            You MUST provide translations for ALL these languages for every
-             text field (title, description, question text, answer text).
-
-            Expected JSON format:
-            {
-                \"translations\": {
-                     \"[language_id_1]\": {
-                        \"title\": \"Test Title in Language 1\",
-                        \"description\": \"Test Description in Language 1\"
-                     },
-                     \"[language_id_2]\": {
-                        \"title\": \"Test Title in Language 2\",
-                        \"description\": \"Test Description in Language 2\"
-                     }
-                },
-                \"questions\": [
-                    {
-                        \"type\": \"multiple_choice\" | \"true_false\" | \"text\",
-                        \"translations\": {
-                            \"[language_id_1]\": \"Question in Language 1\",
-                            \"[language_id_2]\": \"Question in Language 2\"
-                        },
-                        \"answers\": [
-                            {
-                                \"is_correct\": true|false,
-                                \"translations\": {
-                                    \"[language_id_1]\": \"Answer in Language 1\",
-                                    \"[language_id_2]\": \"Answer in Language 2\"
-                                }
-                            }
-                        ]
-                    }
-                ]
+            $promptService = new AiQuizPromptService();
+            $systemMessage = $promptService->getGenerationSystemPrompt($languages);
+            $finalPrompt = $promptService->buildGenerationUserPrompt($prompt, $questionCount);
+            $documentContext = $this->buildUploadedDocumentContextForAi();
+            if ($documentContext !== '') {
+                $finalPrompt .= "\n\nUse these uploaded source documents as additional context. "
+                    . "Prioritize factual consistency with them:\n\n"
+                    . $documentContext;
             }
-
-            Important rules:
-            1. Use the Language IDs (integers) as keys in the
-             'translations' objects. Keys: " . implode(', ', $langIds) . "
-            2. For 'true_false' questions, provide 2 answers (True and False) with correct translations.
-            3. For 'multiple_choice', provide 4 answers.
-            There can be multiple correct answers (at least one must be correct).
-            4. Make sure the JSON is valid and contains ONLY the JSON object, no markdown formatting.
-            ";
 
             $aiService = new AiService();
             $responseContent = $aiService->generateContent(
-                $prompt,
+                $finalPrompt,
                 $systemMessage,
-                0.7,
+                0.45,
                 ['response_format' => ['type' => 'json_object']],
             );
 
@@ -1537,7 +2163,11 @@ class TestsController extends AppController
                 'source_medium' => 'user_prompt',
                 'source_reference' => 'test_generator',
                 'type' => 'test_generation',
-                'input_payload' => json_encode(['prompt' => $prompt]),
+                'input_payload' => json_encode([
+                    'prompt' => $prompt,
+                    'question_count' => $questionCount,
+                    'final_prompt' => $finalPrompt,
+                ]),
                 'output_payload' => $responseContent,
                 'status' => 'success',
             ]);
@@ -1558,12 +2188,99 @@ class TestsController extends AppController
                         continue;
                     }
                     $question['source_type'] = 'ai';
+                    $qType = (string)($question['type'] ?? '');
+
+                    if (
+                        $qType === Question::TYPE_TEXT
+                        && (!isset($question['answers']) || !is_array($question['answers']) || !$question['answers'])
+                    ) {
+                        $fallbackAnswers = $question['accepted_answers'] ?? ($question['text_answers'] ?? null);
+                        if (is_array($fallbackAnswers)) {
+                            $normalizedAnswers = [];
+                            foreach ($fallbackAnswers as $candidate) {
+                                if (is_string($candidate)) {
+                                    $text = trim($candidate);
+                                    if ($text === '') {
+                                        continue;
+                                    }
+                                    $translations = [];
+                                    foreach ($languages as $langId => $_langName) {
+                                        $translations[(string)$langId] = $text;
+                                    }
+                                    $normalizedAnswers[] = [
+                                        'is_correct' => true,
+                                        'source_type' => 'ai',
+                                        'translations' => $translations,
+                                    ];
+                                    continue;
+                                }
+
+                                if (is_array($candidate)) {
+                                    $translations = $candidate['translations'] ?? [];
+                                    if (!is_array($translations)) {
+                                        $translations = [];
+                                    }
+                                    $normalizedAnswers[] = [
+                                        'is_correct' => true,
+                                        'source_type' => 'ai',
+                                        'translations' => $translations,
+                                    ];
+                                }
+                            }
+                            if ($normalizedAnswers) {
+                                $question['answers'] = $normalizedAnswers;
+                            }
+                        }
+                    }
+
+                    if (
+                        (string)($question['type'] ?? '') === Question::TYPE_MATCHING
+                        && isset($question['pairs'])
+                        && is_array($question['pairs'])
+                        && !isset($question['answers'])
+                    ) {
+                        $answers = [];
+                        $group = 1;
+                        foreach ($question['pairs'] as $pair) {
+                            if (!is_array($pair)) {
+                                continue;
+                            }
+                            $leftTranslations = $pair['left_translations'] ?? ($pair['left'] ?? []);
+                            $rightTranslations = $pair['right_translations'] ?? ($pair['right'] ?? []);
+                            if (!is_array($leftTranslations) || !is_array($rightTranslations)) {
+                                continue;
+                            }
+
+                            $answers[] = [
+                                'source_type' => 'ai',
+                                'is_correct' => false,
+                                'match_side' => 'left',
+                                'match_group' => $group,
+                                'translations' => $leftTranslations,
+                            ];
+                            $answers[] = [
+                                'source_type' => 'ai',
+                                'is_correct' => false,
+                                'match_side' => 'right',
+                                'match_group' => $group,
+                                'translations' => $rightTranslations,
+                            ];
+                            $group += 1;
+                        }
+                        $question['answers'] = $answers;
+                    }
+
                     if (isset($question['answers']) && is_array($question['answers'])) {
                         foreach ($question['answers'] as &$answer) {
                             if (!is_array($answer)) {
                                 continue;
                             }
                             $answer['source_type'] = 'ai';
+                            if ($qType === Question::TYPE_MATCHING) {
+                                $answer['is_correct'] = false;
+                            } elseif ($qType === Question::TYPE_TEXT) {
+                                $answer['is_correct'] = true;
+                            }
                         }
                         unset($answer);
                     }
@@ -1623,20 +2340,12 @@ class TestsController extends AppController
         try {
             $languagesQuery = $this->fetchTable('Languages')->find()->orderByAsc('Languages.id');
             $languages = [];
-            $langIds = [];
             foreach ($languagesQuery->all() as $lang) {
                 $languages[(int)$lang->id] = (string)($lang->name ?? $lang->code ?? 'Lang ' . $lang->id);
-                $langIds[] = (int)$lang->id;
             }
 
             if (!$languages) {
                 throw new Exception('No languages configured.');
-            }
-
-            $sourceLanguageName = $languages[$sourceLanguageId] ?? 'Language ' . $sourceLanguageId;
-            $languagesList = [];
-            foreach ($languages as $lid => $lname) {
-                $languagesList[] = $lid . ':' . $lname;
             }
 
             $sourcePayload = [
@@ -1670,6 +2379,10 @@ class TestsController extends AppController
                         $aId = isset($a['id']) ? (int)$a['id'] : null;
                         $aContent = trim((string)($a['content'] ?? ''));
                         $isCorrect = (bool)($a['is_correct'] ?? false);
+                        $matchSide = trim((string)($a['match_side'] ?? ''));
+                        $matchGroup = isset($a['match_group']) && is_numeric($a['match_group'])
+                            ? (int)$a['match_group']
+                            : null;
                         if ($aContent === '') {
                             continue;
                         }
@@ -1677,6 +2390,8 @@ class TestsController extends AppController
                             'id' => $aId,
                             'is_correct' => $isCorrect,
                             'content' => $aContent,
+                            'match_side' => $matchSide !== '' ? $matchSide : null,
+                            'match_group' => $matchGroup,
                         ];
                     }
                 }
@@ -1689,33 +2404,8 @@ class TestsController extends AppController
                 ];
             }
 
-            $systemMessage = "You are a professional translator for a quiz/test builder application.\n\n" .
-                "Translate the provided source-language content into ALL configured languages.\n" .
-                'Configured languages (use the integer language_id as keys): ' . implode(', ', $languagesList) . "\n" .
-                "Source language: {$sourceLanguageId}:{$sourceLanguageName}\n\n" .
-                "Return ONLY valid JSON, no markdown.\n\n" .
-                "Expected JSON format:\n" .
-                "{\n" .
-                "  \"translations\": {\n" .
-                "    \"[language_id]\": { \"title\": \"...\", \"description\": \"...\" }\n" .
-                "  },\n" .
-                "  \"questions\": [\n" .
-                "    {\n" .
-                "      \"id\": 123,\n" .
-                "      \"type\": \"multiple_choice\"|\"true_false\"|\"text\",\n" .
-                "      \"translations\": { \"[language_id]\": \"...\" },\n" .
-                "      \"answers\": [\n" .
-                '        { \"id\": 456, \"is_correct\": true|false, ' .
-                '\"translations\": { \"[language_id]\": \"...\" } }\n' .
-                "      ]\n" .
-                "    }\n" .
-                "  ]\n" .
-                "}\n\n" .
-                "Rules:\n" .
-                "1) Include translations for ALL language_ids listed.\n" .
-                "2) Preserve meaning and keep it suitable for a quiz.\n" .
-                "3) For the source language_id, return the original text unchanged.\n" .
-                "4) Keep ids as provided.\n";
+            $promptService = new AiQuizPromptService();
+            $systemMessage = $promptService->getTranslationSystemPrompt($languages, $sourceLanguageId);
 
             $prompt = json_encode($sourcePayload);
             if ($prompt === false) {
@@ -1801,6 +2491,492 @@ class TestsController extends AppController
             ->where([
                 'user_id' => $userId,
                 'type' => 'test_generation',
+                'created_at >=' => $todayStart,
+                'created_at <' => $tomorrowStart,
+            ])
+            ->count();
+
+        $remaining = max(0, $dailyLimit - $used);
+
+        return [
+            'allowed' => $remaining > 0,
+            'used' => $used,
+            'limit' => $dailyLimit,
+            'remaining' => $remaining,
+            'resets_at_iso' => $tomorrowStart->format('c'),
+        ];
+    }
+
+    /**
+     * Build uploaded document context snippet for AI generation.
+     *
+     * @return string
+     */
+    private function buildUploadedDocumentContextForAi(): string
+    {
+        $files = $this->request->getUploadedFiles();
+        $documents = $files['documents'] ?? null;
+
+        $documentFiles = [];
+        if (is_array($documents)) {
+            $documentFiles = $documents;
+        } elseif ($documents instanceof UploadedFileInterface) {
+            $documentFiles = [$documents];
+        }
+
+        if (!$documentFiles) {
+            return '';
+        }
+
+        $maxCount = (int)Configure::read('AI.maxDocuments', 4);
+        if (count($documentFiles) > $maxCount) {
+            throw new RuntimeException('Too many documents. Max: ' . $maxCount);
+        }
+
+        $allowedMimes = (array)Configure::read('AI.allowedDocumentMimeTypes', []);
+        $maxBytes = (int)Configure::read('AI.maxDocumentBytes', 8 * 1024 * 1024);
+        $maxExtractChars = max(2000, (int)Configure::read('AI.maxDocumentExtractChars', 20000));
+
+        $blocks = [];
+        $remainingChars = $maxExtractChars;
+        foreach ($documentFiles as $file) {
+            if (!$file instanceof UploadedFileInterface) {
+                continue;
+            }
+            if ($file->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            if ($file->getError() !== UPLOAD_ERR_OK) {
+                throw new RuntimeException('Document upload failed.');
+            }
+
+            $size = (int)$file->getSize();
+            if ($size <= 0) {
+                throw new RuntimeException('Uploaded document is empty.');
+            }
+            if ($size > $maxBytes) {
+                throw new RuntimeException('Uploaded document is too large.');
+            }
+
+            $mime = $this->detectUploadedMime($file);
+            if ($mime === '' || !in_array($mime, $allowedMimes, true)) {
+                throw new RuntimeException('Unsupported document type: ' . ($mime !== '' ? $mime : 'unknown'));
+            }
+
+            $text = $this->extractTextFromUploadedDocument($file, $mime);
+            if ($text === '' || $remainingChars <= 0) {
+                continue;
+            }
+
+            if (mb_strlen($text) > $remainingChars) {
+                $text = mb_substr($text, 0, $remainingChars);
+            }
+            $remainingChars -= mb_strlen($text);
+
+            $clientName = trim((string)$file->getClientFilename());
+            $sourceName = $clientName !== '' ? $clientName : 'uploaded-document';
+            $blocks[] = 'Source: ' . $sourceName . ' (' . $mime . ")\n" . $text;
+        }
+
+        return implode("\n\n---\n\n", $blocks);
+    }
+
+    /**
+     * Detect uploaded file MIME type from bytes.
+     *
+     * @param \Psr\Http\Message\UploadedFileInterface $file
+     * @return string
+     */
+    private function detectUploadedMime(UploadedFileInterface $file): string
+    {
+        try {
+            $stream = $file->getStream();
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+            $content = $stream->getContents();
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+        } catch (Throwable) {
+            $content = '';
+        }
+
+        $detected = '';
+        if (is_string($content) && $content !== '') {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo !== false) {
+                $tmp = finfo_buffer($finfo, $content);
+                finfo_close($finfo);
+                if (is_string($tmp)) {
+                    $detected = strtolower(trim($tmp));
+                }
+            }
+        }
+
+        if ($detected === '') {
+            $detected = strtolower(trim((string)$file->getClientMediaType()));
+        }
+
+        return $detected;
+    }
+
+    /**
+     * Extract text content from supported uploaded document.
+     *
+     * @param \Psr\Http\Message\UploadedFileInterface $file
+     * @param string $mime
+     * @return string
+     */
+    private function extractTextFromUploadedDocument(UploadedFileInterface $file, string $mime): string
+    {
+        try {
+            $stream = $file->getStream();
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+            $content = $stream->getContents();
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+        } catch (Throwable) {
+            $content = '';
+        }
+
+        if (!is_string($content) || $content === '') {
+            return '';
+        }
+
+        $text = '';
+        $mime = strtolower(trim($mime));
+        if (
+            in_array(
+                $mime,
+                ['text/plain', 'text/markdown', 'text/csv', 'application/json', 'application/xml', 'text/xml'],
+                true,
+            )
+        ) {
+            $text = $content;
+        } elseif ($mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            $text = $this->extractDocxTextFromBytes($content);
+        } elseif ($mime === 'application/vnd.oasis.opendocument.text') {
+            $text = $this->extractOdtTextFromBytes($content);
+        } elseif ($mime === 'application/pdf') {
+            $text = $this->extractPdfTextFromBytes($content);
+        }
+
+        return $this->normalizeExtractedText($text);
+    }
+
+    /**
+     * Extract text from DOCX bytes.
+     *
+     * @param string $bytes
+     * @return string
+     */
+    private function extractDocxTextFromBytes(string $bytes): string
+    {
+        if (!class_exists('ZipArchive')) {
+            return '';
+        }
+
+        $tmpPath = tempnam(sys_get_temp_dir(), 'mf_docx_');
+        if ($tmpPath === false) {
+            return '';
+        }
+        file_put_contents($tmpPath, $bytes);
+
+        $zip = new ZipArchive();
+        if ($zip->open($tmpPath) !== true) {
+            if (is_file($tmpPath)) {
+                unlink($tmpPath);
+            }
+
+            return '';
+        }
+
+        $chunks = [];
+        foreach (
+            [
+                'word/document.xml',
+                'word/header1.xml',
+                'word/header2.xml',
+                'word/footer1.xml',
+                'word/footer2.xml',
+            ] as $entry
+        ) {
+            $xml = $zip->getFromName($entry);
+            if (!is_string($xml) || $xml === '') {
+                continue;
+            }
+            $chunks[] = trim(html_entity_decode(strip_tags($xml)));
+        }
+        $zip->close();
+        if (is_file($tmpPath)) {
+            unlink($tmpPath);
+        }
+
+        return implode("\n", array_filter($chunks, static fn($v) => $v !== ''));
+    }
+
+    /**
+     * Extract text from ODT bytes.
+     *
+     * @param string $bytes
+     * @return string
+     */
+    private function extractOdtTextFromBytes(string $bytes): string
+    {
+        if (!class_exists('ZipArchive')) {
+            return '';
+        }
+
+        $tmpPath = tempnam(sys_get_temp_dir(), 'mf_odt_');
+        if ($tmpPath === false) {
+            return '';
+        }
+        file_put_contents($tmpPath, $bytes);
+
+        $zip = new ZipArchive();
+        if ($zip->open($tmpPath) !== true) {
+            if (is_file($tmpPath)) {
+                unlink($tmpPath);
+            }
+
+            return '';
+        }
+
+        $xml = $zip->getFromName('content.xml');
+        $zip->close();
+        if (is_file($tmpPath)) {
+            unlink($tmpPath);
+        }
+
+        if (!is_string($xml) || $xml === '') {
+            return '';
+        }
+
+        return trim(html_entity_decode(strip_tags($xml)));
+    }
+
+    /**
+     * Extract text from PDF bytes.
+     *
+     * @param string $bytes
+     * @return string
+     */
+    private function extractPdfTextFromBytes(string $bytes): string
+    {
+        if (!function_exists('shell_exec')) {
+            return '';
+        }
+
+        $tmpPath = tempnam(sys_get_temp_dir(), 'mf_pdf_');
+        if ($tmpPath === false) {
+            return '';
+        }
+        file_put_contents($tmpPath, $bytes);
+
+        $cmd = 'pdftotext -layout -nopgbrk ' . escapeshellarg($tmpPath) . ' - 2>/dev/null';
+        $output = shell_exec($cmd);
+        if (is_file($tmpPath)) {
+            unlink($tmpPath);
+        }
+
+        return is_string($output) ? $output : '';
+    }
+
+    /**
+     * Normalize extracted text for prompt usage.
+     *
+     * @param string $text
+     * @return string
+     */
+    private function normalizeExtractedText(string $text): string
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+
+        $text = preg_replace('/\r\n?/', "\n", $text) ?? $text;
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', ' ', $text) ?? $text;
+        $text = preg_replace('/[ \t]+/', ' ', $text) ?? $text;
+        $text = preg_replace('/\n{3,}/', "\n\n", $text) ?? $text;
+
+        return trim($text);
+    }
+
+    /**
+     * Normalize text answers for compare fallback.
+     *
+     * @param string $value
+     * @return string
+     */
+    private function normalizeTextAnswerForCompare(string $value): string
+    {
+        $value = mb_strtolower(trim($value));
+        if ($value === '') {
+            return '';
+        }
+
+        $value = preg_replace('/\s+/u', ' ', $value) ?? $value;
+        $value = preg_replace('/[\p{P}\p{S}]+/u', '', $value) ?? $value;
+
+        return trim($value);
+    }
+
+    /**
+     * @param int $userId
+     * @param object $question
+     * @param string $userAnswer
+     * @param array<int, string> $acceptedAnswers
+     * @param string $lang
+     * @return bool
+     */
+    private function evaluateTextAnswerWithAi(
+        int $userId,
+        object $question,
+        string $userAnswer,
+        array $acceptedAnswers,
+        string $lang,
+    ): bool {
+        $limit = $this->getAiTextEvaluationLimitInfo($userId);
+        if (!$limit['allowed']) {
+            return false;
+        }
+
+        $questionText = '';
+        if (!empty($question->question_translations)) {
+            $questionText = trim((string)($question->question_translations[0]->content ?? ''));
+        }
+
+        $langCode = strtolower(trim($lang));
+        $outputLanguage = $langCode === 'hu' ? 'Hungarian' : 'English';
+        $payload = [
+            'question_type' => 'text',
+            'question' => $questionText,
+            'accepted_answers' => array_values($acceptedAnswers),
+            'user_answer' => $userAnswer,
+            'instruction' => 'Decide if user answer should be accepted as semantically equivalent.',
+            'output_language' => $outputLanguage,
+        ];
+
+        $prompt = (string)json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $systemMessage = 'You validate short text quiz answers. Return ONLY strict JSON: '
+            . '{"is_correct":true|false,"confidence":0..1,"reason":"short"}. '
+            . 'Accept minor phrasing, synonyms, and grammar differences, but reject different meaning.';
+
+        $aiRequests = $this->fetchTable('AiRequests');
+        try {
+            $ai = new AiService();
+            $content = $ai->generateContent(
+                $prompt,
+                $systemMessage,
+                0.0,
+                ['response_format' => ['type' => 'json_object']],
+            );
+
+            $decoded = json_decode((string)$content, true);
+            $isCorrect = is_array($decoded) && isset($decoded['is_correct'])
+                ? (bool)$decoded['is_correct']
+                : false;
+
+            $outputPayload = json_encode(['raw' => (string)$content], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $req = $aiRequests->newEntity([
+                'user_id' => $userId,
+                'language_id' => null,
+                'source_medium' => 'quiz_submit',
+                'source_reference' => 'question:' . (int)($question->id ?? 0),
+                'type' => 'text_answer_evaluation',
+                'input_payload' => $prompt,
+                'output_payload' => is_string($outputPayload) ? $outputPayload : '{}',
+                'status' => 'success',
+            ]);
+            $aiRequests->save($req);
+
+            return $isCorrect;
+        } catch (Throwable $e) {
+            $errorPayload = json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $req = $aiRequests->newEntity([
+                'user_id' => $userId,
+                'language_id' => null,
+                'source_medium' => 'quiz_submit',
+                'source_reference' => 'question:' . (int)($question->id ?? 0),
+                'type' => 'text_answer_evaluation',
+                'input_payload' => $prompt,
+                'output_payload' => is_string($errorPayload) ? $errorPayload : '{}',
+                'status' => 'failed',
+            ]);
+            $aiRequests->save($req);
+
+            return false;
+        }
+    }
+
+    /**
+     * @return array{allowed: bool, used: int, limit: int, remaining: int, resets_at_iso: string}
+     */
+    private function getAiExplanationLimitInfo(?int $userId): array
+    {
+        $dailyLimit = max(1, (int)env('AI_EXPLANATION_DAILY_LIMIT', '60'));
+        if ($userId === null) {
+            return [
+                'allowed' => false,
+                'used' => $dailyLimit,
+                'limit' => $dailyLimit,
+                'remaining' => 0,
+                'resets_at_iso' => FrozenTime::tomorrow()->format('c'),
+            ];
+        }
+
+        $todayStart = FrozenTime::today();
+        $tomorrowStart = FrozenTime::tomorrow();
+
+        $aiRequestsTable = $this->fetchTable('AiRequests');
+        $used = (int)$aiRequestsTable->find()
+            ->where([
+                'user_id' => $userId,
+                'type' => 'attempt_answer_explanation',
+                'created_at >=' => $todayStart,
+                'created_at <' => $tomorrowStart,
+            ])
+            ->count();
+
+        $remaining = max(0, $dailyLimit - $used);
+
+        return [
+            'allowed' => $remaining > 0,
+            'used' => $used,
+            'limit' => $dailyLimit,
+            'remaining' => $remaining,
+            'resets_at_iso' => $tomorrowStart->format('c'),
+        ];
+    }
+
+    /**
+     * @return array{allowed: bool, used: int, limit: int, remaining: int, resets_at_iso: string}
+     */
+    private function getAiTextEvaluationLimitInfo(?int $userId): array
+    {
+        $dailyLimit = max(1, (int)env('AI_TEXT_EVALUATION_DAILY_LIMIT', '80'));
+        if ($userId === null) {
+            return [
+                'allowed' => false,
+                'used' => $dailyLimit,
+                'limit' => $dailyLimit,
+                'remaining' => 0,
+                'resets_at_iso' => FrozenTime::tomorrow()->format('c'),
+            ];
+        }
+
+        $todayStart = FrozenTime::today();
+        $tomorrowStart = FrozenTime::tomorrow();
+        $aiRequestsTable = $this->fetchTable('AiRequests');
+        $used = (int)$aiRequestsTable->find()
+            ->where([
+                'user_id' => $userId,
+                'type' => 'text_answer_evaluation',
                 'created_at >=' => $todayStart,
                 'created_at <' => $tomorrowStart,
             ])
