@@ -39,6 +39,7 @@ class DeviceLogsController extends AppController
         }
 
         $filters = [
+            'user_id' => (string)$this->request->getQuery('user_id', ''),
             'device_type' => (string)$this->request->getQuery('device_type', ''),
             'from' => (string)$this->request->getQuery('from', ''),
             'to' => (string)$this->request->getQuery('to', ''),
@@ -64,6 +65,10 @@ class DeviceLogsController extends AppController
 
         if (in_array($filters['device_type'], ['0', '1', '2'], true)) {
             $query->where(['DeviceLogs.device_type' => (int)$filters['device_type']]);
+        }
+
+        if ($filters['user_id'] !== '' && ctype_digit($filters['user_id'])) {
+            $query->where(['DeviceLogs.user_id' => (int)$filters['user_id']]);
         }
 
         if ($filters['from'] !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $filters['from']) === 1) {

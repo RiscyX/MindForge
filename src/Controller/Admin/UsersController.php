@@ -367,7 +367,34 @@ class UsersController extends AppController
         }
 
         $roles = $usersTable->Roles->find('list')->all();
-        $this->set(compact('user', 'roles'));
+
+        $testAttempts = $this->fetchTable('TestAttempts')
+            ->find()
+            ->contain([
+                'Tests' => static fn ($q) => $q->contain([
+                    'TestTranslations' => static fn ($tq) => $tq->select(['TestTranslations.test_id', 'TestTranslations.title'])->limit(1),
+                ]),
+            ])
+            ->where(['TestAttempts.user_id' => $user->id])
+            ->orderByDesc('TestAttempts.created_at')
+            ->limit(5)
+            ->all();
+
+        $activityLogs = $this->fetchTable('ActivityLogs')
+            ->find()
+            ->where(['ActivityLogs.user_id' => $user->id])
+            ->orderByDesc('ActivityLogs.created_at')
+            ->limit(5)
+            ->all();
+
+        $deviceLogs = $this->fetchTable('DeviceLogs')
+            ->find()
+            ->where(['DeviceLogs.user_id' => $user->id])
+            ->orderByDesc('DeviceLogs.created_at')
+            ->limit(5)
+            ->all();
+
+        $this->set(compact('user', 'roles', 'testAttempts', 'activityLogs', 'deviceLogs'));
 
         return null;
     }

@@ -3,14 +3,27 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\User $user
  * @var \Cake\Collection\CollectionInterface<string> $roles
+ * @var \Cake\Datasource\ResultSetInterface<\App\Model\Entity\TestAttempt> $testAttempts
+ * @var \Cake\Datasource\ResultSetInterface<\App\Model\Entity\ActivityLog> $activityLogs
+ * @var \Cake\Datasource\ResultSetInterface<\App\Model\Entity\DeviceLog> $deviceLogs
  */
 
 $lang = $this->request->getParam('lang', 'en');
 $this->assign('title', __('Edit User'));
 ?>
 
-<div class="mf-admin-form-center">
-    <div class="mf-admin-card p-4 mt-4 w-100" style="max-width: 720px;">
+<?php
+$deviceTypeLabels = [
+    0 => __('Mobile'),
+    1 => __('Tablet'),
+    2 => __('Desktop'),
+];
+?>
+
+<div class="row g-4 align-items-start mt-2">
+
+<div class="col-12 col-lg-6">
+    <div class="mf-admin-card p-4">
         <?= $this->Form->create($user, ['type' => 'file', 'novalidate' => false]) ?>
 
         <?php
@@ -154,4 +167,145 @@ $this->assign('title', __('Edit User'));
 
         <?= $this->Form->end() ?>
     </div>
+</div>
+
+<div class="col-12 col-lg-6">
+<div class="d-flex flex-column gap-4" style="position:sticky;top:1rem;max-height:calc(100vh - 2rem);overflow-y:auto;padding-right:2px;">
+
+        <div>
+            <div class="mf-admin-card p-0 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between px-3 pt-3 pb-2 border-bottom border-dark-subtle">
+                    <span class="fw-semibold"><?= __('Last 5 Test Attempts') ?></span>
+                </div>
+                <div>
+                    <table class="table table-dark table-hover table-sm mb-0 align-middle text-center">
+                        <thead>
+                            <tr>
+                                <th class="mf-muted fs-6"><?= __('Test') ?></th>
+                                <th class="mf-muted fs-6"><?= __('Score') ?></th>
+                                <th class="mf-muted fs-6"><?= __('Date') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($testAttempts as $attempt) : ?>
+                                <tr>
+                                    <td class="text-start">
+                                        <?php if ($attempt->test !== null) : ?>
+                                            <?php
+                                                $testTitle = !empty($attempt->test->test_translations)
+                                                    ? (string)$attempt->test->test_translations[0]->title
+                                                    : 'Test #' . (string)$attempt->test_id;
+                                            ?>
+                                            <?= h($testTitle) ?>
+                                        <?php else : ?>
+                                            <span class="mf-muted"><?= h('Test #' . (string)$attempt->test_id) ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                            $score = $attempt->score ?? null;
+                                            $badge = 'bg-secondary';
+                                            if ($score !== null) {
+                                                $badge = $score >= 80 ? 'bg-success' : ($score >= 50 ? 'bg-warning text-dark' : 'bg-danger');
+                                            }
+                                        ?>
+                                        <?php if ($score !== null) : ?>
+                                            <span class="badge <?= $badge ?>"><?= $this->Number->format($score) ?>%</span>
+                                        <?php else : ?>
+                                            <span class="mf-muted">—</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="mf-muted" style="white-space:nowrap;">
+                                        <?= $attempt->created_at ? h($attempt->created_at->i18nFormat('yyyy-MM-dd')) : '—' ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if (count($testAttempts) === 0) : ?>
+                                <?= $this->element('functions/admin_empty_state', ['message' => __('No test attempts yet.')]) ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="mf-admin-card p-0 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between px-3 pt-3 pb-2 border-bottom border-dark-subtle">
+                    <span class="fw-semibold"><?= __('Last 5 Activity Logs') ?></span>
+                </div>
+                <div>
+                    <table class="table table-dark table-hover table-sm mb-0 align-middle text-center">
+                        <thead>
+                            <tr>
+                                <th class="mf-muted fs-6"><?= __('Action') ?></th>
+                                <th class="mf-muted fs-6"><?= __('IP') ?></th>
+                                <th class="mf-muted fs-6"><?= __('Date') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($activityLogs as $log) : ?>
+                                <tr>
+                                    <td class="text-start">
+                                        <span class="mf-admin-pill"><?= h((string)($log->action ?? '—')) ?></span>
+                                    </td>
+                                    <td class="mf-muted" style="white-space:nowrap;"><?= h((string)($log->ip_address ?? '—')) ?></td>
+                                    <td class="mf-muted" style="white-space:nowrap;">
+                                        <?= $log->created_at ? h($log->created_at->i18nFormat('yyyy-MM-dd')) : '—' ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if (count($activityLogs) === 0) : ?>
+                                <?= $this->element('functions/admin_empty_state', ['message' => __('No activity logs yet.')]) ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="mf-admin-card p-0 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between px-3 pt-3 pb-2 border-bottom border-dark-subtle">
+                    <span class="fw-semibold"><?= __('Last 5 Device Logs') ?></span>
+                    <?= $this->Html->link(
+                        __('View all →'),
+                        ['prefix' => 'Admin', 'controller' => 'DeviceLogs', 'action' => 'index', 'lang' => $lang, '?' => ['user_id' => $user->id]],
+                        ['class' => 'btn btn-sm btn-outline-light ms-2'],
+                    ) ?>
+                </div>
+                <div>
+                    <table class="table table-dark table-hover table-sm mb-0 align-middle text-center">
+                        <thead>
+                            <tr>
+                                <th class="mf-muted fs-6"><?= __('IP') ?></th>
+                                <th class="mf-muted fs-6"><?= __('Device') ?></th>
+                                <th class="mf-muted fs-6"><?= __('Date') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($deviceLogs as $dl) : ?>
+                                <tr>
+                                    <td class="mf-muted text-start" style="white-space:nowrap;"><?= h((string)($dl->ip_address ?? '—')) ?></td>
+                                    <td>
+                                        <span class="mf-admin-pill"><?= h($deviceTypeLabels[(int)($dl->device_type ?? 0)] ?? __('Unknown')) ?></span>
+                                    </td>
+                                    <td class="mf-muted" style="white-space:nowrap;">
+                                        <?= $dl->created_at ? h($dl->created_at->i18nFormat('yyyy-MM-dd')) : '—' ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if (count($deviceLogs) === 0) : ?>
+                                <?= $this->element('functions/admin_empty_state', ['message' => __('No device logs yet.')]) ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+</div>
+
 </div>
