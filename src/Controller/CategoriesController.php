@@ -142,6 +142,9 @@ class CategoriesController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $category = $this->Categories->get($id);
         if ($this->Categories->delete($category)) {
+            if (method_exists($this, 'logAdminAction')) {
+                $this->logAdminAction('admin_delete_category', ['id' => $category->id]);
+            }
             $this->Flash->success(__('The category has been deleted.'));
         } else {
             $this->Flash->error(__('The category could not be deleted. Please, try again.'));
@@ -183,6 +186,9 @@ class CategoriesController extends AppController
                 $entity = $this->Categories->get((string)$id);
                 if ($this->Categories->delete($entity)) {
                     $deleted += 1;
+                    if (method_exists($this, 'logAdminAction')) {
+                        $this->logAdminAction('admin_delete_category', ['id' => $entity->id]);
+                    }
                 } else {
                     $failed += 1;
                 }

@@ -193,7 +193,7 @@ CREATE TABLE `phinxlog` (
 CREATE TABLE `questions` (
   `id` int(10) UNSIGNED NOT NULL,
   `test_id` int(10) UNSIGNED DEFAULT NULL,
-  `category_id` int(10) UNSIGNED NOT NULL,
+  `category_id` int(10) UNSIGNED DEFAULT NULL,
   `difficulty_id` int(10) UNSIGNED DEFAULT NULL,
   `question_type` varchar(50) NOT NULL DEFAULT 'single_choice',
   `source_type` enum('human','ai') NOT NULL DEFAULT 'human',
@@ -241,7 +241,7 @@ CREATE TABLE `roles` (
 
 CREATE TABLE `tests` (
   `id` int(10) UNSIGNED NOT NULL,
-  `category_id` int(10) UNSIGNED NOT NULL,
+  `category_id` int(10) UNSIGNED DEFAULT NULL,
   `difficulty_id` int(10) UNSIGNED DEFAULT NULL,
   `number_of_questions` int(10) UNSIGNED DEFAULT NULL,
   `is_public` tinyint(1) NOT NULL DEFAULT 1,
@@ -738,7 +738,7 @@ ALTER TABLE `difficulty_translations`
 -- Constraints for table `questions`
 --
 ALTER TABLE `questions`
-  ADD CONSTRAINT `fk_questions_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_questions_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_difficulties` FOREIGN KEY (`difficulty_id`) REFERENCES `difficulties` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_tests` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_questions_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -755,7 +755,7 @@ ALTER TABLE `question_translations`
 -- Constraints for table `tests`
 --
 ALTER TABLE `tests`
-  ADD CONSTRAINT `fk_tests_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_tests_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tests_difficulties` FOREIGN KEY (`difficulty_id`) REFERENCES `difficulties` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_tests_users_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -775,7 +775,7 @@ ALTER TABLE `test_attempts`
 ALTER TABLE `test_attempt_answers`
   ADD CONSTRAINT `fk_taa_answers` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_taa_attempts` FOREIGN KEY (`test_attempt_id`) REFERENCES `test_attempts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_taa_questions` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_taa_questions` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `test_translations`

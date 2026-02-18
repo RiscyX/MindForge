@@ -37,4 +37,41 @@ class AppController extends BaseAppController
             throw new ForbiddenException();
         }
     }
+
+    /**
+     * Log an admin action to the activity_logs table.
+     *
+     * @param string $action  e.g. 'admin_delete_user', 'admin_delete_category'
+     * @param array<string,mixed> $extra  Additional context merged into the action string.
+     * @return void
+     */
+    protected function logAdminAction(string $action, array $extra = []): void
+    {
+        $identity = $this->request->getAttribute('identity');
+        if ($identity === null) {
+            return;
+        }
+
+        $userId = (int)$identity->get('id');
+        $ip = (string)($this->request->clientIp() ?? '');
+        $userAgent = (string)($this->request->getHeaderLine('User-Agent'));
+
+        if ($extra !== []) {
+            $parts = [];
+            foreach ($extra as $k => $v) {
+                $parts[] = $k . '=' . $v;
+            }
+            $action = $action . ' [' . implode(', ', $parts) . ']';
+        }
+
+        /** @var \App\Model\Table\ActivityLogsTable $logs */
+        $logs = $this->fetchTable('ActivityLogs');
+        $entity = $logs->newEntity([
+            'user_id' => $userId,
+            'action' => $action,
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+        ]);
+        $logs->save($entity);
+    }
 }
