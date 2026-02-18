@@ -140,6 +140,7 @@ class UsersController extends AppController
 
                 if ($usersTable->delete($user)) {
                     $deleted += 1;
+                    $this->logAdminAction('admin_delete_user', ['id' => $user->id]);
                 }
             } catch (Throwable) {
                 // Ignore individual failures, continue.
@@ -566,6 +567,7 @@ class UsersController extends AppController
         }
 
         if ($usersTable->delete($user)) {
+            $this->logAdminAction('admin_delete_user', ['id' => $user->id]);
             $this->Flash->success(__('The user has been deleted.'));
         } else {
             $this->Flash->error(__('The user could not be deleted. Please, try again.'));
