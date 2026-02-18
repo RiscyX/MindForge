@@ -26,6 +26,19 @@ $to = (string)($filters['to'] ?? '');
         <h1 class="h3 mb-1"><?= __('Device Logs') ?></h1>
         <div class="mf-muted"><?= __('Security & device activity signals') ?></div>
     </div>
+    <?php if (($filters['user_id'] ?? '') !== '') : ?>
+        <div class="d-flex align-items-center gap-2">
+            <span class="mf-admin-pill">
+                <i class="bi bi-person-fill me-1" aria-hidden="true"></i>
+                <?= __('Filtered: User #{0}', h($filters['user_id'])) ?>
+            </span>
+            <?= $this->Html->link(
+                '<i class="bi bi-x" aria-hidden="true"></i> ' . h(__('Clear filter')),
+                ['action' => 'index', 'lang' => $lang],
+                ['class' => 'btn btn-sm btn-outline-light', 'escape' => false],
+            ) ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <div class="row g-3 mt-2 mf-admin-kpi-grid">
@@ -57,6 +70,9 @@ $to = (string)($filters['to'] ?? '');
 
 <div class="mf-admin-card p-3 mt-3">
     <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
+        <?php if (($filters['user_id'] ?? '') !== '') : ?>
+            <input type="hidden" name="user_id" value="<?= h($filters['user_id']) ?>">
+        <?php endif; ?>
         <div class="col-12 col-sm-6 col-xl-3">
             <?= $this->Form->control('device_type', [
                 'label' => __('Device'),
@@ -89,7 +105,7 @@ $to = (string)($filters['to'] ?? '');
         </div>
         <div class="col-12 col-sm-6 col-xl-3 d-flex gap-2">
             <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
-            <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
+            <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang, '?' => ($filters['user_id'] !== '' ? ['user_id' => $filters['user_id']] : [])], ['class' => 'btn btn-outline-light']) ?>
         </div>
     <?= $this->Form->end() ?>
 </div>
