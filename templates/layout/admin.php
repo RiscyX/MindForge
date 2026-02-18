@@ -80,6 +80,7 @@ if ($isAuthPage) {
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/sweetalert2@11') ?>
     <?= $this->Html->script('flash.js?v=1') ?>
     <?= $this->Html->script('logout_confirmation.js?v=3') ?>
+    <?= $this->Html->script('admin_form_loading.js?v=1') ?>
     <?= $this->fetch('script') ?>
     <?= $this->fetch('scriptBottom') ?>
 </body>

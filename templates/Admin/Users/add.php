@@ -80,7 +80,7 @@ $this->assign('title', __('Create User'));
 
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-4">
             <div class="d-flex gap-2">
-                <?= $this->Form->button(__('Create'), ['class' => 'btn btn-primary mf-admin-btn']) ?>
+                <?= $this->Form->button(__('Create'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Creating…')]) ?>
                 <?= $this->Html->link(
                     __('Cancel'),
                     [

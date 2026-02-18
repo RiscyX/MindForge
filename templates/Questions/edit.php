@@ -183,7 +183,7 @@ $this->assign('title', __('Edit Question'));
         </div>
 
         <div class="mt-4 d-flex gap-2">
-            <?= $this->Form->button(__('Save Changes'), ['class' => 'btn btn-primary']) ?>
+            <?= $this->Form->button(__('Save Changes'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Saving…')]) ?>
             <?= $this->Html->link(__('Cancel'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
         </div>
 

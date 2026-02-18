@@ -99,7 +99,7 @@ $deviceTypeLabels = [
 
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-4">
             <div class="d-flex gap-2">
-                <?= $this->Form->button(__('Save'), ['class' => 'btn btn-primary mf-admin-btn']) ?>
+                <?= $this->Form->button(__('Save'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Saving…')]) ?>
                 <?= $this->Html->link(
                     __('Cancel'),
                     [
