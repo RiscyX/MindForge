@@ -63,7 +63,7 @@ $avatarSrc = $user->avatar_url ?: '/img/avatars/stockpfp.jpg';
 
                 <div class="mt-auto pt-3">
                     <div class="d-grid gap-2">
-                        <?= $this->Form->button(__('Save'), ['class' => 'btn btn-primary mf-admin-btn']) ?>
+                        <?= $this->Form->button(__('Save'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Saving…')]) ?>
 
                         <?= $this->Form->postLink(
                             __('Send password reset email'),
