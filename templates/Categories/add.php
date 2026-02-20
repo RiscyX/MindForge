@@ -2,55 +2,79 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Category $category
+ * @var iterable<\App\Model\Entity\Language> $languages
  */
-?>
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-white"><?= __('Add Category') ?></h1>
-        <?= $this->Html->link(__('Back to List'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-secondary']) ?>
-    </div>
 
-    <?= $this->Form->create($category) ?>
-    <div class="mb-3">
-        <div class="form-check form-switch">
-            <?= $this->Form->checkbox('is_active', ['class' => 'form-check-input', 'id' => 'isActive']) ?>
-            <label class="form-check-label text-white" for="isActive"><?= __('Active') ?></label>
-        </div>
+$lang = $this->request->getParam('lang', 'en');
+$this->assign('title', __('Add Category'));
+?>
+
+<div class="d-flex align-items-center justify-content-between gap-3 flex-wrap mb-3">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="bi bi-tag-fill me-2 text-primary" aria-hidden="true"></i><?= __('Add Category') ?>
+        </h1>
+        <p class="mf-muted mb-0"><?= __('Create a new quiz category with translations.') ?></p>
     </div>
-    
-    <div class="mb-4">
-        <h5 class="h5 text-white mb-3"><?= __('Translations') ?></h5>
-        <?php 
-            // Let's iterate languages and assume the translation at same index matches
-            // because we built it that way.
-            $translations = $category->category_translations;
-        ?>
-        <?php foreach ($languages as $i => $language): ?>
-            <div class="mb-4 border-bottom pb-3">
-                <h6 class="m-0 font-weight-bold text-primary mb-2"><?= h($language->name) ?> (<?= h($language->code) ?>)</h6>
+    <?= $this->Html->link(
+        '<i class="bi bi-arrow-left me-1" aria-hidden="true"></i>' . h(__('Back')),
+        ['action' => 'index', 'lang' => $lang],
+        ['class' => 'btn btn-sm btn-outline-light mf-admin-btn', 'escape' => false],
+    ) ?>
+</div>
+
+<div class="mf-admin-form-center">
+    <div class="mf-admin-card p-4 w-100" style="max-width: 760px;">
+        <?= $this->Form->create($category) ?>
+
+        <div class="mb-4">
+            <div class="form-check form-switch">
+                <?= $this->Form->checkbox('is_active', ['class' => 'form-check-input', 'id' => 'isActive']) ?>
+                <label class="form-check-label" for="isActive"><?= __('Active') ?></label>
+            </div>
+        </div>
+
+        <h5 class="mb-3">
+            <i class="bi bi-translate me-2 text-primary" aria-hidden="true"></i><?= __('Translations') ?>
+        </h5>
+
+        <?php $translations = $category->category_translations; ?>
+        <?php foreach ($languages as $i => $language) : ?>
+            <div class="mf-admin-card p-3 mb-3">
+                <div class="mb-3 d-flex align-items-center gap-2">
+                    <span class="badge bg-primary"><?= h($language->code) ?></span>
+                    <span class="fw-semibold"><?= h($language->name) ?></span>
+                </div>
                 <?= $this->Form->hidden("category_translations.$i.language_id", ['value' => $language->id]) ?>
                 <div class="mb-3">
                     <?= $this->Form->control("category_translations.$i.name", [
-                        'class' => 'form-control', 
-                        'label' => ['class' => 'form-label text-white', 'text' => __('Name')],
+                        'class' => 'form-control mf-admin-input',
+                        'label' => __('Name'),
                         'required' => true,
-                        'value' => $translations[$i]->name ?? ''
+                        'value' => $translations[$i]->name ?? '',
                     ]) ?>
                 </div>
-                <div class="mb-3">
+                <div class="mb-0">
                     <?= $this->Form->control("category_translations.$i.description", [
                         'type' => 'textarea',
-                        'class' => 'form-control', 
-                        'label' => ['class' => 'form-label text-white', 'text' => __('Description')],
-                        'value' => $translations[$i]->description ?? ''
+                        'class' => 'form-control mf-admin-input',
+                        'label' => __('Description'),
+                        'rows' => 3,
+                        'value' => $translations[$i]->description ?? '',
                     ]) ?>
                 </div>
             </div>
         <?php endforeach; ?>
-    </div>
 
-    <div class="mt-4">
-        <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Saving…')]) ?>
+        <div class="d-flex align-items-center gap-2 mt-4">
+            <?= $this->Form->button(__('Create'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Saving…')]) ?>
+            <?= $this->Html->link(
+                __('Cancel'),
+                ['action' => 'index', 'lang' => $lang],
+                ['class' => 'btn btn-outline-light mf-admin-btn'],
+            ) ?>
+        </div>
+
+        <?= $this->Form->end() ?>
     </div>
-    <?= $this->Form->end() ?>
 </div>

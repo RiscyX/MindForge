@@ -605,13 +605,62 @@ if (!$this->request->getParam('prefix')) {
     </div>
 
 <?php else : ?>
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-    <div>
-        <h1 class="h3 mb-1"><?= __('Tests') ?></h1>
+<?php
+$allTests = is_array($tests) ? $tests : iterator_to_array($tests);
+$totalTests = count($allTests);
+$publicCount = 0;
+$privateCount = 0;
+foreach ($allTests as $_t) {
+    if (!empty($_t->is_public)) {
+        $publicCount++;
+    } else {
+        $privateCount++;
+    }
+}
+?>
+
+<header class="mf-page-header">
+    <div class="mf-page-header__left">
+        <div>
+            <h1 class="mf-page-header__title">
+                <i class="bi bi-journal-check me-2 text-primary" aria-hidden="true"></i>
+                <?= __('Tests') ?>
+                <span class="mf-page-header__count"><?= $this->Number->format($totalTests) ?></span>
+            </h1>
+            <p class="mf-page-header__sub"><?= __('Browse, edit and manage all quizzes in the system.') ?></p>
+        </div>
+    </div>
+</header>
+
+<div class="row g-3 mb-3 mf-admin-kpi-grid">
+    <div class="col-6 col-md-4">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-journal-text mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Total') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($totalTests) ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-eye mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Public') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($publicCount) ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-eye-slash mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Private') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($privateCount) ?></div>
+            </div>
+        </div>
     </div>
 </div>
-
-<br>
 
     <?= $this->element('functions/admin_list_controls', [
     'search' => [
@@ -686,7 +735,11 @@ if (!$this->request->getParam('prefix')) {
                             <?= $test->number_of_questions === null ? '—' : $this->Number->format($test->number_of_questions) ?>
                         </td>
                         <td class="mf-muted">
-                            <?= $test->is_public ? __('Yes') : __('No') ?>
+                            <?php if ($test->is_public) : ?>
+                                <span class="badge bg-success"><?= __('Yes') ?></span>
+                            <?php else : ?>
+                                <span class="badge bg-secondary"><?= __('No') ?></span>
+                            <?php endif; ?>
                         </td>
                         <td class="mf-muted" data-order="<?= $test->created_at ? h($test->created_at->format('Y-m-d H:i:s')) : '0' ?>">
                             <?= $test->created_at ? h($test->created_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?>
@@ -695,23 +748,24 @@ if (!$this->request->getParam('prefix')) {
                             <?= $test->updated_at ? h($test->updated_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                            <div class="mf-admin-actions">
                                 <?= $this->Html->link(
-                                    __('Stats'),
+                                    '<i class="bi bi-bar-chart-line" aria-hidden="true"></i><span>' . h(__('Stats')) . '</span>',
                                     ['action' => 'stats', $test->id, 'lang' => $lang],
-                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                    ['class' => 'btn btn-sm mf-admin-action mf-admin-action--neutral', 'escape' => false],
                                 ) ?>
                                 <?= $this->Html->link(
-                                    __('Edit'),
+                                    '<i class="bi bi-pencil-square" aria-hidden="true"></i><span>' . h(__('Edit')) . '</span>',
                                     ['action' => 'edit', $test->id, 'lang' => $lang],
-                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                    ['class' => 'btn btn-sm mf-admin-action mf-admin-action--neutral', 'escape' => false],
                                 ) ?>
                                 <?= $this->Form->postLink(
-                                    __('Delete'),
+                                    '<i class="bi bi-trash3" aria-hidden="true"></i><span>' . h(__('Delete')) . '</span>',
                                     ['action' => 'delete', $test->id, 'lang' => $lang],
                                     [
                                         'confirm' => __('Are you sure you want to delete # {0}?', $test->id),
-                                        'class' => 'btn btn-sm btn-outline-danger',
+                                        'class' => 'btn btn-sm mf-admin-action mf-admin-action--danger',
+                                        'escape' => false,
                                     ],
                                 ) ?>
                             </div>
@@ -745,9 +799,10 @@ if (!$this->request->getParam('prefix')) {
             'formId' => 'mfTestsBulkForm',
             'buttons' => [
                 [
-                    'label' => __('Delete'),
+                    'label' => '<i class="bi bi-trash3" aria-hidden="true"></i><span>' . h(__('Delete')) . '</span>',
                     'value' => 'delete',
-                    'class' => 'btn btn-sm btn-outline-danger',
+                    'class' => 'btn btn-sm mf-admin-action mf-admin-action--danger',
+                    'escapeTitle' => false,
                     'attrs' => [
                         'data-mf-bulk-delete' => true,
                     ],

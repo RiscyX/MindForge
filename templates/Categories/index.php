@@ -7,15 +7,63 @@
 $lang = $this->request->getParam('lang', 'en');
 
 $this->assign('title', __('Categories'));
+
+// — Compute KPIs from the already-loaded result set --------------------------
+$allCategories = is_array($categories) ? $categories : iterator_to_array($categories);
+$totalCategories = count($allCategories);
+$activeCount = 0;
+$inactiveCount = 0;
+foreach ($allCategories as $cat) {
+    if (!empty($cat->is_active)) {
+        $activeCount++;
+    } else {
+        $inactiveCount++;
+    }
+}
 ?>
 
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-    <div>
-        <h1 class="h3 mb-1"><?= __('Categories') ?></h1>
+<header class="mf-page-header">
+    <div class="mf-page-header__left">
+        <div>
+            <h1 class="mf-page-header__title">
+                <i class="bi bi-tag-fill me-2 text-primary" aria-hidden="true"></i>
+                <?= __('Categories') ?>
+                <span class="mf-page-header__count"><?= $this->Number->format($totalCategories) ?></span>
+            </h1>
+            <p class="mf-page-header__sub"><?= __('Organise quizzes into categories and manage their translations.') ?></p>
+        </div>
+    </div>
+</header>
+
+<div class="row g-3 mb-3 mf-admin-kpi-grid">
+    <div class="col-6 col-md-4">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-tags mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Total') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($totalCategories) ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-check-circle mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Active') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($activeCount) ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-x-circle mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Inactive') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($inactiveCount) ?></div>
+            </div>
+        </div>
     </div>
 </div>
-
-<br>
 
 <?= $this->element('functions/admin_list_controls', [
     'search' => [
@@ -98,18 +146,19 @@ $this->assign('title', __('Categories'));
                             <?= $category->updated_at ? h($category->updated_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                            <div class="mf-admin-actions">
                                 <?= $this->Html->link(
-                                    __('Edit'),
+                                    '<i class="bi bi-pencil-square" aria-hidden="true"></i><span>' . h(__('Edit')) . '</span>',
                                     ['action' => 'edit', $category->id, 'lang' => $lang],
-                                    ['class' => 'btn btn-sm btn-outline-light'],
+                                    ['class' => 'btn btn-sm mf-admin-action mf-admin-action--neutral', 'escape' => false],
                                 ) ?>
                                 <?= $this->Form->postLink(
-                                    __('Delete'),
+                                    '<i class="bi bi-trash3" aria-hidden="true"></i><span>' . h(__('Delete')) . '</span>',
                                     ['action' => 'delete', $category->id, 'lang' => $lang],
                                     [
                                         'confirm' => __('Are you sure you want to delete # {0}?', $category->id),
-                                        'class' => 'btn btn-sm btn-outline-danger',
+                                        'class' => 'btn btn-sm mf-admin-action mf-admin-action--danger',
+                                        'escape' => false,
                                     ],
                                 ) ?>
                             </div>
@@ -143,9 +192,10 @@ $this->assign('title', __('Categories'));
             'formId' => 'mfCategoriesBulkForm',
             'buttons' => [
                 [
-                    'label' => __('Delete'),
+                    'label' => '<i class="bi bi-trash3" aria-hidden="true"></i><span>' . h(__('Delete')) . '</span>',
                     'value' => 'delete',
-                    'class' => 'btn btn-sm btn-outline-danger',
+                    'class' => 'btn btn-sm mf-admin-action mf-admin-action--danger',
+                    'escapeTitle' => false,
                     'attrs' => [
                         'data-mf-bulk-delete' => true,
                     ],

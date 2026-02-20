@@ -759,6 +759,83 @@ class UsersController extends AppController
             ->first();
         $bestScore = $bestScoreRow ? (float)($bestScoreRow['best_score'] ?? 0) : 0.0;
 
+        // Last 7 days finished attempts
+        $sevenDaysAgo = FrozenTime::now()->subDays(7);
+        $last7DaysCount = (int)(clone $finishedBase)
+            ->where(['TestAttempts.finished_at >=' => $sevenDaysAgo])
+            ->count();
+
+        // Category breakdown: attempts count + avg score + best score per category
+        $breakdownRaw = (clone $finishedBase)
+            ->select([
+                'category_id' => 'TestAttempts.category_id',
+                'attempts' => $attemptsTable->find()->func()->count('TestAttempts.id'),
+                'avg_score' => $attemptsTable->find()->func()->avg('TestAttempts.score'),
+                'best_score' => $attemptsTable->find()->func()->max('TestAttempts.score'),
+            ])
+            ->groupBy(['TestAttempts.category_id'])
+            ->enableHydration(false)
+            ->all()
+            ->toList();
+
+        // Sort by attempts desc in PHP to avoid aggregate-alias ORDER BY dialect issues
+        usort($breakdownRaw, static function (array $a, array $b): int {
+            return (int)($b['attempts'] ?? 0) <=> (int)($a['attempts'] ?? 0);
+        });
+
+        // Load category names for the breakdown
+        $categoryIds = array_filter(array_unique(array_column($breakdownRaw, 'category_id')));
+        $categoryNames = [];
+        if ($categoryIds) {
+            $catTranslations = $this->fetchTable('CategoryTranslations')
+                ->find()
+                ->where([
+                    'CategoryTranslations.category_id IN' => array_values($categoryIds),
+                    'CategoryTranslations.language_id' => $languageId ?? 0,
+                ])
+                ->enableHydration(false)
+                ->all()
+                ->toList();
+
+            foreach ($catTranslations as $ct) {
+                $cid = (int)($ct['category_id'] ?? 0);
+                if ($cid > 0 && !isset($categoryNames[$cid])) {
+                    $categoryNames[$cid] = (string)($ct['name'] ?? '');
+                }
+            }
+
+            // Fallback: load any translation if the language-specific one is missing
+            $missingIds = array_values(array_filter($categoryIds, fn($id) => !isset($categoryNames[(int)$id])));
+            if ($missingIds) {
+                $fallbackTranslations = $this->fetchTable('CategoryTranslations')
+                    ->find()
+                    ->where(['CategoryTranslations.category_id IN' => $missingIds])
+                    ->enableHydration(false)
+                    ->all()
+                    ->toList();
+                foreach ($fallbackTranslations as $ct) {
+                    $cid = (int)($ct['category_id'] ?? 0);
+                    if ($cid > 0 && !isset($categoryNames[$cid]) && ($ct['name'] ?? '') !== '') {
+                        $categoryNames[$cid] = (string)$ct['name'];
+                    }
+                }
+            }
+        }
+
+        $categoryBreakdown = [];
+        foreach ($breakdownRaw as $row) {
+            $cid = (int)($row['category_id'] ?? 0);
+            $avgRaw = $row['avg_score'] !== null ? (float)$row['avg_score'] : null;
+            $bestRaw = $row['best_score'] !== null ? (float)$row['best_score'] : null;
+            $categoryBreakdown[] = [
+                'category_id' => $cid,
+                'name' => $cid > 0 ? ($categoryNames[$cid] ?? __('Category #{0}', $cid)) : __('Uncategorized'),
+                'attempts' => (int)($row['attempts'] ?? 0),
+                'avg_score' => $avgRaw,
+                'best_score' => $bestRaw,
+            ];
+        }
+
         $recentAttempts = (clone $finishedBase)
             ->contain([
                 'Tests' => function (SelectQuery $q) use ($languageId): SelectQuery {
@@ -798,6 +875,8 @@ class UsersController extends AppController
             'uniqueQuizzes',
             'avgScore',
             'bestScore',
+            'last7DaysCount',
+            'categoryBreakdown',
             'recentAttempts',
         );
     }

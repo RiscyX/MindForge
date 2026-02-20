@@ -8,12 +8,14 @@
  * @var int $uniqueQuizzes
  * @var float $avgScore
  * @var float $bestScore
+ * @var int $last7DaysCount
  * @var \Cake\Datasource\ResultSetInterface<\App\Model\Entity\TestAttempt> $recentAttempts
  */
 
 $lang = $this->request->getParam('lang', 'en');
 $accentAlpha = '0.16';
 $showRecentAttempts = isset($showRecentAttempts) ? (bool)$showRecentAttempts : true;
+$last7DaysCount = (int)($last7DaysCount ?? 0);
 
 $formatScore = static function (?float $score): string {
     if ($score === null) {
@@ -71,6 +73,11 @@ $formatScore = static function (?float $score): string {
                 <i class="bi bi-percent" aria-hidden="true"></i>
                 <span class="mf-quiz-stat__value"><?= h($formatScore($avgScore)) ?></span>
                 <span class="mf-quiz-stat__label"><?= __('Avg') ?></span>
+            </div>
+            <div class="mf-quiz-stat" title="<?= h(__('Last 7 days')) ?>">
+                <i class="bi bi-calendar-week" aria-hidden="true"></i>
+                <span class="mf-quiz-stat__value"><?= (int)$last7DaysCount ?></span>
+                <span class="mf-quiz-stat__label"><?= __('Last 7d') ?></span>
             </div>
         </div>
     </div>
