@@ -42,8 +42,6 @@ $categoriesRoute = ['prefix' => $isAdmin ? 'Admin' : false, 'controller' => 'Cat
 $difficultiesRoute = ['prefix' => $isAdmin ? 'Admin' : false, 'controller' => 'Difficulties', 'action' => 'index', 'lang' => $lang];
 $languagesRoute = ['prefix' => $isAdmin ? 'Admin' : false, 'controller' => 'Languages', 'action' => 'index', 'lang' => $lang];
 $testsRoute = ['prefix' => $isAdmin ? 'Admin' : false, 'controller' => 'Tests', 'action' => 'index', 'lang' => $lang];
-$questionsRoute = ['prefix' => $isAdmin ? 'Admin' : false, 'controller' => 'Questions', 'action' => 'index', 'lang' => $lang];
-$answersRoute = ['prefix' => $isAdmin ? 'Admin' : false, 'controller' => 'Answers', 'action' => 'index', 'lang' => $lang];
 $deviceLogsRoute = ['prefix' => 'Admin', 'controller' => 'DeviceLogs', 'action' => 'index', 'lang' => $lang];
 $aiRequestsRoute = ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' => 'index', 'lang' => $lang];
 ?>
@@ -56,8 +54,6 @@ $aiRequestsRoute = ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' 
             <?= $this->Html->link(__('Categories'), $categoriesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($categoriesRoute) ? ' active' : '')]) ?>
             <?= $this->Html->link(__('Difficulties'), $difficultiesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($difficultiesRoute) ? ' active' : '')]) ?>
             <?= $this->Html->link(__('Tests'), $testsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Questions'), $questionsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($questionsRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Answers'), $answersRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($answersRoute) ? ' active' : '')]) ?>
             <?= $this->Html->link(__('Languages'), $languagesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($languagesRoute) ? ' active' : '')]) ?>
         </nav>
     </div>

@@ -368,6 +368,20 @@
                 dom: paginationContainer ? 'rt' : dtCfg.dom,
             });
 
+            const adjustColumns = () => {
+                if (typeof dt.columns?.adjust !== 'function') {
+                    return;
+                }
+                dt.columns.adjust();
+            };
+
+            const scheduleAdjustColumns = () => {
+                requestAnimationFrame(() => {
+                    adjustColumns();
+                });
+                setTimeout(adjustColumns, 120);
+            };
+
             const renderPagination = () => {
                 if (!paginationContainer) return;
 
@@ -525,6 +539,20 @@
             decorateActionButtons();
             dt.on('draw.mfConfirms', bindRowActionConfirms);
             bindRowActionConfirms();
+            dt.on('draw.adjust', scheduleAdjustColumns);
+
+            let resizeTimer = null;
+            const handleResize = () => {
+                if (resizeTimer !== null) {
+                    clearTimeout(resizeTimer);
+                }
+                resizeTimer = setTimeout(() => {
+                    scheduleAdjustColumns();
+                    resizeTimer = null;
+                }, 120);
+            };
+            window.addEventListener('resize', handleResize);
+            scheduleAdjustColumns();
 
             return;
         }
