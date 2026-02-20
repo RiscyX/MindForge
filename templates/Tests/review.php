@@ -94,8 +94,10 @@ $totalQuestions = count($questionsList);
                 : '';
 
             $qText = '';
+            $baseExplanation = '';
             if (!empty($question->question_translations)) {
                 $qText = (string)($question->question_translations[0]->content ?? '');
+                $baseExplanation = trim((string)($question->question_translations[0]->explanation ?? ''));
             }
 
             $chosenAnswerId = $attemptAnswer?->answer_id !== null ? (int)$attemptAnswer->answer_id : null;
@@ -196,13 +198,33 @@ $totalQuestions = count($questionsList);
 
                             $leftGroup = (int)($leftAnswer->match_group ?? 0);
                             $isPairCorrect = $chosenRight !== null && $leftGroup > 0 && $leftGroup === (int)($chosenRight->match_group ?? 0);
+                            $expectedRight = null;
+                            if ($leftGroup > 0) {
+                                foreach ($rightById as $candidateRight) {
+                                    if ((int)($candidateRight->match_group ?? 0) === $leftGroup) {
+                                        $expectedRight = $candidateRight;
+                                        break;
+                                    }
+                                }
+                            }
+                            $chosenRightText = $chosenRight
+                                ? ($answerText($chosenRight) !== '' ? $answerText($chosenRight) : __('(empty)'))
+                                : ($chosenRightId !== null ? __('(invalid selection)') : __('(no match selected)'));
+                            $expectedRightText = $expectedRight
+                                ? ($answerText($expectedRight) !== '' ? $answerText($expectedRight) : __('(empty)'))
+                                : __('(not set)');
                             ?>
                             <div class="mf-answer-choice <?= $isPairCorrect ? 'mf-answer-choice--correct' : 'mf-answer-choice--wrong' ?>">
                                 <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
                                     <div class="text-white">
                                         <strong><?= h($answerText($leftAnswer) !== '' ? $answerText($leftAnswer) : __('(empty)')) ?></strong>
                                         <span class="mf-muted"> &rarr; </span>
-                                        <?= h($chosenRight ? ($answerText($chosenRight) !== '' ? $answerText($chosenRight) : __('(empty)')) : __('(no match)')) ?>
+                                        <?= h($chosenRightText) ?>
+                                        <?php if (!$isPairCorrect) : ?>
+                                            <div class="small mf-muted mt-1">
+                                                <?= __('Expected') ?>: <?= h($expectedRightText) ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div>
                                         <?php if ($isPairCorrect) : ?>
@@ -263,6 +285,15 @@ $totalQuestions = count($questionsList);
                         <?php if ($chosenAnswerId === null) : ?>
                             <div class="mf-muted mt-2"><?= __('You did not answer this question.') ?></div>
                         <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if ($baseExplanation !== '') : ?>
+                        <div class="mt-3">
+                            <div class="mf-muted mb-1"><?= __('Correct answer explanation') ?></div>
+                            <div class="mf-answer-box">
+                                <?= nl2br(h($baseExplanation)) ?>
+                            </div>
+                        </div>
                     <?php endif; ?>
 
                     <?php if ($attemptAnswerId > 0) : ?>

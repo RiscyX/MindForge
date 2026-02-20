@@ -7,8 +7,8 @@ use App\Model\Entity\ActivityLog;
 use App\Model\Entity\Language;
 use App\Model\Entity\Question;
 use App\Model\Entity\Role;
+use App\Service\AiGatewayService;
 use App\Service\AiQuizPromptService;
-use App\Service\AiService;
 use App\Service\AiServiceException;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
@@ -1363,6 +1363,7 @@ class TestsController extends AppController
         $force = (bool)$this->request->getData('force', false);
         $explanationsTable = $this->fetchTable('AttemptAnswerExplanations');
         $existingExplanation = null;
+        $cacheScope = null;
         if ($languageId !== null) {
             $existingExplanation = $explanationsTable->find()
                 ->where([
@@ -1378,12 +1379,55 @@ class TestsController extends AppController
                 ->first();
         }
 
+        if ($existingExplanation) {
+            $cacheScope = 'attempt';
+        }
+
+        if (!$force && $existingExplanation === null) {
+            $crossUserQuery = $explanationsTable->find()
+                ->innerJoinWith('TestAttemptAnswers', function ($q) use ($questionId, $attemptAnswer) {
+                    return $q->where([
+                        'TestAttemptAnswers.question_id' => (int)$questionId,
+                        'TestAttemptAnswers.is_correct' => (bool)$attemptAnswer->is_correct,
+                    ]);
+                })
+                ->where([
+                    'AttemptAnswerExplanations.test_attempt_answer_id !=' => (int)$attemptAnswer->id,
+                ])
+                ->orderByDesc('AttemptAnswerExplanations.id');
+
+            if ($languageId !== null) {
+                $crossUserQuery->where(['AttemptAnswerExplanations.language_id' => $languageId]);
+            }
+
+            $crossUserExplanation = $crossUserQuery->first();
+            if ($crossUserExplanation !== null) {
+                $cacheScope = 'question';
+
+                $now = FrozenTime::now();
+                $reuseEntity = $explanationsTable->newEmptyEntity();
+                $reuseEntity = $explanationsTable->patchEntity($reuseEntity, [
+                    'test_attempt_answer_id' => (int)$attemptAnswer->id,
+                    'language_id' => $languageId,
+                    'ai_request_id' => $crossUserExplanation->ai_request_id,
+                    'source' => 'ai_cache',
+                    'explanation_text' => (string)$crossUserExplanation->explanation_text,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+                $explanationsTable->save($reuseEntity);
+
+                $existingExplanation = $reuseEntity;
+            }
+        }
+
         if ($existingExplanation && !$force) {
             return $this->response
                 ->withType('application/json')
                 ->withStringBody((string)json_encode([
                     'success' => true,
                     'cached' => true,
+                    'cache_scope' => $cacheScope,
                     'explanation' => (string)$existingExplanation->explanation_text,
                 ]));
         }
@@ -1440,8 +1484,10 @@ class TestsController extends AppController
         }
 
         $questionText = '';
+        $baseExplanation = '';
         if (!empty($question->question_translations)) {
             $questionText = trim((string)($question->question_translations[0]->content ?? ''));
+            $baseExplanation = trim((string)($question->question_translations[0]->explanation ?? ''));
         }
         if ($questionText === '') {
             $questionText = __('Question #{0}', (int)$question->id);
@@ -1462,6 +1508,7 @@ class TestsController extends AppController
         $questionType = (string)$question->question_type;
         $correctInfo = [];
         $userInfo = [];
+        $matchingPairDetails = [];
         if ($questionType === Question::TYPE_TEXT) {
             foreach (($question->answers ?? []) as $ans) {
                 if (!(bool)$ans->is_correct) {
@@ -1476,6 +1523,7 @@ class TestsController extends AppController
         } elseif ($questionType === Question::TYPE_MATCHING) {
             $leftMap = [];
             $rightMap = [];
+            $expectedRightByLeft = [];
             foreach (($question->answers ?? []) as $ans) {
                 $aid = (int)$ans->id;
                 $side = trim((string)($ans->match_side ?? ''));
@@ -1485,10 +1533,14 @@ class TestsController extends AppController
                     $rightMap[$aid] = ['text' => $answerText($ans), 'group' => (int)($ans->match_group ?? 0)];
                 }
             }
-            foreach ($leftMap as $left) {
-                foreach ($rightMap as $right) {
+            foreach ($leftMap as $leftId => $left) {
+                foreach ($rightMap as $rightId => $right) {
                     if ($left['group'] > 0 && $left['group'] === $right['group']) {
                         $correctInfo[] = $left['text'] . ' -> ' . $right['text'];
+                        $expectedRightByLeft[(int)$leftId] = [
+                            'id' => (int)$rightId,
+                            'text' => $right['text'],
+                        ];
                         break;
                     }
                 }
@@ -1508,6 +1560,36 @@ class TestsController extends AppController
                 $leftText = $leftMap[$leftIdInt]['text'] ?? '#' . $leftIdInt;
                 $rightText = $rightMap[$rightIdInt]['text'] ?? '#' . $rightIdInt;
                 $userInfo[] = $leftText . ' -> ' . $rightText;
+
+                $expected = $expectedRightByLeft[$leftIdInt]['text'] ?? '';
+                $matchingPairDetails[] = [
+                    'left' => $leftText,
+                    'selected' => $rightText,
+                    'expected' => $expected,
+                    'is_pair_correct' => $expected !== '' && $expected === $rightText,
+                ];
+            }
+
+            foreach ($leftMap as $leftId => $left) {
+                $leftIdInt = (int)$leftId;
+                if (array_key_exists((string)$leftIdInt, $pairs) || array_key_exists($leftIdInt, $pairs)) {
+                    continue;
+                }
+
+                $expectedText = isset($expectedRightByLeft[$leftIdInt])
+                    ? (string)$expectedRightByLeft[$leftIdInt]['text']
+                    : '';
+                $line = $left['text'] . ' -> (no match selected)';
+                if ($expectedText !== '') {
+                    $line .= ' | expected: ' . $expectedText;
+                }
+                $userInfo[] = $line;
+                $matchingPairDetails[] = [
+                    'left' => $left['text'],
+                    'selected' => '(no match selected)',
+                    'expected' => $expectedText,
+                    'is_pair_correct' => false,
+                ];
             }
         } else {
             foreach (($question->answers ?? []) as $ans) {
@@ -1525,8 +1607,10 @@ class TestsController extends AppController
         $promptPayload = [
             'question_type' => $questionType,
             'question' => $questionText,
+            'base_explanation' => $baseExplanation,
             'user_answer' => $userInfo,
             'correct_answer' => $correctInfo,
+            'matching_pair_details' => $matchingPairDetails,
             'is_correct' => (bool)$attemptAnswer->is_correct,
             'language' => $outputLanguage,
         ];
@@ -1535,18 +1619,27 @@ class TestsController extends AppController
         $systemMessage =
             'You are a quiz tutor assistant. Explain clearly and briefly why '
             . 'the submitted answer is correct or incorrect. '
+            . 'Use the provided base_explanation as reference context when available, '
+            . 'but tailor the response to the user_answer and correct_answer comparison. '
+            . 'If question_type is matching, explain pair-by-pair and explicitly point out '
+            . 'missing or incorrect matches. '
+            . 'Be concrete, avoid generic wording, and give one actionable tip to improve. '
             .
             'Keep the explanation educational, respectful, and actionable. Return ONLY valid JSON in this format: ' .
             '{"explanation":"..."}';
 
         try {
-            $aiService = new AiService();
-            $responseContent = $aiService->generateContent(
+            $aiService = new AiGatewayService();
+            $aiResponse = $aiService->validateOutput(
                 $promptJson,
                 $systemMessage,
                 0.2,
                 ['response_format' => ['type' => 'json_object']],
             );
+            if (!$aiResponse->success) {
+                throw new Exception((string)($aiResponse->error ?? 'AI request failed.'));
+            }
+            $responseContent = $aiResponse->content();
 
             $decoded = json_decode((string)$responseContent, true);
             $explanationText = '';
@@ -2429,6 +2522,7 @@ class TestsController extends AppController
                 $qData['translations'][$qt->language_id] = [
                     'id' => $qt->id,
                     'content' => $qt->content,
+                    'explanation' => $qt->explanation,
                 ];
             }
 
@@ -2544,13 +2638,17 @@ class TestsController extends AppController
                     . $documentContext;
             }
 
-            $aiService = new AiService();
-            $responseContent = $aiService->generateContent(
+            $aiService = new AiGatewayService();
+            $aiResponse = $aiService->generateQuizFromText(
                 $finalPrompt,
                 $systemMessage,
                 0.45,
                 ['response_format' => ['type' => 'json_object']],
             );
+            if (!$aiResponse->success) {
+                throw new Exception((string)($aiResponse->error ?? 'AI request failed.'));
+            }
+            $responseContent = $aiResponse->content();
 
             $json = json_decode($responseContent, true);
             // Save AI Request Log
@@ -2846,13 +2944,17 @@ class TestsController extends AppController
                 throw new Exception('Failed to encode translation payload.');
             }
 
-            $aiService = new AiService();
-            $responseContent = $aiService->generateContent(
+            $aiService = new AiGatewayService();
+            $aiResponse = $aiService->generateQuizFromText(
                 $prompt,
                 $systemMessage,
                 0.2,
                 ['response_format' => ['type' => 'json_object']],
             );
+            if (!$aiResponse->success) {
+                throw new Exception((string)($aiResponse->error ?? 'AI request failed.'));
+            }
+            $responseContent = $aiResponse->content();
 
             $json = json_decode($responseContent, true);
 
@@ -3334,13 +3436,17 @@ class TestsController extends AppController
 
         $aiRequests = $this->fetchTable('AiRequests');
         try {
-            $ai = new AiService();
-            $content = $ai->generateContent(
+            $ai = new AiGatewayService();
+            $aiResponse = $ai->validateOutput(
                 $prompt,
                 $systemMessage,
                 0.0,
                 ['response_format' => ['type' => 'json_object']],
             );
+            if (!$aiResponse->success) {
+                throw new Exception((string)($aiResponse->error ?? 'AI request failed.'));
+            }
+            $content = $aiResponse->content();
 
             $decoded = json_decode((string)$content, true);
             $isCorrect = is_array($decoded) && isset($decoded['is_correct'])

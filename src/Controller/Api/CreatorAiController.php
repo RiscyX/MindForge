@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Model\Entity\Role;
-use App\Service\AiQuizDraftService;
+use App\Service\AiQuestionGenerationPipelineService;
+use App\Service\AiQuizPromptService;
 use App\Service\ImageUploadGuard;
 use Cake\Core\Configure;
 use Cake\I18n\FrozenTime;
@@ -149,12 +150,14 @@ class CreatorAiController extends AppController
         }
 
         $now = FrozenTime::now();
+        $promptService = new AiQuizPromptService();
         $req = $aiRequests->newEntity([
             'user_id' => $userId,
             'language_id' => $languageId,
             'source_medium' => 'mobile_app',
             'source_reference' => 'creator_ai_test_generation',
             'type' => 'test_generation_async',
+            'prompt_version' => $promptService->getGenerationPromptVersion(),
             'input_payload' => json_encode([
                 'prompt' => $prompt,
                 'category_id' => $categoryId,
@@ -260,6 +263,12 @@ class CreatorAiController extends AppController
                 'updated_at' => $req->updated_at?->format('c'),
                 'started_at' => $req->started_at?->format('c'),
                 'finished_at' => $req->finished_at?->format('c'),
+                'duration_ms' => $req->duration_ms !== null ? (int)$req->duration_ms : null,
+                'prompt_tokens' => $req->prompt_tokens !== null ? (int)$req->prompt_tokens : null,
+                'completion_tokens' => $req->completion_tokens !== null ? (int)$req->completion_tokens : null,
+                'total_tokens' => $req->total_tokens !== null ? (int)$req->total_tokens : null,
+                'cost_usd' => $req->cost_usd !== null ? (float)$req->cost_usd : null,
+                'prompt_version' => $req->prompt_version,
                 'error_code' => $req->error_code,
                 'error_message' => $req->error_message,
             ],
@@ -405,131 +414,51 @@ class CreatorAiController extends AppController
             return;
         }
 
-        $opts = [];
-        if (is_string($req->input_payload) && $req->input_payload !== '') {
-            $tmp = json_decode($req->input_payload, true);
-            if (is_array($tmp)) {
-                $opts = $tmp;
-            }
-        }
-
-        $draftService = new AiQuizDraftService();
+        $pipeline = new AiQuestionGenerationPipelineService();
         try {
-            $built = $draftService->validateAndBuildTestData($draft);
+            $testId = $pipeline->applyDraftFromRequest(
+                $req,
+                $draft,
+                is_array($incomingDraft) && $incomingDraft,
+            );
         } catch (RuntimeException $e) {
-            $this->jsonError(422, 'DRAFT_INVALID', $e->getMessage());
+            $message = $e->getMessage();
+            if (str_starts_with($message, 'CATEGORY_REQUIRED:')) {
+                $this->jsonError(422, 'CATEGORY_REQUIRED', trim(substr($message, strlen('CATEGORY_REQUIRED:'))));
 
-            return;
-        }
-
-        // Persist edited draft for audit/debugging.
-        if (is_array($incomingDraft) && $incomingDraft) {
-            $req->output_payload = json_encode($draft, JSON_UNESCAPED_SLASHES);
-        }
-
-        $testData = $built['testData'];
-        $testData['created_by'] = $userId;
-        $testData['is_public'] = $this->boolOrDefault($opts['is_public'] ?? null, true);
-        $testData['category_id'] = isset($opts['category_id']) && is_numeric($opts['category_id'])
-            ? (int)$opts['category_id']
-            : null;
-        $testData['difficulty_id'] = isset($opts['difficulty_id']) && is_numeric($opts['difficulty_id'])
-            ? (int)$opts['difficulty_id']
-            : null;
-
-        if ($testData['category_id'] === null) {
-            $this->jsonError(422, 'CATEGORY_REQUIRED', 'Category is required.');
-
-            return;
-        }
-        if (!$this->isCategoryValidAndActive((int)$testData['category_id'])) {
-            $this->jsonError(422, 'CATEGORY_INVALID', 'Category is invalid or inactive.');
-
-            return;
-        }
-
-        if ($testData['difficulty_id'] === null) {
-            $this->jsonError(422, 'DIFFICULTY_REQUIRED', 'Difficulty is required.');
-
-            return;
-        }
-        if (!$this->isDifficultyValidAndActive((int)$testData['difficulty_id'])) {
-            $this->jsonError(422, 'DIFFICULTY_INVALID', 'Difficulty is invalid or inactive.');
-
-            return;
-        }
-
-        // Propagate category_id/created_by into questions.
-        if (!empty($testData['questions'])) {
-            foreach ($testData['questions'] as &$q) {
-                if ($testData['category_id']) {
-                    $q['category_id'] = $testData['category_id'];
-                }
-                $q['created_by'] = $userId;
-
-                if (!empty($q['answers']) && is_array($q['answers'])) {
-                    $position = 1;
-                    foreach ($q['answers'] as &$a) {
-                        if (!is_array($a)) {
-                            continue;
-                        }
-
-                        $a['position'] = $position;
-                        $position += 1;
-                        $a['source_type'] = (string)($a['source_type'] ?? 'ai');
-
-                        $sourceText = '';
-                        if (!empty($a['answer_translations']) && is_array($a['answer_translations'])) {
-                            foreach ($a['answer_translations'] as &$at) {
-                                if (!is_array($at)) {
-                                    continue;
-                                }
-                                $at['source_type'] = (string)($at['source_type'] ?? $a['source_type']);
-                                $at['created_by'] = (int)$userId;
-
-                                if ($sourceText === '') {
-                                    $candidate = trim((string)($at['content'] ?? ''));
-                                    if ($candidate !== '') {
-                                        $sourceText = $candidate;
-                                    }
-                                }
-                            }
-                            unset($at);
-                        }
-
-                        if ($sourceText !== '') {
-                            $a['source_text'] = $sourceText;
-                        }
-                    }
-                    unset($a);
-                }
+                return;
             }
-            unset($q);
-        }
+            if (str_starts_with($message, 'CATEGORY_INVALID:')) {
+                $this->jsonError(422, 'CATEGORY_INVALID', trim(substr($message, strlen('CATEGORY_INVALID:'))));
 
-        $tests = $this->fetchTable('Tests');
-        $test = $tests->newEmptyEntity();
-        $test = $tests->patchEntity($test, $testData, [
-            'associated' => [
-                'Questions' => ['associated' => [
-                    'Answers' => ['associated' => ['AnswerTranslations']],
-                    'QuestionTranslations',
-                ]],
-                'TestTranslations',
-            ],
-        ]);
+                return;
+            }
+            if (str_starts_with($message, 'DIFFICULTY_REQUIRED:')) {
+                $this->jsonError(422, 'DIFFICULTY_REQUIRED', trim(substr($message, strlen('DIFFICULTY_REQUIRED:'))));
 
-        if (!$tests->save($test)) {
+                return;
+            }
+            if (str_starts_with($message, 'DIFFICULTY_INVALID:')) {
+                $this->jsonError(422, 'DIFFICULTY_INVALID', trim(substr($message, strlen('DIFFICULTY_INVALID:'))));
+
+                return;
+            }
+            if (str_contains($message, 'generated quiz')) {
+                $this->jsonError(500, 'TEST_SAVE_FAILED', 'Could not save generated quiz.');
+
+                return;
+            }
+
+            $this->jsonError(422, 'DRAFT_INVALID', $message);
+
+            return;
+        } catch (Throwable) {
             $this->jsonError(500, 'TEST_SAVE_FAILED', 'Could not save generated quiz.');
 
             return;
         }
 
-        $req->test_id = (int)$test->id;
-        $req->updated_at = FrozenTime::now();
-        $aiRequests->save($req);
-
-        $this->jsonSuccess(['test_id' => (int)$test->id]);
+        $this->jsonSuccess(['test_id' => (int)$testId]);
     }
 
     /**

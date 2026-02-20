@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int|null $test_id
+ * @property int|null $ai_request_id
  * @property int $category_id
  * @property int|null $difficulty_id
  * @property string $question_type
@@ -22,6 +23,7 @@ use Cake\ORM\Entity;
  * @property string $type
  *
  * @property \App\Model\Entity\Test $test
+ * @property \App\Model\Entity\AiRequest|null $ai_request
  * @property \App\Model\Entity\Category $category
  * @property \App\Model\Entity\Difficulty $difficulty
  * @property \App\Model\Entity\Answer[] $answers
@@ -46,6 +48,7 @@ class Question extends Entity
      */
     protected array $_accessible = [
         'test_id' => true,
+        'ai_request_id' => true,
         'category_id' => true,
         'difficulty_id' => true,
         'question_type' => true,
@@ -56,6 +59,7 @@ class Question extends Entity
         'created_at' => true,
         'updated_at' => true,
         'test' => true,
+        'ai_request' => true,
         'category' => true,
         'difficulty' => true,
         'answers' => true,

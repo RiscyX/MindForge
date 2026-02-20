@@ -329,15 +329,18 @@ function buildTranslatePayload() {
         const qIdInput = card.querySelector(`input[name="questions[${qIndex}][id]"]`);
         const qTypeSelect = card.querySelector(`select[name="questions[${qIndex}][question_type]"]`);
         const qTextInput = card.querySelector(`input[name="questions[${qIndex}][question_translations][${sourceLanguageId}][content]"]`);
+        const qExplanationInput = card.querySelector(`textarea[name="questions[${qIndex}][question_translations][${sourceLanguageId}][explanation]"]`);
 
         const qId = qIdInput ? Number(qIdInput.value) : null;
         const qType = qTypeSelect ? qTypeSelect.value : '';
         const qContent = qTextInput ? qTextInput.value : '';
+        const qExplanation = qExplanationInput ? qExplanationInput.value : '';
 
         const question = {
             id: qId,
             type: qType,
             content: qContent,
+            explanation: qExplanation,
             answers: []
         };
 
@@ -430,7 +433,15 @@ function applyAiTranslations(data) {
         if (q.translations) {
             for (const [langId, content] of Object.entries(q.translations)) {
                 const input = document.querySelector(`input[name="questions[${qIndex}][question_translations][${langId}][content]"]`);
-                if (input && content) input.value = content;
+                const explanationInput = document.querySelector(`textarea[name="questions[${qIndex}][question_translations][${langId}][explanation]"]`);
+                if (input) {
+                    const translationContent = (content && typeof content === 'object') ? (content.content || '') : (content || '');
+                    input.value = translationContent;
+                }
+                if (explanationInput) {
+                    const translationExplanation = (content && typeof content === 'object') ? (content.explanation || '') : '';
+                    explanationInput.value = translationExplanation;
+                }
             }
         }
 
@@ -568,7 +579,7 @@ function addQuestion(data = null) {
 
             <div class="mb-3">
                 <label class="form-label">Question Text</label>
-                ${generateTranslationInputs('questions', index, 'question_translations', 'content', data ? data.translations : null)}
+                ${generateQuestionTranslationInputs(index, data ? data.translations : null)}
             </div>
 
             <div id="answers-container-${index}" class="answers-container mb-3">
@@ -640,6 +651,38 @@ function generateTranslationInputs(baseName, index, subName, fieldName, values =
         </div>
         `;
     }
+    return html;
+}
+
+function generateQuestionTranslationInputs(index, values = null) {
+    let html = '';
+    for (const [langId, langName] of Object.entries(languages)) {
+        let content = '';
+        let explanation = '';
+        let translationId = '';
+
+        if (values && values[langId] !== undefined && values[langId] !== null) {
+            if (typeof values[langId] === 'object') {
+                content = values[langId].content || '';
+                explanation = values[langId].explanation || '';
+                translationId = values[langId].id || '';
+            } else {
+                content = values[langId];
+            }
+        }
+
+        html += `
+        <div class="border rounded p-2 mb-2">
+            <div class="fw-semibold mb-2">${langName}</div>
+            ${translationId ? `<input type="hidden" name="questions[${index}][question_translations][${langId}][id]" value="${translationId}">` : ''}
+            <input type="hidden" name="questions[${index}][question_translations][${langId}][language_id]" value="${langId}">
+            <input type="text" class="form-control mb-2" name="questions[${index}][question_translations][${langId}][content]" placeholder="Question text..." value="${content}">
+            <label class="form-label small mb-1">Correct answer explanation</label>
+            <textarea class="form-control" rows="2" name="questions[${index}][question_translations][${langId}][explanation]" placeholder="Explain why the correct answer is correct (optional)...">${explanation}</textarea>
+        </div>
+        `;
+    }
+
     return html;
 }
 

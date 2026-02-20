@@ -102,6 +102,41 @@ class AiRequestsTable extends Table
             ->notEmptyString('type');
 
         $validator
+            ->scalar('prompt_version')
+            ->maxLength('prompt_version', 100)
+            ->allowEmptyString('prompt_version');
+
+        $validator
+            ->scalar('provider')
+            ->maxLength('provider', 100)
+            ->allowEmptyString('provider');
+
+        $validator
+            ->scalar('model')
+            ->maxLength('model', 150)
+            ->allowEmptyString('model');
+
+        $validator
+            ->nonNegativeInteger('duration_ms')
+            ->allowEmptyString('duration_ms');
+
+        $validator
+            ->nonNegativeInteger('prompt_tokens')
+            ->allowEmptyString('prompt_tokens');
+
+        $validator
+            ->nonNegativeInteger('completion_tokens')
+            ->allowEmptyString('completion_tokens');
+
+        $validator
+            ->nonNegativeInteger('total_tokens')
+            ->allowEmptyString('total_tokens');
+
+        $validator
+            ->decimal('cost_usd')
+            ->allowEmptyString('cost_usd');
+
+        $validator
             ->scalar('input_payload')
             ->maxLength('input_payload', 4294967295)
             ->allowEmptyString('input_payload');

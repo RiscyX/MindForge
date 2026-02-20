@@ -9,6 +9,9 @@ use Throwable;
 
 class AiQuizPromptService
 {
+    public const GENERATION_PROMPT_VERSION = 'ai_quiz_generation_v2';
+    public const TRANSLATION_PROMPT_VERSION = 'ai_quiz_translation_v1';
+
     /**
      * Build and cache the base system prompt for quiz generation.
      *
@@ -69,7 +72,12 @@ Expected JSON schema:
   \"questions\": [
     {
       \"type\": \"multiple_choice\"|\"true_false\"|\"text\"|\"matching\",
-      \"translations\": { \"[language_id]\": \"question text\" },
+      \"translations\": {
+        \"[language_id]\": {
+          \"content\": \"question text\",
+          \"explanation\": \"short educational explanation\"
+        }
+      },
       \"answers\": [
         {
           \"is_correct\": true|false,
@@ -89,9 +97,12 @@ Quality rules:
 4) matching: create 3-5 pairs using answers with left/right sides and shared match_group values.
 5) Keep distractors plausible and non-overlapping.
 6) Ensure translation meaning is equivalent across languages.
-7) Use mixed templates across questions (definition, scenario, comparison, application, cause/effect).
-8) Avoid duplicate or near-duplicate questions.
-9) Output must be valid JSON object only.
+7) For each question translation, include a short explanation (1-2 sentences, max ~320 chars) in the same language.
+   - The explanation must clarify why the correct answer(s) are correct.
+   - For matching questions, explicitly mention at least one correct left->right pair rationale.
+8) Use mixed templates across questions (definition, scenario, comparison, application, cause/effect).
+9) Avoid duplicate or near-duplicate questions.
+10) Output must be valid JSON object only.
 ";
     }
 
@@ -121,6 +132,14 @@ Quality rules:
     }
 
     /**
+     * @return string
+     */
+    public function getGenerationPromptVersion(): string
+    {
+        return self::GENERATION_PROMPT_VERSION;
+    }
+
+    /**
      * Build and cache the base system prompt for translation.
      *
      * @param array<int, string> $languages
@@ -141,6 +160,14 @@ Quality rules:
         } catch (Throwable) {
             return $this->buildTranslationPrompt($normalized, $sourceLanguageId);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslationPromptVersion(): string
+    {
+        return self::TRANSLATION_PROMPT_VERSION;
     }
 
     /**
