@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Model\Entity\Question;
-use App\Service\AiService;
-use App\Service\AiServiceException;
+use App\Service\AiGatewayService;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query\SelectQuery;
 use OpenApi\Attributes as OA;
@@ -747,13 +746,17 @@ class AttemptsController extends AppController
 
         $aiRequests = $this->fetchTable('AiRequests');
         try {
-            $ai = new AiService();
-            $content = $ai->generateContent(
+            $ai = new AiGatewayService();
+            $aiResponse = $ai->validateOutput(
                 $prompt,
                 $systemMessage,
                 0.0,
                 ['response_format' => ['type' => 'json_object']],
             );
+            if (!$aiResponse->success) {
+                throw new RuntimeException((string)($aiResponse->error ?? 'AI request failed.'));
+            }
+            $content = $aiResponse->content();
 
             $decoded = json_decode((string)$content, true);
             $isCorrect = is_array($decoded) && isset($decoded['is_correct'])
@@ -776,10 +779,6 @@ class AttemptsController extends AppController
             return $isCorrect;
         } catch (Throwable $e) {
             $errorPayload = json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            $aiErrCode = 'AI_FAILED';
-            if ($e instanceof AiServiceException) {
-                $aiErrCode = $e->getErrorCode();
-            }
             $req = $aiRequests->newEntity([
                 'user_id' => $userId,
                 'language_id' => $langId > 0 ? $langId : null,
@@ -789,7 +788,7 @@ class AttemptsController extends AppController
                 'input_payload' => $prompt,
                 'output_payload' => is_string($errorPayload) ? $errorPayload : '{}',
                 'status' => 'failed',
-                'error_code' => $aiErrCode,
+                'error_code' => 'AI_FAILED',
                 'error_message' => $e->getMessage(),
             ]);
             $aiRequests->save($req);

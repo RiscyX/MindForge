@@ -15,6 +15,14 @@ use Cake\ORM\Entity;
 
  * @property string|null $source_reference
  * @property string $type
+ * @property string|null $prompt_version
+ * @property string|null $provider
+ * @property string|null $model
+ * @property int|null $duration_ms
+ * @property int|null $prompt_tokens
+ * @property int|null $completion_tokens
+ * @property int|null $total_tokens
+ * @property string|null $cost_usd
  * @property string|null $input_payload
  * @property string|null $output_payload
  * @property string $status
@@ -48,6 +56,14 @@ class AiRequest extends Entity
         'source_medium' => true,
         'source_reference' => true,
         'type' => true,
+        'prompt_version' => true,
+        'provider' => true,
+        'model' => true,
+        'duration_ms' => true,
+        'prompt_tokens' => true,
+        'completion_tokens' => true,
+        'total_tokens' => true,
+        'cost_usd' => true,
         'input_payload' => true,
         'output_payload' => true,
         'status' => true,

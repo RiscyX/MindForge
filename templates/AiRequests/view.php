@@ -7,6 +7,7 @@
 $lang = $this->request->getParam('lang', 'en');
 
 $this->assign('title', __('AI Request #{0}', $aiRequest->id));
+$this->assign('hideAdminSidebar', '1');
 
 $status = (string)($aiRequest->status ?? '');
 $statusClass = 'mf-admin-pill';

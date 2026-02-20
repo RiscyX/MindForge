@@ -76,19 +76,36 @@ class AiQuizDraftService
                 throw new RuntimeException('Question missing translations.');
             }
             $questionTranslations = [];
-            foreach ($qTranslations as $langId => $content) {
+            foreach ($qTranslations as $langId => $translationPayload) {
                 if (!is_numeric($langId)) {
                     continue;
                 }
-                $c = trim((string)$content);
+
+                $content = '';
+                $explanation = null;
+                if (is_array($translationPayload)) {
+                    $content = trim((string)($translationPayload['content'] ?? ''));
+                    $rawExplanation = trim((string)($translationPayload['explanation'] ?? ''));
+                    if ($rawExplanation !== '') {
+                        $explanation = mb_substr($rawExplanation, 0, 500);
+                    }
+                } else {
+                    $content = trim((string)$translationPayload);
+                }
+
+                $c = $content;
                 if ($c === '') {
                     continue;
                 }
-                $questionTranslations[] = [
+                $entry = [
                     'language_id' => (int)$langId,
                     'source_type' => 'ai',
                     'content' => $c,
                 ];
+                if ($explanation !== null) {
+                    $entry['explanation'] = $explanation;
+                }
+                $questionTranslations[] = $entry;
             }
             if (!$questionTranslations) {
                 throw new RuntimeException('Question has no usable translations.');

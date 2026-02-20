@@ -9,6 +9,7 @@ $cakeDescription = 'MindForge';
 $request = $this->getRequest();
 $isAuthPage = $request->getParam('controller') === 'Users'
     && in_array($request->getParam('action'), ['login', 'register', 'forgotPassword', 'resetPassword'], true);
+$hideAdminSidebar = $this->fetch('hideAdminSidebar') === '1';
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="<?= I18n::getLocale() === 'hu_HU' ? 'hu' : 'en'; ?>">
@@ -49,11 +50,13 @@ if ($isAuthPage) {
 
     <main class="flex-grow-1 d-flex flex-column mf-admin-wrapper">
         <div class="container-fluid px-0 mf-admin-shell">
-            <div class="d-flex mf-admin-layout">
-                <?= $this->element('admin_sidebar') ?>
+            <div class="d-flex mf-admin-layout<?= $hideAdminSidebar ? ' w-100' : '' ?>">
+                <?php if (!$hideAdminSidebar) : ?>
+                    <?= $this->element('admin_sidebar') ?>
+                <?php endif; ?>
 
                 <section class="flex-grow-1 mf-admin-main" id="mf-admin-main">
-                    <div class="container-fluid px-3 px-lg-4 py-4">
+                    <div class="<?= $hideAdminSidebar ? 'container py-4' : 'container-fluid px-3 px-lg-4 py-4' ?>">
                         <?= $this->fetch('content') ?>
                     </div>
                 </section>

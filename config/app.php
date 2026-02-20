@@ -452,8 +452,10 @@ return [
      * AI Configuration
      */
     'AI' => [
+        'provider' => env('AI_PROVIDER', 'openai'),
         'apiKey' => env('AI_API_KEY', ''),
         'baseUrl' => env('AI_BASE_URL', 'https://api.openai.com/v1'),
+        'timeoutSeconds' => (int)env('AI_TIMEOUT_SECONDS', '30'),
         'defaultModel' => env('AI_DEFAULT_MODEL', 'gpt-4'),
         'visionModel' => env('AI_VISION_MODEL', ''),
         'allowedImageMimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],

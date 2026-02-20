@@ -83,6 +83,9 @@ class QuestionsTable extends Table
         $this->belongsTo('Tests', [
             'foreignKey' => 'test_id',
         ]);
+        $this->belongsTo('AiRequests', [
+            'foreignKey' => 'ai_request_id',
+        ]);
         $this->belongsTo('Categories', [
             'foreignKey' => 'category_id',
             'joinType' => 'INNER',
@@ -112,6 +115,10 @@ class QuestionsTable extends Table
         $validator
             ->nonNegativeInteger('test_id')
             ->allowEmptyString('test_id');
+
+        $validator
+            ->nonNegativeInteger('ai_request_id')
+            ->allowEmptyString('ai_request_id');
 
         $validator
             ->nonNegativeInteger('category_id')
@@ -176,6 +183,7 @@ class QuestionsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['test_id'], 'Tests'), ['errorField' => 'test_id']);
+        $rules->add($rules->existsIn(['ai_request_id'], 'AiRequests'), ['errorField' => 'ai_request_id']);
         $rules->add($rules->existsIn(['category_id'], 'Categories'), ['errorField' => 'category_id']);
         $rules->add($rules->existsIn(['difficulty_id'], 'Difficulties'), ['errorField' => 'difficulty_id']);
         $rules->add(
