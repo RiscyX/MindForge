@@ -50,28 +50,28 @@ $aiRequestsRoute = ['prefix' => 'Admin', 'controller' => 'AiRequests', 'action' 
     <div class="mf-admin-sidebar__section">
         <div class="mf-admin-sidebar__label"><?= __('Management') ?></div>
         <nav class="mf-admin-nav" aria-label="<?= h(__('Admin navigation')) ?>">
-            <?= $this->Html->link(__('Users'), $usersRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($usersRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Categories'), $categoriesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($categoriesRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Difficulties'), $difficultiesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($difficultiesRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Tests'), $testsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Languages'), $languagesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($languagesRoute) ? ' active' : '')]) ?>
+            <?= $this->Html->link('<i class="bi bi-people-fill" aria-hidden="true"></i><span>' . h(__('Users')) . '</span>', $usersRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($usersRoute) ? ' active' : ''), 'escape' => false]) ?>
+            <?= $this->Html->link('<i class="bi bi-tag-fill" aria-hidden="true"></i><span>' . h(__('Categories')) . '</span>', $categoriesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($categoriesRoute) ? ' active' : ''), 'escape' => false]) ?>
+            <?= $this->Html->link('<i class="bi bi-bar-chart-steps" aria-hidden="true"></i><span>' . h(__('Difficulties')) . '</span>', $difficultiesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($difficultiesRoute) ? ' active' : ''), 'escape' => false]) ?>
+            <?= $this->Html->link('<i class="bi bi-journal-check" aria-hidden="true"></i><span>' . h(__('Tests')) . '</span>', $testsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : ''), 'escape' => false]) ?>
+            <?= $this->Html->link('<i class="bi bi-translate" aria-hidden="true"></i><span>' . h(__('Languages')) . '</span>', $languagesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($languagesRoute) ? ' active' : ''), 'escape' => false]) ?>
         </nav>
     </div>
 
     <div class="mf-admin-sidebar__section mt-2">
         <div class="mf-admin-sidebar__label"><?= __('System') ?></div>
         <nav class="mf-admin-nav" aria-label="<?= h(__('System navigation')) ?>">
-            <?= $this->Html->link(__('Device Logs'), $deviceLogsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($deviceLogsRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('AI Requests'), $aiRequestsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($aiRequestsRoute) ? ' active' : '')]) ?>
+            <?= $this->Html->link('<i class="bi bi-phone" aria-hidden="true"></i><span>' . h(__('Device Logs')) . '</span>', $deviceLogsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($deviceLogsRoute) ? ' active' : ''), 'escape' => false]) ?>
+            <?= $this->Html->link('<i class="bi bi-cpu" aria-hidden="true"></i><span>' . h(__('AI Requests')) . '</span>', $aiRequestsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($aiRequestsRoute) ? ' active' : ''), 'escape' => false]) ?>
         </nav>
     </div>
 <?php elseif ($isCreator) : ?>
     <div class="mf-admin-sidebar__section">
         <div class="mf-admin-sidebar__label"><?= __('Quiz Tools') ?></div>
         <nav class="mf-admin-nav" aria-label="<?= h(__('Quiz tools navigation')) ?>">
-            <?= $this->Html->link(__('Categories'), $categoriesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($categoriesRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Difficulties'), $difficultiesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($difficultiesRoute) ? ' active' : '')]) ?>
-            <?= $this->Html->link(__('Quizzes'), $testsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : '')]) ?>
+            <?= $this->Html->link('<i class="bi bi-tag-fill" aria-hidden="true"></i><span>' . h(__('Categories')) . '</span>', $categoriesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($categoriesRoute) ? ' active' : ''), 'escape' => false]) ?>
+            <?= $this->Html->link('<i class="bi bi-bar-chart-steps" aria-hidden="true"></i><span>' . h(__('Difficulties')) . '</span>', $difficultiesRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($difficultiesRoute) ? ' active' : ''), 'escape' => false]) ?>
+            <?= $this->Html->link('<i class="bi bi-journal-check" aria-hidden="true"></i><span>' . h(__('Quizzes')) . '</span>', $testsRoute, ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : ''), 'escape' => false]) ?>
         </nav>
     </div>
 <?php endif; ?>

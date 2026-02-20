@@ -4,18 +4,82 @@
  * @var \Cake\Datasource\ResultSetInterface<\App\Model\Entity\User> $users
  */
 
+use App\Model\Entity\Role;
+
 $lang = $this->request->getParam('lang', 'en');
 
 $this->assign('title', __('Users'));
+
+// — Compute KPIs from the already-loaded result set --------------------------
+$allUsers = is_array($users) ? $users : iterator_to_array($users);
+$totalUsers = count($allUsers);
+$adminCount = 0;
+$creatorCount = 0;
+$blockedCount = 0;
+foreach ($allUsers as $u) {
+    if ((int)$u->role_id === Role::ADMIN) {
+        $adminCount++;
+    }
+    if ((int)$u->role_id === Role::CREATOR) {
+        $creatorCount++;
+    }
+    if (!empty($u->is_blocked)) {
+        $blockedCount++;
+    }
+}
 ?>
 
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-    <div>
-        <h1 class="h3 mb-1"><?= __('Users') ?></h1>
+<header class="mf-page-header">
+    <div class="mf-page-header__left">
+        <div>
+            <h1 class="mf-page-header__title">
+                <i class="bi bi-people-fill me-2 text-primary" aria-hidden="true"></i>
+                <?= __('Users') ?>
+                <span class="mf-page-header__count"><?= $this->Number->format($totalUsers) ?></span>
+            </h1>
+            <p class="mf-page-header__sub"><?= __('Manage user accounts, roles and access control.') ?></p>
+        </div>
+    </div>
+</header>
+
+<div class="row g-3 mb-3 mf-admin-kpi-grid">
+    <div class="col-6 col-md-3">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-people mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Total') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($totalUsers) ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-shield-lock mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Admins') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($adminCount) ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-pencil-square mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Creators') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($creatorCount) ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-person-x mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Blocked') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format($blockedCount) ?></div>
+            </div>
+        </div>
     </div>
 </div>
-
-<br>
 
 <?= $this->element('functions/admin_list_controls', [
     'search' => [

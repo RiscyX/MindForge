@@ -21,13 +21,16 @@ $from = (string)($filters['from'] ?? '');
 $to = (string)($filters['to'] ?? '');
 ?>
 
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-    <div>
-        <h1 class="h3 mb-1"><?= __('Device Logs') ?></h1>
-        <div class="mf-muted"><?= __('Security & device activity signals') ?></div>
+<header class="mf-page-header">
+    <div class="mf-page-header__left">
+        <div>
+            <h1 class="mf-page-header__title">
+                <i class="bi bi-phone me-2 text-primary" aria-hidden="true"></i><?= __('Device Logs') ?></h1>
+            <p class="mf-page-header__sub"><?= __('Security & device activity signals') ?></p>
+        </div>
     </div>
     <?php if (($filters['user_id'] ?? '') !== '') : ?>
-        <div class="d-flex align-items-center gap-2">
+        <div class="mf-page-header__right">
             <span class="mf-admin-pill">
                 <i class="bi bi-person-fill me-1" aria-hidden="true"></i>
                 <?= __('Filtered: User #{0}', h($filters['user_id'])) ?>
@@ -39,31 +42,43 @@ $to = (string)($filters['to'] ?? '');
             ) ?>
         </div>
     <?php endif; ?>
-</div>
+</header>
 
 <div class="row g-3 mt-2 mf-admin-kpi-grid">
     <div class="col-6 col-md-6 col-xl-3">
-        <div class="mf-admin-card p-3 h-100">
-            <div class="mf-muted"><?= __('Total logs') ?></div>
-            <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['total'] ?? 0)) ?></div>
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-list-ul mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Total logs') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['total'] ?? 0)) ?></div>
+            </div>
         </div>
     </div>
     <div class="col-6 col-md-6 col-xl-3">
-        <div class="mf-admin-card p-3 h-100">
-            <div class="mf-muted"><?= __('Last 24h') ?></div>
-            <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['last24h'] ?? 0)) ?></div>
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-clock mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Last 24h') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['last24h'] ?? 0)) ?></div>
+            </div>
         </div>
     </div>
     <div class="col-6 col-md-6 col-xl-3">
-        <div class="mf-admin-card p-3 h-100">
-            <div class="mf-muted"><?= __('Unique users') ?></div>
-            <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['uniqueUsers'] ?? 0)) ?></div>
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-people mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Unique users') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['uniqueUsers'] ?? 0)) ?></div>
+            </div>
         </div>
     </div>
     <div class="col-6 col-md-6 col-xl-3">
-        <div class="mf-admin-card p-3 h-100">
-            <div class="mf-muted"><?= __('Unique IPs (24h)') ?></div>
-            <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['uniqueIps24h'] ?? 0)) ?></div>
+        <div class="mf-admin-card mf-kpi-card p-3 h-100">
+            <i class="bi bi-globe mf-kpi-card__icon" aria-hidden="true"></i>
+            <div class="mf-kpi-card__body">
+                <div class="mf-kpi-card__label"><?= __('Unique IPs (24h)') ?></div>
+                <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['uniqueIps24h'] ?? 0)) ?></div>
+            </div>
         </div>
     </div>
 </div>

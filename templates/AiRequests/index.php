@@ -13,37 +13,54 @@ $topTypes24h = (array)($stats['topTypes24h'] ?? []);
 $topSources24h = (array)($stats['topSources24h'] ?? []);
 ?>
 
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-    <div>
-        <h1 class="h3 mb-1"><?= __('AI Requests') ?></h1>
-        <div class="mf-muted"><?= __('AI usage telemetry & diagnostics') ?></div>
+<header class="mf-page-header">
+    <div class="mf-page-header__left">
+        <div>
+            <h1 class="mf-page-header__title">
+                <i class="bi bi-cpu me-2 text-primary" aria-hidden="true"></i><?= __('AI Requests') ?></h1>
+            <p class="mf-page-header__sub"><?= __('AI usage telemetry & diagnostics') ?></p>
+        </div>
     </div>
-</div>
+</header>
 
     <div class="row g-3 mt-2 mf-admin-kpi-grid">
         <div class="col-6 col-md-6 col-xl-3">
-            <div class="mf-admin-card p-3 h-100">
-                <div class="mf-muted"><?= __('Total requests') ?></div>
-                <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['total'] ?? 0)) ?></div>
+            <div class="mf-admin-card mf-kpi-card p-3 h-100">
+                <i class="bi bi-cpu mf-kpi-card__icon" aria-hidden="true"></i>
+                <div class="mf-kpi-card__body">
+                    <div class="mf-kpi-card__label"><?= __('Total requests') ?></div>
+                    <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['total'] ?? 0)) ?></div>
+                </div>
             </div>
         </div>
         <div class="col-6 col-md-6 col-xl-3">
-            <div class="mf-admin-card p-3 h-100">
-                <div class="mf-muted"><?= __('Last 24h') ?></div>
-                <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['last24h'] ?? 0)) ?></div>
+            <div class="mf-admin-card mf-kpi-card p-3 h-100">
+                <i class="bi bi-clock mf-kpi-card__icon" aria-hidden="true"></i>
+                <div class="mf-kpi-card__body">
+                    <div class="mf-kpi-card__label"><?= __('Last 24h') ?></div>
+                    <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['last24h'] ?? 0)) ?></div>
+                </div>
             </div>
         </div>
         <div class="col-6 col-md-6 col-xl-3">
-            <div class="mf-admin-card p-3 h-100">
-                <div class="mf-muted"><?= __('Success (total)') ?></div>
-                <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['successTotal'] ?? 0)) ?></div>
-                <div class="mf-admin-delta"><?= __('Last 24h: {0}', $this->Number->format((int)($stats['success24h'] ?? 0))) ?></div>
+            <div class="mf-admin-card mf-kpi-card p-3 h-100">
+                <i class="bi bi-check-circle mf-kpi-card__icon" aria-hidden="true"></i>
+                <div class="mf-kpi-card__body">
+                    <div class="mf-kpi-card__label"><?= __('Success (total)') ?></div>
+                    <div>
+                        <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['successTotal'] ?? 0)) ?></div>
+                        <div class="mf-kpi-card__delta"><?= __('Last 24h: {0}', $this->Number->format((int)($stats['success24h'] ?? 0))) ?></div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-6 col-md-6 col-xl-3">
-            <div class="mf-admin-card p-3 h-100">
-                <div class="mf-muted"><?= __('Unique users (24h)') ?></div>
-                <div class="fs-3 fw-semibold"><?= $this->Number->format((int)($stats['uniqueUsers24h'] ?? 0)) ?></div>
+            <div class="mf-admin-card mf-kpi-card p-3 h-100">
+                <i class="bi bi-person-check mf-kpi-card__icon" aria-hidden="true"></i>
+                <div class="mf-kpi-card__body">
+                    <div class="mf-kpi-card__label"><?= __('Unique users (24h)') ?></div>
+                    <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['uniqueUsers24h'] ?? 0)) ?></div>
+                </div>
             </div>
         </div>
     </div>

@@ -7,6 +7,8 @@
  * @var int $uniqueQuizzes
  * @var float $avgScore
  * @var float $bestScore
+ * @var int $last7DaysCount
+ * @var array<int, array<string, mixed>> $categoryBreakdown
  * @var \Cake\Datasource\ResultSetInterface<\App\Model\Entity\TestAttempt> $recentAttempts
  */
 $lang = $this->request->getParam('lang', 'en');

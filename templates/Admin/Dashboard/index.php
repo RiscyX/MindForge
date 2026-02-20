@@ -4,17 +4,20 @@ $lang = $this->request->getParam('lang', 'en');
 $this->assign('title', __('Admin Dashboard'));
 ?>
 
-<div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-    <div>
-        <h1 class="h3 mb-1"><?= __('Dashboard Overview') ?></h1>
-        <div class="mf-muted"><?= __('Welcome back, Administrator. Here\'s what\'s happening today.') ?></div>
+<header class="mf-page-header">
+    <div class="mf-page-header__left">
+        <div>
+            <h1 class="mf-page-header__title">
+                <i class="bi bi-speedometer2 me-2 text-primary" aria-hidden="true"></i><?= __('Dashboard Overview') ?></h1>
+            <p class="mf-page-header__sub"><?= __('Welcome back, Administrator. Here\'s what\'s happening today.') ?></p>
+        </div>
     </div>
-    <div class="mf-muted" style="font-size:0.9rem;">
-        <span class="mf-admin-pill"><?= __('Last updated: Just now') ?></span>
+    <div class="mf-page-header__right">
+        <span class="mf-admin-pill"><i class="bi bi-clock me-1" aria-hidden="true"></i><?= __('Last updated: Just now') ?></span>
     </div>
-</div>
+</header>
 
-<div class="row g-3 mt-3 mf-admin-kpi-grid">
+<div class="row g-3 mf-admin-kpi-grid">
     <?php
     /** @var array{totalUsers:int,activeUsers:int,totalTests:int,totalQuestions:int,todaysLogins:int,aiRequests:int} $metrics */
     $metrics = $stats ?? [
@@ -26,6 +29,10 @@ $this->assign('title', __('Admin Dashboard'));
         'aiRequests' => 0,
     ];
 
+    $dashboardIcons = [
+        'bi bi-people', 'bi bi-person-check', 'bi bi-journal-text',
+        'bi bi-patch-question', 'bi bi-box-arrow-in-right', 'bi bi-cpu',
+    ];
     $statCards = [
         ['label' => __('Total Users'), 'value' => number_format((int)$metrics['totalUsers']), 'delta' => ''],
         ['label' => __('Active Users'), 'value' => number_format((int)$metrics['activeUsers']), 'delta' => ''],
@@ -35,14 +42,19 @@ $this->assign('title', __('Admin Dashboard'));
         ['label' => __('AI Requests'), 'value' => number_format((int)$metrics['aiRequests']), 'delta' => ''],
     ];
     ?>
-    <?php foreach ($statCards as $stat) : ?>
+    <?php foreach ($statCards as $idx => $stat) : ?>
         <div class="col-6 col-lg-4 col-xl-2">
-            <div class="mf-admin-card p-3 h-100">
-                <div class="mf-muted" style="font-size:0.85rem;"><?= h($stat['label']) ?></div>
-                <div class="fw-semibold" style="font-size:1.35rem; line-height:1.15;"><?= h($stat['value']) ?></div>
-                <?php if ($stat['delta'] !== '') : ?>
-                    <div class="mf-admin-delta"><?= h($stat['delta']) ?></div>
-                <?php endif; ?>
+            <div class="mf-admin-card mf-kpi-card p-3 h-100">
+                <i class="<?= h($dashboardIcons[$idx] ?? 'bi bi-circle') ?> mf-kpi-card__icon" aria-hidden="true"></i>
+                <div class="mf-kpi-card__body">
+                    <div class="mf-kpi-card__label"><?= h($stat['label']) ?></div>
+                    <div>
+                        <div class="mf-kpi-card__value"><?= h($stat['value']) ?></div>
+                        <?php if ($stat['delta'] !== '') : ?>
+                            <div class="mf-kpi-card__delta"><?= h($stat['delta']) ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>
