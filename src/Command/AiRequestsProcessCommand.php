@@ -6,6 +6,7 @@ namespace App\Command;
 use App\Service\AiQuizDraftService;
 use App\Service\AiQuizPromptService;
 use App\Service\AiService;
+use App\Service\AiServiceException;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -289,6 +290,8 @@ class AiRequestsProcessCommand extends Command
                     $msg = trim(substr($msg, strlen('DIFFICULTY_INVALID:')));
                 } elseif (str_contains($msg, 'save generated quiz')) {
                     $req->error_code = 'TEST_SAVE_FAILED';
+                } elseif ($e instanceof AiServiceException) {
+                    $req->error_code = $e->getErrorCode();
                 } else {
                     $req->error_code = 'AI_FAILED';
                 }

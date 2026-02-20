@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 
 use App\Model\Entity\Question;
 use App\Service\AiService;
+use App\Service\AiServiceException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query\SelectQuery;
 use OpenApi\Attributes as OA;
@@ -775,6 +776,10 @@ class AttemptsController extends AppController
             return $isCorrect;
         } catch (Throwable $e) {
             $errorPayload = json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $aiErrCode = 'AI_FAILED';
+            if ($e instanceof AiServiceException) {
+                $aiErrCode = $e->getErrorCode();
+            }
             $req = $aiRequests->newEntity([
                 'user_id' => $userId,
                 'language_id' => $langId > 0 ? $langId : null,
@@ -784,6 +789,8 @@ class AttemptsController extends AppController
                 'input_payload' => $prompt,
                 'output_payload' => is_string($errorPayload) ? $errorPayload : '{}',
                 'status' => 'failed',
+                'error_code' => $aiErrCode,
+                'error_message' => $e->getMessage(),
             ]);
             $aiRequests->save($req);
 

@@ -9,11 +9,13 @@ use App\Model\Entity\Question;
 use App\Model\Entity\Role;
 use App\Service\AiQuizPromptService;
 use App\Service\AiService;
+use App\Service\AiServiceException;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
+use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\View\JsonView;
 use Exception;
@@ -1622,6 +1624,10 @@ class TestsController extends AppController
                 'error' => $e->getMessage(),
                 'trace_hint' => 'attempt_answer_explanation',
             ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $aiErrorCode = 'AI_FAILED';
+            if ($e instanceof AiServiceException) {
+                $aiErrorCode = $e->getErrorCode();
+            }
             $aiRequest = $aiRequestsTable->patchEntity($aiRequest, [
                 'user_id' => $userId,
                 'language_id' => $languageId,
@@ -1631,6 +1637,8 @@ class TestsController extends AppController
                 'input_payload' => $promptJson,
                 'output_payload' => is_string($errorPayload) ? $errorPayload : '{}',
                 'status' => 'failed',
+                'error_code' => $aiErrorCode,
+                'error_message' => $e->getMessage(),
             ]);
             $aiRequestsTable->save($aiRequest);
 
@@ -2692,10 +2700,45 @@ class TestsController extends AppController
 
             return $this->response->withType('application/json')
                 ->withStringBody(json_encode(['success' => true, 'data' => $json]));
-        } catch (Exception $e) {
-             // Log failed attempt if needed? For now just return error.
-             return $this->response->withType('application/json')
-                ->withStringBody(json_encode(['success' => false, 'message' => $e->getMessage()]));
+        } catch (\Throwable $e) {
+            // Persist a failed AiRequest record for audit trail.
+            $aiRequestsTable = $this->fetchTable('AiRequests');
+            $failedReq = $aiRequestsTable->newEmptyEntity();
+            $errorCode = 'AI_FAILED';
+            $userMessage = $e->getMessage();
+            if ($e instanceof AiServiceException) {
+                $errorCode = $e->getErrorCode();
+                $userMessage = $e->getUserMessage();
+            }
+            $failedReq = $aiRequestsTable->patchEntity($failedReq, [
+                'user_id' => $userId,
+                'source_medium' => 'user_prompt',
+                'source_reference' => 'test_generator',
+                'type' => 'test_generation',
+                'input_payload' => json_encode([
+                    'prompt' => $prompt,
+                    'question_count' => $questionCount ?? null,
+                ]),
+                'output_payload' => $e->getMessage(),
+                'status' => 'failed',
+                'error_code' => $errorCode,
+                'error_message' => $e->getMessage(),
+            ]);
+            $aiRequestsTable->save($failedReq);
+
+            Log::error('AI generateWithAi failed: ' . $e->getMessage());
+
+            $httpStatus = ($e instanceof AiServiceException && $e->getHttpStatus() === 429) ? 429 : 500;
+
+            return $this->response
+                ->withStatus($httpStatus)
+                ->withType('application/json')
+                ->withStringBody((string)json_encode([
+                    'success' => false,
+                    'error_code' => $errorCode,
+                    'message' => $userMessage,
+                    'retried' => $e instanceof AiServiceException ? $e->wasRetried() : false,
+                ]));
         }
     }
 
@@ -2847,13 +2890,44 @@ class TestsController extends AppController
                     'success' => true,
                     'data' => $json,
                 ]));
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            // Persist a failed AiRequest record for audit trail.
+            $identity = $this->Authentication->getIdentity();
+            $failUserId = $identity ? (int)$identity->getIdentifier() : null;
+            $aiRequestsTable = $this->fetchTable('AiRequests');
+            $failedReq = $aiRequestsTable->newEmptyEntity();
+            $errorCode = 'AI_FAILED';
+            $userMessage = $e->getMessage();
+            if ($e instanceof AiServiceException) {
+                $errorCode = $e->getErrorCode();
+                $userMessage = $e->getUserMessage();
+            }
+            $failedReq = $aiRequestsTable->patchEntity($failedReq, [
+                'user_id' => $failUserId,
+                'language_id' => $sourceLanguageId,
+                'source_medium' => 'test_payload',
+                'source_reference' => $id ? 'test:' . $id : 'test:unsaved',
+                'type' => 'test_translation',
+                'input_payload' => json_encode(['source_language_id' => $sourceLanguageId, 'title' => $title]),
+                'output_payload' => $e->getMessage(),
+                'status' => 'failed',
+                'error_code' => $errorCode,
+                'error_message' => $e->getMessage(),
+            ]);
+            $aiRequestsTable->save($failedReq);
+
+            Log::error('AI translateWithAi failed: ' . $e->getMessage());
+
+            $httpStatus = ($e instanceof AiServiceException && $e->getHttpStatus() === 429) ? 429 : 500;
+
             return $this->response
-                ->withStatus(500)
+                ->withStatus($httpStatus)
                 ->withType('application/json')
                 ->withStringBody((string)json_encode([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'error_code' => $errorCode,
+                    'message' => $userMessage,
+                    'retried' => $e instanceof AiServiceException ? $e->wasRetried() : false,
                 ]));
         }
     }
@@ -3289,6 +3363,10 @@ class TestsController extends AppController
             return $isCorrect;
         } catch (Throwable $e) {
             $errorPayload = json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $aiErrCode = 'AI_FAILED';
+            if ($e instanceof AiServiceException) {
+                $aiErrCode = $e->getErrorCode();
+            }
             $req = $aiRequests->newEntity([
                 'user_id' => $userId,
                 'language_id' => null,
@@ -3298,6 +3376,8 @@ class TestsController extends AppController
                 'input_payload' => $prompt,
                 'output_payload' => is_string($errorPayload) ? $errorPayload : '{}',
                 'status' => 'failed',
+                'error_code' => $aiErrCode,
+                'error_message' => $e->getMessage(),
             ]);
             $aiRequests->save($req);
 

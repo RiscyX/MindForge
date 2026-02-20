@@ -56,16 +56,38 @@
                     credentials: 'same-origin',
                 });
 
-                const payload = await response.json();
+                let payload = null;
+                try {
+                    payload = await response.json();
+                } catch {
+                    payload = null;
+                }
+
                 if (!response.ok || !payload || !payload.success) {
-                    throw new Error(payload && payload.message ? payload.message : 'Request failed');
+                    // Use user-friendly message from server when available
+                    let errorMsg;
+                    if (payload && payload.message) {
+                        errorMsg = payload.message;
+                    } else if (response.status === 429) {
+                        errorMsg = 'The AI service is temporarily overloaded. Please try again in a few minutes.';
+                    } else if (response.status >= 500) {
+                        errorMsg = 'The AI service encountered an error. Please try again later.';
+                    } else {
+                        errorMsg = 'Request failed. Please try again.';
+                    }
+                    throw new Error(errorMsg);
                 }
 
                 target.hidden = false;
                 target.textContent = String(payload.explanation || '');
             } catch (err) {
                 target.hidden = false;
-                target.textContent = String(err);
+                // Show user-friendly text, strip "Error: " prefix if present
+                const errMsg = err && err.message ? err.message : String(err);
+                const isNetworkError = errMsg === 'Failed to fetch' || errMsg === 'NetworkError when attempting to fetch resource.';
+                target.textContent = isNetworkError
+                    ? 'Could not reach the AI service. Please check your connection and try again.'
+                    : errMsg;
             } finally {
                 btn.disabled = false;
                 btn.textContent = original;
