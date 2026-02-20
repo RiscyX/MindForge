@@ -5,6 +5,7 @@ namespace App\Service;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Throwable;
 
 class AiQuizPromptService
 {
@@ -19,15 +20,29 @@ class AiQuizPromptService
         $normalized = $this->normalizeLanguages($languages);
         $cacheKey = 'ai_quiz_prompt_generation_' . md5(json_encode($normalized) ?: 'default');
 
-        return (string)Cache::remember($cacheKey, function () use ($normalized): string {
-            $langIds = array_keys($normalized);
-            $languagesList = implode(', ', array_map(
-                static fn(int $id, string $name): string => $id . ':' . $name,
-                $langIds,
-                array_values($normalized),
-            ));
+        try {
+            return (string)Cache::remember($cacheKey, function () use ($normalized): string {
+                return $this->buildGenerationPrompt($normalized);
+            }, $this->getCacheConfig());
+        } catch (Throwable) {
+            return $this->buildGenerationPrompt($normalized);
+        }
+    }
 
-            return "You are a senior quiz author for MindForge.
+    /**
+     * @param array<int, string> $normalized
+     * @return string
+     */
+    private function buildGenerationPrompt(array $normalized): string
+    {
+        $langIds = array_keys($normalized);
+        $languagesList = implode(', ', array_map(
+            static fn(int $id, string $name): string => $id . ':' . $name,
+            $langIds,
+            array_values($normalized),
+        ));
+
+        return "You are a senior quiz author for MindForge.
 Return ONLY a strict JSON object (no markdown, no prose).
 
 Goal:
@@ -78,7 +93,6 @@ Quality rules:
 8) Avoid duplicate or near-duplicate questions.
 9) Output must be valid JSON object only.
 ";
-        }, $this->getCacheConfig());
     }
 
     /**
@@ -120,16 +134,31 @@ Quality rules:
             (string)$sourceLanguageId . '|' . (json_encode($normalized) ?: 'default'),
         );
 
-        return (string)Cache::remember($cacheKey, function () use ($normalized, $sourceLanguageId): string {
-            $langIds = array_keys($normalized);
-            $languagesList = implode(', ', array_map(
-                static fn(int $id, string $name): string => $id . ':' . $name,
-                $langIds,
-                array_values($normalized),
-            ));
-            $sourceLanguageName = $normalized[$sourceLanguageId] ?? 'Language ' . $sourceLanguageId;
+        try {
+            return (string)Cache::remember($cacheKey, function () use ($normalized, $sourceLanguageId): string {
+                return $this->buildTranslationPrompt($normalized, $sourceLanguageId);
+            }, $this->getCacheConfig());
+        } catch (Throwable) {
+            return $this->buildTranslationPrompt($normalized, $sourceLanguageId);
+        }
+    }
 
-            return "You are a professional quiz translator.
+    /**
+     * @param array<int, string> $normalized
+     * @param int $sourceLanguageId
+     * @return string
+     */
+    private function buildTranslationPrompt(array $normalized, int $sourceLanguageId): string
+    {
+        $langIds = array_keys($normalized);
+        $languagesList = implode(', ', array_map(
+            static fn(int $id, string $name): string => $id . ':' . $name,
+            $langIds,
+            array_values($normalized),
+        ));
+        $sourceLanguageName = $normalized[$sourceLanguageId] ?? 'Language ' . $sourceLanguageId;
+
+        return "You are a professional quiz translator.
 Return ONLY valid JSON object, no markdown.
 
 Configured languages: {$languagesList}
@@ -143,7 +172,6 @@ Rules:
 5) Preserve question types exactly.
 6) Maintain semantic equivalence and quiz tone across languages.
 ";
-        }, $this->getCacheConfig());
     }
 
     /**
