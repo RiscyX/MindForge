@@ -98,7 +98,14 @@ function initTestBuilderAiTools() {
                                     throw new Error(aiStrings.limitReachedMessage);
                                 }
 
-                                const msg = payload && payload.message ? payload.message : response.statusText;
+                                // Use the user-friendly message from the server (AiServiceException)
+                                const msg = payload && payload.message
+                                    ? payload.message
+                                    : (response.status === 429
+                                        ? (aiStrings.aiRateLimited || 'The AI service is temporarily overloaded. Please try again in a few minutes.')
+                                        : (response.status >= 500
+                                            ? (aiStrings.aiServerError || 'The AI service encountered an error. Please try again later.')
+                                            : response.statusText));
                                 throw new Error(msg);
                             }
 
@@ -106,8 +113,14 @@ function initTestBuilderAiTools() {
                         });
                     })
                     .catch(error => {
+                        // Network errors (fetch itself fails)
+                        const errorMsg = error && error.message ? error.message : String(error);
+                        const isNetworkError = errorMsg === 'Failed to fetch' || errorMsg === 'NetworkError when attempting to fetch resource.';
+                        const displayMsg = isNetworkError
+                            ? (aiStrings.aiNetworkError || 'Could not reach the AI service. Please check your connection and try again.')
+                            : errorMsg;
                         Swal.showValidationMessage(
-                            `${aiStrings.requestFailedPrefix || 'Request failed:'} ${error}`
+                            `${aiStrings.requestFailedPrefix || 'Request failed:'} ${displayMsg}`
                         );
                     });
                 },
@@ -202,9 +215,19 @@ function initTestBuilderAiTools() {
                     }
 
                     if (!ok) {
-                        const msg = (body && body.message)
-                            ? body.message
-                            : (status === 403 ? 'CSRF verification failed. Please reload the page and try again.' : `HTTP ${status}`);
+                        // Use the user-friendly message from server (AiServiceException)
+                        let msg;
+                        if (body && body.message) {
+                            msg = body.message;
+                        } else if (status === 403) {
+                            msg = 'CSRF verification failed. Please reload the page and try again.';
+                        } else if (status === 429) {
+                            msg = aiStrings.aiRateLimited || 'The AI service is temporarily overloaded. Please try again in a few minutes.';
+                        } else if (status >= 500) {
+                            msg = aiStrings.aiServerError || 'The AI service encountered an error. Please try again later.';
+                        } else {
+                            msg = `HTTP ${status}`;
+                        }
                         throw new Error(msg);
                     }
 
@@ -227,9 +250,14 @@ function initTestBuilderAiTools() {
                 })
                 .catch((err) => {
                     Swal.close();
+                    const errMsg = err && err.message ? err.message : String(err);
+                    const isNetworkErr = errMsg === 'Failed to fetch' || errMsg === 'NetworkError when attempting to fetch resource.';
+                    const displayMsg = isNetworkErr
+                        ? (aiStrings.aiNetworkError || 'Could not reach the AI service. Please check your connection and try again.')
+                        : errMsg;
                     themedSwal({
                         title: aiStrings.errorTitle,
-                        text: String(err),
+                        text: displayMsg,
                         icon: 'error'
                     });
                 });

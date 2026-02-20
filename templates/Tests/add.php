@@ -197,6 +197,10 @@ $builderConfig = [
         'translationInProgress' => __('Translation in progress...'),
         'trueLabel' => __('True'),
         'falseLabel' => __('False'),
+        'aiRateLimited' => __('The AI service is temporarily overloaded. Please try again in a few minutes.'),
+        'aiServerError' => __('The AI service encountered an error. Please try again later.'),
+        'aiNetworkError' => __('Could not reach the AI service. Please check your connection and try again.'),
+        'aiTimeoutError' => __('The AI service took too long to respond. Please try again.'),
     ],
     'config' => [
         'generateAiUrl' => $this->Url->build(['action' => 'generateWithAi', 'lang' => $this->request->getParam('lang')]),
