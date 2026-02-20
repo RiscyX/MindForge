@@ -140,6 +140,7 @@ class UsersController extends AppController
 
                 if ($usersTable->delete($user)) {
                     $deleted += 1;
+                    $this->logAdminAction('admin_delete_user', ['id' => $user->id]);
                 }
             } catch (Throwable) {
                 // Ignore individual failures, continue.
@@ -277,40 +278,14 @@ class UsersController extends AppController
      */
     public function index(): void
     {
-        $filters = [
-            'q' => trim((string)$this->request->getQuery('q', '')),
-        ];
-
-        $limitOptions = [10, 25, 50, 100];
-        $limit = (int)$this->request->getQuery('limit', 10);
-        if (!in_array($limit, $limitOptions, true)) {
-            $limit = 10;
-        }
-
         $query = $this->fetchTable('Users')
             ->find()
             ->contain(['Roles'])
             ->orderDesc('Users.created_at');
 
-        if ($filters['q'] !== '') {
-            $qLike = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $filters['q']) . '%';
-            $query->where([
-                'OR' => [
-                    'Users.username LIKE' => $qLike,
-                    'Users.email LIKE' => $qLike,
-                ],
-            ]);
-        }
+        $users = $query->all();
 
-        $this->paginate = [
-            'limit' => $limit,
-            'maxLimit' => 100,
-            'order' => ['Users.created_at' => 'DESC'],
-        ];
-
-        $users = $this->paginate($query);
-
-        $this->set(compact('users', 'filters', 'limit', 'limitOptions'));
+        $this->set(compact('users'));
     }
 
     /**
@@ -393,7 +368,34 @@ class UsersController extends AppController
         }
 
         $roles = $usersTable->Roles->find('list')->all();
-        $this->set(compact('user', 'roles'));
+
+        $testAttempts = $this->fetchTable('TestAttempts')
+            ->find()
+            ->contain([
+                'Tests' => static fn ($q) => $q->contain([
+                    'TestTranslations' => static fn ($tq) => $tq->select(['TestTranslations.test_id', 'TestTranslations.title'])->limit(1),
+                ]),
+            ])
+            ->where(['TestAttempts.user_id' => $user->id])
+            ->orderByDesc('TestAttempts.created_at')
+            ->limit(5)
+            ->all();
+
+        $activityLogs = $this->fetchTable('ActivityLogs')
+            ->find()
+            ->where(['ActivityLogs.user_id' => $user->id])
+            ->orderByDesc('ActivityLogs.created_at')
+            ->limit(5)
+            ->all();
+
+        $deviceLogs = $this->fetchTable('DeviceLogs')
+            ->find()
+            ->where(['DeviceLogs.user_id' => $user->id])
+            ->orderByDesc('DeviceLogs.created_at')
+            ->limit(5)
+            ->all();
+
+        $this->set(compact('user', 'roles', 'testAttempts', 'activityLogs', 'deviceLogs'));
 
         return null;
     }
@@ -565,6 +567,7 @@ class UsersController extends AppController
         }
 
         if ($usersTable->delete($user)) {
+            $this->logAdminAction('admin_delete_user', ['id' => $user->id]);
             $this->Flash->success(__('The user has been deleted.'));
         } else {
             $this->Flash->error(__('The user could not be deleted. Please, try again.'));

@@ -332,6 +332,9 @@ class QuestionsController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $question = $this->Questions->get($id);
         if ($this->Questions->delete($question)) {
+            if (method_exists($this, 'logAdminAction')) {
+                $this->logAdminAction('admin_delete_question', ['id' => $question->id]);
+            }
             $this->Flash->success(__('The question has been deleted.'));
         } else {
             $this->Flash->error(__('The question could not be deleted. Please, try again.'));
@@ -417,6 +420,9 @@ class QuestionsController extends AppController
                 if ($action === 'delete') {
                     if ($this->Questions->delete($entity)) {
                         $deleted += 1;
+                        if (method_exists($this, 'logAdminAction')) {
+                            $this->logAdminAction('admin_delete_question', ['id' => $entity->id]);
+                        }
                     } else {
                         $failed += 1;
                     }

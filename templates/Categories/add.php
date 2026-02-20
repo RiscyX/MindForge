@@ -50,7 +50,7 @@
     </div>
 
     <div class="mt-4">
-        <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
+        <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Saving…')]) ?>
     </div>
     <?= $this->Form->end() ?>
 </div>

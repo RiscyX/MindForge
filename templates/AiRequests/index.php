@@ -9,11 +9,6 @@ $lang = $this->request->getParam('lang', 'en');
 
 $this->assign('title', __('AI Requests'));
 
-$this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
-$this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
-
 $topTypes24h = (array)($stats['topTypes24h'] ?? []);
 $topSources24h = (array)($stats['topSources24h'] ?? []);
 ?>
@@ -220,6 +215,11 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
                             </td>
                         </tr>
                     <?php endforeach; ?>
+                    <?php if (count($aiRequests) === 0) : ?>
+                        <?= $this->element('functions/admin_empty_state', [
+                            'message' => __('No AI requests found.'),
+                        ]) ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

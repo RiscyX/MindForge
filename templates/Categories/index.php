@@ -7,11 +7,6 @@
 $lang = $this->request->getParam('lang', 'en');
 
 $this->assign('title', __('Categories'));
-
-$this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
-$this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
-$this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
 ?>
 
 <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
@@ -79,7 +74,7 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                             />
                         </td>
                         <td class="mf-muted" data-order="<?= h((string)$category->id) ?>"><?= $this->Number->format($category->id) ?></td>
-                        <td class="text-start">
+                        <td>
                             <?php foreach ($category->category_translations as $translation) : ?>
                                 <?php if ($translation->hasValue('language')) : ?>
                                     <div>
@@ -121,6 +116,13 @@ $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (count($categories) === 0) : ?>
+                    <?= $this->element('functions/admin_empty_state', [
+                        'message' => __('No categories found.'),
+                        'ctaUrl' => ['action' => 'add', 'lang' => $lang],
+                        'ctaLabel' => __('New Category'),
+                    ]) ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

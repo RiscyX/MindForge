@@ -80,7 +80,7 @@ $this->assign('title', __('Add Question'));
         </div>
 
         <div class="mt-4 d-flex gap-2">
-            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary']) ?>
+            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-primary mf-admin-btn', 'data-loading-text' => __('Submitting…')]) ?>
             <?= $this->Html->link(__('Cancel'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
         </div>
 
