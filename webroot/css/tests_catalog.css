@@ -3,6 +3,22 @@
     padding: 1rem 1.1rem;
 }
 
+/* Catalog page hero heading icon */
+.mf-catalog-hero-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--mf-primary);
+    background: rgba(var(--mf-primary-rgb), 0.15);
+    border: 1px solid rgba(var(--mf-primary-rgb), 0.35);
+    flex-shrink: 0;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
 .mf-top-quizzes {
     min-height: auto;
 }
@@ -281,9 +297,20 @@
 
 .mf-attempt-empty {
     border-radius: 14px;
-    border: 1px dashed rgba(var(--mf-text-rgb), 0.25);
-    padding: 1rem;
-    background: rgba(var(--mf-panel-rgb), 0.75);
+    border: 1px dashed rgba(var(--mf-text-rgb), 0.2);
+    padding: 1.75rem 1.25rem 1.5rem;
+    background: rgba(var(--mf-panel-rgb), 0.55);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mf-attempt-empty__icon {
+    font-size: 2.25rem;
+    color: rgba(var(--mf-primary-rgb), 0.55);
+    margin-bottom: 0.65rem;
+    display: block;
 }
 
 .mf-attempt-empty__title {

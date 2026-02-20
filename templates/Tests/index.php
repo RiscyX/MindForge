@@ -41,7 +41,7 @@ $catalogTests = $isCatalog
     : [];
 
 $this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
-$this->Html->css('tests_catalog', ['block' => 'css']);
+$this->Html->css('tests_catalog.css?v=4', ['block' => 'css']);
 
 if (!$this->request->getParam('prefix')) {
     $this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
@@ -53,10 +53,15 @@ if (!$this->request->getParam('prefix')) {
 
 <?php if ($isCatalog) : ?>
     <div class="py-3 py-lg-4">
-        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <?php if (!$isCreatorCatalog) : ?>
+                <div class="mf-catalog-hero-icon" aria-hidden="true"><i class="bi bi-controller"></i></div>
+            <?php else : ?>
+                <div class="mf-catalog-hero-icon" aria-hidden="true"><i class="bi bi-pencil-square"></i></div>
+            <?php endif; ?>
             <div>
-                <h1 class="h3 mb-1 text-white"><?= $isCreatorCatalog ? __('My Quizzes') : __('Quizzes') ?></h1>
-                <div class="mf-muted">
+                <h1 class="h2 fw-bold mb-0 text-white"><?= $isCreatorCatalog ? __('My Quizzes') : __('Quizzes') ?></h1>
+                <div class="mf-muted mt-1">
                     <?= $isCreatorCatalog
                         ? __('Manage your quizzes and open each one for detailed stats.')
                         : __('Pick a quiz, skim the description, and start when you are ready.') ?>
@@ -64,11 +69,11 @@ if (!$this->request->getParam('prefix')) {
             </div>
         </div>
 
-        <?php if (!$isCreatorCatalog && ($topQuizzes || $topCategories)) : ?>
-            <div class="row g-3 mt-3">
+        <?php if (!$isCreatorCatalog) : ?>
+            <div class="row g-3 mt-4">
                 <?php if ($topQuizzes) : ?>
-                    <div class="col-12 col-xl-7">
-                        <section class="mf-quiz-card mf-top-quizzes" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.14;" aria-label="<?= h(__('Top quizzes')) ?>">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <section class="mf-quiz-card mf-top-quizzes h-100" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.14;" aria-label="<?= h(__('Top quizzes')) ?>">
                             <div class="mf-quiz-card__cover">
                                 <div class="mf-quiz-card__cover-inner">
                                     <div class="mf-quiz-card__icon" aria-hidden="true">
@@ -133,8 +138,8 @@ if (!$this->request->getParam('prefix')) {
                 <?php endif; ?>
 
                 <?php if ($topCategories) : ?>
-                    <div class="col-12 col-xl-5">
-                        <section class="mf-quiz-card mf-top-categories" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.12;" aria-label="<?= h(__('Top categories')) ?>">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <section class="mf-quiz-card mf-top-categories h-100" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.12;" aria-label="<?= h(__('Top categories')) ?>">
                             <div class="mf-quiz-card__cover">
                                 <div class="mf-quiz-card__cover-inner">
                                     <div class="mf-quiz-card__icon" aria-hidden="true">
@@ -169,79 +174,91 @@ if (!$this->request->getParam('prefix')) {
                         </section>
                     </div>
                 <?php endif; ?>
+
+                <?php
+                $attemptsCol = 'col-12';
+                if ($topQuizzes && $topCategories) {
+                    $attemptsCol .= ' col-lg-4';
+                } elseif ($topQuizzes || $topCategories) {
+                    $attemptsCol .= ' col-md-6 col-lg-4';
+                }
+                ?>
+                <div class="<?= $attemptsCol ?>">
+                    <div class="mf-quiz-card mf-attempt-widget h-100" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.12;">
+                        <div class="mf-attempt-widget__head">
+                            <div>
+                                <h2 class="h5 mb-1 text-white"><?= __('Recent attempts') ?></h2>
+                                <div class="mf-muted small"><?= __('Quick snapshot of your latest quiz results.') ?></div>
+                            </div>
+                            <?= $this->Html->link(
+                                __('View all attempts'),
+                                ['controller' => 'Users', 'action' => 'stats', 'lang' => $lang],
+                                ['class' => 'btn btn-sm btn-outline-light'],
+                            ) ?>
+                        </div>
+
+                        <?php if ($recentAttempts) : ?>
+                            <div class="mf-attempt-list mt-3">
+                                <?php foreach ($recentAttempts as $attempt) : ?>
+                                    <?php
+                                    $categoryName = $attempt->hasValue('category') && !empty($attempt->category->category_translations)
+                                        ? (string)$attempt->category->category_translations[0]->name
+                                        : __('Uncategorized');
+                                    $quizTitle = $attempt->hasValue('test') && !empty($attempt->test->test_translations)
+                                        ? (string)$attempt->test->test_translations[0]->title
+                                        : __('Quiz');
+                                    $scoreValue = $attempt->score !== null ? (float)$attempt->score : 0.0;
+                                    $scoreLabel = $attempt->score !== null
+                                        ? rtrim(rtrim((string)$attempt->score, '0'), '.') . '%'
+                                        : '—';
+                                    $scoreTone = $scoreValue >= 80 ? 'good' : ($scoreValue >= 50 ? 'mid' : 'low');
+                                    ?>
+                                    <article class="mf-attempt-item mf-attempt-item--<?= h($scoreTone) ?>">
+                                        <div class="mf-attempt-item__left">
+                                            <div class="mf-attempt-item__title"><?= h($quizTitle) ?></div>
+                                            <div class="mf-attempt-item__meta">
+                                                <span><i class="bi bi-calendar3" aria-hidden="true"></i> <?= $attempt->finished_at ? h($attempt->finished_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?></span>
+                                                <span><i class="bi bi-tag" aria-hidden="true"></i> <?= h($categoryName) ?></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mf-attempt-item__right">
+                                            <div class="mf-attempt-item__score" title="<?= h(__('Score')) ?>"><?= h($scoreLabel) ?></div>
+                                            <?= $this->Html->link(
+                                                __('Open result'),
+                                                ['controller' => 'Tests', 'action' => 'result', $attempt->id, 'lang' => $lang],
+                                                ['class' => 'btn btn-sm btn-primary'],
+                                            ) ?>
+                                        </div>
+                                    </article>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else : ?>
+                            <div class="mf-attempt-empty mt-3">
+                                <i class="bi bi-clipboard2-x mf-attempt-empty__icon" aria-hidden="true"></i>
+                                <div class="mf-attempt-empty__title"><?= __('No attempts yet') ?></div>
+                                <div class="mf-muted mb-3"><?= __('Start your first test and your latest results will appear here.') ?></div>
+                                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                                    <?= $this->Html->link(
+                                        __('Start test'),
+                                        '#mf-catalog-quizzes',
+                                        ['class' => 'btn btn-primary'],
+                                    ) ?>
+                                    <?= $this->Html->link(
+                                        __('View all attempts'),
+                                        ['controller' => 'Users', 'action' => 'stats', 'lang' => $lang],
+                                        ['class' => 'btn btn-outline-light'],
+                                    ) ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
             </div>
         <?php endif; ?>
 
         <?php if (!$isCreatorCatalog) : ?>
-            <div class="mf-quiz-card mf-attempt-widget mt-3" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.12;">
-                <div class="mf-attempt-widget__head">
-                    <div>
-                        <h2 class="h5 mb-1 text-white"><?= __('Recent attempts') ?></h2>
-                        <div class="mf-muted small"><?= __('Quick snapshot of your latest quiz results.') ?></div>
-                    </div>
-                    <?= $this->Html->link(
-                        __('View all attempts'),
-                        ['controller' => 'Users', 'action' => 'stats', 'lang' => $lang],
-                        ['class' => 'btn btn-sm btn-outline-light'],
-                    ) ?>
-                </div>
-
-                <?php if ($recentAttempts) : ?>
-                    <div class="mf-attempt-list mt-3">
-                        <?php foreach ($recentAttempts as $attempt) : ?>
-                            <?php
-                            $categoryName = $attempt->hasValue('category') && !empty($attempt->category->category_translations)
-                                ? (string)$attempt->category->category_translations[0]->name
-                                : __('Uncategorized');
-                            $quizTitle = $attempt->hasValue('test') && !empty($attempt->test->test_translations)
-                                ? (string)$attempt->test->test_translations[0]->title
-                                : __('Quiz');
-                            $scoreValue = $attempt->score !== null ? (float)$attempt->score : 0.0;
-                            $scoreLabel = $attempt->score !== null
-                                ? rtrim(rtrim((string)$attempt->score, '0'), '.') . '%'
-                                : '—';
-                            $scoreTone = $scoreValue >= 80 ? 'good' : ($scoreValue >= 50 ? 'mid' : 'low');
-                            ?>
-                            <article class="mf-attempt-item mf-attempt-item--<?= h($scoreTone) ?>">
-                                <div class="mf-attempt-item__left">
-                                    <div class="mf-attempt-item__title"><?= h($quizTitle) ?></div>
-                                    <div class="mf-attempt-item__meta">
-                                        <span><i class="bi bi-calendar3" aria-hidden="true"></i> <?= $attempt->finished_at ? h($attempt->finished_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?></span>
-                                        <span><i class="bi bi-tag" aria-hidden="true"></i> <?= h($categoryName) ?></span>
-                                    </div>
-                                </div>
-
-                                <div class="mf-attempt-item__right">
-                                    <div class="mf-attempt-item__score" title="<?= h(__('Score')) ?>"><?= h($scoreLabel) ?></div>
-                                    <?= $this->Html->link(
-                                        __('Open result'),
-                                        ['controller' => 'Tests', 'action' => 'result', $attempt->id, 'lang' => $lang],
-                                        ['class' => 'btn btn-sm btn-primary'],
-                                    ) ?>
-                                </div>
-                            </article>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else : ?>
-                    <div class="mf-attempt-empty mt-3">
-                        <div class="mf-attempt-empty__title"><?= __('No attempts yet') ?></div>
-                        <div class="mf-muted mb-3"><?= __('Start your first test and your latest results will appear here.') ?></div>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <?= $this->Html->link(
-                                __('Start test'),
-                                '#mf-catalog-quizzes',
-                                ['class' => 'btn btn-primary'],
-                            ) ?>
-                            <?= $this->Html->link(
-                                __('View all attempts'),
-                                ['controller' => 'Users', 'action' => 'stats', 'lang' => $lang],
-                                ['class' => 'btn btn-outline-light'],
-                            ) ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </div>
-
             <div class="mf-admin-card p-3 mt-3">
                 <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
                     <input type="hidden" name="per_page" value="<?= h((string)$perPage) ?>">
