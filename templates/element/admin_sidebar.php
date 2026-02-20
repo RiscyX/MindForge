@@ -66,20 +66,6 @@ $testsRoute = [
     'lang' => $lang,
 ];
 
-$questionsRoute = [
-    'prefix' => $isAdmin ? 'Admin' : false,
-    'controller' => 'Questions',
-    'action' => 'index',
-    'lang' => $lang,
-];
-
-$answersRoute = [
-    'prefix' => $isAdmin ? 'Admin' : false,
-    'controller' => 'Answers',
-    'action' => 'index',
-    'lang' => $lang,
-];
-
 $deviceLogsRoute = [
     'prefix' => 'Admin',
     'controller' => 'DeviceLogs',
@@ -102,8 +88,6 @@ $renderNav = function () use (
     $categoriesRoute,
     $difficultiesRoute,
     $testsRoute,
-    $questionsRoute,
-    $answersRoute,
     $languagesRoute,
     $deviceLogsRoute,
     $aiRequestsRoute
@@ -133,16 +117,6 @@ $renderNav = function () use (
                     __('Tests'),
                     $testsRoute,
                     ['class' => 'mf-admin-nav__link' . ($isRoute($testsRoute) ? ' active' : '')],
-                ) ?>
-                <?= $this->Html->link(
-                    __('Questions'),
-                    $questionsRoute,
-                    ['class' => 'mf-admin-nav__link' . ($isRoute($questionsRoute) ? ' active' : '')],
-                ) ?>
-                <?= $this->Html->link(
-                    __('Answers'),
-                    $answersRoute,
-                    ['class' => 'mf-admin-nav__link' . ($isRoute($answersRoute) ? ' active' : '')],
                 ) ?>
                 <?= $this->Html->link(
                     __('Languages'),

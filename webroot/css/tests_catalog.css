@@ -120,6 +120,78 @@
     font-size: 0.82rem;
 }
 
+.mf-top-categories {
+    min-height: auto;
+}
+
+.mf-top-categories .mf-quiz-card__cover {
+    padding-bottom: 0.55rem;
+    border-bottom: 1px solid rgba(var(--mf-text-rgb), 0.09);
+}
+
+.mf-top-categories .mf-quiz-card__content {
+    padding-top: 0.8rem;
+}
+
+.mf-top-categories__list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.mf-top-category-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    border-radius: 12px;
+    padding: 0.52rem 0.62rem;
+    border: 1px solid rgba(var(--mf-text-rgb), 0.11);
+    background: rgba(var(--mf-panel-rgb), 0.58);
+}
+
+.mf-top-category-item__left {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.mf-top-category-item__rank {
+    min-width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--mf-primary-rgb), 0.45);
+    background: rgba(var(--mf-primary-rgb), 0.14);
+    color: rgba(var(--mf-text-rgb), 0.95);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.mf-top-category-item__name {
+    min-width: 0;
+    color: rgba(var(--mf-text-rgb), 0.94);
+    font-weight: 640;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mf-top-category-item__attempts {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.24rem 0.52rem;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--mf-primary-rgb), 0.3);
+    background: rgba(var(--mf-primary-rgb), 0.1);
+    color: rgba(var(--mf-text-rgb), 0.9);
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
 .mf-attempt-widget.mf-quiz-card {
     border-radius: 1.25rem;
     box-shadow:
@@ -422,6 +494,19 @@
 
     .mf-top-quiz-item__right {
         justify-content: space-between;
+    }
+
+    .mf-top-category-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .mf-top-category-item__left {
+        justify-content: flex-start;
+    }
+
+    .mf-top-category-item__attempts {
+        align-self: flex-start;
     }
 
     .mf-attempt-item {
