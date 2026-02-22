@@ -40,6 +40,7 @@ class QuestionsController extends AppController
             'question_type' => (string)$this->request->getQuery('question_type', ''),
             'is_active' => (string)$this->request->getQuery('is_active', ''),
             'source_type' => (string)$this->request->getQuery('source_type', ''),
+            'needs_review' => (string)$this->request->getQuery('needs_review', ''),
         ];
 
         $query = $this->Questions
@@ -81,6 +82,12 @@ class QuestionsController extends AppController
             $query->where(['Questions.is_active' => false]);
         }
 
+        if ($filters['needs_review'] === '1') {
+            $query->where(['Questions.needs_review' => true]);
+        } elseif ($filters['needs_review'] === '0') {
+            $query->where(['Questions.needs_review' => false]);
+        }
+
         $questions = $query->all();
 
         $categoryOptions = $this->Questions->Categories->CategoryTranslations->find('list', [
@@ -104,6 +111,10 @@ class QuestionsController extends AppController
             '1' => __('Active'),
             '0' => __('Inactive'),
         ];
+        $needsReviewOptions = [
+            '1' => __('Needs Review'),
+            '0' => __('Reviewed'),
+        ];
 
         $this->set(compact(
             'questions',
@@ -112,6 +123,7 @@ class QuestionsController extends AppController
             'questionTypeOptions',
             'sourceTypeOptions',
             'activeOptions',
+            'needsReviewOptions',
         ));
     }
 
@@ -377,6 +389,35 @@ class QuestionsController extends AppController
     }
 
     /**
+     * Toggle needs_review flag for a question.
+     *
+     * @param string|null $id Question id.
+     * @return \Cake\Http\Response|null
+     */
+    public function toggleNeedsReview(?string $id = null): ?Response
+    {
+        $this->request->allowMethod(['post']);
+
+        $question = $this->Questions->get($id);
+        $question->needs_review = !$question->needs_review;
+        if ($this->Questions->save($question)) {
+            $this->Flash->success(
+                $question->needs_review
+                    ? __('The question has been flagged for review.')
+                    : __('The review flag has been cleared.'),
+            );
+        } else {
+            $this->Flash->error(__('The review flag could not be changed. Please, try again.'));
+        }
+
+        return $this->redirect([
+            'action' => 'index',
+            'lang' => $this->request->getParam('lang'),
+            '?' => $this->request->getQueryParams(),
+        ]);
+    }
+
+    /**
      * Bulk actions for the index table.
      *
      * @return \\Cake\\Http\\Response|null
@@ -401,7 +442,7 @@ class QuestionsController extends AppController
             ]);
         }
 
-        if (!in_array($action, ['delete', 'activate', 'deactivate'], true)) {
+        if (!in_array($action, ['delete', 'activate', 'deactivate', 'mark_review', 'unmark_review'], true)) {
             $this->Flash->error(__('Invalid bulk action.'));
 
             return $this->redirect([
@@ -426,8 +467,15 @@ class QuestionsController extends AppController
                     } else {
                         $failed += 1;
                     }
-                } else {
+                } elseif (in_array($action, ['activate', 'deactivate'], true)) {
                     $entity->is_active = $action === 'activate';
+                    if ($this->Questions->save($entity)) {
+                        $updated += 1;
+                    } else {
+                        $failed += 1;
+                    }
+                } else {
+                    $entity->needs_review = $action === 'mark_review';
                     if ($this->Questions->save($entity)) {
                         $updated += 1;
                     } else {
@@ -443,11 +491,15 @@ class QuestionsController extends AppController
             $this->Flash->success(__('Deleted {0} item(s).', $deleted));
         }
         if ($updated > 0) {
-            $this->Flash->success(
-                $action === 'activate'
-                    ? __('Activated {0} item(s).', $updated)
-                    : __('Deactivated {0} item(s).', $updated),
-            );
+            if ($action === 'activate') {
+                $this->Flash->success(__('Activated {0} item(s).', $updated));
+            } elseif ($action === 'deactivate') {
+                $this->Flash->success(__('Deactivated {0} item(s).', $updated));
+            } elseif ($action === 'mark_review') {
+                $this->Flash->success(__('Flagged {0} item(s) for review.', $updated));
+            } else {
+                $this->Flash->success(__('Cleared review flag for {0} item(s).', $updated));
+            }
         }
         if ($failed > 0) {
             $this->Flash->error(
@@ -476,7 +528,7 @@ class QuestionsController extends AppController
             return [];
         }
 
-        $allowed = ['category', 'question_type', 'is_active', 'source_type'];
+        $allowed = ['category', 'question_type', 'is_active', 'source_type', 'needs_review'];
         $filters = [];
         foreach ($allowed as $key) {
             if (!array_key_exists($key, $raw)) {

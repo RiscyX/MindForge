@@ -3608,3 +3608,37 @@ msgstr "AI is generating your quiz..."
 
 msgid "The AI is composing questions, answers and translations. This may take up to 30 seconds."
 msgstr "The AI is composing questions, answers and translations. This may take up to 30 seconds."
+
+
+msgid "Review Flag"
+msgstr "Review Flag"
+
+msgid "Needs Review"
+msgstr "Needs Review"
+
+msgid "Reviewed"
+msgstr "Reviewed"
+
+msgid "Flag Review"
+msgstr "Flag Review"
+
+msgid "Clear Review"
+msgstr "Clear Review"
+
+msgid "Review"
+msgstr "Review"
+
+msgid "The question has been flagged for review."
+msgstr "The question has been flagged for review."
+
+msgid "The review flag has been cleared."
+msgstr "The review flag has been cleared."
+
+msgid "The review flag could not be changed. Please, try again."
+msgstr "The review flag could not be changed. Please, try again."
+
+msgid "Flagged {0} item(s) for review."
+msgstr "Flagged {0} item(s) for review."
+
+msgid "Cleared review flag for {0} item(s)."
+msgstr "Cleared review flag for {0} item(s)."

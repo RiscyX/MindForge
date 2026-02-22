@@ -17,6 +17,7 @@ use Cake\ORM\Entity;
  * @property string $source_type
  * @property int|null $created_by
  * @property bool $is_active
+ * @property bool $needs_review
  * @property int|null $position
  * @property \Cake\I18n\DateTime $created_at
  * @property \Cake\I18n\DateTime $updated_at
@@ -55,6 +56,7 @@ class Question extends Entity
         'source_type' => true,
         'created_by' => true,
         'is_active' => true,
+        'needs_review' => true,
         'position' => true,
         'created_at' => true,
         'updated_at' => true,
