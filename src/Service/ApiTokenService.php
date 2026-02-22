@@ -6,12 +6,17 @@ namespace App\Service;
 use App\Model\Entity\ApiToken;
 use App\Model\Entity\User;
 use App\Model\Table\ApiTokensTable;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use function Cake\Core\env;
 
 class ApiTokenService
 {
+    /**
+     * Constructor.
+     *
+     * @param \App\Model\Table\ApiTokensTable $apiTokens API tokens table.
+     */
     public function __construct(private ApiTokensTable $apiTokens)
     {
     }
@@ -124,7 +129,7 @@ class ApiTokenService
 
         $connection = $this->apiTokens->getConnection();
         $tokens = $connection->transactional(function () use ($refreshToken, $user, $ip, $userAgent): array {
-            $refreshToken->used_at = FrozenTime::now();
+            $refreshToken->used_at = DateTime::now();
             $this->apiTokens->saveOrFail($refreshToken);
 
             return $this->issueTokenPair(
@@ -142,6 +147,13 @@ class ApiTokenService
         ];
     }
 
+    /**
+     * Revoke a token by its raw plaintext value.
+     *
+     * @param string $rawToken Raw token string.
+     * @param string $reason Revocation reason.
+     * @return void
+     */
     public function revokeByRawToken(string $rawToken, string $reason = 'logout'): void
     {
         $parsed = $this->parseRawToken($rawToken);
@@ -165,16 +177,23 @@ class ApiTokenService
             return;
         }
 
-        $token->revoked_at = FrozenTime::now();
+        $token->revoked_at = DateTime::now();
         $token->revoked_reason = $reason;
         $this->apiTokens->save($token);
     }
 
+    /**
+     * Revoke all tokens in a token family.
+     *
+     * @param string $familyId Token family identifier.
+     * @param string $reason Revocation reason.
+     * @return int Number of revoked tokens.
+     */
     public function revokeFamily(string $familyId, string $reason = 'logout_all'): int
     {
         return $this->apiTokens->updateAll(
             [
-                'revoked_at' => FrozenTime::now(),
+                'revoked_at' => DateTime::now(),
                 'revoked_reason' => $reason,
             ],
             [
@@ -184,11 +203,18 @@ class ApiTokenService
         );
     }
 
+    /**
+     * Revoke all tokens for a given user.
+     *
+     * @param int $userId User ID.
+     * @param string $reason Revocation reason.
+     * @return int Number of revoked tokens.
+     */
     public function revokeAllForUser(int $userId, string $reason = 'logout_all'): int
     {
         return $this->apiTokens->updateAll(
             [
-                'revoked_at' => FrozenTime::now(),
+                'revoked_at' => DateTime::now(),
                 'revoked_reason' => $reason,
             ],
             [
@@ -198,13 +224,19 @@ class ApiTokenService
         );
     }
 
+    /**
+     * Clean up expired and revoked tokens older than the retention period.
+     *
+     * @param int $retentionDays Number of days to retain revoked tokens.
+     * @return int Number of deleted tokens.
+     */
     public function cleanup(int $retentionDays = 30): int
     {
-        $threshold = FrozenTime::now()->subDays($retentionDays);
+        $threshold = DateTime::now()->subDays($retentionDays);
 
         return $this->apiTokens->deleteAll([
             'OR' => [
-                ['expires_at <' => FrozenTime::now()],
+                ['expires_at <' => DateTime::now()],
                 [
                     'revoked_at IS NOT' => null,
                     'updated_at <' => $threshold,
@@ -250,7 +282,7 @@ class ApiTokenService
             return ['ok' => false, 'code' => ApiAuthErrorCodes::TOKEN_INVALID];
         }
 
-        if ($token->expires_at <= FrozenTime::now()) {
+        if ($token->expires_at <= DateTime::now()) {
             return ['ok' => false, 'code' => ApiAuthErrorCodes::TOKEN_EXPIRED];
         }
 
@@ -284,7 +316,7 @@ class ApiTokenService
             'token_type' => $tokenType,
             'family_id' => $familyId,
             'parent_token_id' => $parentTokenId,
-            'expires_at' => FrozenTime::now()->addSeconds($ttlSeconds),
+            'expires_at' => DateTime::now()->addSeconds($ttlSeconds),
             'issued_ip' => $ip,
             'issued_user_agent' => substr($userAgent, 0, 255),
         ]);
@@ -312,21 +344,44 @@ class ApiTokenService
         ];
     }
 
+    /**
+     * Check if the stored hash matches the given secret.
+     *
+     * @param string $storedHash Stored token hash.
+     * @param string $secret Plain secret to verify.
+     * @return bool
+     */
     private function hashMatches(string $storedHash, string $secret): bool
     {
         return hash_equals($storedHash, hash('sha256', $secret));
     }
 
+    /**
+     * Generate a random hex identifier.
+     *
+     * @param int $bytes Number of random bytes.
+     * @return string
+     */
     private function randomId(int $bytes): string
     {
         return bin2hex(random_bytes($bytes));
     }
 
+    /**
+     * Get the access token TTL in minutes.
+     *
+     * @return int
+     */
     private function accessTtlMinutes(): int
     {
         return max(1, (int)env('API_ACCESS_TTL_MINUTES', '15'));
     }
 
+    /**
+     * Get the refresh token TTL in days.
+     *
+     * @return int
+     */
     private function refreshTtlDays(): int
     {
         return max(1, (int)env('API_REFRESH_TTL_DAYS', '30'));

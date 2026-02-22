@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller\QuizCreator;
 
+use App\Service\CreatorDashboardService;
+
 class DashboardController extends AppController
 {
     /**
@@ -15,38 +17,10 @@ class DashboardController extends AppController
         $identity = $this->Authentication->getIdentity();
         $userId = $identity ? (int)$identity->getIdentifier() : 0;
 
-        $totalQuizzes = 0;
-        $publicQuizzes = 0;
-        $totalAttempts = 0;
-        $finishedAttempts = 0;
-
-        if ($userId > 0) {
-            $testsTable = $this->fetchTable('Tests');
-            $attemptsTable = $this->fetchTable('TestAttempts');
-
-            $totalQuizzes = (int)$testsTable->find()
-                ->where(['Tests.created_by' => $userId])
-                ->count();
-
-            $publicQuizzes = (int)$testsTable->find()
-                ->where(['Tests.created_by' => $userId, 'Tests.is_public' => true])
-                ->count();
-
-            $totalAttempts = (int)$attemptsTable->find()
-                ->innerJoinWith('Tests', function ($q) use ($userId) {
-                    return $q->where(['Tests.created_by' => $userId]);
-                })
-                ->count();
-
-            $finishedAttempts = (int)$attemptsTable->find()
-                ->innerJoinWith('Tests', function ($q) use ($userId) {
-                    return $q->where(['Tests.created_by' => $userId]);
-                })
-                ->where(['TestAttempts.finished_at IS NOT' => null])
-                ->count();
-        }
+        $dashboardService = new CreatorDashboardService();
+        $metrics = $dashboardService->getMetrics($userId);
 
         $this->set('title', __('Quiz Creator'));
-        $this->set(compact('totalQuizzes', 'publicQuizzes', 'totalAttempts', 'finishedAttempts'));
+        $this->set($metrics);
     }
 }

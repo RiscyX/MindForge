@@ -3,20 +3,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Model\Entity\Role;
-use App\Service\ImageUploadGuard;
-use App\Service\UserTokensService;
+use App\Service\AdminUserDetailService;
+use App\Service\AdminUserManagementService;
+use App\Service\AvatarUploadService;
 use Cake\Core\Configure;
 use Cake\Http\Response;
-use Cake\I18n\I18n;
-use Cake\Log\Log;
-use Cake\Mailer\Mailer;
-use Cake\Routing\Router;
-use Exception;
 use Psr\Http\Message\UploadedFileInterface;
-use RuntimeException;
-use Throwable;
-use function Cake\Core\env;
 
 /**
  * @property \App\Model\Table\UsersTable $Users
@@ -44,114 +36,22 @@ class UsersController extends AppController
         }
 
         $action = (string)$this->request->getData('bulk_action');
-        $idsRaw = $this->request->getData('ids');
-
-        $ids = [];
-        if (is_array($idsRaw)) {
-            foreach ($idsRaw as $id) {
-                $idStr = trim((string)$id);
-                if ($idStr !== '') {
-                    $ids[] = $idStr;
-                }
-            }
-        }
-        $ids = array_values(array_unique($ids));
-
-        if ($action === '' || !in_array($action, ['ban', 'unban', 'delete'], true)) {
-            $this->Flash->error(__('Invalid bulk action.'));
-
-            return $this->redirect(['action' => 'index', 'lang' => $lang]);
-        }
-
-        if (count($ids) === 0) {
-            $this->Flash->error(__('Select at least one user.'));
-
-            return $this->redirect(['action' => 'index', 'lang' => $lang]);
-        }
-
-        /** @var \App\Model\Table\UsersTable $usersTable */
-        $usersTable = $this->fetchTable('Users');
-
+        $mgmtService = new AdminUserManagementService();
+        $ids = $mgmtService->sanitizeIds($this->request->getData('ids'));
         $selfId = trim((string)$identity->get('id'));
 
-        if (in_array($selfId, $ids, true)) {
-            // Never allow actions that could lock the admin out.
-            if ($action === 'delete') {
-                $this->Flash->error(__('You cannot delete your own account.'));
+        $result = $mgmtService->executeBulk($action, $ids, $selfId);
 
-                return $this->redirect(['action' => 'index', 'lang' => $lang]);
+        if ($result['code'] === 'success') {
+            if ($action === 'delete' && !empty($result['deleted_ids'])) {
+                $this->logAdminAction('admin_bulk_delete_users', [
+                    'count' => $result['deleted'],
+                    'ids' => implode(',', $result['deleted_ids']),
+                ]);
             }
-
-            // For ban/unban, just exclude self.
-            $ids = array_values(array_filter($ids, fn($id) => $id !== $selfId));
-        }
-
-        if (count($ids) === 0) {
-            $this->Flash->error(__('No valid users selected.'));
-
-            return $this->redirect(['action' => 'index', 'lang' => $lang]);
-        }
-
-        if ($action === 'ban' || $action === 'unban') {
-            $blocked = $action === 'ban';
-            $affected = $usersTable->updateAll(
-                ['is_blocked' => $blocked],
-                ['id IN' => $ids],
-            );
-
-            if ($affected > 0) {
-                $this->Flash->success(__('{0} users updated.', $affected));
-            } else {
-                $this->Flash->error(__('No users were updated.'));
-            }
-
-            return $this->redirect(['action' => 'index', 'lang' => $lang]);
-        }
-
-        // delete
-        $adminCount = $usersTable->find()
-            ->where(['Users.role_id' => Role::ADMIN])
-            ->count();
-
-        $adminsSelected = $usersTable->find()
-            ->where(['Users.id IN' => $ids, 'Users.role_id' => Role::ADMIN])
-            ->count();
-
-        if ($adminCount - $adminsSelected < 1) {
-            $this->Flash->error(__('You cannot delete the last admin account.'));
-
-            return $this->redirect(['action' => 'index', 'lang' => $lang]);
-        }
-
-        $deleted = 0;
-        foreach ($ids as $id) {
-            try {
-                $user = $usersTable->get($id);
-
-                if ((int)$user->role_id === Role::ADMIN) {
-                    $remainingAdmins = $usersTable->find()
-                        ->where(['Users.role_id' => Role::ADMIN, 'Users.id !=' => $user->id])
-                        ->count();
-
-                    if ($remainingAdmins < 1) {
-                        continue;
-                    }
-                }
-
-                if ($usersTable->delete($user)) {
-                    $deleted += 1;
-                    $this->logAdminAction('admin_delete_user', ['id' => $user->id]);
-                }
-            } catch (Throwable) {
-                // Ignore individual failures, continue.
-                continue;
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->Flash->success(__('{0} users deleted.', $deleted));
+            $this->Flash->success($result['message']);
         } else {
-            $this->Flash->error(__('No users were deleted.'));
+            $this->Flash->error($result['message']);
         }
 
         return $this->redirect(['action' => 'index', 'lang' => $lang]);
@@ -224,7 +124,7 @@ class UsersController extends AppController
             $errors = $user->getErrors();
             if ($errors) {
                 $firstField = (string)array_key_first($errors);
-                $firstMsg   = (string)reset($errors[$firstField]);
+                $firstMsg = (string)reset($errors[$firstField]);
                 $this->Flash->error($firstField . ': ' . $firstMsg);
             } else {
                 $this->Flash->error(__('Unable to update your profile. Please try again.'));
@@ -283,44 +183,14 @@ class UsersController extends AppController
             return $this->redirect(['prefix' => false, 'controller' => 'Users', 'action' => 'login', 'lang' => $lang]);
         }
 
-        /** @var \App\Model\Table\UsersTable $usersTable */
-        $usersTable = $this->fetchTable('Users');
-
         $userId = (string)$identity->get('id');
-        $user = $usersTable->get($userId);
+        $mgmtService = new AdminUserManagementService();
+        $result = $mgmtService->sendPasswordResetEmail($userId, $lang);
 
-        /** @var \App\Model\Table\UserTokensTable $userTokensTable */
-        $userTokensTable = $this->fetchTable('UserTokens');
-        $tokenService = new UserTokensService($userTokensTable);
-        $token = $tokenService->createPasswordResetToken($user);
-
-        $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
-        $resetUrl = $baseUrl . '/' . $lang . '/reset-password?token=' . urlencode($token);
-
-        $locale = $lang === 'hu' ? 'hu_HU' : 'en_US';
-        $previousLocale = I18n::getLocale();
-
-        try {
-            I18n::setLocale($locale);
-
-            $mailer = new Mailer('default');
-            $mailer
-                ->setFrom([env('EMAIL_FROM', 'no-reply@mindforge.local') => 'MindForge'])
-                ->setTo((string)$user->email)
-                ->setEmailFormat('both')
-                ->setSubject(__('Reset your MindForge password'))
-                ->setViewVars(['resetUrl' => $resetUrl])
-                ->viewBuilder()
-                ->setTemplate('password_reset');
-
-            $mailer->deliver();
-
-            $this->Flash->success(__('We sent a password reset link to your email.'));
-        } catch (Exception $e) {
-            Log::error('Admin password reset email failed for user ' . $userId . ': ' . $e->getMessage());
-            $this->Flash->error(__('Could not send the password reset email. Please try again later.'));
-        } finally {
-            I18n::setLocale($previousLocale);
+        if ($result['code'] === 'success') {
+            $this->Flash->success($result['message']);
+        } else {
+            $this->Flash->error($result['message']);
         }
 
         return $this->redirect([
@@ -425,31 +295,10 @@ class UsersController extends AppController
 
         $roles = $usersTable->Roles->find('list')->all();
 
-        $testAttempts = $this->fetchTable('TestAttempts')
-            ->find()
-            ->contain([
-                'Tests' => static fn ($q) => $q->contain([
-                    'TestTranslations' => static fn ($tq) => $tq->select(['TestTranslations.test_id', 'TestTranslations.title'])->limit(1),
-                ]),
-            ])
-            ->where(['TestAttempts.user_id' => $user->id])
-            ->orderByDesc('TestAttempts.created_at')
-            ->limit(5)
-            ->all();
-
-        $activityLogs = $this->fetchTable('ActivityLogs')
-            ->find()
-            ->where(['ActivityLogs.user_id' => $user->id])
-            ->orderByDesc('ActivityLogs.created_at')
-            ->limit(5)
-            ->all();
-
-        $deviceLogs = $this->fetchTable('DeviceLogs')
-            ->find()
-            ->where(['DeviceLogs.user_id' => $user->id])
-            ->orderByDesc('DeviceLogs.created_at')
-            ->limit(5)
-            ->all();
+        $detailService = new AdminUserDetailService();
+        $testAttempts = $detailService->recentTestAttempts($user->id);
+        $activityLogs = $detailService->recentActivityLogs($user->id);
+        $deviceLogs = $detailService->recentDeviceLogs($user->id);
 
         $this->set(compact('user', 'roles', 'testAttempts', 'activityLogs', 'deviceLogs'));
 
@@ -513,10 +362,6 @@ class UsersController extends AppController
     }
 
     /**
-     * @param array<string, mixed> $data
-     * @return array<string, mixed>
-     */
-    /**
      * Extracts and validates a cropped base64 image from POST data WITHOUT writing to disk.
      *
      * Returns [modifiedData, imageBytes|null, proposedFilename|null].
@@ -557,6 +402,12 @@ class UsersController extends AppController
         return [$data, $imageBytes, $filename];
     }
 
+    /**
+     * Apply a legacy plain file avatar upload to the user data.
+     *
+     * @param array $data User data array.
+     * @return array
+     */
     private function applyAvatarUpload(array $data): array
     {
         // Path A (cropped) is handled separately via extractCroppedImageData().
@@ -575,53 +426,20 @@ class UsersController extends AppController
             return $data;
         }
 
-        if ($file->getError() !== UPLOAD_ERR_OK && $file->getError() !== UPLOAD_ERR_NO_FILE) {
-            return $data;
-        }
         if ($file->getError() === UPLOAD_ERR_NO_FILE) {
             return $data;
         }
 
-        $allowedTypes = (array)Configure::read(
-            'Uploads.avatarAllowedMimeTypes',
-            ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-        );
-        $maxBytes = (int)Configure::read('Uploads.avatarMaxBytes', 3 * 1024 * 1024);
-        $imageUploadGuard = new ImageUploadGuard();
+        $avatarService = new AvatarUploadService();
+        $result = $avatarService->upload($file);
 
-        try {
-            $mime = $imageUploadGuard->assertImageUpload($file, $allowedTypes, $maxBytes);
-            $ext = ImageUploadGuard::extensionForMime($mime);
-        } catch (RuntimeException) {
-            $this->Flash->error(__('Unsupported avatar image type.'));
+        if (!$result['ok']) {
+            $this->Flash->error(__($result['error'] ?? 'Failed to upload avatar.'));
 
             return $data;
         }
 
-        $dir = WWW_ROOT . 'img' . DS . 'avatars' . DS;
-        if (!is_dir($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
-            $this->Flash->error(__('Failed to upload avatar.'));
-
-            return $data;
-        }
-        if (!is_writable($dir)) {
-            $this->Flash->error(__('Failed to upload avatar.'));
-
-            return $data;
-        }
-
-        $filename = bin2hex(random_bytes(16)) . '.' . $ext;
-        $targetPath = $dir . $filename;
-
-        try {
-            $file->moveTo($targetPath);
-        } catch (Throwable) {
-            $this->Flash->error(__('Failed to upload avatar.'));
-
-            return $data;
-        }
-
-        $data['avatar_url'] = '/img/avatars/' . $filename;
+        $data['avatar_url'] = '/img/' . $result['avatar_url'];
 
         return $data;
     }
@@ -637,47 +455,25 @@ class UsersController extends AppController
         $lang = (string)$this->request->getParam('lang', 'en');
 
         $identity = $this->request->getAttribute('identity');
-        if ($identity !== null && (string)$identity->get('id') === (string)$id) {
-            $this->Flash->error(__('You cannot delete your own account.'));
+        $selfId = $identity !== null ? (string)$identity->get('id') : '';
 
-            return $this->redirect([
-                'action' => 'edit',
-                $id,
-                'lang' => $lang,
-            ]);
+        $mgmtService = new AdminUserManagementService();
+        $result = $mgmtService->deleteUser((string)$id, $selfId);
+
+        if ($result['code'] === 'success') {
+            $this->logAdminAction('admin_delete_user', ['id' => $result['user_id']]);
+            $this->Flash->success($result['message']);
+
+            return $this->redirect(['action' => 'index', 'lang' => $lang]);
         }
 
-        /** @var \App\Model\Table\UsersTable $usersTable */
-        $usersTable = $this->fetchTable('Users');
+        $this->Flash->error($result['message']);
 
-        $user = $usersTable->get($id);
-
-        if ((int)$user->role_id === Role::ADMIN) {
-            $adminCount = $usersTable->find()
-                ->where(['Users.role_id' => Role::ADMIN])
-                ->count();
-
-            if ($adminCount <= 1) {
-                $this->Flash->error(__('You cannot delete the last admin account.'));
-
-                return $this->redirect([
-                    'action' => 'edit',
-                    $user->id,
-                    'lang' => $lang,
-                ]);
-            }
+        $redirectAction = $result['redirect_action'] ?? 'index';
+        if ($redirectAction === 'edit') {
+            return $this->redirect(['action' => 'edit', $id, 'lang' => $lang]);
         }
 
-        if ($usersTable->delete($user)) {
-            $this->logAdminAction('admin_delete_user', ['id' => $user->id]);
-            $this->Flash->success(__('The user has been deleted.'));
-        } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect([
-            'action' => 'index',
-            'lang' => $lang,
-        ]);
+        return $this->redirect(['action' => 'index', 'lang' => $lang]);
     }
 }

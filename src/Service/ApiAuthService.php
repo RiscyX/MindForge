@@ -8,6 +8,7 @@ use App\Model\Entity\Role;
 use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Cake\Http\Client;
 use Cake\I18n\FrozenTime;
 use Cake\I18n\I18n;
 use Cake\Log\Log;
@@ -20,6 +21,14 @@ use function Cake\Core\env;
 
 class ApiAuthService
 {
+    /**
+     * Constructor.
+     *
+     * @param \App\Model\Table\UsersTable $users Users table.
+     * @param \App\Service\ApiTokenService $apiTokenService API token service.
+     * @param \Cake\ORM\Table $activityLogs Activity logs table.
+     * @param \Cake\ORM\Table $deviceLogs Device logs table.
+     */
     public function __construct(
         private UsersTable $users,
         private ApiTokenService $apiTokenService,
@@ -69,12 +78,20 @@ class ApiAuthService
     {
         $preValidation = $this->apiTokenService->validateRefreshToken($refreshToken);
         if (!$preValidation['ok']) {
-            if (($preValidation['code'] ?? null) === ApiAuthErrorCodes::TOKEN_REUSED && isset($preValidation['token'])) {
+            if (
+                ($preValidation['code'] ?? null) === ApiAuthErrorCodes::TOKEN_REUSED
+                && isset($preValidation['token'])
+            ) {
                 /** @var \App\Model\Entity\ApiToken $reusedToken */
                 $reusedToken = $preValidation['token'];
                 $this->apiTokenService->revokeFamily($reusedToken->family_id, 'reuse_detected');
                 if ($reusedToken->user !== null) {
-                    $this->logActivity((int)$reusedToken->user_id, ActivityLog::TYPE_API_TOKEN_REUSE_DETECTED, $ip, $userAgent);
+                    $this->logActivity(
+                        (int)$reusedToken->user_id,
+                        ActivityLog::TYPE_API_TOKEN_REUSE_DETECTED,
+                        $ip,
+                        $userAgent,
+                    );
                 }
             }
 
@@ -133,6 +150,15 @@ class ApiAuthService
         ];
     }
 
+    /**
+     * Log out user by revoking the specified tokens or all tokens.
+     *
+     * @param string|null $accessToken Raw access token.
+     * @param string|null $refreshToken Raw refresh token.
+     * @param bool $allDevices Whether to revoke all tokens for the user.
+     * @param \App\Model\Entity\User|null $user The user entity.
+     * @return void
+     */
     public function logout(?string $accessToken, ?string $refreshToken, bool $allDevices, ?User $user = null): void
     {
         if ($allDevices && $user !== null) {
@@ -150,6 +176,12 @@ class ApiAuthService
         }
     }
 
+    /**
+     * Validate the user's account state for API access.
+     *
+     * @param \App\Model\Entity\User $user The user entity.
+     * @return string|null Error code if the state is invalid, or null if valid.
+     */
     public function validateUserState(User $user): ?string
     {
         if (!(bool)$user->is_active) {
@@ -253,6 +285,12 @@ class ApiAuthService
         ];
     }
 
+    /**
+     * Find a user by their refresh token.
+     *
+     * @param string $refreshToken Raw refresh token.
+     * @return \App\Model\Entity\User|null
+     */
     private function findUserByRefreshToken(string $refreshToken): ?User
     {
         $parts = explode('.', trim($refreshToken), 2);
@@ -275,6 +313,15 @@ class ApiAuthService
         return $token->user;
     }
 
+    /**
+     * Log a user activity event.
+     *
+     * @param int $userId User ID.
+     * @param string $action Action identifier.
+     * @param string $ip Client IP address.
+     * @param string $userAgent Client user agent string.
+     * @return void
+     */
     private function logActivity(int $userId, string $action, string $ip, string $userAgent): void
     {
         $entity = $this->activityLogs->newEntity([
@@ -286,6 +333,12 @@ class ApiAuthService
         $this->activityLogs->save($entity);
     }
 
+    /**
+     * Update the user's last login timestamp.
+     *
+     * @param int $userId User ID.
+     * @return void
+     */
     private function updateLastLoginAt(int $userId): void
     {
         /** @var \App\Model\Entity\User $user */
@@ -294,20 +347,78 @@ class ApiAuthService
         $this->users->save($user);
     }
 
+    /**
+     * Log device information for a user login.
+     *
+     * @param int $userId User ID.
+     * @param string $ip Client IP address.
+     * @param string $userAgent Client user agent string.
+     * @return void
+     */
     private function logDevice(int $userId, string $ip, string $userAgent): void
     {
         $deviceType = $this->detectDeviceType($userAgent);
+        [$country, $city] = $this->resolveLocationByIp($ip);
 
         $entity = $this->deviceLogs->newEntity([
             'user_id' => $userId,
             'ip_address' => $ip,
             'user_agent' => $userAgent,
             'device_type' => $deviceType,
+            'country' => $country,
+            'city' => $city,
         ]);
 
         $this->deviceLogs->save($entity);
     }
 
+    /**
+     * @return array{0: string|null, 1: string|null}
+     */
+    private function resolveLocationByIp(string $ip): array
+    {
+        $ip = trim($ip);
+        if ($ip === '' || filter_var($ip, FILTER_VALIDATE_IP) === false) {
+            return [null, null];
+        }
+
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return [null, null];
+        }
+
+        $country = null;
+        $city = null;
+
+        try {
+            $http = new Client();
+            $apiKey = trim((string)env('IPLOCATE_API_KEY', ''));
+
+            $url = 'https://www.iplocate.io/api/lookup/' . $ip;
+            if ($apiKey !== '') {
+                $url .= '?apikey=' . rawurlencode($apiKey);
+            }
+
+            $response = $http->get($url);
+            if ($response->isOk()) {
+                $json = (array)$response->getJson();
+                $country = isset($json['country']) ? trim((string)$json['country']) : null;
+                $city = isset($json['city']) ? trim((string)$json['city']) : null;
+                $country = $country !== '' ? $country : null;
+                $city = $city !== '' ? $city : null;
+            }
+        } catch (Throwable $e) {
+            Log::warning('IP lookup failed in API auth flow: ' . $e->getMessage());
+        }
+
+        return [$country, $city];
+    }
+
+    /**
+     * Detect the device type from the user agent string.
+     *
+     * @param string $userAgent User agent string.
+     * @return int Device type (0 = mobile, 1 = tablet, 2 = desktop).
+     */
     private function detectDeviceType(string $userAgent): int
     {
         $detect = new MobileDetect();
@@ -360,6 +471,12 @@ class ApiAuthService
         return 2;
     }
 
+    /**
+     * Build a unique username from the email address for registration.
+     *
+     * @param string $email User email address.
+     * @return string
+     */
     private function buildRegistrationUsername(string $email): string
     {
         $localPart = strtolower(trim(strtok($email, '@') ?: ''));

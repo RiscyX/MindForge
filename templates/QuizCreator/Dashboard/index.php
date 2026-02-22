@@ -18,6 +18,13 @@ $this->assign('title', __('Quiz Creator'));
             <h1 class="h3 mb-1 text-white"><?= __('Quiz Creator') ?></h1>
             <div class="mf-muted"><?= __('Create quizzes and track their performance.') ?></div>
         </div>
+        <div>
+            <?= $this->Html->link(
+                __('Create Quiz'),
+                ['prefix' => 'QuizCreator', 'controller' => 'Tests', 'action' => 'add', 'lang' => $lang],
+                ['class' => 'btn btn-primary'],
+            ) ?>
+        </div>
     </div>
 
     <div class="mf-quiz-grid mt-2">

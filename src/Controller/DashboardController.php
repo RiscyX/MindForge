@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\Entity\Role;
+use App\Service\DashboardMetricsService;
 use Psr\Http\Message\ResponseInterface;
 
 class DashboardController extends AppController
@@ -29,32 +30,11 @@ class DashboardController extends AppController
 
         $this->viewBuilder()->setLayout('default');
 
-        $recentAttempts = [];
         $userId = $identity ? (int)$identity->getIdentifier() : 0;
-        if ($userId > 0) {
-            $langCode = (string)$this->request->getParam('lang', 'en');
-            $language = $this->fetchTable('Languages')->find()
-                ->where(['code LIKE' => $langCode . '%'])
-                ->first();
-            if ($language === null) {
-                $language = $this->fetchTable('Languages')->find()->first();
-            }
+        $langCode = (string)$this->request->getParam('lang', 'en');
 
-            $recentAttempts = $this->fetchTable('TestAttempts')->find()
-                ->where([
-                    'TestAttempts.user_id' => $userId,
-                    'TestAttempts.finished_at IS NOT' => null,
-                ])
-                ->contain([
-                    'Categories.CategoryTranslations' => function ($q) use ($language) {
-                        return $q->where(['CategoryTranslations.language_id' => $language->id ?? null]);
-                    },
-                ])
-                ->orderByDesc('TestAttempts.finished_at')
-                ->limit(5)
-                ->all()
-                ->toList();
-        }
+        $dashboardService = new DashboardMetricsService();
+        $recentAttempts = $dashboardService->getRecentAttempts($userId, $langCode);
 
         $this->set(compact('recentAttempts'));
 

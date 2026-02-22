@@ -7,6 +7,7 @@
  * @var \App\Model\Entity\TestAttempt|null $bestAttempt
  * @var \App\Model\Entity\TestAttempt|null $lastAttempt
  * @var iterable<\App\Model\Entity\TestAttempt> $attemptHistory
+ * @var bool|null $isFavorited
  */
 
 $lang = $this->request->getParam('lang', 'en');
@@ -51,6 +52,8 @@ $formatScore = static function (?float $score): string {
 $bestFinished = $bestAttempt?->finished_at ? $bestAttempt->finished_at->i18nFormat('yyyy. MMM d. HH:mm') : '-';
 $lastFinished = $lastAttempt?->finished_at ? $lastAttempt->finished_at->i18nFormat('yyyy. MMM d. HH:mm') : '-';
 $attemptHistory = isset($attemptHistory) ? $attemptHistory : [];
+$isFavorited = (bool)($isFavorited ?? false);
+$isLoggedIn = $this->getRequest()->getAttribute('identity') !== null;
 
 ?>
 
@@ -135,6 +138,22 @@ $attemptHistory = isset($attemptHistory) ? $attemptHistory : [];
         </div>
 
         <div class="mf-quiz-card__actions">
+            <?php if ($isLoggedIn) : ?>
+                <?php if ($isFavorited) : ?>
+                    <?= $this->Form->postLink(
+                        __('Remove from favorites'),
+                        ['controller' => 'Tests', 'action' => 'unfavorite', (string)$test->id, 'lang' => $lang],
+                        ['class' => 'btn btn-outline-light'],
+                    ) ?>
+                <?php else : ?>
+                    <?= $this->Form->postLink(
+                        __('Save to favorites'),
+                        ['controller' => 'Tests', 'action' => 'favorite', (string)$test->id, 'lang' => $lang],
+                        ['class' => 'btn btn-outline-light'],
+                    ) ?>
+                <?php endif; ?>
+            <?php endif; ?>
+
             <?= $this->Form->postLink(
                 __('Start quiz'),
                 ['controller' => 'Tests', 'action' => 'start', (string)$test->id, 'lang' => $lang],
