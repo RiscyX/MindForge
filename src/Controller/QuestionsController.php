@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\Entity\Question;
+use App\Service\AdminActivityLogService;
+use App\Service\BulkActionService;
+use App\Service\LanguageResolverService;
+use App\Service\QuestionEditorService;
+use App\Service\QuestionIndexService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\ORM\Query\SelectQuery;
-use Throwable;
 
 /**
  * Questions Controller
@@ -34,7 +37,7 @@ class QuestionsController extends AppController
     public function index()
     {
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
         $filters = [
             'category' => (string)$this->request->getQuery('category', ''),
             'question_type' => (string)$this->request->getQuery('question_type', ''),
@@ -43,78 +46,15 @@ class QuestionsController extends AppController
             'needs_review' => (string)$this->request->getQuery('needs_review', ''),
         ];
 
-        $query = $this->Questions
-            ->find()
-            ->contain([
-                'Tests',
-                'Categories.CategoryTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
-                    return $languageId === null ? $q : $q->where(['CategoryTranslations.language_id' => $languageId]);
-                },
-                'Difficulties.DifficultyTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
-                    return $languageId === null ? $q : $q->where(['DifficultyTranslations.language_id' => $languageId]);
-                },
-                'QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
-                    return $languageId === null ? $q : $q->where(['QuestionTranslations.language_id' => $languageId]);
-                },
-            ])
-            ->orderByAsc('Questions.id');
+        $indexService = new QuestionIndexService();
+        $questions = $indexService->getFilteredQuestions($filters, $languageId);
+        $categoryOptions = $indexService->getCategoryOptions($languageId);
+        $staticOptions = $indexService->getStaticFilterOptions();
 
-        if ($filters['category'] !== '' && ctype_digit($filters['category'])) {
-            $query->where(['Questions.category_id' => (int)$filters['category']]);
-        }
-
-        $questionTypes = [
-            Question::TYPE_MULTIPLE_CHOICE,
-            Question::TYPE_TRUE_FALSE,
-            Question::TYPE_TEXT,
-        ];
-        if (in_array($filters['question_type'], $questionTypes, true)) {
-            $query->where(['Questions.question_type' => $filters['question_type']]);
-        }
-
-        if (in_array($filters['source_type'], ['human', 'ai'], true)) {
-            $query->where(['Questions.source_type' => $filters['source_type']]);
-        }
-
-        if ($filters['is_active'] === '1') {
-            $query->where(['Questions.is_active' => true]);
-        } elseif ($filters['is_active'] === '0') {
-            $query->where(['Questions.is_active' => false]);
-        }
-
-        if ($filters['needs_review'] === '1') {
-            $query->where(['Questions.needs_review' => true]);
-        } elseif ($filters['needs_review'] === '0') {
-            $query->where(['Questions.needs_review' => false]);
-        }
-
-        $questions = $query->all();
-
-        $categoryOptions = $this->Questions->Categories->CategoryTranslations->find('list', [
-            'keyField' => 'category_id',
-            'valueField' => 'name',
-        ])
-            ->where($languageId === null ? [] : ['language_id' => $languageId])
-            ->all()
-            ->toArray();
-
-        $questionTypeOptions = [
-            Question::TYPE_MULTIPLE_CHOICE => __('Multiple Choice'),
-            Question::TYPE_TRUE_FALSE => __('True/False'),
-            Question::TYPE_TEXT => __('Text'),
-        ];
-        $sourceTypeOptions = [
-            'human' => __('Human'),
-            'ai' => __('AI'),
-        ];
-        $activeOptions = [
-            '1' => __('Active'),
-            '0' => __('Inactive'),
-        ];
-        $needsReviewOptions = [
-            '1' => __('Needs Review'),
-            '0' => __('Reviewed'),
-        ];
+        $questionTypeOptions = $staticOptions['questionTypeOptions'];
+        $sourceTypeOptions = $staticOptions['sourceTypeOptions'];
+        $activeOptions = $staticOptions['activeOptions'];
+        $needsReviewOptions = $staticOptions['needsReviewOptions'];
 
         $this->set(compact(
             'questions',
@@ -137,7 +77,7 @@ class QuestionsController extends AppController
     public function view(?string $id = null)
     {
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
 
         $question = $this->Questions->get($id, contain: [
             'Tests',
@@ -176,7 +116,7 @@ class QuestionsController extends AppController
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
 
         $tests = $this->Questions->Tests->find('list', limit: 200)->all();
 
@@ -214,8 +154,9 @@ class QuestionsController extends AppController
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $editorService = new QuestionEditorService();
             $data = $this->request->getData();
-            $data['answers'] = $this->normalizeAnswersPayload((array)($data['answers'] ?? []));
+            $data['answers'] = $editorService->normalizeAnswersPayload((array)($data['answers'] ?? []));
 
             $question = $this->Questions->patchEntity($question, $data, [
                 'associated' => [
@@ -223,20 +164,7 @@ class QuestionsController extends AppController
                 ],
             ]);
 
-            $hasCorrectAnswer = false;
-            foreach ($question->answers as $answer) {
-                if ((bool)$answer->is_correct) {
-                    $hasCorrectAnswer = true;
-
-                    break;
-                }
-            }
-
-            if (!$hasCorrectAnswer) {
-                $question->setError('answers', [
-                    'correct' => __('At least one correct answer is required.'),
-                ]);
-            }
+            $editorService->validateCorrectAnswer($question);
 
             if (!$question->getErrors() && $this->Questions->save($question, ['associated' => ['Answers']])) {
                 $this->Flash->success(__('The question has been saved.'));
@@ -247,7 +175,7 @@ class QuestionsController extends AppController
             $this->Flash->error(__('The question could not be saved. Please, try again.'));
         }
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
 
         $tests = $this->Questions->Tests->find('list', limit: 200)->all();
 
@@ -268,71 +196,6 @@ class QuestionsController extends AppController
     }
 
     /**
-     * Normalize answer rows posted from inline edit form.
-     *
-     * @param array<int|string, mixed> $answers Raw answer rows.
-     * @return array<int, array<string, mixed>>
-     */
-    private function normalizeAnswersPayload(array $answers): array
-    {
-        $normalized = [];
-        foreach ($answers as $answer) {
-            if (!is_array($answer)) {
-                continue;
-            }
-
-            $id = isset($answer['id']) && is_numeric($answer['id']) ? (int)$answer['id'] : null;
-            $sourceText = trim((string)($answer['source_text'] ?? ''));
-            $sourceType = (string)($answer['source_type'] ?? 'human');
-            if (!in_array($sourceType, ['human', 'ai'], true)) {
-                $sourceType = 'human';
-            }
-            $position = isset($answer['position']) && $answer['position'] !== '' && is_numeric($answer['position'])
-                ? (int)$answer['position']
-                : null;
-            $isCorrect = (string)($answer['is_correct'] ?? '0') === '1';
-
-            $isMeaningful = $id !== null || $sourceText !== '' || $isCorrect || $position !== null;
-            if (!$isMeaningful) {
-                continue;
-            }
-
-            $row = [
-                'source_type' => $sourceType,
-                'source_text' => $sourceText,
-                'position' => $position,
-                'is_correct' => $isCorrect,
-            ];
-            if ($id !== null) {
-                $row['id'] = $id;
-            }
-            $normalized[] = $row;
-        }
-
-        return $normalized;
-    }
-
-    /**
-     * Resolve current language id with fallback.
-     *
-     * @param string $langCode Requested language code.
-     * @return int|null
-     */
-    private function resolveLanguageId(string $langCode): ?int
-    {
-        $language = $this->fetchTable('Languages')
-            ->find()
-            ->where(['code LIKE' => $langCode . '%'])
-            ->first();
-
-        if ($language === null) {
-            $language = $this->fetchTable('Languages')->find()->first();
-        }
-
-        return $language?->id === null ? null : (int)$language->id;
-    }
-
-    /**
      * Delete method
      *
      * @param string|null $id Question id.
@@ -344,9 +207,7 @@ class QuestionsController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $question = $this->Questions->get($id);
         if ($this->Questions->delete($question)) {
-            if (method_exists($this, 'logAdminAction')) {
-                $this->logAdminAction('admin_delete_question', ['id' => $question->id]);
-            }
+            (new AdminActivityLogService())->log($this->request, 'admin_delete_question', ['id' => $question->id]);
             $this->Flash->success(__('The question has been deleted.'));
         } else {
             $this->Flash->error(__('The question could not be deleted. Please, try again.'));
@@ -428,9 +289,8 @@ class QuestionsController extends AppController
 
         $returnFilters = $this->extractReturnFilters();
         $action = (string)$this->request->getData('bulk_action');
-        $rawIds = $this->request->getData('ids');
-        $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
+        $bulkService = new BulkActionService();
+        $ids = $bulkService->sanitizeIds($this->request->getData('ids'));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -452,61 +312,38 @@ class QuestionsController extends AppController
             ]);
         }
 
-        $deleted = 0;
-        $updated = 0;
-        $failed = 0;
-        foreach ($ids as $id) {
-            try {
-                $entity = $this->Questions->get((string)$id);
-                if ($action === 'delete') {
-                    if ($this->Questions->delete($entity)) {
-                        $deleted += 1;
-                        if (method_exists($this, 'logAdminAction')) {
-                            $this->logAdminAction('admin_delete_question', ['id' => $entity->id]);
-                        }
-                    } else {
-                        $failed += 1;
-                    }
-                } elseif (in_array($action, ['activate', 'deactivate'], true)) {
-                    $entity->is_active = $action === 'activate';
-                    if ($this->Questions->save($entity)) {
-                        $updated += 1;
-                    } else {
-                        $failed += 1;
-                    }
-                } else {
-                    $entity->needs_review = $action === 'mark_review';
-                    if ($this->Questions->save($entity)) {
-                        $updated += 1;
-                    } else {
-                        $failed += 1;
-                    }
-                }
-            } catch (Throwable) {
-                $failed += 1;
+        if ($action === 'delete') {
+            $result = $bulkService->bulkDelete('Questions', $ids);
+            if ($result['deleted'] > 0) {
+                (new AdminActivityLogService())->log($this->request, 'admin_bulk_delete_questions', [
+                    'count' => $result['deleted'],
+                    'ids' => implode(',', $ids),
+                ]);
+                $this->Flash->success(__('Deleted {0} item(s).', $result['deleted']));
             }
-        }
-
-        if ($deleted > 0) {
-            $this->Flash->success(__('Deleted {0} item(s).', $deleted));
-        }
-        if ($updated > 0) {
-            if ($action === 'activate') {
-                $this->Flash->success(__('Activated {0} item(s).', $updated));
-            } elseif ($action === 'deactivate') {
-                $this->Flash->success(__('Deactivated {0} item(s).', $updated));
-            } elseif ($action === 'mark_review') {
-                $this->Flash->success(__('Flagged {0} item(s) for review.', $updated));
-            } else {
-                $this->Flash->success(__('Cleared review flag for {0} item(s).', $updated));
+            if ($result['failed'] > 0) {
+                $this->Flash->error(__('Could not delete {0} item(s).', $result['failed']));
             }
-        }
-        if ($failed > 0) {
-            $this->Flash->error(
-                $action === 'delete'
-                    ? __('Could not delete {0} item(s).', $failed)
-                    : __('Could not update {0} item(s).', $failed),
-            );
+        } elseif (in_array($action, ['activate', 'deactivate'], true)) {
+            $isActive = $action === 'activate';
+            $updated = $bulkService->bulkUpdateField('Questions', $ids, 'is_active', $isActive);
+            if ($updated > 0) {
+                $this->Flash->success(
+                    $isActive
+                        ? __('Activated {0} item(s).', $updated)
+                        : __('Deactivated {0} item(s).', $updated),
+                );
+            }
+        } else {
+            $needsReview = $action === 'mark_review';
+            $updated = $bulkService->bulkUpdateField('Questions', $ids, 'needs_review', $needsReview);
+            if ($updated > 0) {
+                $this->Flash->success(
+                    $needsReview
+                        ? __('Flagged {0} item(s) for review.', $updated)
+                        : __('Cleared review flag for {0} item(s).', $updated),
+                );
+            }
         }
 
         return $this->redirect([

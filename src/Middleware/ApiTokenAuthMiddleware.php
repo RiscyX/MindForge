@@ -16,6 +16,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ApiTokenAuthMiddleware implements MiddlewareInterface
 {
+    /**
+     * Process an incoming server request through the API token authentication middleware.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $path = rtrim($request->getUri()->getPath(), '/');
@@ -31,7 +38,11 @@ class ApiTokenAuthMiddleware implements MiddlewareInterface
 
         $bearer = $this->extractBearerToken($request);
         if ($bearer === null) {
-            return $this->jsonError(401, ApiAuthErrorCodes::TOKEN_INVALID, 'Missing Authorization header. Use: Authorization: Bearer <access_token>');
+            return $this->jsonError(
+                401,
+                ApiAuthErrorCodes::TOKEN_INVALID,
+                'Missing Authorization header. Use: Authorization: Bearer <access_token>',
+            );
         }
 
         $tableLocator = FactoryLocator::get('Table');
@@ -51,7 +62,11 @@ class ApiTokenAuthMiddleware implements MiddlewareInterface
         if (!$validation['ok']) {
             $reason = (string)($validation['reason'] ?? '');
             if ($reason === 'wrong_token_type') {
-                return $this->jsonError(401, (string)$validation['code'], 'Invalid token type. Use an access token (not a refresh token).');
+                return $this->jsonError(
+                    401,
+                    (string)$validation['code'],
+                    'Invalid token type. Use an access token (not a refresh token).',
+                );
             }
 
             return $this->jsonError(401, (string)$validation['code'], 'Access token is invalid or expired.');
@@ -89,11 +104,23 @@ class ApiTokenAuthMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
+    /**
+     * Check if the given path is an API path.
+     *
+     * @param string $path Request path.
+     * @return bool
+     */
     private function isApiPath(string $path): bool
     {
         return $path === '/api/v1' || str_starts_with($path, '/api/v1/');
     }
 
+    /**
+     * Extract the API sub-path from the full request path.
+     *
+     * @param string $path Full request path.
+     * @return string|null The API sub-path, or null if not an API path.
+     */
     private function apiSubPath(string $path): ?string
     {
         $pos = strpos($path, '/api/v1');
@@ -109,11 +136,20 @@ class ApiTokenAuthMiddleware implements MiddlewareInterface
         return rtrim($sub, '/');
     }
 
+    /**
+     * Check if the given endpoint is publicly accessible without authentication.
+     *
+     * @param string $method HTTP method.
+     * @param string $path API sub-path.
+     * @return bool
+     */
     private function isPublicEndpoint(string $method, string $path): bool
     {
         $publicEndpoints = [
             'POST /api/v1/auth/register',
             'POST /api/v1/auth/login',
+            'POST /api/v1/auth/forgot-password',
+            'POST /api/v1/auth/reset-password',
             'POST /api/v1/auth/refresh',
             'POST /api/v1/auth/logout',
             'GET /api/v1/tests',
@@ -130,6 +166,12 @@ class ApiTokenAuthMiddleware implements MiddlewareInterface
         return false;
     }
 
+    /**
+     * Extract the bearer token from the Authorization header.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @return string|null The bearer token, or null if not present.
+     */
     private function extractBearerToken(ServerRequestInterface $request): ?string
     {
         $header = trim((string)$request->getHeaderLine('Authorization'));
@@ -140,6 +182,14 @@ class ApiTokenAuthMiddleware implements MiddlewareInterface
         return trim((string)$matches[1]);
     }
 
+    /**
+     * Create a JSON error response.
+     *
+     * @param int $status HTTP status code.
+     * @param string $code Application error code.
+     * @param string $message Error message.
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     private function jsonError(int $status, string $code, string $message): ResponseInterface
     {
         $response = new Response();

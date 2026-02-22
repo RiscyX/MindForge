@@ -49,6 +49,17 @@ $isQuizzesActive = ($currentPrefix === null || $currentPrefix === '')
     && $currentController === 'Tests'
     && $currentAction === 'index';
 
+$favoritesUrl = [
+    'prefix' => false,
+    'controller' => 'Tests',
+    'action' => 'favorites',
+    'lang' => $lang,
+];
+
+$isFavoritesActive = ($currentPrefix === null || $currentPrefix === '')
+    && $currentController === 'Tests'
+    && $currentAction === 'favorites';
+
 $profileUrl = $isAdmin
     ? [
         'prefix' => 'Admin',
@@ -199,6 +210,13 @@ $langRouteHu = $buildLangRoute('hu');
                         <a class="nav-link<?= $isQuizzesActive ? ' active' : '' ?>"
                            href="<?= $this->Url->build($quizzesUrl) ?>">
                             <?= __('Quizzes') ?>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link<?= $isFavoritesActive ? ' active' : '' ?>"
+                           href="<?= $this->Url->build($favoritesUrl) ?>">
+                            <?= __('Favorites') ?>
                         </a>
                     </li>
 

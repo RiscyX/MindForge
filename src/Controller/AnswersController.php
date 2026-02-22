@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\BulkActionService;
+use App\Service\LanguageResolverService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
 use Cake\ORM\Query\SelectQuery;
-use Throwable;
 
 /**
  * Answers Controller
@@ -33,7 +34,7 @@ class AnswersController extends AppController
     public function index()
     {
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
 
         $query = $this->Answers
             ->find()
@@ -62,7 +63,7 @@ class AnswersController extends AppController
     public function view(?string $id = null)
     {
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
 
         $answer = $this->Answers->get($id, contain: [
             'Questions.QuestionTranslations' => function (SelectQuery $q) use ($languageId): SelectQuery {
@@ -94,7 +95,7 @@ class AnswersController extends AppController
             $this->Flash->error(__('The answer could not be saved. Please, try again.'));
         }
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
 
         $questionsQuery = $this->Answers->Questions->find()
             ->contain([
@@ -137,7 +138,7 @@ class AnswersController extends AppController
             $this->Flash->error(__('The answer could not be saved. Please, try again.'));
         }
         $langCode = (string)$this->request->getParam('lang', 'en');
-        $languageId = $this->resolveLanguageId($langCode);
+        $languageId = (new LanguageResolverService())->resolveId($langCode);
 
         $questionsQuery = $this->Answers->Questions->find()
             ->contain([
@@ -158,20 +159,6 @@ class AnswersController extends AppController
             $questions[(string)$q->id] = $label;
         }
         $this->set(compact('answer', 'questions'));
-    }
-
-    private function resolveLanguageId(string $langCode): ?int
-    {
-        $language = $this->fetchTable('Languages')
-            ->find()
-            ->where(['code LIKE' => $langCode . '%'])
-            ->first();
-
-        if ($language === null) {
-            $language = $this->fetchTable('Languages')->find()->first();
-        }
-
-        return $language?->id === null ? null : (int)$language->id;
     }
 
     /**
@@ -204,9 +191,8 @@ class AnswersController extends AppController
         $this->request->allowMethod(['post']);
 
         $action = (string)$this->request->getData('bulk_action');
-        $rawIds = $this->request->getData('ids');
-        $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
+        $bulkService = new BulkActionService();
+        $ids = $bulkService->sanitizeIds($this->request->getData('ids'));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -220,26 +206,13 @@ class AnswersController extends AppController
             return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
         }
 
-        $deleted = 0;
-        $failed = 0;
-        foreach ($ids as $id) {
-            try {
-                $entity = $this->Answers->get((string)$id);
-                if ($this->Answers->delete($entity)) {
-                    $deleted += 1;
-                } else {
-                    $failed += 1;
-                }
-            } catch (Throwable) {
-                $failed += 1;
-            }
-        }
+        $result = $bulkService->bulkDelete('Answers', $ids);
 
-        if ($deleted > 0) {
-            $this->Flash->success(__('Deleted {0} item(s).', $deleted));
+        if ($result['deleted'] > 0) {
+            $this->Flash->success(__('Deleted {0} item(s).', $result['deleted']));
         }
-        if ($failed > 0) {
-            $this->Flash->error(__('Could not delete {0} item(s).', $failed));
+        if ($result['failed'] > 0) {
+            $this->Flash->error(__('Could not delete {0} item(s).', $result['failed']));
         }
 
         return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);

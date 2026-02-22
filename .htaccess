@@ -6,7 +6,24 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine on
+
+    # Keep direct access for sibling apps/tools under the same vhost.
+    RewriteCond %{REQUEST_URI} ^/(phpmyadmin|Balazs|Ricsi)(/|$) [NC]
+    RewriteRule ^ - [L]
+
+    # Preserve Authorization header for PHP/FastCGI.
+    RewriteCond %{HTTP:Authorization} ^(.+)$
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
     RewriteRule    ^(\.well-known/.*)$ $1 [L]
     RewriteRule    ^$    webroot/    [L]
     RewriteRule    (.*) webroot/$1    [L]
+</IfModule>
+
+<IfModule mod_setenvif.c>
+    SetEnvIfNoCase Authorization "(.+)" HTTP_AUTHORIZATION=$1
 </IfModule>

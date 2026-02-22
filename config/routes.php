@@ -95,6 +95,8 @@ return function (RouteBuilder $routes): void {
         $builder->setExtensions(['json']);
         $builder->connect('/auth/register', ['controller' => 'Auth', 'action' => 'register'])->setMethods(['POST']);
         $builder->connect('/auth/login', ['controller' => 'Auth', 'action' => 'login'])->setMethods(['POST']);
+        $builder->connect('/auth/forgot-password', ['controller' => 'Auth', 'action' => 'forgotPassword'])->setMethods(['POST']);
+        $builder->connect('/auth/reset-password', ['controller' => 'Auth', 'action' => 'resetPassword'])->setMethods(['POST']);
         $builder->connect('/auth/refresh', ['controller' => 'Auth', 'action' => 'refresh'])->setMethods(['POST']);
         $builder->connect('/auth/logout', ['controller' => 'Auth', 'action' => 'logout'])->setMethods(['POST']);
         $builder->connect('/auth/me', ['controller' => 'Auth', 'action' => 'me'])->setMethods(['GET']);
@@ -121,6 +123,18 @@ return function (RouteBuilder $routes): void {
         // Stats for the authenticated user
         $builder->connect('/me/stats/quizzes', ['controller' => 'Stats', 'action' => 'quizzes'])
             ->setMethods(['GET']);
+
+        // Favorites (authenticated user)
+        $builder->connect('/me/favorites/tests', ['controller' => 'Favorites', 'action' => 'tests'])
+            ->setMethods(['GET']);
+        $builder->connect('/me/favorites/tests/{id}', ['controller' => 'Favorites', 'action' => 'addTest'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['POST']);
+        $builder->connect('/me/favorites/tests/{id}', ['controller' => 'Favorites', 'action' => 'removeTest'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['DELETE']);
 
         // Creator: async AI quiz generation (prompt + optional images)
         $builder->connect('/creator/tests/metadata', ['controller' => 'CreatorTests', 'action' => 'metadata'])
@@ -214,6 +228,9 @@ return function (RouteBuilder $routes): void {
             ->setPatterns(['lang' => 'en|hu', 'id' => '\\d+'])
             ->setPass(['id'])
             ->setMethods(['GET']);
+
+        $builder->connect('/favorites', ['controller' => 'Tests', 'action' => 'favorites'])
+            ->setPatterns(['lang' => 'en|hu']);
 
         $builder->connect('/tests/{attemptId}/review/{questionId}/explain', ['controller' => 'Tests', 'action' => 'explainAnswer'])
             ->setPatterns(['lang' => 'en|hu', 'attemptId' => '\\d+', 'questionId' => '\\d+'])

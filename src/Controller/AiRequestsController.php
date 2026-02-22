@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\AiRequestStatsService;
+use App\Service\BulkActionService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
-use Cake\I18n\FrozenTime;
-use Throwable;
 
 /**
  * AiRequests Controller
@@ -56,90 +56,9 @@ class AiRequestsController extends AppController
 
         $aiRequests = $query->all();
 
-        $since = FrozenTime::now()->subHours(24);
-
-        $statsTotal = (int)$this->AiRequests->find()->count();
-        $statsLast24h = (int)$this->AiRequests->find()->where(['AiRequests.created_at >=' => $since])->count();
-        $statsSuccessTotal = (int)$this->AiRequests->find()->where(['AiRequests.status' => 'success'])->count();
-        $statsSuccess24h = (int)$this->AiRequests->find()->where([
-            'AiRequests.created_at >=' => $since,
-            'AiRequests.status' => 'success',
-        ])->count();
-        $statsUniqueUsers24h = (int)$this->AiRequests->find()
-            ->select(['user_id'])
-            ->distinct(['user_id'])
-            ->where([
-                'AiRequests.created_at >=' => $since,
-                'AiRequests.user_id IS NOT' => null,
-            ])
-            ->count();
-
-        $topTypes24h = $this->AiRequests->find()
-            ->select([
-                'type' => 'AiRequests.type',
-                'count' => $this->AiRequests->find()->func()->count('*'),
-            ])
-            ->where(['AiRequests.created_at >=' => $since])
-            ->groupBy(['AiRequests.type'])
-            ->orderByDesc('count')
-            ->limit(5)
-            ->enableHydration(false)
-            ->all()
-            ->toList();
-
-        $topSources24h = $this->AiRequests->find()
-            ->select([
-                'source_reference' => 'AiRequests.source_reference',
-                'count' => $this->AiRequests->find()->func()->count('*'),
-            ])
-            ->where([
-                'AiRequests.created_at >=' => $since,
-                'AiRequests.source_reference IS NOT' => null,
-                'AiRequests.source_reference !=' => '',
-            ])
-            ->groupBy(['AiRequests.source_reference'])
-            ->orderByDesc('count')
-            ->limit(5)
-            ->enableHydration(false)
-            ->all()
-            ->toList();
-
-        $totalTokensRow = $this->AiRequests->find()
-            ->select(['s' => $this->AiRequests->find()->func()->sum('AiRequests.total_tokens')])
-            ->enableHydration(false)
-            ->first();
-        $statsTotalTokens = $totalTokensRow ? (int)($totalTokensRow['s'] ?? 0) : 0;
-
-        $totalCostRow = $this->AiRequests->find()
-            ->select(['s' => $this->AiRequests->find()->func()->sum('AiRequests.cost_usd')])
-            ->enableHydration(false)
-            ->first();
-        $statsTotalCostUsd = $totalCostRow ? round((float)($totalCostRow['s'] ?? 0), 6) : 0.0;
-
-        // User options for the filter dropdown (users who have at least one ai_request)
-        $userOptions = $this->AiRequests->Users->find('list', [
-            'keyField' => 'id',
-            'valueField' => 'email',
-        ])
-            ->innerJoin(
-                ['AR' => 'ai_requests'],
-                ['AR.user_id = Users.id'],
-            )
-            ->distinct(['Users.id'])
-            ->orderByAsc('Users.email')
-            ->toArray();
-
-        $stats = [
-            'total' => $statsTotal,
-            'last24h' => $statsLast24h,
-            'successTotal' => $statsSuccessTotal,
-            'success24h' => $statsSuccess24h,
-            'uniqueUsers24h' => $statsUniqueUsers24h,
-            'topTypes24h' => $topTypes24h,
-            'topSources24h' => $topSources24h,
-            'totalTokens' => $statsTotalTokens,
-            'totalCostUsd' => $statsTotalCostUsd,
-        ];
+        $statsService = new AiRequestStatsService();
+        $stats = $statsService->getStats();
+        $userOptions = $statsService->getUserOptions();
 
         $this->set(compact('aiRequests', 'stats', 'filterUserId', 'userOptions'));
     }
@@ -159,9 +78,8 @@ class AiRequestsController extends AppController
         $this->request->allowMethod(['post']);
 
         $action = (string)$this->request->getData('bulk_action');
-        $rawIds = $this->request->getData('ids');
-        $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
+        $bulkService = new BulkActionService();
+        $ids = $bulkService->sanitizeIds($this->request->getData('ids'));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -175,26 +93,13 @@ class AiRequestsController extends AppController
             return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
         }
 
-        $deleted = 0;
-        $failed = 0;
-        foreach ($ids as $id) {
-            try {
-                $entity = $this->AiRequests->get((string)$id);
-                if ($this->AiRequests->delete($entity)) {
-                    $deleted += 1;
-                } else {
-                    $failed += 1;
-                }
-            } catch (Throwable) {
-                $failed += 1;
-            }
-        }
+        $result = $bulkService->bulkDelete('AiRequests', $ids);
 
-        if ($deleted > 0) {
-            $this->Flash->success(__('Deleted {0} item(s).', $deleted));
+        if ($result['deleted'] > 0) {
+            $this->Flash->success(__('Deleted {0} item(s).', $result['deleted']));
         }
-        if ($failed > 0) {
-            $this->Flash->error(__('Could not delete {0} item(s).', $failed));
+        if ($result['failed'] > 0) {
+            $this->Flash->error(__('Could not delete {0} item(s).', $result['failed']));
         }
 
         return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);

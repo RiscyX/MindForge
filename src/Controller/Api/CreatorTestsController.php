@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Model\Entity\Role;
+use App\Service\CreatorMetadataService;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(name: 'CreatorTests', description: 'Creator test metadata')]
@@ -52,61 +53,12 @@ class CreatorTestsController extends AppController
         }
 
         $langCode = strtolower(trim((string)$this->request->getQuery('lang', 'en')));
-        $languages = $this->fetchTable('Languages');
-        $language = $languages->find()->where(['Languages.code LIKE' => $langCode . '%'])->first();
-        if (!$language) {
-            $language = $languages->find()->first();
-        }
-        $langId = $language?->id;
-
-        $categoriesTable = $this->fetchTable('Categories');
-        $categoriesQuery = $categoriesTable->find()
-            ->select(['Categories.id'])
-            ->contain([
-                'CategoryTranslations' => function ($q) use ($langId) {
-                    return $langId ? $q->where(['CategoryTranslations.language_id' => $langId]) : $q;
-                },
-            ])
-            ->orderByAsc('Categories.id');
-        if ($categoriesTable->getSchema()->hasColumn('is_active')) {
-            $categoriesQuery->where(['Categories.is_active' => true]);
-        }
-
-        $categories = [];
-        foreach ($categoriesQuery->all() as $category) {
-            $name = (string)($category->category_translations[0]->name ?? '#' . (int)$category->id);
-            $categories[] = [
-                'id' => (int)$category->id,
-                'name' => $name,
-            ];
-        }
-
-        $difficultiesTable = $this->fetchTable('Difficulties');
-        $difficultiesQuery = $difficultiesTable->find()
-            ->select(['Difficulties.id', 'Difficulties.level'])
-            ->contain([
-                'DifficultyTranslations' => function ($q) use ($langId) {
-                    return $langId ? $q->where(['DifficultyTranslations.language_id' => $langId]) : $q;
-                },
-            ])
-            ->orderByAsc('Difficulties.level')
-            ->orderByAsc('Difficulties.id');
-        if ($difficultiesTable->getSchema()->hasColumn('is_active')) {
-            $difficultiesQuery->where(['Difficulties.is_active' => true]);
-        }
-
-        $difficulties = [];
-        foreach ($difficultiesQuery->all() as $difficulty) {
-            $name = (string)($difficulty->difficulty_translations[0]->name ?? 'Level ' . (int)$difficulty->level);
-            $difficulties[] = [
-                'id' => (int)$difficulty->id,
-                'name' => $name,
-            ];
-        }
+        $metadataService = new CreatorMetadataService();
+        $langId = $metadataService->resolveLanguageId($langCode);
 
         $this->jsonSuccess([
-            'categories' => $categories,
-            'difficulties' => $difficulties,
+            'categories' => $metadataService->getActiveCategories($langId),
+            'difficulties' => $metadataService->getActiveDifficulties($langId),
         ]);
     }
 }

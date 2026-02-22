@@ -8,13 +8,11 @@ use App\Service\ApiAuthErrorCodes;
 use App\Service\ApiAuthService;
 use App\Service\ApiRateLimiterService;
 use App\Service\ApiTokenService;
-use App\Service\ImageUploadGuard;
-use Cake\Core\Configure;
+use App\Service\AvatarUploadService;
+use App\Service\PasswordResetService;
 use Cake\Routing\Router;
 use OpenApi\Attributes as OA;
 use Psr\Http\Message\UploadedFileInterface;
-use RuntimeException;
-use Throwable;
 use function Cake\Core\env;
 
 #[OA\Tag(name: 'Auth', description: 'Mobile authentication endpoints')]
@@ -27,7 +25,138 @@ class AuthController extends AppController
     {
         parent::initialize();
 
-        $this->Authentication->allowUnauthenticated(['login', 'register', 'refresh', 'logout', 'me', 'updateMe']);
+        $this->Authentication->allowUnauthenticated([
+            'login',
+            'register',
+            'refresh',
+            'logout',
+            'me',
+            'updateMe',
+            'forgotPassword',
+            'resetPassword',
+        ]);
+    }
+
+    /**
+     * Handle forgot password request.
+     *
+     * @return void
+     */
+    #[OA\Post(
+        path: '/api/v1/auth/forgot-password',
+        summary: 'Request password reset email',
+        tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email'],
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'user@example.com'),
+                    new OA\Property(property: 'lang', type: 'string', example: 'en', nullable: true),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Generic success (always)'),
+            new OA\Response(response: 429, description: 'Rate limited'),
+        ],
+    )]
+    public function forgotPassword(): void
+    {
+        $this->request->allowMethod(['post']);
+
+        $ip = (string)$this->request->clientIp();
+        $email = trim((string)$this->request->getData('email'));
+        $lang = strtolower(trim((string)$this->request->getData('lang', 'en')));
+        $lang = in_array($lang, ['en', 'hu'], true) ? $lang : 'en';
+
+        $rateLimiter = new ApiRateLimiterService();
+        $bucketKey = hash('sha256', strtolower($email) . '|' . $ip);
+        $maxAttempts = 5;
+        $windowSeconds = 60;
+        if (!$rateLimiter->isAllowed('auth_forgot_password', $bucketKey, $maxAttempts, $windowSeconds)) {
+            $this->jsonError(429, ApiAuthErrorCodes::RATE_LIMITED, 'Too many password reset attempts.');
+
+            return;
+        }
+
+        $genericMessage = 'If the email exists in our system, we sent a password reset link.';
+
+        $passwordResetService = new PasswordResetService();
+        $passwordResetService->requestReset($email, $lang);
+
+        $rateLimiter->hit('auth_forgot_password', $bucketKey, $windowSeconds);
+        $this->jsonSuccess(['message' => $genericMessage]);
+    }
+
+    /**
+     * Reset password using a reset token.
+     *
+     * @return void
+     */
+    #[OA\Post(
+        path: '/api/v1/auth/reset-password',
+        summary: 'Reset password with reset token',
+        tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['token', 'password', 'password_confirm'],
+                properties: [
+                    new OA\Property(property: 'token', type: 'string'),
+                    new OA\Property(property: 'password', type: 'string', format: 'password'),
+                    new OA\Property(property: 'password_confirm', type: 'string', format: 'password'),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Password reset successful'),
+            new OA\Response(response: 400, description: 'Password mismatch'),
+            new OA\Response(response: 422, description: 'Invalid/expired token'),
+            new OA\Response(response: 429, description: 'Rate limited'),
+        ],
+    )]
+    public function resetPassword(): void
+    {
+        $this->request->allowMethod(['post']);
+
+        $ip = (string)$this->request->clientIp();
+        $token = trim((string)$this->request->getData('token'));
+        $password = (string)$this->request->getData('password');
+        $passwordConfirm = (string)$this->request->getData('password_confirm');
+
+        $rateLimiter = new ApiRateLimiterService();
+        $bucketKey = hash('sha256', $token . '|' . $ip);
+        $maxAttempts = 10;
+        $windowSeconds = 60;
+        if (!$rateLimiter->isAllowed('auth_reset_password', $bucketKey, $maxAttempts, $windowSeconds)) {
+            $this->jsonError(429, ApiAuthErrorCodes::RATE_LIMITED, 'Too many password reset attempts.');
+
+            return;
+        }
+
+        $passwordResetService = new PasswordResetService();
+        $result = $passwordResetService->resetPasswordWithToken($token, $password, $passwordConfirm);
+        if (!$result['ok']) {
+            $rateLimiter->hit('auth_reset_password', $bucketKey, $windowSeconds);
+            if ($result['code'] === PasswordResetService::RESET_PASSWORD_MISMATCH) {
+                $this->jsonError(400, ApiAuthErrorCodes::PASSWORD_MISMATCH, 'Passwords do not match.');
+
+                return;
+            }
+            if ($result['code'] === PasswordResetService::RESET_TOKEN_INVALID) {
+                $this->jsonError(422, 'AUTH_RESET_TOKEN_INVALID', 'Invalid or expired reset token.');
+
+                return;
+            }
+
+            $this->jsonError(422, ApiAuthErrorCodes::REGISTRATION_FAILED, 'Failed to reset password.');
+
+            return;
+        }
+
+        $rateLimiter->clear('auth_reset_password', $bucketKey);
+        $this->jsonSuccess(['message' => 'Your password has been reset. You can now log in.']);
     }
 
     /**
@@ -494,59 +623,20 @@ class AuthController extends AppController
         }
 
         if ($avatarFile instanceof UploadedFileInterface) {
-            $allowedTypes = (array)Configure::read(
-                'Uploads.avatarAllowedMimeTypes',
-                ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-            );
-            $maxBytes = (int)Configure::read('Uploads.avatarMaxBytes', 3 * 1024 * 1024);
-            $imageUploadGuard = new ImageUploadGuard();
+            $avatarService = new AvatarUploadService();
+            $result = $avatarService->upload($avatarFile, (int)$user->id, (string)($user->avatar_url ?? ''));
 
-            try {
-                $mime = $imageUploadGuard->assertImageUpload($avatarFile, $allowedTypes, $maxBytes);
-                $ext = ImageUploadGuard::extensionForMime($mime);
-            } catch (RuntimeException) {
+            if (!$result['ok']) {
                 $this->jsonError(
                     422,
                     ApiAuthErrorCodes::INVALID_AVATAR_FORMAT,
-                    'Invalid image format. Allowed: JPG, PNG, GIF, WEBP.',
+                    $result['error'] ?? 'Failed to upload avatar.',
                 );
 
                 return;
             }
 
-            $filename = 'avatar_' . $user->id . '_' . time() . '.' . $ext;
-            $avatarsDir = WWW_ROOT . 'img' . DS . 'avatars';
-            if (!is_dir($avatarsDir)) {
-                mkdir($avatarsDir, 0775, true);
-            }
-
-            if (!is_dir($avatarsDir) || !is_writable($avatarsDir)) {
-                $this->jsonError(
-                    500,
-                    ApiAuthErrorCodes::PROFILE_UPDATE_FAILED,
-                    'Avatar upload directory is not writable.',
-                );
-
-                return;
-            }
-
-            $targetPath = $avatarsDir . DS . $filename;
-            try {
-                $avatarFile->moveTo($targetPath);
-            } catch (Throwable) {
-                $this->jsonError(500, ApiAuthErrorCodes::PROFILE_UPDATE_FAILED, 'Failed to store avatar image.');
-
-                return;
-            }
-
-            if ($user->avatar_url && str_contains((string)$user->avatar_url, 'avatars/')) {
-                $oldFile = WWW_ROOT . 'img' . DS . (string)$user->avatar_url;
-                if (file_exists($oldFile) && is_file($oldFile)) {
-                    unlink($oldFile);
-                }
-            }
-
-            $data['avatar_url'] = 'avatars/' . $filename;
+            $data['avatar_url'] = $result['avatar_url'];
         }
 
         $user = $users->patchEntity($user, $data, ['fields' => ['username', 'avatar_url']]);

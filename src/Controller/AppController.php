@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\Entity\Role;
+use App\Service\RoleRouteGuardService;
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
@@ -100,7 +101,7 @@ class AppController extends Controller
             $controller = (string)$this->request->getParam('controller', '');
             $action = (string)$this->request->getParam('action', '');
 
-            if (!$this->isCreatorRouteAllowed($prefix, $controller, $action)) {
+            if (!(new RoleRouteGuardService())->isCreatorRouteAllowed($prefix, $controller, $action)) {
                 throw new ForbiddenException();
             }
         }
@@ -110,107 +111,9 @@ class AppController extends Controller
             $controller = (string)$this->request->getParam('controller', '');
             $action = (string)$this->request->getParam('action', '');
 
-            if (!$this->isRegularUserRouteAllowed($prefix, $controller, $action)) {
+            if (!(new RoleRouteGuardService())->isRegularUserRouteAllowed($prefix, $controller, $action)) {
                 throw new ForbiddenException();
             }
         }
-    }
-
-    /**
-     * Check whether a creator can access the requested route.
-     *
-     * @param string $prefix Route prefix.
-     * @param string $controller Route controller.
-     * @param string $action Route action.
-     * @return bool
-     */
-    private function isCreatorRouteAllowed(string $prefix, string $controller, string $action): bool
-    {
-        if ($prefix === 'Api') {
-            return true;
-        }
-
-        if ($prefix === 'QuizCreator') {
-            return in_array($controller, ['Dashboard', 'Tests'], true);
-        }
-
-        if ($prefix === 'Admin') {
-            return false;
-        }
-
-        if ($controller === 'Tests') {
-            return true;
-        }
-
-        if ($controller === 'Users') {
-            return in_array(
-                $action,
-                [
-                    'profile',
-                    'profileEdit',
-                    'stats',
-                    'logout',
-                    'login',
-                    'register',
-                    'forgotPassword',
-                    'resetPassword',
-                    'confirm',
-                ],
-                true,
-            );
-        }
-
-        if ($controller === 'Pages') {
-            return in_array($action, ['display', 'redirectToQuizCreator', 'redirectToDefaultLanguage'], true);
-        }
-
-        return false;
-    }
-
-    /**
-     * Check whether a regular user can access the requested route.
-     *
-     * @param string $prefix Route prefix.
-     * @param string $controller Route controller.
-     * @param string $action Route action.
-     * @return bool
-     */
-    private function isRegularUserRouteAllowed(string $prefix, string $controller, string $action): bool
-    {
-        if ($prefix === 'Api') {
-            return true;
-        }
-
-        if ($prefix === 'Admin' || $prefix === 'QuizCreator') {
-            return false;
-        }
-
-        if ($controller === 'Tests') {
-            return true;
-        }
-
-        if ($controller === 'Users') {
-            return in_array(
-                $action,
-                [
-                    'profile',
-                    'profileEdit',
-                    'stats',
-                    'logout',
-                    'login',
-                    'register',
-                    'forgotPassword',
-                    'resetPassword',
-                    'confirm',
-                ],
-                true,
-            );
-        }
-
-        if ($controller === 'Pages') {
-            return in_array($action, ['display', 'redirectToDefaultLanguage'], true);
-        }
-
-        return false;
     }
 }

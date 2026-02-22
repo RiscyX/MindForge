@@ -5,12 +5,11 @@ namespace App\Controller\Api;
 
 use App\Model\Entity\Role;
 use App\Service\AiQuestionGenerationPipelineService;
-use App\Service\AiQuizPromptService;
-use App\Service\ImageUploadGuard;
-use Cake\Core\Configure;
+use App\Service\AiRequestDetailService;
+use App\Service\AiTestGenerationRequestService;
+use App\Service\LanguageResolverService;
 use Cake\I18n\FrozenTime;
 use OpenApi\Attributes as OA;
-use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use Throwable;
 
@@ -95,107 +94,66 @@ class CreatorAiController extends AppController
             return;
         }
 
-        $dailyLimit = max(1, (int)env('AI_TEST_GENERATION_DAILY_LIMIT', '20'));
-        $todayStart = FrozenTime::today();
-        $tomorrowStart = FrozenTime::tomorrow();
-        $aiRequests = $this->fetchTable('AiRequests');
-        $used = (int)$aiRequests->find()
-            ->where([
-                'user_id' => $userId,
-                'type IN' => ['test_generation_async', 'test_generation'],
-                'created_at >=' => $todayStart,
-                'created_at <' => $tomorrowStart,
-            ])
-            ->count();
-        if ($used >= $dailyLimit) {
-            $this->response = $this->response->withStatus(429);
-            $this->jsonSuccess([
-                'ok' => false,
-                'error' => [
-                    'code' => 'AI_LIMIT_REACHED',
-                    'message' => 'AI generation limit reached. Limit resets tomorrow.',
+        $langCode = strtolower(trim((string)$this->request->getData('lang', $this->request->getQuery('lang', 'en'))));
+        $languageId = (new LanguageResolverService())->resolveIdWithFallback(
+            (int)($this->request->getData('language_id') ?? 0),
+            $langCode,
+        );
+
+        $service = new AiTestGenerationRequestService();
+        $result = $service->create(
+            userId: $userId,
+            prompt: $prompt,
+            categoryId: $this->intOrNull($this->request->getData('category_id')),
+            difficultyId: $this->intOrNull($this->request->getData('difficulty_id')),
+            questionCount: $this->intOrNull($this->request->getData('question_count')),
+            isPublic: $this->boolOrDefault($this->request->getData('is_public'), true),
+            languageId: $languageId,
+            uploadedFiles: $this->request->getUploadedFiles(),
+        );
+
+        if (!$result['ok']) {
+            $errorMap = [
+                AiTestGenerationRequestService::CODE_LIMIT_REACHED => [
+                    429, 'AI_LIMIT_REACHED', 'AI generation limit reached. Limit resets tomorrow.',
                 ],
-                'resets_at' => $tomorrowStart->format('c'),
-            ]);
+                AiTestGenerationRequestService::CODE_CATEGORY_REQUIRED => [
+                    422, 'CATEGORY_REQUIRED', 'Category is required.',
+                ],
+                AiTestGenerationRequestService::CODE_CATEGORY_INVALID => [
+                    422, 'CATEGORY_INVALID', 'Category is invalid or inactive.',
+                ],
+                AiTestGenerationRequestService::CODE_DIFFICULTY_REQUIRED => [
+                    422, 'DIFFICULTY_REQUIRED', 'Difficulty is required.',
+                ],
+                AiTestGenerationRequestService::CODE_DIFFICULTY_INVALID => [
+                    422, 'DIFFICULTY_INVALID', 'Difficulty is invalid or inactive.',
+                ],
+                AiTestGenerationRequestService::CODE_REQUEST_CREATE_FAILED => [
+                    500, 'REQUEST_CREATE_FAILED', 'Could not create AI request.',
+                ],
+                AiTestGenerationRequestService::CODE_UPLOAD_FAILED => [
+                    422, 'UPLOAD_FAILED', $result['error_message'] ?? 'Failed to store uploaded assets.',
+                ],
+            ];
 
-            return;
-        }
+            // Rate-limit has special response shape
+            if ($result['code'] === AiTestGenerationRequestService::CODE_LIMIT_REACHED) {
+                $this->response = $this->response->withStatus(429);
+                $this->jsonSuccess([
+                    'ok' => false,
+                    'error' => [
+                        'code' => 'AI_LIMIT_REACHED',
+                        'message' => 'AI generation limit reached. Limit resets tomorrow.',
+                    ],
+                    'resets_at' => $result['resets_at'] ?? FrozenTime::tomorrow()->format('c'),
+                ]);
 
-        $languageId = $this->resolveLanguageId();
-        $categoryId = $this->intOrNull($this->request->getData('category_id'));
-        $difficultyId = $this->intOrNull($this->request->getData('difficulty_id'));
-        $questionCount = $this->intOrNull($this->request->getData('question_count'));
-        $isPublic = $this->boolOrDefault($this->request->getData('is_public'), true);
+                return;
+            }
 
-        if ($categoryId === null) {
-            $this->jsonError(422, 'CATEGORY_REQUIRED', 'Category is required.');
-
-            return;
-        }
-        if (!$this->isCategoryValidAndActive($categoryId)) {
-            $this->jsonError(422, 'CATEGORY_INVALID', 'Category is invalid or inactive.');
-
-            return;
-        }
-
-        if ($difficultyId === null) {
-            $this->jsonError(422, 'DIFFICULTY_REQUIRED', 'Difficulty is required.');
-
-            return;
-        }
-        if (!$this->isDifficultyValidAndActive($difficultyId)) {
-            $this->jsonError(422, 'DIFFICULTY_INVALID', 'Difficulty is invalid or inactive.');
-
-            return;
-        }
-
-        $now = FrozenTime::now();
-        $promptService = new AiQuizPromptService();
-        $req = $aiRequests->newEntity([
-            'user_id' => $userId,
-            'language_id' => $languageId,
-            'source_medium' => 'mobile_app',
-            'source_reference' => 'creator_ai_test_generation',
-            'type' => 'test_generation_async',
-            'prompt_version' => $promptService->getGenerationPromptVersion(),
-            'input_payload' => json_encode([
-                'prompt' => $prompt,
-                'category_id' => $categoryId,
-                'difficulty_id' => $difficultyId,
-                'question_count' => $questionCount,
-                'is_public' => $isPublic,
-            ], JSON_UNESCAPED_SLASHES),
-            'status' => 'pending',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-
-        if (!$aiRequests->save($req)) {
-            $this->jsonError(500, 'REQUEST_CREATE_FAILED', 'Could not create AI request.');
-
-            return;
-        }
-
-        try {
-            $this->saveUploadedAssets((int)$req->id);
-        } catch (RuntimeException $e) {
-            $req->status = 'failed';
-            $req->error_code = 'UPLOAD_FAILED';
-            $req->error_message = $e->getMessage();
-            $req->updated_at = FrozenTime::now();
-            $aiRequests->save($req);
-
-            $this->jsonError(422, 'UPLOAD_FAILED', $e->getMessage());
-
-            return;
-        } catch (Throwable) {
-            $req->status = 'failed';
-            $req->error_code = 'UPLOAD_FAILED';
-            $req->error_message = 'Failed to store uploaded assets.';
-            $req->updated_at = FrozenTime::now();
-            $aiRequests->save($req);
-
-            $this->jsonError(500, 'UPLOAD_FAILED', 'Failed to store uploaded assets.');
+            $err = $errorMap[$result['code']] ?? [500, 'REQUEST_CREATE_FAILED', 'Could not create AI request.'];
+            $this->jsonError($err[0], $err[1], $err[2]);
 
             return;
         }
@@ -203,11 +161,11 @@ class CreatorAiController extends AppController
         $this->response = $this->response->withStatus(202);
         $this->jsonSuccess([
             'ai_request' => [
-                'id' => (int)$req->id,
-                'status' => (string)$req->status,
-                'created_at' => $req->created_at?->format('c'),
+                'id' => $result['request_id'],
+                'status' => $result['status'],
+                'created_at' => $result['created_at'],
             ],
-            'poll_url' => '/api/v1/creator/ai/requests/' . (int)$req->id,
+            'poll_url' => '/api/v1/creator/ai/requests/' . $result['request_id'],
             'poll_interval_ms' => 2500,
         ]);
     }
@@ -255,76 +213,14 @@ class CreatorAiController extends AppController
             return;
         }
 
-        $payload = [
-            'ai_request' => [
-                'id' => (int)$req->id,
-                'status' => (string)$req->status,
-                'test_id' => $req->test_id !== null ? (int)$req->test_id : null,
-                'created_at' => $req->created_at?->format('c'),
-                'updated_at' => $req->updated_at?->format('c'),
-                'started_at' => $req->started_at?->format('c'),
-                'finished_at' => $req->finished_at?->format('c'),
-                'duration_ms' => $req->duration_ms !== null ? (int)$req->duration_ms : null,
-                'prompt_tokens' => $req->prompt_tokens !== null ? (int)$req->prompt_tokens : null,
-                'completion_tokens' => $req->completion_tokens !== null ? (int)$req->completion_tokens : null,
-                'total_tokens' => $req->total_tokens !== null ? (int)$req->total_tokens : null,
-                'cost_usd' => $req->cost_usd !== null ? (float)$req->cost_usd : null,
-                'prompt_version' => $req->prompt_version,
-                'error_code' => $req->error_code,
-                'error_message' => $req->error_message,
-            ],
-        ];
+        $langCode = strtolower(trim((string)$this->request->getData('lang', $this->request->getQuery('lang', 'en'))));
+        $langId = (new LanguageResolverService())->resolveIdWithFallback(
+            $req->language_id !== null ? (int)$req->language_id : 0,
+            $langCode,
+        );
 
-        // If the worker already applied the draft to a Test, include basic metadata
-        // so the mobile app can immediately show category/difficulty/title.
-        if ($req->test_id !== null) {
-            $langId = $req->language_id !== null ? (int)$req->language_id : $this->resolveLanguageId();
-            $tests = $this->fetchTable('Tests');
-            $test = $tests->find()
-                ->where([
-                    'Tests.id' => (int)$req->test_id,
-                    'Tests.created_by' => $userId,
-                ])
-                ->contain([
-                    'Categories.CategoryTranslations' => function ($q) use ($langId) {
-                        return $langId ? $q->where(['CategoryTranslations.language_id' => $langId]) : $q;
-                    },
-                    'Difficulties.DifficultyTranslations' => function ($q) use ($langId) {
-                        return $langId ? $q->where(['DifficultyTranslations.language_id' => $langId]) : $q;
-                    },
-                    'TestTranslations' => function ($q) use ($langId) {
-                        return $langId ? $q->where(['TestTranslations.language_id' => $langId]) : $q;
-                    },
-                ])
-                ->first();
-
-            if ($test) {
-                $tTrans = $test->test_translations[0] ?? null;
-                $catTrans = $test->category?->category_translations[0] ?? null;
-                $diffTrans = $test->difficulty?->difficulty_translations[0] ?? null;
-
-                $payload['test'] = [
-                    'id' => (int)$test->id,
-                    'title' => $tTrans?->title ?? 'Untitled Test',
-                    'description' => $tTrans?->description ?? '',
-                    'category_id' => $test->category_id !== null ? (int)$test->category_id : null,
-                    'category' => $catTrans?->name ?? null,
-                    'difficulty_id' => $test->difficulty_id !== null ? (int)$test->difficulty_id : null,
-                    'difficulty' => $diffTrans?->name ?? null,
-                    'number_of_questions' => $test->number_of_questions !== null
-                        ? (int)$test->number_of_questions
-                        : null,
-                    'is_public' => (bool)$test->is_public,
-                ];
-            }
-        }
-
-        if ((string)$req->status === 'success' && is_string($req->output_payload) && $req->output_payload !== '') {
-            $draft = json_decode($req->output_payload, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($draft)) {
-                $payload['draft'] = $draft;
-            }
-        }
+        $detailService = new AiRequestDetailService();
+        $payload = $detailService->buildViewPayload($req, $userId, $langId);
 
         $this->jsonSuccess($payload);
     }
@@ -392,35 +288,25 @@ class CreatorAiController extends AppController
             return;
         }
 
-        $decodedDraft = null;
-        if (is_string($req->output_payload) && $req->output_payload !== '') {
-            $decodedDraft = json_decode($req->output_payload, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $decodedDraft = null;
-            }
-        }
-
-        $draft = is_array($decodedDraft) ? $decodedDraft : null;
-
-        // Allow clients (mobile/web) to apply an edited draft.
-        // If provided, it must match the same schema as the AI output payload.
-        $incomingDraft = $this->request->getData('draft');
-        if (is_array($incomingDraft) && $incomingDraft) {
-            $draft = $incomingDraft;
-        }
-
-        if (!is_array($draft)) {
-            $this->jsonError(422, 'DRAFT_INVALID', 'AI draft is not valid JSON.');
+        $detailService = new AiRequestDetailService();
+        $draftResult = $detailService->resolveDraft(
+            $req,
+            is_array($this->request->getData('draft')) ? $this->request->getData('draft') : null,
+        );
+        if (!$draftResult['ok']) {
+            $this->jsonError(422, $draftResult['error_code'], $draftResult['error_message']);
 
             return;
         }
+        $draft = $draftResult['draft'];
+        $isClientDraft = is_array($this->request->getData('draft')) && !empty($this->request->getData('draft'));
 
         $pipeline = new AiQuestionGenerationPipelineService();
         try {
             $testId = $pipeline->applyDraftFromRequest(
                 $req,
                 $draft,
-                is_array($incomingDraft) && $incomingDraft,
+                $isClientDraft,
             );
         } catch (RuntimeException $e) {
             $message = $e->getMessage();
@@ -463,31 +349,6 @@ class CreatorAiController extends AppController
     }
 
     /**
-     * Resolve language id from request payload or route query.
-     *
-     * @return int|null
-     */
-    private function resolveLanguageId(): ?int
-    {
-        $languageId = $this->request->getData('language_id');
-        if (is_numeric($languageId) && (int)$languageId > 0) {
-            return (int)$languageId;
-        }
-
-        $langCode = strtolower(trim((string)$this->request->getData(
-            'lang',
-            $this->request->getQuery('lang', 'en'),
-        )));
-        $languages = $this->fetchTable('Languages');
-        $lang = $languages->find()->where(['code LIKE' => $langCode . '%'])->first();
-        if (!$lang) {
-            $lang = $languages->find()->first();
-        }
-
-        return $lang?->id;
-    }
-
-    /**
      * Parse positive integer or null.
      *
      * @param mixed $v Value to parse.
@@ -524,238 +385,5 @@ class CreatorAiController extends AppController
         }
 
         return $default;
-    }
-
-    /**
-     * Check whether the category exists and is active.
-     *
-     * @param int $categoryId Category identifier.
-     * @return bool
-     */
-    private function isCategoryValidAndActive(int $categoryId): bool
-    {
-        $categories = $this->fetchTable('Categories');
-        $query = $categories->find()->where(['Categories.id' => $categoryId]);
-        if ($categories->getSchema()->hasColumn('is_active')) {
-            $query->where(['Categories.is_active' => true]);
-        }
-
-        return $query->count() > 0;
-    }
-
-    /**
-     * Check whether the difficulty exists and is active.
-     *
-     * @param int $difficultyId Difficulty identifier.
-     * @return bool
-     */
-    private function isDifficultyValidAndActive(int $difficultyId): bool
-    {
-        $difficulties = $this->fetchTable('Difficulties');
-        $query = $difficulties->find()->where(['Difficulties.id' => $difficultyId]);
-        if ($difficulties->getSchema()->hasColumn('is_active')) {
-            $query->where(['Difficulties.is_active' => true]);
-        }
-
-        return $query->count() > 0;
-    }
-
-    /**
-     * Persist uploaded images/documents for AI request.
-     *
-     * @param int $aiRequestId AI request identifier.
-     * @return void
-     */
-    private function saveUploadedAssets(int $aiRequestId): void
-    {
-        $files = $this->request->getUploadedFiles();
-        $images = $files['images'] ?? null;
-        $documents = $files['documents'] ?? null;
-
-        $imageFiles = [];
-        if (is_array($images)) {
-            $imageFiles = $images;
-        } elseif ($images instanceof UploadedFileInterface) {
-            $imageFiles = [$images];
-        }
-
-        $documentFiles = [];
-        if (is_array($documents)) {
-            $documentFiles = $documents;
-        } elseif ($documents instanceof UploadedFileInterface) {
-            $documentFiles = [$documents];
-        }
-
-        if (!$imageFiles && !$documentFiles) {
-            return;
-        }
-
-        $maxCount = (int)Configure::read('AI.maxImages', 6);
-        if (count($imageFiles) > $maxCount) {
-            throw new RuntimeException('Too many images. Max: ' . $maxCount);
-        }
-
-        $allowed = (array)Configure::read('AI.allowedImageMimeTypes', [
-            'image/jpeg',
-            'image/png',
-            'image/webp',
-        ]);
-        $maxBytes = (int)Configure::read('AI.maxImageBytes', 6 * 1024 * 1024);
-        $imageUploadGuard = new ImageUploadGuard();
-
-        $maxDocumentCount = (int)Configure::read('AI.maxDocuments', 4);
-        if (count($documentFiles) > $maxDocumentCount) {
-            throw new RuntimeException('Too many documents. Max: ' . $maxDocumentCount);
-        }
-        $allowedDocumentMimes = (array)Configure::read('AI.allowedDocumentMimeTypes', []);
-        $maxDocumentBytes = (int)Configure::read('AI.maxDocumentBytes', 8 * 1024 * 1024);
-
-        $baseDir = rtrim(TMP, DS) . DS . 'ai_assets' . DS . (string)$aiRequestId;
-        if (!is_dir($baseDir) && !mkdir($baseDir, 0775, true) && !is_dir($baseDir)) {
-            throw new RuntimeException('Upload directory is not writable.');
-        }
-
-        $assetsTable = $this->fetchTable('AiRequestAssets');
-        $now = FrozenTime::now();
-
-        foreach ($imageFiles as $file) {
-            if (!$file instanceof UploadedFileInterface) {
-                continue;
-            }
-            if ($file->getError() === UPLOAD_ERR_NO_FILE) {
-                continue;
-            }
-            $mime = $imageUploadGuard->assertImageUpload($file, $allowed, $maxBytes);
-
-            $ext = ImageUploadGuard::extensionForMime($mime);
-            $name = bin2hex(random_bytes(16)) . '.' . $ext;
-            $absPath = $baseDir . DS . $name;
-            $file->moveTo($absPath);
-
-            $hash = hash_file('sha256', $absPath);
-            $sha256 = $hash !== false ? $hash : null;
-            // Store as a workspace-relative path for the worker.
-            $relPath = 'tmp/ai_assets/' . $aiRequestId . '/' . $name;
-            $size = (int)$file->getSize();
-
-            $asset = $assetsTable->newEntity([
-                'ai_request_id' => $aiRequestId,
-                'storage_path' => $relPath,
-                'mime_type' => $mime,
-                'size_bytes' => $size,
-                'sha256' => $sha256,
-                'created_at' => $now,
-            ]);
-            if (!$assetsTable->save($asset)) {
-                throw new RuntimeException('Failed to store image metadata.');
-            }
-        }
-
-        foreach ($documentFiles as $file) {
-            if (!$file instanceof UploadedFileInterface) {
-                continue;
-            }
-            if ($file->getError() === UPLOAD_ERR_NO_FILE) {
-                continue;
-            }
-            if ($file->getError() !== UPLOAD_ERR_OK) {
-                throw new RuntimeException('Document upload failed.');
-            }
-
-            $size = (int)$file->getSize();
-            if ($size <= 0) {
-                throw new RuntimeException('Uploaded document is empty.');
-            }
-            if ($size > $maxDocumentBytes) {
-                throw new RuntimeException('Uploaded document is too large.');
-            }
-
-            $mime = $this->detectUploadedMime($file);
-            if ($mime === '' || !in_array($mime, $allowedDocumentMimes, true)) {
-                throw new RuntimeException('Unsupported document type: ' . ($mime !== '' ? $mime : 'unknown'));
-            }
-
-            $ext = $this->extensionForDocumentMime($mime);
-            $name = bin2hex(random_bytes(16)) . '.' . $ext;
-            $absPath = $baseDir . DS . $name;
-            $file->moveTo($absPath);
-
-            $hash = hash_file('sha256', $absPath);
-            $sha256 = $hash !== false ? $hash : null;
-            $relPath = 'tmp/ai_assets/' . $aiRequestId . '/' . $name;
-
-            $asset = $assetsTable->newEntity([
-                'ai_request_id' => $aiRequestId,
-                'storage_path' => $relPath,
-                'mime_type' => $mime,
-                'size_bytes' => $size,
-                'sha256' => $sha256,
-                'created_at' => $now,
-            ]);
-            if (!$assetsTable->save($asset)) {
-                throw new RuntimeException('Failed to store document metadata.');
-            }
-        }
-    }
-
-    /**
-     * Map allowed document MIME types to extension.
-     *
-     * @param string $mime MIME type.
-     * @return string
-     */
-    private function extensionForDocumentMime(string $mime): string
-    {
-        return match ($mime) {
-            'application/pdf' => 'pdf',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
-            'application/vnd.oasis.opendocument.text' => 'odt',
-            'text/plain' => 'txt',
-            'text/markdown' => 'md',
-            'text/csv' => 'csv',
-            'application/json' => 'json',
-            'application/xml', 'text/xml' => 'xml',
-            default => throw new RuntimeException('Unsupported document type: ' . $mime),
-        };
-    }
-
-    /**
-     * Detect uploaded file MIME type from content.
-     *
-     * @param \Psr\Http\Message\UploadedFileInterface $file Uploaded file.
-     * @return string
-     */
-    private function detectUploadedMime(UploadedFileInterface $file): string
-    {
-        try {
-            $stream = $file->getStream();
-            if ($stream->isSeekable()) {
-                $stream->rewind();
-            }
-            $content = $stream->getContents();
-            if ($stream->isSeekable()) {
-                $stream->rewind();
-            }
-        } catch (Throwable) {
-            $content = '';
-        }
-
-        $detected = '';
-        if (is_string($content) && $content !== '') {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            if ($finfo !== false) {
-                $tmp = finfo_buffer($finfo, $content);
-                finfo_close($finfo);
-                if (is_string($tmp)) {
-                    $detected = strtolower(trim($tmp));
-                }
-            }
-        }
-
-        if ($detected === '') {
-            $detected = strtolower(trim((string)$file->getClientMediaType()));
-        }
-
-        return $detected;
     }
 }

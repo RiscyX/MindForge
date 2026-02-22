@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\AdminActivityLogService;
+use App\Service\BulkActionService;
+use App\Service\TranslationScaffoldService;
 use Cake\Event\EventInterface;
 use Cake\Http\Response;
-use Throwable;
 
 /**
  * Categories Controller
@@ -76,13 +78,10 @@ class CategoriesController extends AppController
             }
             $this->Flash->error(__('The category could not be saved. Please, try again.'));
         } else {
-            $translations = [];
-            foreach ($languages as $language) {
-                $t = $this->Categories->CategoryTranslations->newEmptyEntity();
-                $t->language_id = $language->id;
-                $translations[] = $t;
-            }
-            $category->category_translations = $translations;
+            $scaffoldService = new TranslationScaffoldService();
+            $category->category_translations = $scaffoldService->buildNewTranslations(
+                $this->Categories->CategoryTranslations,
+            );
         }
         $this->set(compact('category', 'languages'));
     }
@@ -110,22 +109,11 @@ class CategoriesController extends AppController
             }
             $this->Flash->error(__('The category could not be saved. Please, try again.'));
         } else {
-            $existing = [];
-            foreach ($category->category_translations as $t) {
-                $existing[$t->language_id] = $t;
-            }
-
-            $completeTranslations = [];
-            foreach ($languages as $language) {
-                if (isset($existing[$language->id])) {
-                    $completeTranslations[] = $existing[$language->id];
-                } else {
-                    $t = $this->Categories->CategoryTranslations->newEmptyEntity();
-                    $t->language_id = $language->id;
-                    $completeTranslations[] = $t;
-                }
-            }
-            $category->category_translations = $completeTranslations;
+            $scaffoldService = new TranslationScaffoldService();
+            $category->category_translations = $scaffoldService->mergeTranslations(
+                $this->Categories->CategoryTranslations,
+                $category->category_translations,
+            );
         }
         $this->set(compact('category', 'languages'));
     }
@@ -142,9 +130,7 @@ class CategoriesController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $category = $this->Categories->get($id);
         if ($this->Categories->delete($category)) {
-            if (method_exists($this, 'logAdminAction')) {
-                $this->logAdminAction('admin_delete_category', ['id' => $category->id]);
-            }
+            (new AdminActivityLogService())->log($this->request, 'admin_delete_category', ['id' => $category->id]);
             $this->Flash->success(__('The category has been deleted.'));
         } else {
             $this->Flash->error(__('The category could not be deleted. Please, try again.'));
@@ -163,9 +149,8 @@ class CategoriesController extends AppController
         $this->request->allowMethod(['post']);
 
         $action = (string)$this->request->getData('bulk_action');
-        $rawIds = $this->request->getData('ids');
-        $ids = is_array($rawIds) ? $rawIds : [];
-        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn($v) => $v > 0)));
+        $bulkService = new BulkActionService();
+        $ids = $bulkService->sanitizeIds($this->request->getData('ids'));
 
         if (!$ids) {
             $this->Flash->error(__('Select at least one item.'));
@@ -179,29 +164,17 @@ class CategoriesController extends AppController
             return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
         }
 
-        $deleted = 0;
-        $failed = 0;
-        foreach ($ids as $id) {
-            try {
-                $entity = $this->Categories->get((string)$id);
-                if ($this->Categories->delete($entity)) {
-                    $deleted += 1;
-                    if (method_exists($this, 'logAdminAction')) {
-                        $this->logAdminAction('admin_delete_category', ['id' => $entity->id]);
-                    }
-                } else {
-                    $failed += 1;
-                }
-            } catch (Throwable) {
-                $failed += 1;
-            }
-        }
+        $result = $bulkService->bulkDelete('Categories', $ids);
 
-        if ($deleted > 0) {
-            $this->Flash->success(__('Deleted {0} item(s).', $deleted));
+        if ($result['deleted'] > 0) {
+            (new AdminActivityLogService())->log($this->request, 'admin_bulk_delete_categories', [
+                'count' => $result['deleted'],
+                'ids' => implode(',', $ids),
+            ]);
+            $this->Flash->success(__('Deleted {0} item(s).', $result['deleted']));
         }
-        if ($failed > 0) {
-            $this->Flash->error(__('Could not delete {0} item(s).', $failed));
+        if ($result['failed'] > 0) {
+            $this->Flash->error(__('Could not delete {0} item(s).', $result['failed']));
         }
 
         return $this->redirect(['action' => 'index', 'lang' => $this->request->getParam('lang')]);
