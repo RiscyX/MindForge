@@ -140,14 +140,12 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
                     'empty' => __('All users'),
                     'options' => $userOptions,
                     'value' => $filterUserId ?: '',
-                    'class' => 'form-select',
+                    'class' => 'form-select mf-admin-select',
                 ]) ?>
             </div>
-            <div class="col-auto">
-                <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
-            </div>
-            <div class="col-auto">
-                <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
+            <div class="col-auto d-flex gap-2">
+                <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-sm btn-primary mf-admin-apply-btn']) ?>
+                <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-sm btn-outline-light mf-admin-reset-btn']) ?>
             </div>
         <?= $this->Form->end() ?>
     </div>
@@ -231,12 +229,12 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
                             <td>
                                 <?php if ($aiRequest->user !== null) : ?>
                                     <?= $this->Html->link(
-                                        h((string)($aiRequest->user->email ?? ('User #' . (string)$aiRequest->user_id))),
+                                        h((string)($aiRequest->user->email ?? __('User #{0}', (string)$aiRequest->user_id))),
                                         ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'edit', $aiRequest->user->id, 'lang' => $lang],
                                         ['class' => 'link-light link-underline-opacity-0 link-underline-opacity-100-hover'],
                                     ) ?>
                                 <?php elseif ($aiRequest->user_id !== null) : ?>
-                                    <span class="mf-muted"><?= h('User #' . (string)$aiRequest->user_id) ?></span>
+                                    <span class="mf-muted"><?= h(__('User #{0}', (string)$aiRequest->user_id)) ?></span>
                                 <?php else : ?>
                                     <span class="mf-muted"><?= __('System') ?></span>
                                 <?php endif; ?>

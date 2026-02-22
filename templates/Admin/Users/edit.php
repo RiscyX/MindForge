@@ -194,11 +194,11 @@ $deviceTypeLabels = [
                                             <?php
                                                 $testTitle = !empty($attempt->test->test_translations)
                                                     ? (string)$attempt->test->test_translations[0]->title
-                                                    : 'Test #' . (string)$attempt->test_id;
+                                                    : __('Test #{0}', (string)$attempt->test_id);
                                             ?>
                                             <?= h($testTitle) ?>
                                         <?php else : ?>
-                                            <span class="mf-muted"><?= h('Test #' . (string)$attempt->test_id) ?></span>
+                                            <span class="mf-muted"><?= h(__('Test #{0}', (string)$attempt->test_id)) ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td>

@@ -65,7 +65,7 @@ $this->assign('title', __('Questions'));
                 'empty' => __('All'),
                 'options' => $categoryOptions ?? [],
                 'value' => $selectedCategory,
-                'class' => 'form-select',
+                'class' => 'form-select mf-admin-select',
             ]) ?>
         </div>
         <div class="col-12 col-lg-2">
@@ -75,7 +75,7 @@ $this->assign('title', __('Questions'));
                 'empty' => __('All'),
                 'options' => $questionTypeOptions ?? [],
                 'value' => $selectedQuestionType,
-                'class' => 'form-select',
+                'class' => 'form-select mf-admin-select',
             ]) ?>
         </div>
         <div class="col-12 col-lg-2">
@@ -85,7 +85,7 @@ $this->assign('title', __('Questions'));
                 'empty' => __('All'),
                 'options' => $activeOptions ?? [],
                 'value' => $selectedIsActive,
-                'class' => 'form-select',
+                'class' => 'form-select mf-admin-select',
             ]) ?>
         </div>
         <div class="col-12 col-lg-2">
@@ -95,7 +95,7 @@ $this->assign('title', __('Questions'));
                 'empty' => __('All'),
                 'options' => $sourceTypeOptions ?? [],
                 'value' => $selectedSourceType,
-                'class' => 'form-select',
+                'class' => 'form-select mf-admin-select',
             ]) ?>
         </div>
         <div class="col-12 col-lg-2">
@@ -105,14 +105,14 @@ $this->assign('title', __('Questions'));
                 'empty' => __('All'),
                 'options' => $needsReviewOptions ?? [],
                 'value' => $selectedNeedsReview,
-                'class' => 'form-select',
+                'class' => 'form-select mf-admin-select',
             ]) ?>
         </div>
         <div class="col-12 col-lg-1 d-grid">
-            <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
+            <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary mf-admin-apply-btn']) ?>
         </div>
         <div class="col-12 col-lg-1 d-grid">
-            <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
+            <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light mf-admin-reset-btn']) ?>
         </div>
     <?= $this->Form->end() ?>
 </div>

@@ -7,6 +7,8 @@ use App\Model\Entity\Role;
 use App\Service\ApiTestService;
 use App\Service\LanguageResolverService;
 use App\Service\TestAttemptService;
+use App\Service\TestPersistenceService;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(name: 'Tests', description: 'Operations about tests')]
@@ -89,6 +91,318 @@ class TestsController extends AppController
         );
 
         $this->jsonSuccess(['tests' => $tests]);
+    }
+
+    /**
+     * Update an existing test (all fields, nested questions/answers included).
+     *
+     * Accessible by ADMIN (any test) and CREATOR (own tests only).
+     *
+     * @param string|null $id Test id.
+     * @return void
+     */
+    #[OA\Put(
+        path: '/api/v1/tests/{id}',
+        summary: 'Update a test (full replace)',
+        tags: ['Tests'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'ID of the test to update',
+                required: true,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+            new OA\Parameter(
+                name: 'lang',
+                in: 'query',
+                description: 'Language code used to resolve translations (e.g. en, hu)',
+                required: false,
+                schema: new OA\Schema(type: 'string', default: 'en'),
+            ),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'category_id', type: 'integer', nullable: true, example: 2),
+                    new OA\Property(property: 'difficulty_id', type: 'integer', nullable: true, example: 1),
+                    new OA\Property(property: 'is_public', type: 'boolean', example: true),
+                    new OA\Property(
+                        property: 'test_translations',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'language_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'title', type: 'string', example: 'My Quiz'),
+                                new OA\Property(
+                                    property: 'description',
+                                    type: 'string',
+                                    nullable: true,
+                                    example: 'A short description',
+                                ),
+                            ],
+                        ),
+                    ),
+                    new OA\Property(
+                        property: 'questions',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(
+                                    property: 'id',
+                                    type: 'integer',
+                                    nullable: true,
+                                    description: 'Omit for new questions',
+                                ),
+                                new OA\Property(property: 'question_type', type: 'string', example: 'single_choice'),
+                                new OA\Property(property: 'position', type: 'integer', example: 1),
+                                new OA\Property(
+                                    property: 'question_translations',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'language_id', type: 'integer'),
+                                            new OA\Property(property: 'content', type: 'string'),
+                                            new OA\Property(
+                                                property: 'explanation',
+                                                type: 'string',
+                                                nullable: true,
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                new OA\Property(
+                                    property: 'answers',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(
+                                                property: 'id',
+                                                type: 'integer',
+                                                nullable: true,
+                                                description: 'Omit for new answers',
+                                            ),
+                                            new OA\Property(property: 'is_correct', type: 'boolean'),
+                                            new OA\Property(
+                                                property: 'answer_translations',
+                                                type: 'array',
+                                                items: new OA\Items(
+                                                    properties: [
+                                                        new OA\Property(property: 'language_id', type: 'integer'),
+                                                        new OA\Property(property: 'content', type: 'string'),
+                                                    ],
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Test updated successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'ok', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Test updated successfully.'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden – not owner or insufficient role'),
+            new OA\Response(response: 404, description: 'Test not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
+    #[OA\Patch(
+        path: '/api/v1/tests/{id}',
+        summary: 'Update a test (partial update)',
+        tags: ['Tests'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'ID of the test to update',
+                required: true,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+            new OA\Parameter(
+                name: 'lang',
+                in: 'query',
+                description: 'Language code used to resolve translations (e.g. en, hu)',
+                required: false,
+                schema: new OA\Schema(type: 'string', default: 'en'),
+            ),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'category_id', type: 'integer', nullable: true, example: 2),
+                    new OA\Property(property: 'difficulty_id', type: 'integer', nullable: true, example: 1),
+                    new OA\Property(property: 'is_public', type: 'boolean', example: true),
+                    new OA\Property(
+                        property: 'test_translations',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'language_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'title', type: 'string', example: 'My Quiz'),
+                                new OA\Property(
+                                    property: 'description',
+                                    type: 'string',
+                                    nullable: true,
+                                    example: 'A short description',
+                                ),
+                            ],
+                        ),
+                    ),
+                    new OA\Property(
+                        property: 'questions',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(
+                                    property: 'id',
+                                    type: 'integer',
+                                    nullable: true,
+                                    description: 'Omit for new questions',
+                                ),
+                                new OA\Property(property: 'question_type', type: 'string', example: 'single_choice'),
+                                new OA\Property(property: 'position', type: 'integer', example: 1),
+                                new OA\Property(
+                                    property: 'question_translations',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'language_id', type: 'integer'),
+                                            new OA\Property(property: 'content', type: 'string'),
+                                            new OA\Property(
+                                                property: 'explanation',
+                                                type: 'string',
+                                                nullable: true,
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                new OA\Property(
+                                    property: 'answers',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(
+                                                property: 'id',
+                                                type: 'integer',
+                                                nullable: true,
+                                                description: 'Omit for new answers',
+                                            ),
+                                            new OA\Property(property: 'is_correct', type: 'boolean'),
+                                            new OA\Property(
+                                                property: 'answer_translations',
+                                                type: 'array',
+                                                items: new OA\Items(
+                                                    properties: [
+                                                        new OA\Property(property: 'language_id', type: 'integer'),
+                                                        new OA\Property(property: 'content', type: 'string'),
+                                                    ],
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Test updated successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'ok', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Test updated successfully.'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden – not owner or insufficient role'),
+            new OA\Response(response: 404, description: 'Test not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
+    public function edit(?string $id = null): void
+    {
+        $this->request->allowMethod(['patch', 'put']);
+
+        // 1. Authentication
+        $apiUser = $this->request->getAttribute('apiUser');
+        if ($apiUser === null) {
+            $this->jsonError(401, 'TOKEN_INVALID', 'Access token is required.');
+
+            return;
+        }
+
+        // 2. Role check – only ADMIN and CREATOR may edit tests via API
+        $roleId = (int)$apiUser->role_id;
+        if (!in_array($roleId, [Role::ADMIN, Role::CREATOR], true)) {
+            $this->jsonError(403, 'FORBIDDEN', 'You do not have permission to edit tests.');
+
+            return;
+        }
+
+        // 3. Load test – 404 if not found
+        $testsTable = $this->fetchTable('Tests');
+        try {
+            $test = $testsTable->get((int)$id);
+        } catch (RecordNotFoundException) {
+            $this->jsonError(404, 'TEST_NOT_FOUND', 'Test not found.');
+
+            return;
+        }
+
+        // 4. Ownership check – CREATORs may only edit their own tests
+        if ($roleId === Role::CREATOR && (int)$test->created_by !== (int)$apiUser->id) {
+            $this->jsonError(403, 'FORBIDDEN', 'You do not have permission to edit this test.');
+
+            return;
+        }
+
+        // 5. Language resolution (for translation enrichment)
+        $langCode = strtolower(trim((string)$this->request->getQuery('lang', 'en')));
+        $langId = (new LanguageResolverService())->resolveId($langCode);
+
+        // 6. Delegate to TestPersistenceService::update()
+        $data = (array)$this->request->getData();
+        $result = (new TestPersistenceService())->update($id, $data, (int)$apiUser->id, $langId);
+
+        // 7. Response
+        if (!$result['ok']) {
+            $this->response = $this->response->withStatus(422);
+            $this->set([
+                'ok' => false,
+                'error' => [
+                    'code' => 'TEST_UPDATE_FAILED',
+                    'message' => 'Unable to update test.',
+                    'details' => $result['errors'] ?? [],
+                ],
+            ]);
+            $this->viewBuilder()->setOption('serialize', ['ok', 'error']);
+
+            return;
+        }
+
+        $this->jsonSuccess(['message' => 'Test updated successfully.']);
     }
 
     /**

@@ -81,6 +81,7 @@ if ($isAuthPage) {
     <?= $this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js') ?>
     <?= $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js') ?>
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/sweetalert2@11') ?>
+    <?= $this->element('js_translations') ?>
     <?= $this->Html->script('flash.js?v=1') ?>
     <?= $this->Html->script('logout_confirmation.js?v=3') ?>
     <?= $this->Html->script('admin_form_loading.js?v=1') ?>

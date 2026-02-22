@@ -19,7 +19,7 @@
 (() => {
     'use strict';
 
-    const isHu = (document.documentElement.lang || '').toLowerCase().startsWith('hu');
+    const t = (key, fallback) => (window.MF && window.MF.t) ? window.MF.t(key) : (fallback || key);
 
     const SPINNER_HTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>';
 
@@ -32,14 +32,25 @@
         if (custom) return custom;
 
         const text = (btn.textContent || '').trim();
-        if (!text) return isHu ? 'Feldolgozás…' : 'Processing…';
+        if (!text) return t('processing', 'Processing…');
 
-        // Common verb mappings
-        const hu = { 'Mentés': 'Mentés…', 'Létrehozás': 'Mentés…', 'Küldés': 'Küldés…' };
-        const en = { 'Save': 'Saving…', 'Create': 'Creating…', 'Send': 'Sending…', 'Submit': 'Submitting…', 'Apply': 'Applying…', 'Update': 'Updating…', 'Delete': 'Deleting…' };
-        const map = isHu ? hu : en;
+        // Map button labels to their loading-state equivalents via MF strings
+        const labelMap = {
+            'Save': t('saving', 'Saving…'),
+            'Mentés': t('saving', 'Mentés…'),
+            'Create': t('creating', 'Creating…'),
+            'Létrehozás': t('creating', 'Létrehozás…'),
+            'Send': t('sending', 'Sending…'),
+            'Küldés': t('sending', 'Küldés…'),
+            'Submit': t('submitting', 'Submitting…'),
+            'Beküldés': t('submitting', 'Beküldés…'),
+            'Apply': t('applying', 'Applying…'),
+            'Update': t('updating', 'Updating…'),
+            'Delete': t('deleting', 'Deleting…'),
+            'Törlés': t('deleting', 'Törlés…'),
+        };
 
-        return map[text] || (isHu ? `${text}…` : `${text}…`);
+        return labelMap[text] || `${text}…`;
     };
 
     const applyLoadingState = (btn) => {

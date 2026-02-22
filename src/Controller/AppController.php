@@ -96,6 +96,33 @@ class AppController extends Controller
         $this->set('currentLocale', $locale);
 
         $identity = $this->request->getAttribute('identity');
+
+        // Force-logout any authenticated user whose account has been banned.
+        // A fresh DB lookup is used so the ban takes effect on the very next request,
+        // regardless of the stale session snapshot.
+        if ($identity !== null) {
+            $userId = $identity->getIdentifier();
+            /** @var \App\Model\Table\UsersTable $usersTable */
+            $usersTable = $this->fetchTable('Users');
+            $row = $usersTable->find()
+                ->select(['is_blocked'])
+                ->where(['id' => $userId])
+                ->first();
+
+            if ($row !== null && (bool)$row->is_blocked) {
+                $this->Authentication->logout();
+                $this->Flash->error(__('Your account has been suspended. Please contact support.'));
+                $event->setResult($this->redirect([
+                    'controller' => 'Users',
+                    'action' => 'login',
+                    'lang' => $lang,
+                    'prefix' => false,
+                ]));
+
+                return;
+            }
+        }
+
         if ($identity !== null && (int)$identity->get('role_id') === Role::CREATOR) {
             $prefix = (string)$this->request->getParam('prefix', '');
             $controller = (string)$this->request->getParam('controller', '');

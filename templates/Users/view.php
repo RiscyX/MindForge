@@ -44,7 +44,7 @@ $isAdmin = $isLoggedIn && (int)$identity->get('role_id') === Role::ADMIN;
                     <th><?= __('Avatar Url') ?></th>
                     <td>
                         <?php if ($user->avatar_url) : ?>
-                            <?= $this->Html->image($user->avatar_url, ['alt' => 'Avatar', 'style' => 'max-width: 100px; max-height: 100px;']) ?>
+                            <?= $this->Html->image($user->avatar_url, ['alt' => __('Avatar'), 'style' => 'max-width: 100px; max-height: 100px;']) ?>
                         <?php else : ?>
                             <?= h($user->avatar_url) ?>
                         <?php endif; ?>

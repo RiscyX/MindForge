@@ -99,7 +99,7 @@ $to = (string)($filters['to'] ?? '');
                     '2' => __('Desktop'),
                 ],
                 'value' => $selectedDeviceType,
-                'class' => 'form-select',
+                'class' => 'form-select mf-admin-select',
             ]) ?>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
@@ -107,7 +107,7 @@ $to = (string)($filters['to'] ?? '');
                 'label' => __('From'),
                 'type' => 'date',
                 'value' => $from,
-                'class' => 'form-control',
+                'class' => 'form-control mf-admin-input',
             ]) ?>
         </div>
         <div class="col-12 col-sm-6 col-xl-3">
@@ -115,12 +115,12 @@ $to = (string)($filters['to'] ?? '');
                 'label' => __('To'),
                 'type' => 'date',
                 'value' => $to,
-                'class' => 'form-control',
+                'class' => 'form-control mf-admin-input',
             ]) ?>
         </div>
         <div class="col-12 col-sm-6 col-xl-3 d-flex gap-2">
-            <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
-            <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang, '?' => ($filters['user_id'] !== '' ? ['user_id' => $filters['user_id']] : [])], ['class' => 'btn btn-outline-light']) ?>
+            <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-sm btn-primary mf-admin-apply-btn']) ?>
+            <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang, '?' => ($filters['user_id'] !== '' ? ['user_id' => $filters['user_id']] : [])], ['class' => 'btn btn-sm btn-outline-light mf-admin-reset-btn']) ?>
         </div>
     <?= $this->Form->end() ?>
 </div>
@@ -191,12 +191,12 @@ $to = (string)($filters['to'] ?? '');
                         <td>
                             <?php if ($deviceLog->user !== null) : ?>
                                 <?= $this->Html->link(
-                                    h((string)($deviceLog->user->email ?? ('User #' . (string)$deviceLog->user_id))),
+                                    h((string)($deviceLog->user->email ?? __('User #{0}', (string)$deviceLog->user_id))),
                                     ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'edit', $deviceLog->user->id, 'lang' => $lang],
                                     ['class' => 'link-light link-underline-opacity-0 link-underline-opacity-100-hover'],
                                 ) ?>
                             <?php elseif ($deviceLog->user_id !== null) : ?>
-                                <span class="mf-muted"><?= h('User #' . (string)$deviceLog->user_id) ?></span>
+                                <span class="mf-muted"><?= h(__('User #{0}', (string)$deviceLog->user_id)) ?></span>
                             <?php else : ?>
                                 <span class="mf-muted"><?= __('Guest') ?></span>
                             <?php endif; ?>

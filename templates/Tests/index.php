@@ -41,7 +41,7 @@ $catalogTests = $isCatalog
     : [];
 
 $this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
-$this->Html->css('tests_catalog.css?v=4', ['block' => 'css']);
+$this->Html->css('tests_catalog.css?v=5', ['block' => 'css']);
 
 if (!$this->request->getParam('prefix')) {
     $this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
@@ -267,7 +267,7 @@ if (!$this->request->getParam('prefix')) {
                         <?= $this->Form->control('q', [
                             'label' => __('Search'),
                             'value' => $q,
-                            'class' => 'form-control',
+                            'class' => 'form-control mf-admin-input',
                             'placeholder' => __('Title or description'),
                         ]) ?>
                     </div>
@@ -279,7 +279,7 @@ if (!$this->request->getParam('prefix')) {
                             <input
                                 id="mf-category-combobox-input"
                                 type="text"
-                                class="form-control"
+                                class="form-control mf-admin-input"
                                 autocomplete="off"
                                 spellcheck="false"
                                 placeholder="<?= h(__('Start typing category...')) ?>"
@@ -298,7 +298,7 @@ if (!$this->request->getParam('prefix')) {
                             'empty' => __('All'),
                             'options' => $difficultyOptions ?? [],
                             'value' => $selectedDifficulty,
-                            'class' => 'form-select',
+                            'class' => 'form-select mf-admin-select',
                         ]) ?>
                     </div>
 
@@ -312,7 +312,7 @@ if (!$this->request->getParam('prefix')) {
                                 'updated' => __('Recently updated'),
                             ],
                             'value' => $selectedSort,
-                            'class' => 'form-select',
+                            'class' => 'form-select mf-admin-select',
                         ]) ?>
                     </div>
 
@@ -338,19 +338,27 @@ if (!$this->request->getParam('prefix')) {
                         <?= $this->Form->control('q', [
                             'label' => __('Search'),
                             'value' => $q,
-                            'class' => 'form-control',
+                            'class' => 'form-control mf-admin-input',
                             'placeholder' => __('Title or description'),
                         ]) ?>
                     </div>
                     <div class="col-12 col-sm-6 col-xl-2">
-                        <?= $this->Form->control('category', [
-                            'label' => __('Category'),
-                            'type' => 'select',
-                            'empty' => __('All'),
-                            'options' => $categoryOptions ?? [],
-                            'value' => $selectedCategory,
-                            'class' => 'form-select',
-                        ]) ?>
+                        <label class="form-label" for="mf-category-combobox-input"><?= __('Category') ?></label>
+                        <?= $this->Form->hidden('category', ['id' => 'mf-category-id-hidden', 'value' => $selectedCategory !== '' ? (int)$selectedCategory : null]) ?>
+                        <div class="mf-test-combobox" id="mf-category-combobox" data-mf-combobox="category-filter">
+                            <input
+                                id="mf-category-combobox-input"
+                                type="text"
+                                class="form-control mf-admin-input"
+                                autocomplete="off"
+                                spellcheck="false"
+                                placeholder="<?= h(__('Start typing category...')) ?>"
+                                value="<?= h($selectedCategory !== '' && isset($categoryOptions[(int)$selectedCategory]) ? (string)$categoryOptions[(int)$selectedCategory] : '') ?>"
+                                aria-expanded="false"
+                                aria-controls="mf-category-combobox-list"
+                            >
+                            <div class="mf-test-combobox__panel" id="mf-category-combobox-list" role="listbox"></div>
+                        </div>
                     </div>
                     <div class="col-12 col-sm-6 col-xl-2">
                         <?= $this->Form->control('difficulty', [
@@ -359,7 +367,7 @@ if (!$this->request->getParam('prefix')) {
                             'empty' => __('All'),
                             'options' => $difficultyOptions ?? [],
                             'value' => $selectedDifficulty,
-                            'class' => 'form-select',
+                            'class' => 'form-select mf-admin-select',
                         ]) ?>
                     </div>
                     <div class="col-12 col-sm-6 col-xl-2">
@@ -372,7 +380,7 @@ if (!$this->request->getParam('prefix')) {
                                 'private' => __('Private'),
                             ],
                             'value' => $selectedVisibility,
-                            'class' => 'form-select',
+                            'class' => 'form-select mf-admin-select',
                         ]) ?>
                     </div>
                     <div class="col-12 col-sm-6 col-xl-2">
@@ -385,7 +393,7 @@ if (!$this->request->getParam('prefix')) {
                                 'updated' => __('Recently updated'),
                             ],
                             'value' => $selectedSort,
-                            'class' => 'form-select',
+                            'class' => 'form-select mf-admin-select',
                         ]) ?>
                     </div>
                     <div class="col-12 col-xl-1 d-grid">
@@ -599,7 +607,7 @@ if (!$this->request->getParam('prefix')) {
             <?php endif; ?>
         </div>
 
-        <?php if (!$isCreatorCatalog) : ?>
+        <?php if ($isCatalog) : ?>
             <?php
             $catalogFilterConfig = [
                 'categoryComboboxMap' => $categoryOptions ?? [],
