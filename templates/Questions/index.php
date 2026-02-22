@@ -7,6 +7,7 @@
  * @var array<string, string> $questionTypeOptions
  * @var array<string, string> $sourceTypeOptions
  * @var array<string, string> $activeOptions
+ * @var array<string, string> $needsReviewOptions
  */
 
 $lang = $this->request->getParam('lang', 'en');
@@ -17,6 +18,7 @@ $selectedCategory = (string)($filters['category'] ?? '');
 $selectedQuestionType = (string)($filters['question_type'] ?? '');
 $selectedIsActive = (string)($filters['is_active'] ?? '');
 $selectedSourceType = (string)($filters['source_type'] ?? '');
+$selectedNeedsReview = (string)($filters['needs_review'] ?? '');
 
 $this->assign('title', __('Questions'));
 ?>
@@ -56,7 +58,7 @@ $this->assign('title', __('Questions'));
 
 <div class="mf-admin-card p-3 mt-3">
     <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
-        <div class="col-12 col-lg-3">
+        <div class="col-12 col-lg-2">
             <?= $this->Form->control('category', [
                 'label' => __('Category'),
                 'type' => 'select',
@@ -66,7 +68,7 @@ $this->assign('title', __('Questions'));
                 'class' => 'form-select',
             ]) ?>
         </div>
-        <div class="col-12 col-lg-3">
+        <div class="col-12 col-lg-2">
             <?= $this->Form->control('question_type', [
                 'label' => __('Question Type'),
                 'type' => 'select',
@@ -96,6 +98,16 @@ $this->assign('title', __('Questions'));
                 'class' => 'form-select',
             ]) ?>
         </div>
+        <div class="col-12 col-lg-2">
+            <?= $this->Form->control('needs_review', [
+                'label' => __('Review Flag'),
+                'type' => 'select',
+                'empty' => __('All'),
+                'options' => $needsReviewOptions ?? [],
+                'value' => $selectedNeedsReview,
+                'class' => 'form-select',
+            ]) ?>
+        </div>
         <div class="col-12 col-lg-1 d-grid">
             <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
         </div>
@@ -114,6 +126,7 @@ $this->assign('title', __('Questions'));
     <input type="hidden" name="return_filters[question_type]" value="<?= h($selectedQuestionType) ?>">
     <input type="hidden" name="return_filters[is_active]" value="<?= h($selectedIsActive) ?>">
     <input type="hidden" name="return_filters[source_type]" value="<?= h($selectedSourceType) ?>">
+    <input type="hidden" name="return_filters[needs_review]" value="<?= h($selectedNeedsReview) ?>">
 
     <div class="mf-admin-table-scroll">
         <table id="mfQuestionsTable" class="table table-dark table-hover mb-0 align-middle text-center">
@@ -187,6 +200,11 @@ $this->assign('title', __('Questions'));
                             <?php else : ?>
                                 <span class="badge bg-secondary"><?= h((string)$question->source_type) ?></span>
                             <?php endif; ?>
+                            <?php if ($question->needs_review) : ?>
+                                <span class="badge bg-warning text-dark ms-1" title="<?= h(__('Needs Review')) ?>">
+                                    &#9873; <?= __('Review') ?>
+                                </span>
+                            <?php endif; ?>
                         </td>
                         <td>
                             <?php if ($question->is_active) : ?>
@@ -220,6 +238,15 @@ $this->assign('title', __('Questions'));
                                         'class' => $question->is_active
                                             ? 'btn btn-sm btn-outline-warning'
                                             : 'btn btn-sm btn-outline-success',
+                                    ],
+                                ) ?>
+                                <?= $this->Form->postLink(
+                                    $question->needs_review ? __('Clear Review') : __('Flag Review'),
+                                    ['action' => 'toggleNeedsReview', $question->id, 'lang' => $lang, '?' => $queryParams],
+                                    [
+                                        'class' => $question->needs_review
+                                            ? 'btn btn-sm btn-outline-secondary'
+                                            : 'btn btn-sm btn-outline-warning',
                                     ],
                                 ) ?>
                                 <?= $this->Form->postLink(
@@ -269,6 +296,16 @@ $this->assign('title', __('Questions'));
                         'label' => __('Deactivate'),
                         'value' => 'deactivate',
                         'class' => 'btn btn-sm btn-outline-warning',
+                    ],
+                    [
+                        'label' => __('Flag Review'),
+                        'value' => 'mark_review',
+                        'class' => 'btn btn-sm btn-outline-warning',
+                    ],
+                    [
+                        'label' => __('Clear Review'),
+                        'value' => 'unmark_review',
+                        'class' => 'btn btn-sm btn-outline-secondary',
                     ],
                     [
                         'label' => __('Delete'),

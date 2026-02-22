@@ -159,6 +159,10 @@ class QuestionsTable extends Table
             ->notEmptyString('is_active');
 
         $validator
+            ->boolean('needs_review')
+            ->allowEmptyString('needs_review');
+
+        $validator
             ->nonNegativeInteger('position')
             ->allowEmptyString('position');
 
