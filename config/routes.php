@@ -210,6 +210,11 @@ return function (RouteBuilder $routes): void {
             ->setPatterns(['lang' => 'en|hu', 'id' => '\\d+'])
             ->setPass(['id']);
 
+        $builder->connect('/tests/ai-request-status/{id}', ['controller' => 'Tests', 'action' => 'aiRequestStatus'])
+            ->setPatterns(['lang' => 'en|hu', 'id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['GET']);
+
         $builder->connect('/tests/{attemptId}/review/{questionId}/explain', ['controller' => 'Tests', 'action' => 'explainAnswer'])
             ->setPatterns(['lang' => 'en|hu', 'attemptId' => '\\d+', 'questionId' => '\\d+'])
             ->setPass(['attemptId', 'questionId'])

@@ -3601,3 +3601,10 @@ msgstr "Useful when you want to understand why your answer was wrong/right."
 
 msgid "You do not have access to quiz statistics."
 msgstr "You do not have access to quiz statistics."
+
+
+msgid "AI is generating your quiz..."
+msgstr "AI is generating your quiz..."
+
+msgid "The AI is composing questions, answers and translations. This may take up to 30 seconds."
+msgstr "The AI is composing questions, answers and translations. This may take up to 30 seconds."

@@ -208,6 +208,7 @@ class CreatorAiController extends AppController
                 'created_at' => $req->created_at?->format('c'),
             ],
             'poll_url' => '/api/v1/creator/ai/requests/' . (int)$req->id,
+            'poll_interval_ms' => 2500,
         ]);
     }
 

@@ -50,22 +50,26 @@ function initTestBuilderAiTools() {
 
         } else {
             aiBtn.addEventListener('click', function() {
-            themedSwal({
-                title: aiStrings.generateTitle,
-                input: 'textarea',
-                inputLabel: aiStrings.inputLabel,
-                inputPlaceholder: aiStrings.inputPlaceholder,
-                showCancelButton: true,
-                confirmButtonText: aiStrings.confirmButtonText,
-                showLoaderOnConfirm: true,
-                preConfirm: (prompt) => {
-                    const docsEl = document.getElementById('ai-supporting-documents');
-                    const promptText = String(prompt || '').trim();
-
-                    if (!promptText) {
-                        Swal.showValidationMessage(aiStrings.validationMessage);
-                        return false;
+                // Step 1: ask for the prompt via textarea modal
+                themedSwal({
+                    title: aiStrings.generateTitle,
+                    input: 'textarea',
+                    inputLabel: aiStrings.inputLabel,
+                    inputPlaceholder: aiStrings.inputPlaceholder,
+                    showCancelButton: true,
+                    confirmButtonText: aiStrings.confirmButtonText,
+                    inputValidator: (value) => {
+                        if (!String(value || '').trim()) {
+                            return aiStrings.validationMessage;
+                        }
                     }
+                }).then((promptResult) => {
+                    if (!promptResult.isConfirmed) return;
+
+                    const promptText = String(promptResult.value || '').trim();
+                    const docsEl = document.getElementById('ai-supporting-documents');
+                    const csrfTokenEl = document.querySelector('input[name="_csrfToken"]');
+                    const csrfToken = csrfTokenEl ? csrfTokenEl.value : '';
 
                     const formData = new FormData();
                     formData.append('prompt', promptText);
@@ -75,74 +79,94 @@ function initTestBuilderAiTools() {
                         });
                     }
 
-                    const csrfToken = document.querySelector('input[name="_csrfToken"]').value;
-                    return fetch(config.generateAiUrl, {
+                    // Step 2: show animated progress modal while fetch is running
+                    let pct = 5;
+                    let timer = null;
+
+                    themedSwal({
+                        title: aiStrings.generationInProgress || 'AI is generating your quiz...',
+                        html: `
+                            <div style="text-align:left;">
+                                <div class="progress" style="height: 10px; background: rgba(255,255,255,0.08);">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${pct}%; background: #0dcaf0;"></div>
+                                </div>
+                                <div class="mf-muted" style="margin-top: 10px; font-size: 0.95rem;">
+                                    ${aiStrings.generationInfo || 'The AI is composing questions, answers and translations...'}
+                                </div>
+                            </div>
+                        `,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            timer = window.setInterval(() => {
+                                pct = Math.min(90, pct + Math.random() * 5);
+                                const bar = Swal.getHtmlContainer()?.querySelector('.progress-bar');
+                                if (bar) bar.style.width = `${pct}%`;
+                            }, 500);
+                        },
+                        willClose: () => {
+                            if (timer) window.clearInterval(timer);
+                        }
+                    });
+
+                    fetch(config.generateAiUrl, {
                         method: 'POST',
                         credentials: 'same-origin',
-                        headers: {
-                            'X-CSRF-Token': csrfToken
-                        },
+                        headers: { 'X-CSRF-Token': csrfToken },
                         body: formData
                     })
-                    .then(response => {
-                        return response.text().then(raw => {
-                            let payload = null;
-                            try {
-                                payload = JSON.parse(raw);
-                            } catch {
-                                payload = null;
+                    .then(response => response.text().then(raw => ({ ok: response.ok, status: response.status, raw })))
+                    .then(({ ok, raw, status }) => {
+                        let payload = null;
+                        try { payload = JSON.parse(raw); } catch { payload = null; }
+
+                        if (!ok) {
+                            let msg;
+                            if (status === 429 && payload && payload.limit_reached) {
+                                msg = aiStrings.limitReachedMessage;
+                            } else if (payload && payload.message) {
+                                msg = payload.message;
+                            } else if (status === 429) {
+                                msg = aiStrings.aiRateLimited || 'The AI service is temporarily overloaded. Please try again in a few minutes.';
+                            } else if (status >= 500) {
+                                msg = aiStrings.aiServerError || 'The AI service encountered an error. Please try again later.';
+                            } else {
+                                msg = `HTTP ${status}`;
                             }
+                            throw new Error(msg);
+                        }
 
-                            if (!response.ok) {
-                                if (response.status === 429 && payload && payload.limit_reached) {
-                                    throw new Error(aiStrings.limitReachedMessage);
-                                }
+                        // Finish bar visually before closing
+                        const bar = Swal.getHtmlContainer()?.querySelector('.progress-bar');
+                        if (bar) bar.style.width = '100%';
+                        Swal.close();
 
-                                // Use the user-friendly message from the server (AiServiceException)
-                                const msg = payload && payload.message
-                                    ? payload.message
-                                    : (response.status === 429
-                                        ? (aiStrings.aiRateLimited || 'The AI service is temporarily overloaded. Please try again in a few minutes.')
-                                        : (response.status >= 500
-                                            ? (aiStrings.aiServerError || 'The AI service encountered an error. Please try again later.')
-                                            : response.statusText));
-                                throw new Error(msg);
-                            }
-
-                            return payload;
-                        });
+                        if (payload && payload.success) {
+                            fillFormWithAiData(payload.data);
+                            themedSwal({
+                                title: aiStrings.successTitle,
+                                text: aiStrings.successMessage,
+                                icon: 'success'
+                            });
+                        } else {
+                            throw new Error(payload && payload.message ? payload.message : aiStrings.unknownError);
+                        }
                     })
-                    .catch(error => {
-                        // Network errors (fetch itself fails)
-                        const errorMsg = error && error.message ? error.message : String(error);
-                        const isNetworkError = errorMsg === 'Failed to fetch' || errorMsg === 'NetworkError when attempting to fetch resource.';
+                    .catch((err) => {
+                        Swal.close();
+                        const errMsg = err && err.message ? err.message : String(err);
+                        const isNetworkError = errMsg === 'Failed to fetch' || errMsg === 'NetworkError when attempting to fetch resource.';
                         const displayMsg = isNetworkError
                             ? (aiStrings.aiNetworkError || 'Could not reach the AI service. Please check your connection and try again.')
-                            : errorMsg;
-                        Swal.showValidationMessage(
-                            `${aiStrings.requestFailedPrefix || 'Request failed:'} ${displayMsg}`
-                        );
-                    });
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (result.value && result.value.success) {
-                        fillFormWithAiData(result.value.data);
+                            : errMsg;
                         themedSwal({
-                            title: aiStrings.successTitle,
-                            text: aiStrings.successMessage,
-                            icon: 'success'
-                        });
-                    } else {
-                         themedSwal({
                             title: aiStrings.errorTitle,
-                            text: result.value ? result.value.message : aiStrings.unknownError,
+                            text: displayMsg,
                             icon: 'error'
                         });
-                    }
-                }
-            });
+                    });
+                });
             });
         }
     }

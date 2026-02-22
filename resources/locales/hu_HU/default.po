@@ -3563,3 +3563,10 @@ msgstr "Hasznos, ha szeretnéd megérteni, miért volt helyes vagy hibás a vál
 
 msgid "You do not have access to quiz statistics."
 msgstr "Nincs hozzáférésed a kvíz statisztikáihoz."
+
+
+msgid "AI is generating your quiz..."
+msgstr "Az AI generálja a kvízedet..."
+
+msgid "The AI is composing questions, answers and translations. This may take up to 30 seconds."
+msgstr "Az AI összeállítja a kérdéseket, válaszokat és fordításokat. Ez akár 30 másodpercet is igénybe vehet."

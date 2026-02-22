@@ -2613,6 +2613,11 @@ class TestsController extends AppController
                 ->withStringBody(json_encode(['success' => false, 'message' => 'Empty prompt']));
         }
 
+        // Declared outside try/catch so the same entity can be updated in both blocks.
+        $aiRequestsTable = $this->fetchTable('AiRequests');
+        /** @var \App\Model\Entity\AiRequest|null $aiRequest */
+        $aiRequest = null;
+
         try {
             // Resolve language context
             $langCode = $this->request->getParam('lang');
@@ -2638,6 +2643,25 @@ class TestsController extends AppController
                     . $documentContext;
             }
 
+            // Persist the request upfront (status: processing) so the status endpoint
+            // can report progress and the audit trail is complete even on timeout.
+            $aiRequest = $aiRequestsTable->newEntity([
+                'user_id' => $userId,
+                'language_id' => $currentLanguageId,
+                'source_medium' => 'user_prompt',
+                'source_reference' => 'test_generator',
+                'type' => 'test_generation',
+                'prompt_version' => $promptService->getGenerationPromptVersion(),
+                'input_payload' => json_encode([
+                    'prompt' => $prompt,
+                    'question_count' => $questionCount,
+                    'final_prompt' => $finalPrompt,
+                ]),
+                'status' => 'processing',
+                'started_at' => FrozenTime::now(),
+            ]);
+            $aiRequestsTable->save($aiRequest);
+
             $aiService = new AiGatewayService();
             $aiResponse = $aiService->generateQuizFromText(
                 $finalPrompt,
@@ -2651,24 +2675,12 @@ class TestsController extends AppController
             $responseContent = $aiResponse->content();
 
             $json = json_decode($responseContent, true);
-            // Save AI Request Log
-            $aiRequestsTable = $this->fetchTable('AiRequests');
-            $aiRequest = $aiRequestsTable->newEmptyEntity();
-            $aiRequest = $aiRequestsTable->patchEntity($aiRequest, [
-                'user_id' => $userId,
-                'language_id' => $currentLanguageId,
-                'source_medium' => 'user_prompt',
-                'source_reference' => 'test_generator',
-                'type' => 'test_generation',
-                'input_payload' => json_encode([
-                    'prompt' => $prompt,
-                    'question_count' => $questionCount,
-                    'final_prompt' => $finalPrompt,
-                ]),
-                'output_payload' => $responseContent,
-                'status' => 'success',
-            ]);
+            // Update the pre-saved ai_request with the final result.
+            $aiRequest->output_payload = $responseContent;
+            $aiRequest->status = 'success';
+            $aiRequest->finished_at = FrozenTime::now();
             $aiRequestsTable->save($aiRequest);
+            $aiRequestId = $aiRequest->id !== null ? (int)$aiRequest->id : null;
 
             if (json_last_error() !== JSON_ERROR_NONE) {
                  return $this->response->withType('application/json')
@@ -2797,32 +2809,35 @@ class TestsController extends AppController
             $activityLogsTable->save($activityLog);
 
             return $this->response->withType('application/json')
-                ->withStringBody(json_encode(['success' => true, 'data' => $json]));
+                ->withStringBody(json_encode(['success' => true, 'data' => $json, 'ai_request_id' => $aiRequestId]));
         } catch (\Throwable $e) {
-            // Persist a failed AiRequest record for audit trail.
-            $aiRequestsTable = $this->fetchTable('AiRequests');
-            $failedReq = $aiRequestsTable->newEmptyEntity();
             $errorCode = 'AI_FAILED';
             $userMessage = $e->getMessage();
             if ($e instanceof AiServiceException) {
                 $errorCode = $e->getErrorCode();
                 $userMessage = $e->getUserMessage();
             }
-            $failedReq = $aiRequestsTable->patchEntity($failedReq, [
-                'user_id' => $userId,
-                'source_medium' => 'user_prompt',
-                'source_reference' => 'test_generator',
-                'type' => 'test_generation',
-                'input_payload' => json_encode([
-                    'prompt' => $prompt,
-                    'question_count' => $questionCount ?? null,
-                ]),
-                'output_payload' => $e->getMessage(),
-                'status' => 'failed',
-                'error_code' => $errorCode,
-                'error_message' => $e->getMessage(),
-            ]);
-            $aiRequestsTable->save($failedReq);
+            // Update the pre-saved entity if available; otherwise create a fallback record.
+            if ($aiRequest !== null && $aiRequest->id !== null) {
+                $aiRequest->status = 'failed';
+                $aiRequest->error_code = $errorCode;
+                $aiRequest->error_message = $e->getMessage();
+                $aiRequest->finished_at = FrozenTime::now();
+                $aiRequestsTable->save($aiRequest);
+            } else {
+                $fallbackReq = $aiRequestsTable->newEntity([
+                    'user_id' => $userId,
+                    'source_medium' => 'user_prompt',
+                    'source_reference' => 'test_generator',
+                    'type' => 'test_generation',
+                    'input_payload' => json_encode(['prompt' => $prompt, 'question_count' => $questionCount ?? null]),
+                    'status' => 'failed',
+                    'error_code' => $errorCode,
+                    'error_message' => $e->getMessage(),
+                    'finished_at' => FrozenTime::now(),
+                ]);
+                $aiRequestsTable->save($fallbackReq);
+            }
 
             Log::error('AI generateWithAi failed: ' . $e->getMessage());
 
@@ -2838,6 +2853,51 @@ class TestsController extends AppController
                     'retried' => $e instanceof AiServiceException ? $e->wasRetried() : false,
                 ]));
         }
+    }
+
+    /**
+     * Return the current status of an AI generation request owned by the logged-in user.
+     *
+     * Used by the frontend to poll while AI is running.
+     * GET /{lang}/tests/ai-request-status/{id}
+     *
+     * @param string|null $id AI request id.
+     * @return \Cake\Http\Response
+     */
+    public function aiRequestStatus(?string $id = null): Response
+    {
+        $this->request->allowMethod(['get']);
+
+        $identity = $this->Authentication->getIdentity();
+        $userId = $identity ? (int)$identity->getIdentifier() : null;
+        if (!$userId) {
+            return $this->response->withStatus(401)->withType('application/json')
+                ->withStringBody((string)json_encode(['ok' => false, 'error' => 'Unauthorized']));
+        }
+
+        $aiRequestsTable = $this->fetchTable('AiRequests');
+        $req = $aiRequestsTable->find()
+            ->where(['AiRequests.id' => (int)$id, 'AiRequests.user_id' => $userId])
+            ->first();
+        if (!$req) {
+            return $this->response->withStatus(404)->withType('application/json')
+                ->withStringBody((string)json_encode(['ok' => false, 'error' => 'Not found']));
+        }
+
+        return $this->response->withType('application/json')
+            ->withStringBody((string)json_encode([
+                'ok' => true,
+                'ai_request' => [
+                    'id' => (int)$req->id,
+                    'status' => (string)$req->status,
+                    'error_code' => $req->error_code,
+                    'error_message' => $req->error_message,
+                    'started_at' => $req->started_at?->format('c'),
+                    'finished_at' => $req->finished_at?->format('c'),
+                    'duration_ms' => $req->duration_ms !== null ? (int)$req->duration_ms : null,
+                    'poll_interval_ms' => 2500,
+                ],
+            ]));
     }
 
     /**
