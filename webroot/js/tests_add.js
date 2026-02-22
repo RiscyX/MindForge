@@ -298,8 +298,8 @@ function initSupportingDocumentsPicker() {
         return;
     }
 
-    const emptyLabel = meta.getAttribute('data-empty-label') || 'No files selected (optional).';
-    const selectedLabel = meta.getAttribute('data-selected-label') || 'selected files';
+    const emptyLabel = meta.getAttribute('data-empty-label') || ((window.MF && window.MF.t) ? window.MF.t('noFilesSelected') : 'No files selected (optional).');
+    const selectedLabel = meta.getAttribute('data-selected-label') || ((window.MF && window.MF.t) ? window.MF.t('selectedFiles') : 'selected files');
 
     const updateMeta = () => {
         const files = input.files ? Array.from(input.files) : [];
@@ -594,10 +594,10 @@ function addQuestion(data = null) {
             <div class="mb-3">
                 <label class="form-label">Type</label>
                 <select class="form-select" name="questions[${index}][question_type]" onchange="changeQuestionType(${index}, this.value)">
-                    <option value="${questionTypes.MULTIPLE_CHOICE}" ${defaultType === questionTypes.MULTIPLE_CHOICE ? 'selected' : ''}>Multiple Choice</option>
-                    <option value="${questionTypes.TRUE_FALSE}" ${defaultType === questionTypes.TRUE_FALSE ? 'selected' : ''}>True/False</option>
-                    <option value="${questionTypes.TEXT}" ${defaultType === questionTypes.TEXT ? 'selected' : ''}>Text</option>
-                    <option value="${questionTypes.MATCHING}" ${defaultType === questionTypes.MATCHING ? 'selected' : ''}>Matching</option>
+                    <option value="${questionTypes.MULTIPLE_CHOICE}" ${defaultType === questionTypes.MULTIPLE_CHOICE ? 'selected' : ''}>${(window.MF && window.MF.t) ? window.MF.t('typeMultipleChoice') : 'Multiple Choice'}</option>
+                    <option value="${questionTypes.TRUE_FALSE}" ${defaultType === questionTypes.TRUE_FALSE ? 'selected' : ''}>${(window.MF && window.MF.t) ? window.MF.t('typeTrueFalse') : 'True/False'}</option>
+                    <option value="${questionTypes.TEXT}" ${defaultType === questionTypes.TEXT ? 'selected' : ''}>${(window.MF && window.MF.t) ? window.MF.t('typeText') : 'Text'}</option>
+                    <option value="${questionTypes.MATCHING}" ${defaultType === questionTypes.MATCHING ? 'selected' : ''}>${(window.MF && window.MF.t) ? window.MF.t('typeMatching') : 'Matching'}</option>
                 </select>
             </div>
 

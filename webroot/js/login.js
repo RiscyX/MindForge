@@ -18,7 +18,7 @@
         }
 
         const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailInput.value);
-        emailInput.setCustomValidity(ok ? '' : 'Please enter a valid email address.');
+        emailInput.setCustomValidity(ok ? '' : ((window.MF && window.MF.t) ? window.MF.t('invalidEmail') : 'Please enter a valid email address.'));
     };
 
     const setPasswordValidity = () => {

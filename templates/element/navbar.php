@@ -60,23 +60,16 @@ $isFavoritesActive = ($currentPrefix === null || $currentPrefix === '')
     && $currentController === 'Tests'
     && $currentAction === 'favorites';
 
-$profileUrl = $isAdmin
-    ? [
-        'prefix' => 'Admin',
-        'controller' => 'Users',
-        'action' => 'myProfile',
-        'lang' => $lang,
-    ]
-    : [
-        'prefix' => false,
-        'controller' => 'Users',
-        'action' => 'profile',
-        'lang' => $lang,
-    ];
+$profileUrl = [
+    'prefix' => false,
+    'controller' => 'Users',
+    'action' => 'profile',
+    'lang' => $lang,
+];
 
-$isProfileActive = $isAdmin
-    ? ($currentPrefix === 'Admin' && $currentController === 'Users' && $currentAction === 'myProfile')
-    : (($currentPrefix === null || $currentPrefix === '') && $currentController === 'Users' && $currentAction === 'profile');
+$isProfileActive = ($currentPrefix === null || $currentPrefix === '')
+    && $currentController === 'Users'
+    && $currentAction === 'profile';
 
 $pass = (array)$this->request->getParam('pass', []);
 $queryParams = (array)$this->request->getQueryParams();

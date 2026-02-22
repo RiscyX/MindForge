@@ -70,15 +70,3 @@ $this->assign('title', __('My Profile'));
     </div>
 </div>
 
-<div class="container pb-5">
-    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mt-4">
-        <div>
-            <h2 class="h4 mb-1 text-white"><?= __('My Stats') ?></h2>
-            <div class="mf-muted"><?= __('Your quiz history and performance overview.') ?></div>
-        </div>
-    </div>
-
-    <div class="mt-3">
-        <?= $this->element('users/stats', ['showRecentAttempts' => false]) ?>
-    </div>
-</div>

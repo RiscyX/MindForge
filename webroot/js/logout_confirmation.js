@@ -7,20 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutLink.addEventListener('click', (e) => {
         e.preventDefault();
 
-        const isHu = document.documentElement.lang === 'hu';
-        
+        const t = (key) => (window.MF && window.MF.t) ? window.MF.t(key) : key;
+
         Swal.fire({
-            title: isHu ? 'Kijelentkezés' : 'Logout',
-            text: isHu ? 'Biztosan ki szeretne jelentkezni?' : 'Are you sure you want to log out?',
+            title: t('logoutTitle'),
+            text: t('logoutText'),
             icon: 'warning',
             showCancelButton: true,
             reverseButtons: true,
-            confirmButtonText: isHu
-                ? '<i class="bi bi-box-arrow-right"></i><span>Kijelentkezés</span>'
-                : '<i class="bi bi-box-arrow-right"></i><span>Log out</span>',
-            cancelButtonText: isHu
-                ? '<i class="bi bi-x-lg"></i><span>Mégse</span>'
-                : '<i class="bi bi-x-lg"></i><span>Cancel</span>',
+            confirmButtonText: `<i class="bi bi-box-arrow-right"></i><span>${t('logoutConfirm')}</span>`,
+            cancelButtonText: `<i class="bi bi-x-lg"></i><span>${t('cancel')}</span>`,
             buttonsStyling: false,
             customClass: {
                 container: 'mf-swal2-container',

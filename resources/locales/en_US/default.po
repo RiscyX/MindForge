@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2026-02-09 18:11+0000\n"
+"POT-Creation-Date: 2026-02-22 14:28+0000\n"
 "PO-Revision-Date: 2026-01-02 18:35+0000\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English <EMAIL@ADDRESS>\n"
@@ -32,395 +32,329 @@ msgstr "The activity log has been deleted."
 msgid "The activity log could not be deleted. Please, try again."
 msgstr "The activity log could not be deleted. Please, try again."
 
-#: src/Controller/Admin/DashboardController.php:58
-#: src/Controller/AiRequestsController.php:124
-#: src/Controller/AnswersController.php:212
-#: src/Controller/CategoriesController.php:168
-#: src/Controller/DeviceLogsController.php:75
-#: src/Controller/DifficultiesController.php:154
-#: src/Controller/LanguagesController.php:55
-#: src/Controller/QuestionsController.php:217
-#: src/Controller/TestsController.php:615
-#: templates/Admin/Dashboard/index.php:205 templates/AiRequests/index.php:275
-#: templates/Answers/index.php:185 templates/Categories/index.php:176
-#: templates/DeviceLogs/index.php:217 templates/Difficulties/index.php:169
-#: templates/Languages/index.php:153 templates/Questions/index.php:195
-#: templates/Tests/index.php:289
+#: src/Controller/Admin/DashboardController.php:54
+#: src/Controller/AiRequestsController.php:85
+#: src/Controller/AnswersController.php:198
+#: src/Controller/CategoriesController.php:156
+#: src/Controller/DeviceLogsController.php:73
+#: src/Controller/DifficultiesController.php:153
+#: src/Controller/LanguagesController.php:54
+#: src/Controller/QuestionsController.php:296
+#: src/Controller/TestsController.php:529
+#: templates/Admin/Dashboard/index.php:212 templates/AiRequests/index.php:361
+#: templates/Answers/index.php:187 templates/Categories/index.php:228
+#: templates/DeviceLogs/index.php:287 templates/Difficulties/index.php:204
+#: templates/Languages/index.php:187 templates/Questions/index.php:343
+#: templates/Tests/index.php:852
 msgid "Select at least one item."
 msgstr "Select at least one item."
 
-#: src/Controller/Admin/DashboardController.php:64
-#: src/Controller/Admin/UsersController.php:58
-#: src/Controller/AiRequestsController.php:130
-#: src/Controller/AnswersController.php:218
-#: src/Controller/CategoriesController.php:174
-#: src/Controller/DeviceLogsController.php:81
-#: src/Controller/DifficultiesController.php:160
-#: src/Controller/LanguagesController.php:61
-#: src/Controller/QuestionsController.php:223
-#: src/Controller/TestsController.php:621
+#: src/Controller/Admin/DashboardController.php:60
+#: src/Controller/AiRequestsController.php:91
+#: src/Controller/AnswersController.php:204
+#: src/Controller/CategoriesController.php:162
+#: src/Controller/DeviceLogsController.php:79
+#: src/Controller/DifficultiesController.php:159
+#: src/Controller/LanguagesController.php:60
+#: src/Controller/QuestionsController.php:306
+#: src/Controller/TestsController.php:535
+#: src/Service/AdminUserManagementService.php:59
 msgid "Invalid bulk action."
 msgstr "Invalid bulk action."
 
-#: src/Controller/Admin/DashboardController.php:85
-#: src/Controller/AiRequestsController.php:151
-#: src/Controller/AnswersController.php:239
-#: src/Controller/CategoriesController.php:195
-#: src/Controller/DeviceLogsController.php:102
-#: src/Controller/DifficultiesController.php:181
-#: src/Controller/LanguagesController.php:82
-#: src/Controller/QuestionsController.php:244
-#: src/Controller/TestsController.php:642
+#: src/Controller/Admin/DashboardController.php:68
+#: src/Controller/AiRequestsController.php:99
+#: src/Controller/AnswersController.php:212
+#: src/Controller/CategoriesController.php:174
+#: src/Controller/DeviceLogsController.php:87
+#: src/Controller/DifficultiesController.php:167
+#: src/Controller/LanguagesController.php:68
+#: src/Controller/QuestionsController.php:322
+#: src/Controller/TestsController.php:543
 msgid "Deleted {0} item(s)."
 msgstr "Deleted {0} item(s)."
 
-#: src/Controller/Admin/DashboardController.php:88
-#: src/Controller/AiRequestsController.php:154
-#: src/Controller/AnswersController.php:242
-#: src/Controller/CategoriesController.php:198
-#: src/Controller/DeviceLogsController.php:105
-#: src/Controller/DifficultiesController.php:184
-#: src/Controller/LanguagesController.php:85
-#: src/Controller/QuestionsController.php:247
-#: src/Controller/TestsController.php:645
+#: src/Controller/Admin/DashboardController.php:71
+#: src/Controller/AiRequestsController.php:102
+#: src/Controller/AnswersController.php:215
+#: src/Controller/CategoriesController.php:177
+#: src/Controller/DeviceLogsController.php:90
+#: src/Controller/DifficultiesController.php:170
+#: src/Controller/LanguagesController.php:71
+#: src/Controller/QuestionsController.php:325
+#: src/Controller/TestsController.php:546
 msgid "Could not delete {0} item(s)."
 msgstr "Could not delete {0} item(s)."
 
-#: src/Controller/Admin/UsersController.php:64
-#: templates/Admin/Users/index.php:235
-msgid "Select at least one user."
-msgstr "Select at least one user."
-
-#: src/Controller/Admin/UsersController.php:77
-#: src/Controller/Admin/UsersController.php:497
-msgid "You cannot delete your own account."
-msgstr "You cannot delete your own account."
-
-#: src/Controller/Admin/UsersController.php:87
-msgid "No valid users selected."
-msgstr "No valid users selected."
-
-#: src/Controller/Admin/UsersController.php:100
-msgid "{0} users updated."
-msgstr "{0} users updated."
-
-#: src/Controller/Admin/UsersController.php:102
-msgid "No users were updated."
-msgstr "No users were updated."
-
-#: src/Controller/Admin/UsersController.php:118
-#: src/Controller/Admin/UsersController.php:517
-msgid "You cannot delete the last admin account."
-msgstr "You cannot delete the last admin account."
-
-#: src/Controller/Admin/UsersController.php:148
-msgid "{0} users deleted."
-msgstr "{0} users deleted."
-
-#: src/Controller/Admin/UsersController.php:150
-msgid "No users were deleted."
-msgstr "No users were deleted."
-
-#: src/Controller/Admin/UsersController.php:192
-#: src/Controller/UsersController.php:643
+#: src/Controller/Admin/UsersController.php:115
+#: src/Controller/UsersController.php:460
 msgid "Your profile has been updated."
 msgstr "Your profile has been updated."
 
-#: src/Controller/Admin/UsersController.php:200
-#: src/Controller/UsersController.php:648
+#: src/Controller/Admin/UsersController.php:130
+#: src/Controller/UsersController.php:465
 msgid "Unable to update your profile. Please try again."
 msgstr "Unable to update your profile. Please try again."
 
-#: src/Controller/Admin/UsersController.php:251
-#: src/Controller/UsersController.php:504
-msgid "Reset your MindForge password"
-msgstr "Reset your MindForge password"
-
-#: src/Controller/Admin/UsersController.php:258
-msgid "We sent a password reset link to your email."
-msgstr "We sent a password reset link to your email."
-
-#: src/Controller/Admin/UsersController.php:261
-msgid "Could not send the password reset email. Please try again later."
-msgstr "Could not send the password reset email. Please try again later."
-
-#: src/Controller/Admin/UsersController.php:313
+#: src/Controller/Admin/UsersController.php:244
 msgid "The user has been created."
 msgstr "The user has been created."
 
-#: src/Controller/Admin/UsersController.php:321
+#: src/Controller/Admin/UsersController.php:252
 msgid "The user could not be created. Please, try again."
 msgstr "The user could not be created. Please, try again."
 
-#: src/Controller/Admin/UsersController.php:354
+#: src/Controller/Admin/UsersController.php:285
 msgid "The user has been updated."
 msgstr "The user has been updated."
 
-#: src/Controller/Admin/UsersController.php:362
+#: src/Controller/Admin/UsersController.php:293
 msgid "The user could not be updated. Please, try again."
 msgstr "The user could not be updated. Please, try again."
 
-#: src/Controller/Admin/UsersController.php:388
+#: src/Controller/Admin/UsersController.php:325
 msgid "User has been banned."
 msgstr "User has been banned."
 
-#: src/Controller/Admin/UsersController.php:390
+#: src/Controller/Admin/UsersController.php:327
 msgid "Could not ban user. Please, try again."
 msgstr "Could not ban user. Please, try again."
 
-#: src/Controller/Admin/UsersController.php:416
+#: src/Controller/Admin/UsersController.php:353
 msgid "User has been unbanned."
 msgstr "User has been unbanned."
 
-#: src/Controller/Admin/UsersController.php:418
+#: src/Controller/Admin/UsersController.php:355
 msgid "Could not unban user. Please, try again."
 msgstr "Could not unban user. Please, try again."
 
-#: src/Controller/Admin/UsersController.php:450
-msgid "Avatar must be an image."
-msgstr "Avatar must be an image."
+#: src/Controller/Admin/UsersController.php:395
+msgid "Avatar image is too large."
+msgstr "Avatar image is too large."
 
-#: src/Controller/Admin/UsersController.php:459
-msgid "Unsupported avatar image type."
-msgstr "Unsupported avatar image type."
-
-#: src/Controller/Admin/UsersController.php:475
-msgid "Failed to upload avatar."
-msgstr "Failed to upload avatar."
-
-#: src/Controller/Admin/UsersController.php:528
-#: src/Controller/UsersController.php:119
-msgid "The user has been deleted."
-msgstr "The user has been deleted."
-
-#: src/Controller/Admin/UsersController.php:530
-#: src/Controller/UsersController.php:121
-msgid "The user could not be deleted. Please, try again."
-msgstr "The user could not be deleted. Please, try again."
-
-#: src/Controller/AiRequestsController.php:193
-#: src/Controller/AiRequestsController.php:220
-#, fuzzy
+#: src/Controller/AiRequestsController.php:151
+#: src/Controller/AiRequestsController.php:183
 msgid "The ai request has been saved."
-msgstr "The role has been saved."
+msgstr "The ai request has been saved."
 
-#: src/Controller/AiRequestsController.php:197
-#: src/Controller/AiRequestsController.php:224
-#, fuzzy
+#: src/Controller/AiRequestsController.php:155
+#: src/Controller/AiRequestsController.php:187
 msgid "The ai request could not be saved. Please, try again."
-msgstr "The role could not be saved. Please, try again."
+msgstr "The ai request could not be saved. Please, try again."
 
-#: src/Controller/AiRequestsController.php:244
-#, fuzzy
+#: src/Controller/AiRequestsController.php:212
 msgid "The ai request has been deleted."
-msgstr "The role has been deleted."
+msgstr "The ai request has been deleted."
 
-#: src/Controller/AiRequestsController.php:246
-#, fuzzy
+#: src/Controller/AiRequestsController.php:214
 msgid "The ai request could not be deleted. Please, try again."
-msgstr "The role could not be deleted. Please, try again."
+msgstr "The ai request could not be deleted. Please, try again."
 
 #: src/Controller/AnswerTranslationsController.php:53
 #: src/Controller/AnswerTranslationsController.php:77
-#, fuzzy
 msgid "The answer translation has been saved."
-msgstr "The user token has been saved."
+msgstr "The answer translation has been saved."
 
 #: src/Controller/AnswerTranslationsController.php:57
 #: src/Controller/AnswerTranslationsController.php:81
-#, fuzzy
 msgid "The answer translation could not be saved. Please, try again."
-msgstr "The user token could not be saved. Please, try again."
+msgstr "The answer translation could not be saved. Please, try again."
 
 #: src/Controller/AnswerTranslationsController.php:100
-#, fuzzy
 msgid "The answer translation has been deleted."
-msgstr "The user token has been deleted."
+msgstr "The answer translation has been deleted."
 
 #: src/Controller/AnswerTranslationsController.php:102
-#, fuzzy
 msgid "The answer translation could not be deleted. Please, try again."
-msgstr "The user token could not be deleted. Please, try again."
+msgstr "The answer translation could not be deleted. Please, try again."
 
-#: src/Controller/AnswersController.php:90
-#: src/Controller/AnswersController.php:133
-#, fuzzy
+#: src/Controller/AnswersController.php:91
+#: src/Controller/AnswersController.php:134
 msgid "The answer has been saved."
-msgstr "The user has been saved."
+msgstr "The answer has been saved."
 
-#: src/Controller/AnswersController.php:94
-#: src/Controller/AnswersController.php:137
-#, fuzzy
+#: src/Controller/AnswersController.php:95
+#: src/Controller/AnswersController.php:138
 msgid "The answer could not be saved. Please, try again."
-msgstr "The user could not be saved. Please, try again."
+msgstr "The answer could not be saved. Please, try again."
 
-#: src/Controller/AnswersController.php:189
-#, fuzzy
+#: src/Controller/AnswersController.php:176
 msgid "The answer has been deleted."
-msgstr "The user has been deleted."
+msgstr "The answer has been deleted."
 
-#: src/Controller/AnswersController.php:191
-#, fuzzy
+#: src/Controller/AnswersController.php:178
 msgid "The answer could not be deleted. Please, try again."
-msgstr "The user could not be deleted. Please, try again."
+msgstr "The answer could not be deleted. Please, try again."
 
-#: src/Controller/CategoriesController.php:73
-#: src/Controller/CategoriesController.php:107
-#, fuzzy
+#: src/Controller/CategoriesController.php:75
+#: src/Controller/CategoriesController.php:106
 msgid "The category has been saved."
-msgstr "The user has been saved."
+msgstr "The category has been saved."
 
-#: src/Controller/CategoriesController.php:77
-#: src/Controller/CategoriesController.php:111
-#, fuzzy
+#: src/Controller/CategoriesController.php:79
+#: src/Controller/CategoriesController.php:110
 msgid "The category could not be saved. Please, try again."
-msgstr "The user could not be saved. Please, try again."
+msgstr "The category could not be saved. Please, try again."
 
-#: src/Controller/CategoriesController.php:145
-#, fuzzy
+#: src/Controller/CategoriesController.php:134
 msgid "The category has been deleted."
-msgstr "The user has been deleted."
+msgstr "The category has been deleted."
 
-#: src/Controller/CategoriesController.php:147
-#, fuzzy
+#: src/Controller/CategoriesController.php:136
 msgid "The category could not be deleted. Please, try again."
-msgstr "The user could not be deleted. Please, try again."
+msgstr "The category could not be deleted. Please, try again."
 
 #: src/Controller/CategoryTranslationsController.php:54
 #: src/Controller/CategoryTranslationsController.php:79
-#, fuzzy
 msgid "The category translation has been saved."
-msgstr "The user token has been saved."
+msgstr "The category translation has been saved."
 
 #: src/Controller/CategoryTranslationsController.php:58
 #: src/Controller/CategoryTranslationsController.php:83
-#, fuzzy
 msgid "The category translation could not be saved. Please, try again."
-msgstr "The user token could not be saved. Please, try again."
+msgstr "The category translation could not be saved. Please, try again."
 
 #: src/Controller/CategoryTranslationsController.php:102
-#, fuzzy
 msgid "The category translation has been deleted."
-msgstr "The user token has been deleted."
+msgstr "The category translation has been deleted."
 
 #: src/Controller/CategoryTranslationsController.php:104
-#, fuzzy
 msgid "The category translation could not be deleted. Please, try again."
-msgstr "The user token could not be deleted. Please, try again."
+msgstr "The category translation could not be deleted. Please, try again."
 
-#: src/Controller/DeviceLogsController.php:135
+#: src/Controller/DeviceLogsController.php:130
 #: src/Controller/DeviceLogsController.php:158
-#, fuzzy
 msgid "The device log has been saved."
-msgstr "The role has been saved."
+msgstr "The device log has been saved."
 
-#: src/Controller/DeviceLogsController.php:139
+#: src/Controller/DeviceLogsController.php:134
 #: src/Controller/DeviceLogsController.php:162
-#, fuzzy
 msgid "The device log could not be saved. Please, try again."
-msgstr "The role could not be saved. Please, try again."
+msgstr "The device log could not be saved. Please, try again."
 
-#: src/Controller/DeviceLogsController.php:180
-#, fuzzy
+#: src/Controller/DeviceLogsController.php:185
 msgid "The device log has been deleted."
-msgstr "The role has been deleted."
+msgstr "The device log has been deleted."
 
-#: src/Controller/DeviceLogsController.php:182
-#, fuzzy
+#: src/Controller/DeviceLogsController.php:187
 msgid "The device log could not be deleted. Please, try again."
-msgstr "The role could not be deleted. Please, try again."
+msgstr "The device log could not be deleted. Please, try again."
 
 #: src/Controller/DifficultiesController.php:83
 #: src/Controller/DifficultiesController.php:108
-#, fuzzy
 msgid "The difficulty has been saved."
-msgstr "The role has been saved."
+msgstr "The difficulty has been saved."
 
 #: src/Controller/DifficultiesController.php:87
 #: src/Controller/DifficultiesController.php:112
-#, fuzzy
 msgid "The difficulty could not be saved. Please, try again."
-msgstr "The role could not be saved. Please, try again."
+msgstr "The difficulty could not be saved. Please, try again."
 
 #: src/Controller/DifficultiesController.php:131
-#, fuzzy
 msgid "The difficulty has been deleted."
-msgstr "The role has been deleted."
+msgstr "The difficulty has been deleted."
 
 #: src/Controller/DifficultiesController.php:133
-#, fuzzy
 msgid "The difficulty could not be deleted. Please, try again."
-msgstr "The role could not be deleted. Please, try again."
+msgstr "The difficulty could not be deleted. Please, try again."
 
-#: src/Controller/LanguagesController.php:121
-#: src/Controller/LanguagesController.php:143
-#, fuzzy
+#: src/Controller/LanguagesController.php:107
+#: src/Controller/LanguagesController.php:129
 msgid "The language has been saved."
-msgstr "The role has been saved."
+msgstr "The language has been saved."
 
-#: src/Controller/LanguagesController.php:125
-#: src/Controller/LanguagesController.php:147
-#, fuzzy
+#: src/Controller/LanguagesController.php:111
+#: src/Controller/LanguagesController.php:133
 msgid "The language could not be saved. Please, try again."
-msgstr "The role could not be saved. Please, try again."
+msgstr "The language could not be saved. Please, try again."
 
-#: src/Controller/LanguagesController.php:164
-#, fuzzy
+#: src/Controller/LanguagesController.php:150
 msgid "The language has been deleted."
-msgstr "The role has been deleted."
+msgstr "The language has been deleted."
 
-#: src/Controller/LanguagesController.php:166
-#, fuzzy
+#: src/Controller/LanguagesController.php:152
 msgid "The language could not be deleted. Please, try again."
-msgstr "The role could not be deleted. Please, try again."
+msgstr "The language could not be deleted. Please, try again."
 
 #: src/Controller/QuestionTranslationsController.php:54
 #: src/Controller/QuestionTranslationsController.php:79
-#, fuzzy
 msgid "The question translation has been saved."
-msgstr "The user token has been saved."
+msgstr "The question translation has been saved."
 
 #: src/Controller/QuestionTranslationsController.php:58
 #: src/Controller/QuestionTranslationsController.php:83
-#, fuzzy
 msgid "The question translation could not be saved. Please, try again."
-msgstr "The user token could not be saved. Please, try again."
+msgstr "The question translation could not be saved. Please, try again."
 
 #: src/Controller/QuestionTranslationsController.php:102
-#, fuzzy
 msgid "The question translation has been deleted."
-msgstr "The user token has been deleted."
+msgstr "The question translation has been deleted."
 
 #: src/Controller/QuestionTranslationsController.php:104
-#, fuzzy
 msgid "The question translation could not be deleted. Please, try again."
-msgstr "The user token could not be deleted. Please, try again."
+msgstr "The question translation could not be deleted. Please, try again."
 
-#: src/Controller/QuestionsController.php:101
-#: src/Controller/QuestionsController.php:141
-#, fuzzy
+#: src/Controller/QuestionsController.php:112
+#: src/Controller/QuestionsController.php:170
 msgid "The question has been saved."
-msgstr "The user token has been saved."
+msgstr "The question has been saved."
 
-#: src/Controller/QuestionsController.php:105
-#: src/Controller/QuestionsController.php:145
-#, fuzzy
+#: src/Controller/QuestionsController.php:116
+#: src/Controller/QuestionsController.php:175
 msgid "The question could not be saved. Please, try again."
-msgstr "The user token could not be saved. Please, try again."
+msgstr "The question could not be saved. Please, try again."
 
-#: src/Controller/QuestionsController.php:194
-#, fuzzy
+#: src/Controller/QuestionsController.php:211
 msgid "The question has been deleted."
-msgstr "The user token has been deleted."
+msgstr "The question has been deleted."
 
-#: src/Controller/QuestionsController.php:196
-#, fuzzy
+#: src/Controller/QuestionsController.php:213
 msgid "The question could not be deleted. Please, try again."
-msgstr "The user token could not be deleted. Please, try again."
+msgstr "The question could not be deleted. Please, try again."
 
-#: src/Controller/QuizCreator/DashboardController.php:10
-#: templates/QuizCreator/Dashboard/index.php:8
-#: templates/QuizCreator/Dashboard/index.php:13
+#: src/Controller/QuestionsController.php:238
+msgid "The question has been activated."
+msgstr "The question has been activated."
+
+#: src/Controller/QuestionsController.php:239
+msgid "The question has been deactivated."
+msgstr "The question has been deactivated."
+
+#: src/Controller/QuestionsController.php:242
+msgid "The question status could not be changed. Please, try again."
+msgstr "The question status could not be changed. Please, try again."
+
+#: src/Controller/QuestionsController.php:267
+msgid "The question has been flagged for review."
+msgstr "The question has been flagged for review."
+
+#: src/Controller/QuestionsController.php:268
+msgid "The review flag has been cleared."
+msgstr "The review flag has been cleared."
+
+#: src/Controller/QuestionsController.php:271
+msgid "The review flag could not be changed. Please, try again."
+msgstr "The review flag could not be changed. Please, try again."
+
+#: src/Controller/QuestionsController.php:333
+msgid "Activated {0} item(s)."
+msgstr "Activated {0} item(s)."
+
+#: src/Controller/QuestionsController.php:334
+msgid "Deactivated {0} item(s)."
+msgstr "Deactivated {0} item(s)."
+
+#: src/Controller/QuestionsController.php:343
+msgid "Flagged {0} item(s) for review."
+msgstr "Flagged {0} item(s) for review."
+
+#: src/Controller/QuestionsController.php:344
+msgid "Cleared review flag for {0} item(s)."
+msgstr "Cleared review flag for {0} item(s)."
+
+#: src/Controller/QuizCreator/DashboardController.php:23
+#: templates/QuizCreator/Dashboard/index.php:12
+#: templates/QuizCreator/Dashboard/index.php:18
 msgid "Quiz Creator"
 msgstr "Quiz Creator"
 
@@ -442,182 +376,229 @@ msgstr "The role could not be deleted. Please, try again."
 
 #: src/Controller/TestAttemptAnswersController.php:53
 #: src/Controller/TestAttemptAnswersController.php:78
-#, fuzzy
 msgid "The test attempt answer has been saved."
-msgstr "The user has been saved."
+msgstr "The test attempt answer has been saved."
 
 #: src/Controller/TestAttemptAnswersController.php:57
 #: src/Controller/TestAttemptAnswersController.php:82
-#, fuzzy
 msgid "The test attempt answer could not be saved. Please, try again."
-msgstr "The user could not be saved. Please, try again."
+msgstr "The test attempt answer could not be saved. Please, try again."
 
 #: src/Controller/TestAttemptAnswersController.php:102
-#, fuzzy
 msgid "The test attempt answer has been deleted."
-msgstr "The user has been deleted."
+msgstr "The test attempt answer has been deleted."
 
 #: src/Controller/TestAttemptAnswersController.php:104
-#, fuzzy
 msgid "The test attempt answer could not be deleted. Please, try again."
-msgstr "The user could not be deleted. Please, try again."
+msgstr "The test attempt answer could not be deleted. Please, try again."
 
 #: src/Controller/TestAttemptsController.php:54
 #: src/Controller/TestAttemptsController.php:81
-#, fuzzy
 msgid "The test attempt has been saved."
-msgstr "The user has been saved."
+msgstr "The test attempt has been saved."
 
 #: src/Controller/TestAttemptsController.php:58
 #: src/Controller/TestAttemptsController.php:85
-#, fuzzy
 msgid "The test attempt could not be saved. Please, try again."
-msgstr "The user could not be saved. Please, try again."
+msgstr "The test attempt could not be saved. Please, try again."
 
 #: src/Controller/TestAttemptsController.php:107
-#, fuzzy
 msgid "The test attempt has been deleted."
-msgstr "The user has been deleted."
+msgstr "The test attempt has been deleted."
 
 #: src/Controller/TestAttemptsController.php:109
-#, fuzzy
 msgid "The test attempt could not be deleted. Please, try again."
-msgstr "The user could not be deleted. Please, try again."
+msgstr "The test attempt could not be deleted. Please, try again."
 
 #: src/Controller/TestTranslationsController.php:53
 #: src/Controller/TestTranslationsController.php:78
-#, fuzzy
 msgid "The test translation has been saved."
-msgstr "The user token has been saved."
+msgstr "The test translation has been saved."
 
 #: src/Controller/TestTranslationsController.php:57
 #: src/Controller/TestTranslationsController.php:82
-#, fuzzy
 msgid "The test translation could not be saved. Please, try again."
-msgstr "The user token could not be saved. Please, try again."
+msgstr "The test translation could not be saved. Please, try again."
 
 #: src/Controller/TestTranslationsController.php:102
-#, fuzzy
 msgid "The test translation has been deleted."
-msgstr "The user token has been deleted."
+msgstr "The test translation has been deleted."
 
 #: src/Controller/TestTranslationsController.php:104
-#, fuzzy
 msgid "The test translation could not be deleted. Please, try again."
-msgstr "The user token could not be deleted. Please, try again."
+msgstr "The test translation could not be deleted. Please, try again."
 
-#: src/Controller/TestsController.php:168
-#: src/Controller/TestsController.php:702
+#: src/Controller/TestsController.php:138
+#: src/Controller/TestsController.php:577
+#: src/Controller/TestsController.php:601
+#: src/Controller/TestsController.php:705
+#: src/Controller/TestsController.php:779
 msgid "Quiz not found."
 msgstr "Quiz not found."
 
-#: src/Controller/TestsController.php:184
+#: src/Controller/TestsController.php:139
 msgid "This quiz has no active questions yet."
 msgstr "This quiz has no active questions yet."
 
-#: src/Controller/TestsController.php:205
-#, fuzzy
+#: src/Controller/TestsController.php:140
+#: src/Controller/TestsController.php:142
 msgid "Could not start the quiz. Please try again."
-msgstr "The user could not be saved. Please, try again."
+msgstr "Could not start the quiz. Please try again."
 
-#: src/Controller/TestsController.php:227
+#: src/Controller/TestsController.php:164
 msgid "Please log in to start a quiz."
 msgstr "Please log in to start a quiz."
 
-#: src/Controller/TestsController.php:326
+#: src/Controller/TestsController.php:210
+msgid "Please log in to manage attempts."
+msgstr "Please log in to manage attempts."
+
+#: src/Controller/TestsController.php:223
+msgid "This attempt is already finished and cannot be aborted."
+msgstr "This attempt is already finished and cannot be aborted."
+
+#: src/Controller/TestsController.php:229
+msgid "Attempt aborted."
+msgstr "Attempt aborted."
+
+#: src/Controller/TestsController.php:231
+msgid "Could not abort this attempt. Please try again."
+msgstr "Could not abort this attempt. Please try again."
+
+#: src/Controller/TestsController.php:257
 msgid "Please log in to submit a quiz."
 msgstr "Please log in to submit a quiz."
 
-#: src/Controller/TestsController.php:344
-#, fuzzy
+#: src/Controller/TestsController.php:274
 msgid "This attempt has already been submitted."
-msgstr "The user has been saved."
+msgstr "This attempt has already been submitted."
 
-#: src/Controller/TestsController.php:383
+#: src/Controller/TestsController.php:287
 msgid "This quiz has no active questions."
 msgstr "This quiz has no active questions."
 
-#: src/Controller/TestsController.php:481
-#, fuzzy
+#: src/Controller/TestsController.php:317
 msgid "Could not submit your answers. Please try again."
-msgstr "The user could not be saved. Please, try again."
+msgstr "Could not submit your answers. Please try again."
 
-#: src/Controller/TestsController.php:503
-#: src/Controller/TestsController.php:531
+#: src/Controller/TestsController.php:339
+#: src/Controller/TestsController.php:367
 msgid "Please log in to view results."
 msgstr "Please log in to view results."
 
-#: src/Controller/TestsController.php:819
-#: src/Controller/TestsController.php:929
-#, fuzzy
+#: src/Controller/TestsController.php:438
+msgid "Please log in."
+msgstr "Please log in."
+
+#: src/Controller/TestsController.php:455
+msgid "Explanation is available after submission."
+msgstr "Explanation is available after submission."
+
+#: src/Controller/TestsController.php:474
+msgid "Answer record not found."
+msgstr "Answer record not found."
+
+#: src/Controller/TestsController.php:490
+msgid "AI explanation limit reached for today. Please try again tomorrow."
+msgstr "AI explanation limit reached for today. Please try again tomorrow."
+
+#: src/Controller/TestsController.php:506
+msgid "An error occurred."
+msgstr "An error occurred."
+
+#: src/Controller/TestsController.php:648
+msgid "Please log in to view your favorites."
+msgstr "Please log in to view your favorites."
+
+#: src/Controller/TestsController.php:686
+msgid "Please log in to save favorites."
+msgstr "Please log in to save favorites."
+
+#: src/Controller/TestsController.php:697
+msgid "Quiz is already in your favorites."
+msgstr "Quiz is already in your favorites."
+
+#: src/Controller/TestsController.php:699
+msgid "Quiz saved to favorites."
+msgstr "Quiz saved to favorites."
+
+#: src/Controller/TestsController.php:703
+msgid "Only public quizzes can be favorited."
+msgstr "Only public quizzes can be favorited."
+
+#: src/Controller/TestsController.php:726
+msgid "Please log in to manage favorites."
+msgstr "Please log in to manage favorites."
+
+#: src/Controller/TestsController.php:737
+msgid "Quiz is not in your favorites."
+msgstr "Quiz is not in your favorites."
+
+#: src/Controller/TestsController.php:739
+msgid "Quiz removed from favorites."
+msgstr "Quiz removed from favorites."
+
+#: src/Controller/TestsController.php:742
+msgid "Could not remove quiz from favorites."
+msgstr "Could not remove quiz from favorites."
+
+#: src/Controller/TestsController.php:762
+msgid "You do not have access to quiz statistics."
+msgstr "You do not have access to quiz statistics."
+
+#: src/Controller/TestsController.php:810
+#: src/Controller/TestsController.php:851
 msgid "The test has been saved."
-msgstr "The role has been saved."
+msgstr "The test has been saved."
 
-#: src/Controller/TestsController.php:825
-#: src/Controller/TestsController.php:933
-#, fuzzy
+#: src/Controller/TestsController.php:814
+#: src/Controller/TestsController.php:855
 msgid "The test could not be saved. Please, try again."
-msgstr "The role could not be saved. Please, try again."
+msgstr "The test could not be saved. Please, try again."
 
-#: src/Controller/TestsController.php:1031
-#, fuzzy
+#: src/Controller/TestsController.php:885
 msgid "The test has been deleted."
-msgstr "The role has been deleted."
+msgstr "The test has been deleted."
 
-#: src/Controller/TestsController.php:1033
-#, fuzzy
+#: src/Controller/TestsController.php:887
 msgid "The test could not be deleted. Please, try again."
-msgstr "The role could not be deleted. Please, try again."
-
-#: src/Controller/TestsController.php:1058 templates/Tests/add.php:13
-#: templates/Tests/add.php:147 templates/Tests/edit.php:13
-#: templates/Tests/edit.php:152
-msgid "AI generation limit reached. Limit resets tomorrow."
-msgstr "AI generation limit reached. Limit resets tomorrow."
+msgstr "The test could not be deleted. Please, try again."
 
 #: src/Controller/UserFavoriteCategoriesController.php:54
 #: src/Controller/UserFavoriteCategoriesController.php:79
-#, fuzzy
 msgid "The user favorite category has been saved."
-msgstr "The user token has been saved."
+msgstr "The user favorite category has been saved."
 
 #: src/Controller/UserFavoriteCategoriesController.php:58
 #: src/Controller/UserFavoriteCategoriesController.php:83
-#, fuzzy
 msgid "The user favorite category could not be saved. Please, try again."
-msgstr "The user token could not be saved. Please, try again."
+msgstr "The user favorite category could not be saved. Please, try again."
 
 #: src/Controller/UserFavoriteCategoriesController.php:102
-#, fuzzy
 msgid "The user favorite category has been deleted."
-msgstr "The user token has been deleted."
+msgstr "The user favorite category has been deleted."
 
 #: src/Controller/UserFavoriteCategoriesController.php:104
-#, fuzzy
 msgid "The user favorite category could not be deleted. Please, try again."
-msgstr "The user token could not be deleted. Please, try again."
+msgstr "The user favorite category could not be deleted. Please, try again."
 
 #: src/Controller/UserFavoriteTestsController.php:53
 #: src/Controller/UserFavoriteTestsController.php:77
-#, fuzzy
 msgid "The user favorite test has been saved."
-msgstr "The user token has been saved."
+msgstr "The user favorite test has been saved."
 
 #: src/Controller/UserFavoriteTestsController.php:57
 #: src/Controller/UserFavoriteTestsController.php:81
-#, fuzzy
 msgid "The user favorite test could not be saved. Please, try again."
-msgstr "The user token could not be saved. Please, try again."
+msgstr "The user favorite test could not be saved. Please, try again."
 
 #: src/Controller/UserFavoriteTestsController.php:100
-#, fuzzy
 msgid "The user favorite test has been deleted."
-msgstr "The user token has been deleted."
+msgstr "The user favorite test has been deleted."
 
 #: src/Controller/UserFavoriteTestsController.php:102
-#, fuzzy
 msgid "The user favorite test could not be deleted. Please, try again."
-msgstr "The user token could not be deleted. Please, try again."
+msgstr "The user favorite test could not be deleted. Please, try again."
 
 #: src/Controller/UserTokensController.php:53
 #: src/Controller/UserTokensController.php:76
@@ -637,118 +618,263 @@ msgstr "The user token has been deleted."
 msgid "The user token could not be deleted. Please, try again."
 msgstr "The user token could not be deleted. Please, try again."
 
-#: src/Controller/UsersController.php:74 src/Controller/UsersController.php:97
+#: src/Controller/UsersController.php:65 src/Controller/UsersController.php:88
 msgid "The user has been saved."
 msgstr "The user has been saved."
 
-#: src/Controller/UsersController.php:78 src/Controller/UsersController.php:101
+#: src/Controller/UsersController.php:69 src/Controller/UsersController.php:92
 msgid "The user could not be saved. Please, try again."
 msgstr "The user could not be saved. Please, try again."
 
-#: src/Controller/UsersController.php:175
-#: src/Controller/UsersController.php:557 templates/Users/register.php:88
+#: src/Controller/UsersController.php:110
+#: src/Service/AdminUserManagementService.php:195
+msgid "The user has been deleted."
+msgstr "The user has been deleted."
+
+#: src/Controller/UsersController.php:112
+#: src/Service/AdminUserManagementService.php:202
+msgid "The user could not be deleted. Please, try again."
+msgstr "The user could not be deleted. Please, try again."
+
+#: src/Controller/UsersController.php:169
+#: src/Controller/UsersController.php:371
+#: src/Controller/UsersController.php:384 templates/Users/register.php:100
 #: templates/Users/reset_password.php:56
 msgid "Passwords do not match."
 msgstr "Passwords do not match."
 
-#: src/Controller/UsersController.php:207
-#: src/Controller/UsersController.php:213
+#: src/Controller/UsersController.php:171
 msgid "Registration failed."
 msgstr "Registration failed."
 
-#: src/Controller/UsersController.php:240 src/Service/ApiAuthService.php:238
-msgid "Activate your MindForge account"
-msgstr "Activate your MindForge account"
-
-#: src/Controller/UsersController.php:248
+#: src/Controller/UsersController.php:180
 msgid "Check your email to activate your account."
 msgstr "Check your email to activate your account."
 
-#: src/Controller/UsersController.php:254
+#: src/Controller/UsersController.php:184
 msgid "Registration successful but email failed. Activation link: {0}"
 msgstr "Registration successful but email failed. Activation link: {0}"
 
-#: src/Controller/UsersController.php:301
+#: src/Controller/UsersController.php:208
 msgid "Invalid or expired activation token."
 msgstr "Invalid or expired activation token."
 
-#: src/Controller/UsersController.php:313
+#: src/Controller/UsersController.php:220
 msgid "Your account has been activated. You can now log in."
 msgstr "Your account has been activated. You can now log in."
 
-#: src/Controller/UsersController.php:318
+#: src/Controller/UsersController.php:225
 msgid "Failed to activate your account. Please try again."
 msgstr "Failed to activate your account. Please try again."
 
-#: src/Controller/UsersController.php:334
-msgid "Too many login attempts. Please try again in a minute."
-msgstr "Too many login attempts. Please try again in a minute."
-
-#: src/Controller/UsersController.php:365
-#: src/Controller/UsersController.php:419
-msgid "Invalid email or password."
-msgstr "Invalid email or password."
-
-#: src/Controller/UsersController.php:443
+#: src/Controller/UsersController.php:306
 msgid "You are now logged out."
 msgstr "You are now logged out."
 
-#: src/Controller/UsersController.php:469
+#: src/Controller/UsersController.php:332
 msgid "If the email exists in our system, we sent a password reset link."
 msgstr "If the email exists in our system, we sent a password reset link."
 
-#: src/Controller/UsersController.php:541
+#: src/Controller/UsersController.php:356
+#: src/Controller/UsersController.php:390
 msgid "Invalid or expired reset token."
 msgstr "Invalid or expired reset token."
 
-#: src/Controller/UsersController.php:568
+#: src/Controller/UsersController.php:378
 msgid "Your password has been reset. You can now log in."
 msgstr "Your password has been reset. You can now log in."
 
-#: src/Controller/UsersController.php:573
+#: src/Controller/UsersController.php:395
 msgid "Failed to reset password. Please try again."
 msgstr "Failed to reset password. Please try again."
 
-#: src/Controller/UsersController.php:636
-msgid "Invalid image format. Allowed: JPG, PNG, GIF, WEBP"
-msgstr "Invalid image format. Allowed: JPG, PNG, GIF, WEBP"
-
-#: src/Controller/UsersController.php:666
-#, fuzzy
+#: src/Controller/UsersController.php:483
 msgid "Please log in to view your stats."
-msgstr "Please enter your password."
+msgstr "Please log in to view your stats."
 
-#: src/Model/Table/AnswersTable.php:75 src/Model/Table/QuestionsTable.php:108
+#: src/Model/Table/AnswersTable.php:75 src/Model/Table/QuestionsTable.php:150
 msgid "Source type must be either human or ai."
 msgstr "Source type must be either human or ai."
 
-#: src/Model/Table/UsersTable.php:116 templates/Users/register.php:71
+#: src/Model/Table/AnswersTable.php:88
+msgid "Match side must be left or right."
+msgstr "Match side must be left or right."
+
+#: src/Model/Table/AnswersTable.php:136
+msgid "Both match side and match group are required for matching answers."
+msgstr "Both match side and match group are required for matching answers."
+
+#: src/Model/Table/QuestionsTable.php:142
+msgid "Invalid question type."
+msgstr "Invalid question type."
+
+#: src/Model/Table/QuestionsTable.php:314
+msgid "Provide at least one correct/accepted answer, or valid matching pairs."
+msgstr "Provide at least one correct/accepted answer, or valid matching pairs."
+
+#: src/Model/Table/UsersTable.php:116 templates/Users/register.php:82
 #: templates/Users/reset_password.php:39
 msgid "Password must be at least 8 characters."
 msgstr "Password must be at least 8 characters."
 
+#: src/Service/AdminUserManagementService.php:63
+#: templates/Admin/Users/index.php:303
+msgid "Select at least one user."
+msgstr "Select at least one user."
+
+#: src/Service/AdminUserManagementService.php:72
+#: src/Service/AdminUserManagementService.php:170
+msgid "You cannot delete your own account."
+msgstr "You cannot delete your own account."
+
+#: src/Service/AdminUserManagementService.php:79
+msgid "No valid users selected."
+msgstr "No valid users selected."
+
+#: src/Service/AdminUserManagementService.php:96
+msgid "{0} users updated."
+msgstr "{0} users updated."
+
+#: src/Service/AdminUserManagementService.php:100
+msgid "No users were updated."
+msgstr "No users were updated."
+
+#: src/Service/AdminUserManagementService.php:116
+#: src/Service/AdminUserManagementService.php:186
+msgid "You cannot delete the last admin account."
+msgstr "You cannot delete the last admin account."
+
+#: src/Service/AdminUserManagementService.php:151
+msgid "{0} users deleted."
+msgstr "{0} users deleted."
+
+#: src/Service/AdminUserManagementService.php:155
+msgid "No users were deleted."
+msgstr "No users were deleted."
+
+#: src/Service/AdminUserManagementService.php:239
+#: src/Service/PasswordResetService.php:63
+msgid "Reset your MindForge password"
+msgstr "Reset your MindForge password"
+
+#: src/Service/AdminUserManagementService.php:246
+msgid "We sent a password reset link to your email."
+msgstr "We sent a password reset link to your email."
+
+#: src/Service/AdminUserManagementService.php:254
+msgid "Could not send the password reset email. Please try again later."
+msgstr "Could not send the password reset email. Please try again later."
+
+#: src/Service/AiTestGenerationService.php:42 templates/Tests/add.php:13
+#: templates/Tests/add.php:192 templates/Tests/edit.php:13
+#: templates/Tests/edit.php:197
+msgid "AI generation limit reached. Limit resets tomorrow."
+msgstr "AI generation limit reached. Limit resets tomorrow."
+
+#: src/Service/ApiAuthService.php:270
+#: src/Service/WebUserRegistrationService.php:155
+msgid "Activate your MindForge account"
+msgstr "Activate your MindForge account"
+
+#: src/Service/QuestionEditorService.php:81
+msgid "At least one correct answer is required."
+msgstr "At least one correct answer is required."
+
+#: src/Service/QuestionIndexService.php:107
+msgid "Multiple Choice"
+msgstr "Multiple Choice"
+
+#: src/Service/QuestionIndexService.php:108
+msgid "True/False"
+msgstr "True/False"
+
+#: src/Service/QuestionIndexService.php:109
+msgid "Text"
+msgstr "Text"
+
+#: src/Service/QuestionIndexService.php:112 templates/Questions/edit.php:73
+#: templates/Questions/edit.php:132 templates/Questions/edit.php:206
+#: templates/Questions/index.php:199
+msgid "Human"
+msgstr "Human"
+
+#: src/Service/QuestionIndexService.php:113 templates/Questions/edit.php:73
+#: templates/Questions/edit.php:133 templates/Questions/edit.php:207
+#: templates/Questions/index.php:197
+msgid "AI"
+msgstr "AI"
+
+#: src/Service/QuestionIndexService.php:116 templates/Categories/add.php:33
+#: templates/Categories/edit.php:44 templates/Categories/index.php:52
+#: templates/Categories/index.php:106 templates/Categories/index.php:137
+#: templates/Categories/view.php:38 templates/Questions/index.php:142
+#: templates/Questions/index.php:211 templates/Questions/view.php:83
+#: templates/Tests/view.php:106 templates/Tests/view.php:117
+msgid "Active"
+msgstr "Active"
+
+#: src/Service/QuestionIndexService.php:117 templates/Categories/index.php:61
+#: templates/Categories/index.php:139 templates/Categories/view.php:40
+#: templates/Questions/index.php:213 templates/Questions/view.php:85
+#: templates/Tests/view.php:119
+msgid "Inactive"
+msgstr "Inactive"
+
+#: src/Service/QuestionIndexService.php:120 templates/Questions/index.php:204
+msgid "Needs Review"
+msgstr "Needs Review"
+
+#: src/Service/QuestionIndexService.php:121
+msgid "Reviewed"
+msgstr "Reviewed"
+
+#: src/Service/TestCatalogService.php:89 templates/Tests/catalog_view.php:97
+#: templates/Tests/creator_view.php:70 templates/Tests/favorites.php:45
+#: templates/Tests/index.php:99 templates/Tests/index.php:474
+msgid "Untitled quiz"
+msgstr "Untitled quiz"
+
+#: src/Service/TestCatalogService.php:90 src/Service/TestCatalogService.php:197
+#: src/Service/UserStatsService.php:192 templates/Dashboard/index.php:46
+#: templates/Tests/index.php:100 templates/Tests/index.php:158
+#: templates/Tests/index.php:206
+msgid "Uncategorized"
+msgstr "Uncategorized"
+
+#: src/Service/UserStatsService.php:192
+msgid "Category #{0}"
+msgstr "Category #{0}"
+
+#: src/Service/WebLoginService.php:70
+msgid "Too many login attempts. Please try again in a minute."
+msgstr "Too many login attempts. Please try again in a minute."
+
+#: src/Service/WebLoginService.php:93 src/Service/WebLoginService.php:155
+msgid "Invalid email or password."
+msgstr "Invalid email or password."
+
 #: templates/ActivityLogs/add.php:11 templates/ActivityLogs/edit.php:11
 #: templates/ActivityLogs/index.php:19 templates/ActivityLogs/view.php:10
-#: templates/Admin/Users/index.php:90 templates/AiRequests/add.php:13
-#: templates/AiRequests/edit.php:13 templates/AiRequests/index.php:137
+#: templates/Admin/Users/index.php:146 templates/AiRequests/add.php:13
+#: templates/AiRequests/edit.php:13 templates/AiRequests/index.php:197
 #: templates/AnswerTranslations/add.php:12
 #: templates/AnswerTranslations/edit.php:12
 #: templates/AnswerTranslations/index.php:20
-#: templates/AnswerTranslations/view.php:10 templates/Answers/index.php:67
-#: templates/Categories/index.php:66 templates/CategoryTranslations/add.php:12
+#: templates/AnswerTranslations/view.php:10 templates/Answers/index.php:62
+#: templates/Categories/index.php:109 templates/CategoryTranslations/add.php:12
 #: templates/CategoryTranslations/edit.php:12
 #: templates/CategoryTranslations/index.php:19
 #: templates/CategoryTranslations/view.php:10 templates/DeviceLogs/add.php:11
-#: templates/DeviceLogs/edit.php:11 templates/DeviceLogs/index.php:96
-#: templates/DeviceLogs/view.php:10 templates/Difficulties/index.php:64
-#: templates/Difficulties/view.php:66 templates/Languages/index.php:64
+#: templates/DeviceLogs/edit.php:11 templates/DeviceLogs/index.php:165
+#: templates/DeviceLogs/view.php:10 templates/Difficulties/index.php:95
+#: templates/Difficulties/view.php:66 templates/Languages/index.php:89
 #: templates/Languages/view.php:10 templates/Languages/view.php:51
 #: templates/Languages/view.php:97 templates/Languages/view.php:138
 #: templates/Languages/view.php:180 templates/Languages/view.php:228
 #: templates/Languages/view.php:279 templates/QuestionTranslations/add.php:12
 #: templates/QuestionTranslations/edit.php:12
 #: templates/QuestionTranslations/index.php:20
-#: templates/QuestionTranslations/view.php:10 templates/Questions/index.php:68
+#: templates/QuestionTranslations/view.php:10 templates/Questions/index.php:145
 #: templates/Roles/add.php:10 templates/Roles/edit.php:10
 #: templates/Roles/index.php:17 templates/Roles/view.php:10
 #: templates/Roles/view.php:50 templates/TestAttemptAnswers/add.php:13
@@ -759,7 +885,7 @@ msgstr "Password must be at least 8 characters."
 #: templates/TestAttempts/view.php:10 templates/TestAttempts/view.php:83
 #: templates/TestTranslations/add.php:13 templates/TestTranslations/edit.php:13
 #: templates/TestTranslations/index.php:24
-#: templates/TestTranslations/view.php:10 templates/Tests/index.php:181
+#: templates/TestTranslations/view.php:10 templates/Tests/index.php:726
 #: templates/Tests/view.php:107 templates/UserFavoriteCategories/add.php:12
 #: templates/UserFavoriteCategories/edit.php:12
 #: templates/UserFavoriteCategories/index.php:18
@@ -779,25 +905,20 @@ msgstr "Actions"
 
 #: templates/ActivityLogs/add.php:12 templates/ActivityLogs/edit.php:17
 #: templates/ActivityLogs/view.php:13
-#, fuzzy
 msgid "List Activity Logs"
-msgstr "Related Activity Logs"
+msgstr "List Activity Logs"
 
 #: templates/ActivityLogs/add.php:19
-#, fuzzy
 msgid "Add Activity Log"
-msgstr "Related Activity Logs"
+msgstr "Add Activity Log"
 
 #: templates/ActivityLogs/add.php:28 templates/ActivityLogs/edit.php:33
 #: templates/AiRequests/add.php:35 templates/AiRequests/edit.php:40
 #: templates/AnswerTranslations/add.php:30
 #: templates/AnswerTranslations/edit.php:35 templates/Answers/add.php:64
-#: templates/Categories/add.php:53 templates/Categories/edit.php:59
 #: templates/CategoryTranslations/add.php:29
 #: templates/CategoryTranslations/edit.php:34 templates/DeviceLogs/add.php:30
-#: templates/DeviceLogs/edit.php:35 templates/Difficulties/add.php:39
-#: templates/Difficulties/edit.php:66 templates/Languages/add.php:22
-#: templates/Languages/edit.php:29 templates/QuestionTranslations/add.php:31
+#: templates/DeviceLogs/edit.php:35 templates/QuestionTranslations/add.php:31
 #: templates/QuestionTranslations/edit.php:36 templates/Questions/add.php:83
 #: templates/Roles/add.php:24 templates/Roles/edit.php:29
 #: templates/TestAttemptAnswers/add.php:31
@@ -814,34 +935,34 @@ msgid "Submit"
 msgstr "Submit"
 
 #: templates/ActivityLogs/edit.php:13 templates/ActivityLogs/index.php:34
-#: templates/Admin/Dashboard/index.php:171 templates/Admin/Users/edit.php:139
-#: templates/Admin/Users/index.php:203 templates/AiRequests/edit.php:15
-#: templates/AiRequests/index.php:212 templates/AiRequests/index.php:243
-#: templates/AiRequests/view.php:33 templates/AnswerTranslations/edit.php:14
+#: templates/Admin/Dashboard/index.php:178 templates/Admin/Users/edit.php:152
+#: templates/Admin/Users/index.php:270 templates/AiRequests/edit.php:15
+#: templates/AiRequests/index.php:293 templates/AiRequests/index.php:329
+#: templates/AiRequests/view.php:34 templates/AnswerTranslations/edit.php:14
 #: templates/AnswerTranslations/index.php:36 templates/Answers/edit.php:18
-#: templates/Answers/index.php:122 templates/Answers/index.php:153
-#: templates/Answers/view.php:25 templates/Categories/edit.php:12
-#: templates/Categories/index.php:113 templates/Categories/index.php:144
+#: templates/Answers/index.php:117 templates/Answers/index.php:155
+#: templates/Answers/view.php:25 templates/Categories/edit.php:21
+#: templates/Categories/index.php:156 templates/Categories/index.php:195
 #: templates/Categories/view.php:21 templates/CategoryTranslations/edit.php:14
 #: templates/CategoryTranslations/index.php:34 templates/DeviceLogs/edit.php:13
-#: templates/DeviceLogs/index.php:154 templates/DeviceLogs/index.php:185
-#: templates/Difficulties/edit.php:14 templates/Difficulties/index.php:106
-#: templates/Difficulties/index.php:137 templates/Difficulties/view.php:21
-#: templates/Languages/edit.php:12 templates/Languages/index.php:90
-#: templates/Languages/index.php:121 templates/Languages/view.php:70
+#: templates/DeviceLogs/index.php:219 templates/DeviceLogs/index.php:255
+#: templates/Difficulties/edit.php:21 templates/Difficulties/index.php:132
+#: templates/Difficulties/index.php:171 templates/Difficulties/view.php:21
+#: templates/Languages/edit.php:20 templates/Languages/index.php:115
+#: templates/Languages/index.php:154 templates/Languages/view.php:70
 #: templates/Languages/view.php:112 templates/Languages/view.php:152
 #: templates/Languages/view.php:196 templates/Languages/view.php:248
 #: templates/Languages/view.php:298 templates/QuestionTranslations/edit.php:14
-#: templates/QuestionTranslations/index.php:36 templates/Questions/edit.php:20
-#: templates/Questions/index.php:132 templates/Questions/index.php:163
+#: templates/QuestionTranslations/index.php:36 templates/Questions/edit.php:30
+#: templates/Questions/index.php:253 templates/Questions/index.php:311
 #: templates/Questions/view.php:21 templates/Roles/edit.php:12
 #: templates/Roles/index.php:30 templates/Roles/view.php:68
 #: templates/TestAttemptAnswers/edit.php:15
 #: templates/TestAttemptAnswers/index.php:36 templates/TestAttempts/edit.php:17
 #: templates/TestAttempts/index.php:48 templates/TestAttempts/view.php:98
 #: templates/TestTranslations/edit.php:15
-#: templates/TestTranslations/index.php:44 templates/Tests/edit.php:20
-#: templates/Tests/index.php:226 templates/Tests/index.php:257
+#: templates/TestTranslations/index.php:44 templates/Tests/edit.php:32
+#: templates/Tests/index.php:780 templates/Tests/index.php:819
 #: templates/Tests/view.php:26 templates/UserFavoriteCategories/edit.php:14
 #: templates/UserFavoriteCategories/index.php:32
 #: templates/UserFavoriteTests/edit.php:14
@@ -855,26 +976,26 @@ msgstr "Delete"
 
 #: templates/ActivityLogs/edit.php:15 templates/ActivityLogs/index.php:38
 #: templates/ActivityLogs/view.php:12 templates/AiRequests/edit.php:17
-#: templates/AiRequests/index.php:215 templates/AiRequests/view.php:36
+#: templates/AiRequests/index.php:296 templates/AiRequests/view.php:37
 #: templates/AnswerTranslations/edit.php:16
 #: templates/AnswerTranslations/index.php:40
 #: templates/AnswerTranslations/view.php:12 templates/Answers/edit.php:21
-#: templates/Answers/index.php:125 templates/Answers/view.php:28
-#: templates/Categories/edit.php:14 templates/Categories/index.php:116
+#: templates/Answers/index.php:120 templates/Answers/view.php:28
+#: templates/Categories/edit.php:24 templates/Categories/index.php:159
 #: templates/Categories/view.php:24 templates/CategoryTranslations/edit.php:16
 #: templates/CategoryTranslations/index.php:38
 #: templates/CategoryTranslations/view.php:12 templates/DeviceLogs/edit.php:15
-#: templates/DeviceLogs/index.php:157 templates/DeviceLogs/view.php:12
-#: templates/Difficulties/edit.php:16 templates/Difficulties/index.php:109
-#: templates/Difficulties/view.php:24 templates/Languages/edit.php:14
-#: templates/Languages/index.php:93 templates/Languages/view.php:12
+#: templates/DeviceLogs/index.php:222 templates/DeviceLogs/view.php:12
+#: templates/Difficulties/edit.php:24 templates/Difficulties/index.php:135
+#: templates/Difficulties/view.php:24 templates/Languages/edit.php:23
+#: templates/Languages/index.php:118 templates/Languages/view.php:12
 #: templates/Languages/view.php:74 templates/Languages/view.php:116
 #: templates/Languages/view.php:156 templates/Languages/view.php:200
 #: templates/Languages/view.php:252 templates/Languages/view.php:302
 #: templates/QuestionTranslations/edit.php:16
 #: templates/QuestionTranslations/index.php:40
-#: templates/QuestionTranslations/view.php:12 templates/Questions/edit.php:23
-#: templates/Questions/index.php:135 templates/Questions/view.php:24
+#: templates/QuestionTranslations/view.php:12 templates/Questions/edit.php:33
+#: templates/Questions/index.php:256 templates/Questions/view.php:24
 #: templates/Roles/edit.php:14 templates/Roles/index.php:34
 #: templates/Roles/view.php:12 templates/Roles/view.php:72
 #: templates/TestAttemptAnswers/edit.php:17
@@ -883,8 +1004,8 @@ msgstr "Delete"
 #: templates/TestAttempts/index.php:52 templates/TestAttempts/view.php:12
 #: templates/TestAttempts/view.php:102 templates/TestTranslations/edit.php:17
 #: templates/TestTranslations/index.php:48
-#: templates/TestTranslations/view.php:12 templates/Tests/edit.php:22
-#: templates/Tests/index.php:229 templates/Tests/view.php:29
+#: templates/TestTranslations/view.php:12 templates/Tests/edit.php:34
+#: templates/Tests/index.php:783 templates/Tests/view.php:29
 #: templates/UserFavoriteCategories/edit.php:16
 #: templates/UserFavoriteCategories/index.php:36
 #: templates/UserFavoriteCategories/view.php:12
@@ -900,28 +1021,25 @@ msgid "Are you sure you want to delete # {0}?"
 msgstr "Are you sure you want to delete # {0}?"
 
 #: templates/ActivityLogs/edit.php:24 templates/ActivityLogs/view.php:11
-#, fuzzy
 msgid "Edit Activity Log"
-msgstr "Related Activity Logs"
+msgstr "Edit Activity Log"
 
 #: templates/ActivityLogs/index.php:8 templates/ActivityLogs/view.php:14
-#, fuzzy
 msgid "New Activity Log"
-msgstr "Related Activity Logs"
+msgstr "New Activity Log"
 
 #: templates/ActivityLogs/index.php:9
-#, fuzzy
 msgid "Activity Logs"
-msgstr "Related Activity Logs"
+msgstr "Activity Logs"
 
 #: templates/ActivityLogs/index.php:31
 #: templates/AnswerTranslations/index.php:33
 #: templates/CategoryTranslations/index.php:31
-#: templates/Difficulties/index.php:96 templates/Difficulties/view.php:76
-#: templates/Languages/view.php:67 templates/Languages/view.php:109
-#: templates/Languages/view.php:149 templates/Languages/view.php:193
-#: templates/Languages/view.php:245 templates/Languages/view.php:295
-#: templates/QuestionTranslations/index.php:33 templates/Roles/index.php:27
+#: templates/Difficulties/view.php:76 templates/Languages/view.php:67
+#: templates/Languages/view.php:109 templates/Languages/view.php:149
+#: templates/Languages/view.php:193 templates/Languages/view.php:245
+#: templates/Languages/view.php:295 templates/QuestionTranslations/index.php:33
+#: templates/Questions/index.php:225 templates/Roles/index.php:27
 #: templates/Roles/view.php:65 templates/TestAttemptAnswers/index.php:33
 #: templates/TestAttempts/index.php:45 templates/TestAttempts/view.php:95
 #: templates/TestTranslations/index.php:41 templates/Tests/view.php:124
@@ -933,21 +1051,22 @@ msgstr "Related Activity Logs"
 msgid "View"
 msgstr "View"
 
-#: templates/ActivityLogs/index.php:32 templates/Admin/Users/index.php:117
-#: templates/AnswerTranslations/index.php:34 templates/Answers/index.php:117
-#: templates/Answers/view.php:23 templates/Categories/index.php:108
+#: templates/ActivityLogs/index.php:32 templates/Admin/Users/index.php:173
+#: templates/AnswerTranslations/index.php:34 templates/Answers/index.php:112
+#: templates/Answers/view.php:23 templates/Categories/index.php:151
 #: templates/Categories/view.php:19 templates/CategoryTranslations/index.php:32
-#: templates/Difficulties/index.php:101 templates/Difficulties/view.php:19
-#: templates/Languages/index.php:85 templates/Languages/view.php:68
+#: templates/Difficulties/index.php:127 templates/Difficulties/view.php:19
+#: templates/Languages/index.php:110 templates/Languages/view.php:68
 #: templates/Languages/view.php:110 templates/Languages/view.php:150
 #: templates/Languages/view.php:194 templates/Languages/view.php:246
 #: templates/Languages/view.php:296 templates/QuestionTranslations/index.php:34
-#: templates/Questions/index.php:127 templates/Questions/view.php:19
+#: templates/Questions/index.php:230 templates/Questions/view.php:19
 #: templates/Roles/index.php:28 templates/Roles/view.php:66
 #: templates/TestAttemptAnswers/index.php:34
 #: templates/TestAttempts/index.php:46 templates/TestAttempts/view.php:96
-#: templates/TestTranslations/index.php:42 templates/Tests/index.php:221
-#: templates/Tests/view.php:24 templates/UserFavoriteCategories/index.php:30
+#: templates/TestTranslations/index.php:42 templates/Tests/index.php:494
+#: templates/Tests/index.php:775 templates/Tests/view.php:24
+#: templates/UserFavoriteCategories/index.php:30
 #: templates/UserFavoriteTests/index.php:30 templates/UserTokens/index.php:34
 #: templates/Users/index.php:44 templates/Users/view.php:109
 #: templates/Users/view.php:155 templates/Users/view.php:206
@@ -1020,21 +1139,21 @@ msgstr ""
 "total"
 
 #: templates/ActivityLogs/view.php:12
-#, fuzzy
 msgid "Delete Activity Log"
-msgstr "Related Activity Logs"
+msgstr "Delete Activity Log"
 
-#: templates/ActivityLogs/view.php:22 templates/Admin/Dashboard/index.php:100
-#: templates/AiRequests/index.php:130 templates/AiRequests/view.php:56
-#: templates/DeviceLogs/index.php:91 templates/DeviceLogs/view.php:22
+#: templates/ActivityLogs/view.php:22 templates/Admin/Dashboard/index.php:107
+#: templates/AiRequests/index.php:188 templates/AiRequests/view.php:57
+#: templates/DeviceLogs/index.php:160 templates/DeviceLogs/view.php:22
 #: templates/TestAttempts/view.php:22
 #: templates/UserFavoriteCategories/view.php:22
 #: templates/UserFavoriteTests/view.php:22 templates/UserTokens/view.php:22
-#: templates/Users/profile.php:41
+#: templates/Users/profile.php:43
 msgid "User"
 msgstr "User"
 
-#: templates/ActivityLogs/view.php:26 templates/Users/view.php:89
+#: templates/ActivityLogs/view.php:26 templates/Admin/Users/edit.php:241
+#: templates/Users/view.php:89
 msgid "Action"
 msgstr "Action"
 
@@ -1077,7 +1196,7 @@ msgstr "ID"
 msgid "Created At"
 msgstr "Created At"
 
-#: templates/ActivityLogs/view.php:43 templates/DeviceLogs/index.php:95
+#: templates/ActivityLogs/view.php:43 templates/DeviceLogs/index.php:164
 #: templates/DeviceLogs/view.php:51 templates/Users/view.php:93
 #: templates/Users/view.php:180
 msgid "User Agent"
@@ -1087,433 +1206,633 @@ msgstr "User Agent"
 msgid "Admin Dashboard"
 msgstr "Admin Dashboard"
 
-#: templates/Admin/Dashboard/index.php:14
-#, fuzzy
+#: templates/Admin/Dashboard/index.php:11
 msgid "Dashboard Overview"
-msgstr "Dashboard"
+msgstr "Dashboard Overview"
 
-#: templates/Admin/Dashboard/index.php:15
+#: templates/Admin/Dashboard/index.php:12
 msgid "Welcome back, Administrator. Here's what's happening today."
 msgstr "Welcome back, Administrator. Here's what's happening today."
 
-#: templates/Admin/Dashboard/index.php:18
+#: templates/Admin/Dashboard/index.php:16
 msgid "Last updated: Just now"
 msgstr "Last updated: Just now"
 
-#: templates/Admin/Dashboard/index.php:35
-#, fuzzy
-msgid "Total Users"
-msgstr "List Users"
-
-#: templates/Admin/Dashboard/index.php:36
-#, fuzzy
-msgid "Active Users"
-msgstr "Related Users"
-
 #: templates/Admin/Dashboard/index.php:37
-#, fuzzy
-msgid "Total Tests"
-msgstr "Total Questions"
+msgid "Total Users"
+msgstr "Total Users"
 
-#: templates/Admin/Dashboard/index.php:38 templates/Difficulties/view.php:43
-#: templates/Questions/index.php:9 templates/Questions/index.php:19
-#: templates/QuizCreator/Dashboard/index.php:29 templates/Tests/add.php:49
-#: templates/Tests/catalog_view.php:79 templates/Tests/edit.php:54
-#: templates/Tests/index.php:92 templates/Tests/index.php:177
-#: templates/Tests/review.php:73 templates/Tests/view.php:70
-#: templates/Tests/view.php:99 templates/element/admin_sidebar.php:136
-#: templates/element/admin_sidebar.php:188
-#, fuzzy
-msgid "Questions"
-msgstr "Total Questions"
+#: templates/Admin/Dashboard/index.php:38
+msgid "Active Users"
+msgstr "Active Users"
 
 #: templates/Admin/Dashboard/index.php:39
+msgid "Total Tests"
+msgstr "Total Tests"
+
+#: templates/Admin/Dashboard/index.php:40 templates/Difficulties/view.php:43
+#: templates/Questions/index.php:23 templates/Questions/index.php:28
+#: templates/Tests/add.php:76 templates/Tests/catalog_view.php:84
+#: templates/Tests/creator_view.php:59 templates/Tests/creator_view.php:62
+#: templates/Tests/edit.php:81 templates/Tests/favorites.php:70
+#: templates/Tests/index.php:462 templates/Tests/index.php:722
+#: templates/Tests/review.php:75 templates/Tests/view.php:70
+#: templates/Tests/view.php:99
+msgid "Questions"
+msgstr "Questions"
+
+#: templates/Admin/Dashboard/index.php:41
 msgid "Today's Logins"
 msgstr "Today's Logins"
 
-#: templates/Admin/Dashboard/index.php:40 templates/AiRequests/index.php:10
-#: templates/AiRequests/index.php:23 templates/element/admin_sidebar.php:162
-#, fuzzy
+#: templates/Admin/Dashboard/index.php:42 templates/AiRequests/index.php:14
+#: templates/AiRequests/index.php:24 templates/element/admin_sidebar.php:138
+#: templates/element/admin_sidebar_links.php:65
 msgid "AI Requests"
-msgstr "Related AI Requests"
+msgstr "AI Requests"
 
-#: templates/Admin/Dashboard/index.php:58
+#: templates/Admin/Dashboard/index.php:65
 msgid "Recent System Events"
 msgstr "Recent System Events"
 
-#: templates/Admin/Dashboard/index.php:65 templates/AiRequests/index.php:100
-#: templates/Answers/index.php:28 templates/DeviceLogs/index.php:61
-#: templates/Languages/index.php:28 templates/Questions/index.php:28
-#: templates/Tests/index.php:140
+#: templates/Admin/Dashboard/index.php:72 templates/AiRequests/index.php:158
+#: templates/Answers/index.php:23 templates/Languages/index.php:53
+#: templates/Questions/index.php:37 templates/Tests/index.php:268
+#: templates/Tests/index.php:339 templates/Tests/index.php:685
 #: templates/element/functions/admin_list_controls.php:16
 msgid "Search"
 msgstr "Search"
 
-#: templates/Admin/Dashboard/index.php:66 templates/AiRequests/index.php:101
-#: templates/Answers/index.php:29 templates/Categories/index.php:29
-#: templates/DeviceLogs/index.php:62 templates/Difficulties/index.php:29
-#: templates/Languages/index.php:29 templates/Questions/index.php:29
-#: templates/Tests/index.php:141
+#: templates/Admin/Dashboard/index.php:73 templates/Admin/Users/index.php:88
+#: templates/AiRequests/index.php:159 templates/Answers/index.php:24
+#: templates/Categories/index.php:72 templates/DeviceLogs/index.php:132
+#: templates/Difficulties/index.php:60 templates/Languages/index.php:54
+#: templates/Questions/index.php:38 templates/Tests/index.php:686
 #: templates/element/functions/admin_list_controls.php:17
 msgid "Search…"
 msgstr "Search…"
 
-#: templates/Admin/Dashboard/index.php:71 templates/Admin/Users/index.php:32
-#: templates/AiRequests/index.php:106 templates/Answers/index.php:34
-#: templates/Categories/index.php:34 templates/DeviceLogs/index.php:67
-#: templates/Difficulties/index.php:34 templates/Languages/index.php:34
-#: templates/Questions/index.php:34 templates/Tests/index.php:146
+#: templates/Admin/Dashboard/index.php:78 templates/Admin/Users/index.php:93
+#: templates/AiRequests/index.php:164 templates/Answers/index.php:29
+#: templates/Categories/index.php:77 templates/DeviceLogs/index.php:137
+#: templates/Difficulties/index.php:65 templates/Languages/index.php:59
+#: templates/Questions/index.php:43 templates/Tests/index.php:556
+#: templates/Tests/index.php:691
 #: templates/element/functions/admin_list_controls.php:21
 msgid "Show"
 msgstr "Show"
 
-#: templates/Admin/Dashboard/index.php:77 templates/Admin/Users/index.php:38
-#: templates/AiRequests/index.php:112 templates/Answers/index.php:40
-#: templates/Categories/index.php:40 templates/DeviceLogs/index.php:73
-#: templates/Difficulties/index.php:40 templates/Languages/index.php:40
-#: templates/Questions/index.php:40 templates/Tests/index.php:152
+#: templates/Admin/Dashboard/index.php:84 templates/Admin/Users/index.php:99
+#: templates/AiRequests/index.php:170 templates/Answers/index.php:35
+#: templates/Categories/index.php:83 templates/DeviceLogs/index.php:95
+#: templates/DeviceLogs/index.php:143 templates/Difficulties/index.php:71
+#: templates/Languages/index.php:65 templates/Questions/index.php:49
+#: templates/Questions/index.php:65 templates/Questions/index.php:75
+#: templates/Questions/index.php:85 templates/Questions/index.php:95
+#: templates/Questions/index.php:105 templates/Tests/index.php:298
+#: templates/Tests/index.php:349 templates/Tests/index.php:359
+#: templates/Tests/index.php:370 templates/Tests/index.php:697
 #: templates/element/functions/admin_list_controls.php:26
 msgid "All"
 msgstr "All"
 
-#: templates/Admin/Dashboard/index.php:98
+#: templates/Admin/Dashboard/index.php:105
 msgid "Timestamp"
 msgstr "Timestamp"
 
-#: templates/Admin/Dashboard/index.php:99
-#, fuzzy
+#: templates/Admin/Dashboard/index.php:106
 msgid "Event Type"
-msgstr "Entity Type"
+msgstr "Event Type"
 
-#: templates/Admin/Dashboard/index.php:101 templates/AiRequests/index.php:207
+#: templates/Admin/Dashboard/index.php:108 templates/AiRequests/index.php:288
 msgid "Details"
 msgstr "Details"
 
-#: templates/Admin/Dashboard/index.php:102 templates/AiRequests/index.php:132
-#: templates/AiRequests/view.php:52 templates/Languages/view.php:49
+#: templates/Admin/Dashboard/index.php:109 templates/AiRequests/index.php:190
+#: templates/AiRequests/view.php:53 templates/Languages/view.php:49
+#: templates/Questions/index.php:83 templates/Tests/catalog_view.php:194
 #: templates/Users/view.php:138
 msgid "Status"
 msgstr "Status"
 
-#: templates/Admin/Dashboard/index.php:122
+#: templates/Admin/Dashboard/index.php:129
 msgid "No events yet."
 msgstr "No events yet."
 
-#: templates/Admin/Dashboard/index.php:134
+#: templates/Admin/Dashboard/index.php:141
 msgid "Select event"
 msgstr "Select event"
 
-#: templates/Admin/Dashboard/index.php:164 templates/Admin/Users/index.php:186
-#: templates/AiRequests/index.php:236 templates/Answers/index.php:146
-#: templates/Categories/index.php:137 templates/DeviceLogs/index.php:178
-#: templates/Difficulties/index.php:130 templates/Languages/index.php:114
-#: templates/Questions/index.php:156 templates/Tests/index.php:250
+#: templates/Admin/Dashboard/index.php:171 templates/Admin/Users/index.php:251
+#: templates/AiRequests/index.php:322 templates/Answers/index.php:148
+#: templates/Categories/index.php:188 templates/DeviceLogs/index.php:248
+#: templates/Difficulties/index.php:164 templates/Languages/index.php:147
+#: templates/Questions/index.php:284 templates/Tests/index.php:812
 #: templates/element/functions/admin_bulk_controls.php:15
-msgid "Összes bejelölése"
-msgstr "Összes bejelölése"
+msgid "Select all"
+msgstr "Select all"
 
-#: templates/Admin/Dashboard/index.php:167 templates/Admin/Users/index.php:189
-#: templates/AiRequests/index.php:239 templates/Answers/index.php:149
-#: templates/Categories/index.php:140 templates/DeviceLogs/index.php:181
-#: templates/Difficulties/index.php:133 templates/Languages/index.php:117
-#: templates/Questions/index.php:159 templates/Tests/index.php:253
+#: templates/Admin/Dashboard/index.php:174 templates/Admin/Users/index.php:254
+#: templates/AiRequests/index.php:325 templates/Answers/index.php:151
+#: templates/Categories/index.php:191 templates/DeviceLogs/index.php:251
+#: templates/Difficulties/index.php:167 templates/Languages/index.php:150
+#: templates/Questions/index.php:287 templates/Tests/index.php:815
 #: templates/element/functions/admin_bulk_controls.php:17
-msgid "A kijelöltekkel végzendő művelet:"
-msgstr "A kijelöltekkel végzendő művelet:"
+msgid "Action for selected items:"
+msgstr "Action for selected items:"
 
-#: templates/Admin/Dashboard/index.php:184 templates/Admin/Users/index.php:214
-#: templates/AiRequests/index.php:254 templates/Answers/index.php:164
-#: templates/Categories/index.php:155 templates/DeviceLogs/index.php:196
-#: templates/Difficulties/index.php:148 templates/Languages/index.php:132
-#: templates/Questions/index.php:174 templates/Tests/index.php:268
+#: templates/Admin/Dashboard/index.php:191 templates/Admin/Users/index.php:282
+#: templates/AiRequests/index.php:340 templates/Answers/index.php:166
+#: templates/Categories/index.php:207 templates/DeviceLogs/index.php:266
+#: templates/Difficulties/index.php:183 templates/Languages/index.php:166
+#: templates/Questions/index.php:322 templates/Tests/index.php:831
 msgid "Pagination"
 msgstr "Pagination"
 
-#: templates/Admin/Dashboard/index.php:206 templates/AiRequests/index.php:276
-#: templates/Answers/index.php:186 templates/Categories/index.php:177
-#: templates/DeviceLogs/index.php:218 templates/Difficulties/index.php:170
-#: templates/Languages/index.php:154 templates/Questions/index.php:196
-#: templates/Tests/index.php:290
-#, fuzzy
+#: templates/Admin/Dashboard/index.php:213 templates/AiRequests/index.php:362
+#: templates/Answers/index.php:188 templates/Categories/index.php:229
+#: templates/DeviceLogs/index.php:288 templates/Difficulties/index.php:205
+#: templates/Languages/index.php:188 templates/Questions/index.php:344
+#: templates/Tests/index.php:853
 msgid "Are you sure you want to delete the selected items?"
-msgstr "Are you sure you want to delete # {0}?"
+msgstr "Are you sure you want to delete the selected items?"
 
-#: templates/Admin/Users/add.php:9 templates/Admin/Users/index.php:42
-#, fuzzy
+#: templates/Admin/Users/add.php:9 templates/Admin/Users/index.php:103
 msgid "Create User"
-msgstr "Related Users"
+msgstr "Create User"
 
-#: templates/Admin/Users/add.php:21 templates/Admin/Users/edit.php:25
-#: templates/Admin/Users/index.php:86 templates/Admin/my_profile.php:22
+#: templates/Admin/Users/add.php:21 templates/Admin/Users/edit.php:38
+#: templates/Admin/Users/index.php:142 templates/Admin/my_profile.php:25
 #: templates/Roles/view.php:41 templates/Users/index.php:17
 #: templates/Users/view.php:30
 msgid "Email"
 msgstr "Email"
 
-#: templates/Admin/Users/add.php:29 templates/Admin/Users/edit.php:33
-#: templates/Admin/Users/index.php:85 templates/Admin/my_profile.php:30
-#, fuzzy
+#: templates/Admin/Users/add.php:29 templates/Admin/Users/edit.php:46
+#: templates/Admin/Users/index.php:141 templates/Admin/my_profile.php:33
 msgid "Username"
-msgstr "User"
+msgstr "Username"
 
-#: templates/Admin/Users/add.php:30 templates/Admin/Users/edit.php:34
-#: templates/Admin/my_profile.php:31
+#: templates/Admin/Users/add.php:30 templates/Admin/Users/edit.php:47
+#: templates/Admin/my_profile.php:34
 msgid "Optional"
 msgstr "Optional"
 
 #: templates/Admin/Users/add.php:38 templates/Users/login.php:39
-#: templates/Users/register.php:51
+#: templates/Users/register.php:57
 msgid "Password"
 msgstr "Password"
 
-#: templates/Admin/Users/add.php:49 templates/Admin/Users/edit.php:55
-#: templates/Admin/Users/index.php:87 templates/Admin/my_profile.php:38
+#: templates/Admin/Users/add.php:49 templates/Admin/Users/edit.php:68
+#: templates/Admin/Users/index.php:143 templates/Admin/my_profile.php:41
 #: templates/Users/index.php:19 templates/Users/view.php:39
 msgid "Role"
 msgstr "Role"
 
 #: templates/Admin/Users/add.php:62 templates/Admin/Users/add.php:71
-#: templates/Admin/Users/edit.php:68 templates/Admin/Users/edit.php:77
-#: templates/Admin/my_profile.php:96 templates/Admin/my_profile.php:105
-#, fuzzy
+#: templates/Admin/Users/edit.php:81 templates/Admin/Users/edit.php:90
+#: templates/Admin/my_profile.php:100
 msgid "Avatar"
-msgstr "Avatar URL"
+msgstr "Avatar"
+
+#: templates/Admin/Users/add.php:83 templates/Categories/add.php:70
+#: templates/Difficulties/add.php:62 templates/Languages/add.php:45
+#: templates/element/functions/admin_list_controls.php:30
+#: templates/element/functions/admin_list_controls.php:32
+msgid "Create"
+msgstr "Create"
 
 #: templates/Admin/Users/add.php:83
-#: templates/element/functions/admin_list_controls.php:69
-#, fuzzy
-msgid "Create"
-msgstr "Created At"
+msgid "Creating…"
+msgstr "Creating…"
 
-#: templates/Admin/Users/add.php:85 templates/Admin/Users/edit.php:91
-#: templates/Answers/add.php:65 templates/Answers/edit.php:75
-#: templates/Questions/add.php:84 templates/Questions/edit.php:94
+#: templates/Admin/Users/add.php:85 templates/Admin/Users/edit.php:104
+#: templates/Admin/my_profile.php:178 templates/Answers/add.php:65
+#: templates/Answers/edit.php:75 templates/Categories/add.php:72
+#: templates/Categories/edit.php:84 templates/Difficulties/add.php:64
+#: templates/Difficulties/edit.php:95 templates/Languages/add.php:47
+#: templates/Languages/edit.php:56 templates/Questions/add.php:84
+#: templates/Questions/edit.php:187 templates/Tests/take.php:52
 #: templates/Users/profile_edit.php:67
 msgid "Cancel"
 msgstr "Cancel"
 
-#: templates/Admin/Users/edit.php:9 templates/Users/edit.php:25
+#: templates/Admin/Users/edit.php:12 templates/Users/edit.php:25
 #: templates/Users/view.php:17
 msgid "Edit User"
 msgstr "Edit User"
 
-#: templates/Admin/Users/edit.php:42
-#, fuzzy
-msgid "New password"
-msgstr "New Password"
+#: templates/Admin/Users/edit.php:17 templates/DeviceLogs/index.php:14
+#: templates/DeviceLogs/index.php:97 templates/Users/view.php:189
+msgid "Mobile"
+msgstr "Mobile"
 
-#: templates/Admin/Users/edit.php:43
+#: templates/Admin/Users/edit.php:18 templates/DeviceLogs/index.php:15
+#: templates/DeviceLogs/index.php:98 templates/Users/view.php:190
+msgid "Tablet"
+msgstr "Tablet"
+
+#: templates/Admin/Users/edit.php:19 templates/DeviceLogs/index.php:16
+#: templates/DeviceLogs/index.php:99 templates/Users/view.php:191
+msgid "Desktop"
+msgstr "Desktop"
+
+#: templates/Admin/Users/edit.php:55
+msgid "New password"
+msgstr "New password"
+
+#: templates/Admin/Users/edit.php:56
 msgid "Leave blank to keep current"
 msgstr "Leave blank to keep current"
 
-#: templates/Admin/Users/edit.php:89 templates/Admin/my_profile.php:66
+#: templates/Admin/Users/edit.php:102 templates/Admin/my_profile.php:69
+#: templates/Categories/edit.php:82 templates/Difficulties/edit.php:93
+#: templates/Languages/edit.php:54
 msgid "Save"
 msgstr "Save"
 
-#: templates/Admin/Users/edit.php:105 templates/Admin/Users/edit.php:120
-#: templates/Admin/Users/index.php:130 templates/Admin/Users/index.php:150
-#: templates/Admin/Users/index.php:193
+#: templates/Admin/Users/edit.php:102 templates/Admin/my_profile.php:69
+#: templates/Categories/add.php:70 templates/Categories/edit.php:82
+#: templates/Difficulties/add.php:62 templates/Difficulties/edit.php:93
+#: templates/Languages/add.php:45 templates/Languages/edit.php:54
+#: templates/Questions/edit.php:186
+msgid "Saving…"
+msgstr "Saving…"
+
+#: templates/Admin/Users/edit.php:118 templates/Admin/Users/edit.php:133
+#: templates/Admin/Users/index.php:186 templates/Admin/Users/index.php:207
+#: templates/Admin/Users/index.php:258
 msgid "Ban"
 msgstr "Ban"
 
-#: templates/Admin/Users/edit.php:108 templates/Admin/Users/edit.php:134
-#: templates/Admin/Users/index.php:133 templates/Admin/Users/index.php:166
-#: templates/Admin/Users/index.php:198
+#: templates/Admin/Users/edit.php:121 templates/Admin/Users/edit.php:147
+#: templates/Admin/Users/index.php:189 templates/Admin/Users/index.php:224
+#: templates/Admin/Users/index.php:264
 msgid "Unban"
 msgstr "Unban"
 
-#: templates/Admin/Users/edit.php:130 templates/Admin/Users/index.php:162
-#, fuzzy
+#: templates/Admin/Users/edit.php:143 templates/Admin/Users/index.php:219
 msgid "Are you sure you want to ban this user?"
-msgstr "Are you sure you want to log out?"
+msgstr "Are you sure you want to ban this user?"
 
-#: templates/Admin/Users/edit.php:149
-#, fuzzy
+#: templates/Admin/Users/edit.php:162
 msgid "Are you sure you want to delete this user?"
-msgstr "Are you sure you want to delete # {0}?"
+msgstr "Are you sure you want to delete this user?"
 
-#: templates/Admin/Users/index.php:9 templates/Admin/Users/index.php:19
-#: templates/Users/index.php:6 templates/Users/index.php:11
-#: templates/element/admin_sidebar.php:116
-msgid "Users"
-msgstr "Users"
+#: templates/Admin/Users/edit.php:178
+msgid "Last 5 Test Attempts"
+msgstr "Last 5 Test Attempts"
 
-#: templates/Admin/Users/index.php:26
-msgid "Search by username or email"
-msgstr "Search by username or email"
+#: templates/Admin/Users/edit.php:184 templates/Questions/add.php:30
+#: templates/Questions/edit.php:50 templates/Questions/view.php:35
+#: templates/TestAttempts/view.php:26 templates/TestTranslations/view.php:22
+#: templates/Tests/view.php:9 templates/Tests/view.php:20
+#: templates/UserFavoriteTests/view.php:26
+msgid "Test"
+msgstr "Test"
 
-#: templates/Admin/Users/index.php:27
-msgid "Search username/email…"
-msgstr "Search username/email…"
+#: templates/Admin/Users/edit.php:185 templates/Dashboard/index.php:37
+#: templates/Languages/view.php:224 templates/TestAttempts/view.php:46
+#: templates/Tests/catalog_view.php:195 templates/Tests/index.php:226
+#: templates/Tests/review.php:69 templates/Users/view.php:236
+#: templates/element/users/stats.php:107
+msgid "Score"
+msgstr "Score"
 
-#: templates/Admin/Users/index.php:88 templates/Admin/my_profile.php:51
-#, fuzzy
-msgid "Last login"
-msgstr "Last Login At"
+#: templates/Admin/Users/edit.php:186 templates/Admin/Users/edit.php:243
+#: templates/Admin/Users/edit.php:283 templates/Dashboard/index.php:35
+msgid "Date"
+msgstr "Date"
 
-#: templates/Admin/Users/index.php:89 templates/Admin/my_profile.php:56
-#: templates/AiRequests/index.php:129 templates/AiRequests/view.php:48
-#: templates/Answers/index.php:65 templates/Answers/view.php:75
-#: templates/Answers/view.php:102 templates/Categories/index.php:64
-#: templates/Categories/view.php:45 templates/DeviceLogs/index.php:90
-#: templates/Questions/index.php:66 templates/Questions/view.php:96
-#: templates/Tests/index.php:179 templates/Tests/view.php:86
-#, fuzzy
-msgid "Created"
-msgstr "Created At"
+#: templates/Admin/Users/edit.php:224
+msgid "No test attempts yet."
+msgstr "No test attempts yet."
 
-#: templates/Admin/Users/index.php:102
-msgid "Select user"
-msgstr "Select user"
+#: templates/Admin/Users/edit.php:235
+msgid "Last 5 Activity Logs"
+msgstr "Last 5 Activity Logs"
 
-#: templates/Admin/Users/index.php:145
-#, fuzzy
-msgid "Are you sure you want to unban this user?"
-msgstr "Are you sure you want to log out?"
+#: templates/Admin/Users/edit.php:242 templates/Admin/Users/edit.php:281
+#: templates/DeviceLogs/index.php:161
+msgid "IP"
+msgstr "IP"
 
-#: templates/Admin/Users/index.php:236
-#, fuzzy
-msgid "Are you sure you want to delete the selected users?"
-msgstr "Are you sure you want to delete # {0}?"
+#: templates/Admin/Users/edit.php:259
+msgid "No activity logs yet."
+msgstr "No activity logs yet."
 
-#: templates/Admin/my_profile.php:8 templates/Users/profile.php:13
-#: templates/element/admin_navbar.php:43 templates/element/navbar.php:187
-msgid "My Profile"
-msgstr "My Profile"
+#: templates/Admin/Users/edit.php:270
+msgid "Last 5 Device Logs"
+msgstr "Last 5 Device Logs"
 
-#: templates/Admin/my_profile.php:69
-msgid "Send password reset email"
-msgstr "Send password reset email"
+#: templates/Admin/Users/edit.php:272
+msgid "View all →"
+msgstr "View all →"
 
-#: templates/Admin/my_profile.php:78
-msgid "Send a password reset link to your email address?"
-msgstr "Send a password reset link to your email address?"
+#: templates/Admin/Users/edit.php:282 templates/DeviceLogs/index.php:93
+#: templates/DeviceLogs/index.php:162
+msgid "Device"
+msgstr "Device"
 
-#: templates/Admin/my_profile.php:83
-#, fuzzy
-msgid "Back to dashboard"
-msgstr "Dashboard"
-
-#: templates/AiRequests/add.php:14 templates/AiRequests/edit.php:19
-#, fuzzy
-msgid "List Ai Requests"
-msgstr "Related AI Requests"
-
-#: templates/AiRequests/add.php:21
-#, fuzzy
-msgid "Add Ai Request"
-msgstr "Related AI Requests"
-
-#: templates/AiRequests/edit.php:26
-#, fuzzy
-msgid "Edit Ai Request"
-msgstr "Related AI Requests"
-
-#: templates/AiRequests/index.php:24
-msgid "AI usage telemetry & diagnostics"
-msgstr "AI usage telemetry & diagnostics"
-
-#: templates/AiRequests/index.php:31
-#, fuzzy
-msgid "Total requests"
-msgstr "Total Questions"
-
-#: templates/AiRequests/index.php:37 templates/DeviceLogs/index.php:40
-msgid "Last 24h"
-msgstr "Last 24h"
-
-#: templates/AiRequests/index.php:43
-msgid "Success (total)"
-msgstr "Success (total)"
-
-#: templates/AiRequests/index.php:45
-msgid "Last 24h: {0}"
-msgstr "Last 24h: {0}"
-
-#: templates/AiRequests/index.php:50
-msgid "Unique users (24h)"
-msgstr "Unique users (24h)"
-
-#: templates/AiRequests/index.php:60
-msgid "Top types (24h)"
-msgstr "Top types (24h)"
-
-#: templates/AiRequests/index.php:70 templates/AiRequests/index.php:88
-#: templates/AiRequests/index.php:188 templates/AiRequests/view.php:53
-#: templates/DeviceLogs/index.php:106 templates/Users/view.php:200
-#: templates/element/users/stats.php:109
+#: templates/Admin/Users/edit.php:291 templates/AiRequests/index.php:107
+#: templates/AiRequests/index.php:125 templates/AiRequests/index.php:248
+#: templates/AiRequests/view.php:54 templates/DeviceLogs/index.php:175
+#: templates/Users/view.php:200 templates/element/users/stats.php:118
 msgid "Unknown"
 msgstr "Unknown"
 
-#: templates/AiRequests/index.php:78
+#: templates/Admin/Users/edit.php:299
+msgid "No device logs yet."
+msgstr "No device logs yet."
+
+#: templates/Admin/Users/index.php:11 templates/Admin/Users/index.php:37
+#: templates/Users/index.php:6 templates/Users/index.php:11
+#: templates/element/admin_sidebar.php:102
+#: templates/element/admin_sidebar_links.php:53
+msgid "Users"
+msgstr "Users"
+
+#: templates/Admin/Users/index.php:40
+msgid "Manage user accounts, roles and access control."
+msgstr "Manage user accounts, roles and access control."
+
+#: templates/Admin/Users/index.php:50 templates/Categories/index.php:43
+#: templates/Difficulties/index.php:40 templates/Languages/index.php:34
+#: templates/Tests/index.php:657
+msgid "Total"
+msgstr "Total"
+
+#: templates/Admin/Users/index.php:59
+msgid "Admins"
+msgstr "Admins"
+
+#: templates/Admin/Users/index.php:68
+msgid "Creators"
+msgstr "Creators"
+
+#: templates/Admin/Users/index.php:77
+msgid "Blocked"
+msgstr "Blocked"
+
+#: templates/Admin/Users/index.php:87
+msgid "Search by username or email"
+msgstr "Search by username or email"
+
+#: templates/Admin/Users/index.php:144 templates/Admin/my_profile.php:54
+msgid "Last login"
+msgstr "Last login"
+
+#: templates/Admin/Users/index.php:145 templates/Admin/my_profile.php:59
+#: templates/AiRequests/index.php:187 templates/AiRequests/view.php:49
+#: templates/Answers/index.php:60 templates/Answers/view.php:75
+#: templates/Answers/view.php:102 templates/Categories/index.php:107
+#: templates/Categories/view.php:45 templates/DeviceLogs/index.php:159
+#: templates/Questions/index.php:143 templates/Questions/view.php:96
+#: templates/Tests/index.php:724 templates/Tests/view.php:86
+msgid "Created"
+msgstr "Created"
+
+#: templates/Admin/Users/index.php:158
+msgid "Select user"
+msgstr "Select user"
+
+#: templates/Admin/Users/index.php:201
+msgid "Are you sure you want to unban this user?"
+msgstr "Are you sure you want to unban this user?"
+
+#: templates/Admin/Users/index.php:233
+msgid "No users found."
+msgstr "No users found."
+
+#: templates/Admin/Users/index.php:235 templates/Users/index.php:10
+#: templates/Users/view.php:21
+msgid "New User"
+msgstr "New User"
+
+#: templates/Admin/Users/index.php:304
+msgid "Are you sure you want to delete the selected users?"
+msgstr "Are you sure you want to delete the selected users?"
+
+#: templates/Admin/my_profile.php:9 templates/Users/profile.php:15
+#: templates/element/admin_navbar.php:43 templates/element/navbar.php:226
+msgid "My Profile"
+msgstr "My Profile"
+
+#: templates/Admin/my_profile.php:72
+msgid "Send password reset email"
+msgstr "Send password reset email"
+
+#: templates/Admin/my_profile.php:81
+msgid "Send a password reset link to your email address?"
+msgstr "Send a password reset link to your email address?"
+
+#: templates/Admin/my_profile.php:86
+msgid "Back to dashboard"
+msgstr "Back to dashboard"
+
+#: templates/Admin/my_profile.php:109 templates/Admin/my_profile.php:132
+msgid "Change avatar"
+msgstr "Change avatar"
+
+#: templates/Admin/my_profile.php:148
+msgid "Adjust your avatar"
+msgstr "Adjust your avatar"
+
+#: templates/Admin/my_profile.php:150
+msgid "Close"
+msgstr "Close"
+
+#: templates/Admin/my_profile.php:157
+msgid "Zoom in"
+msgstr "Zoom in"
+
+#: templates/Admin/my_profile.php:160
+msgid "Zoom out"
+msgstr "Zoom out"
+
+#: templates/Admin/my_profile.php:163
+msgid "Rotate left"
+msgstr "Rotate left"
+
+#: templates/Admin/my_profile.php:166
+msgid "Rotate right"
+msgstr "Rotate right"
+
+#: templates/Admin/my_profile.php:169 templates/AiRequests/index.php:150
+#: templates/DeviceLogs/index.php:123 templates/Questions/index.php:115
+msgid "Reset"
+msgstr "Reset"
+
+#: templates/Admin/my_profile.php:174
+msgid "Drag to reposition · Scroll or pinch to zoom"
+msgstr "Drag to reposition · Scroll or pinch to zoom"
+
+#: templates/Admin/my_profile.php:180 templates/AiRequests/index.php:147
+#: templates/DeviceLogs/index.php:122 templates/Questions/index.php:112
+#: templates/Tests/index.php:320 templates/Tests/index.php:392
+#: templates/Tests/index.php:565
+msgid "Apply"
+msgstr "Apply"
+
+#: templates/Admin/my_profile.php:192
+msgid "AI Usage"
+msgstr "AI Usage"
+
+#: templates/Admin/my_profile.php:197 templates/AiRequests/index.php:35
+msgid "Total requests"
+msgstr "Total requests"
+
+#: templates/Admin/my_profile.php:203
+msgid "Successful"
+msgstr "Successful"
+
+#: templates/Admin/my_profile.php:209
+msgid "Failed"
+msgstr "Failed"
+
+#: templates/Admin/my_profile.php:215 templates/AiRequests/index.php:77
+msgid "Total tokens used"
+msgstr "Total tokens used"
+
+#: templates/Admin/my_profile.php:221 templates/AiRequests/index.php:86
+msgid "Estimated cost (USD)"
+msgstr "Estimated cost (USD)"
+
+#: templates/Admin/my_profile.php:228
+msgid "View my AI requests"
+msgstr "View my AI requests"
+
+#: templates/AiRequests/add.php:14 templates/AiRequests/edit.php:19
+msgid "List Ai Requests"
+msgstr "List Ai Requests"
+
+#: templates/AiRequests/add.php:21
+msgid "Add Ai Request"
+msgstr "Add Ai Request"
+
+#: templates/AiRequests/edit.php:26
+msgid "Edit Ai Request"
+msgstr "Edit Ai Request"
+
+#: templates/AiRequests/index.php:25
+msgid "AI usage telemetry & diagnostics"
+msgstr "AI usage telemetry & diagnostics"
+
+#: templates/AiRequests/index.php:44 templates/DeviceLogs/index.php:61
+msgid "Last 24h"
+msgstr "Last 24h"
+
+#: templates/AiRequests/index.php:53
+msgid "Success (total)"
+msgstr "Success (total)"
+
+#: templates/AiRequests/index.php:56
+msgid "Last 24h: {0}"
+msgstr "Last 24h: {0}"
+
+#: templates/AiRequests/index.php:65
+msgid "Unique users (24h)"
+msgstr "Unique users (24h)"
+
+#: templates/AiRequests/index.php:97
+msgid "Top types (24h)"
+msgstr "Top types (24h)"
+
+#: templates/AiRequests/index.php:115
 msgid "Top sources (24h)"
 msgstr "Top sources (24h)"
 
-#: templates/AiRequests/index.php:131 templates/Languages/view.php:46
-#: templates/UserTokens/view.php:26 templates/Users/view.php:135
-#: templates/Users/view.php:283
+#: templates/AiRequests/index.php:138
+msgid "Filter by user"
+msgstr "Filter by user"
+
+#: templates/AiRequests/index.php:140
+msgid "All users"
+msgstr "All users"
+
+#: templates/AiRequests/index.php:189 templates/Languages/view.php:46
+#: templates/Questions/index.php:140 templates/UserTokens/view.php:26
+#: templates/Users/view.php:135 templates/Users/view.php:283
 msgid "Type"
 msgstr "Type"
 
-#: templates/AiRequests/index.php:133
+#: templates/AiRequests/index.php:191
 msgid "Lang"
 msgstr "Lang"
 
-#: templates/AiRequests/index.php:134 templates/AiRequests/view.php:86
-#: templates/Answers/view.php:101 templates/Tests/view.php:105
+#: templates/AiRequests/index.php:192 templates/AiRequests/view.php:87
+#: templates/Answers/view.php:101 templates/Questions/index.php:141
+#: templates/Tests/view.php:105
 msgid "Source"
 msgstr "Source"
 
-#: templates/AiRequests/index.php:135
+#: templates/AiRequests/index.php:193
 msgid "Ref"
 msgstr "Ref"
 
-#: templates/AiRequests/index.php:136
-#, fuzzy
+#: templates/AiRequests/index.php:194
 msgid "Payload"
-msgstr "Input Payload"
+msgstr "Payload"
 
-#: templates/AiRequests/index.php:167
-#, fuzzy
+#: templates/AiRequests/index.php:195
+msgid "Tokens"
+msgstr "Tokens"
+
+#: templates/AiRequests/index.php:196
+msgid "Cost (USD)"
+msgstr "Cost (USD)"
+
+#: templates/AiRequests/index.php:227
 msgid "Select request"
-msgstr "Related AI Requests"
+msgstr "Select request"
 
-#: templates/AiRequests/index.php:181 templates/AiRequests/view.php:67
-#: templates/element/admin_sidebar.php:154
+#: templates/AiRequests/index.php:241 templates/AiRequests/view.php:68
+#: templates/element/admin_sidebar.php:130
+#: templates/element/admin_sidebar_links.php:62
 msgid "System"
 msgstr "System"
 
-#: templates/AiRequests/index.php:202
+#: templates/AiRequests/index.php:262
 msgid "in {0} / out {1}"
 msgstr "in {0} / out {1}"
 
-#: templates/AiRequests/view.php:9 templates/AiRequests/view.php:22
+#: templates/AiRequests/index.php:271
+msgid "Prompt: {0} / Completion: {1}"
+msgstr "Prompt: {0} / Completion: {1}"
+
+#: templates/AiRequests/index.php:306
+msgid "No AI requests found."
+msgstr "No AI requests found."
+
+#: templates/AiRequests/view.php:9 templates/AiRequests/view.php:23
 msgid "AI Request #{0}"
 msgstr "AI Request #{0}"
 
-#: templates/AiRequests/view.php:28 templates/Tests/review.php:202
-#: templates/Tests/take.php:120 templates/layout/error.php:36
+#: templates/AiRequests/view.php:29 templates/Categories/add.php:20
+#: templates/Categories/edit.php:30 templates/Difficulties/add.php:20
+#: templates/Difficulties/edit.php:30 templates/Languages/add.php:19
+#: templates/Languages/edit.php:29 templates/Tests/review.php:326
+#: templates/Tests/take.php:239
 msgid "Back"
 msgstr "Back"
 
-#: templates/AiRequests/view.php:72 templates/AnswerTranslations/view.php:26
+#: templates/AiRequests/view.php:73 templates/AnswerTranslations/view.php:26
 #: templates/CategoryTranslations/view.php:26
 #: templates/QuestionTranslations/view.php:26
 #: templates/TestAttempts/view.php:38 templates/TestTranslations/view.php:26
-#, fuzzy
 msgid "Language"
-msgstr "Language ID"
+msgstr "Language"
 
-#: templates/AiRequests/view.php:90
+#: templates/AiRequests/view.php:91
 msgid "Reference"
 msgstr "Reference"
 
-#: templates/AiRequests/view.php:99 templates/Languages/view.php:47
+#: templates/AiRequests/view.php:100 templates/Languages/view.php:47
 #: templates/Users/view.php:136
 msgid "Input Payload"
 msgstr "Input Payload"
 
-#: templates/AiRequests/view.php:106 templates/Languages/view.php:48
+#: templates/AiRequests/view.php:107 templates/Languages/view.php:48
 #: templates/Users/view.php:137
 msgid "Output Payload"
 msgstr "Output Payload"
@@ -1521,35 +1840,30 @@ msgstr "Output Payload"
 #: templates/AnswerTranslations/add.php:13
 #: templates/AnswerTranslations/edit.php:18
 #: templates/AnswerTranslations/view.php:13
-#, fuzzy
 msgid "List Answer Translations"
-msgstr "List User Tokens"
+msgstr "List Answer Translations"
 
 #: templates/AnswerTranslations/add.php:20
-#, fuzzy
 msgid "Add Answer Translation"
-msgstr "Add User Token"
+msgstr "Add Answer Translation"
 
 #: templates/AnswerTranslations/edit.php:25
 #: templates/AnswerTranslations/view.php:11
-#, fuzzy
 msgid "Edit Answer Translation"
-msgstr "Edit User Token"
+msgstr "Edit Answer Translation"
 
 #: templates/AnswerTranslations/index.php:8
 #: templates/AnswerTranslations/view.php:14
-#, fuzzy
 msgid "New Answer Translation"
-msgstr "New User Token"
+msgstr "New Answer Translation"
 
 #: templates/AnswerTranslations/index.php:9 templates/Answers/view.php:93
 msgid "Answer Translations"
 msgstr "Answer Translations"
 
 #: templates/AnswerTranslations/view.php:12
-#, fuzzy
 msgid "Delete Answer Translation"
-msgstr "Delete User Token"
+msgstr "Delete Answer Translation"
 
 #: templates/AnswerTranslations/view.php:22 templates/Answers/view.php:9
 #: templates/Answers/view.php:17 templates/TestAttemptAnswers/view.php:30
@@ -1560,51 +1874,45 @@ msgstr "Answer"
 #: templates/Answers/edit.php:44 templates/Answers/view.php:54
 #: templates/Languages/view.php:94 templates/Languages/view.php:177
 #: templates/QuestionTranslations/view.php:30 templates/Questions/add.php:54
-#: templates/Questions/edit.php:64
-#, fuzzy
+#: templates/Questions/edit.php:75 templates/Questions/edit.php:126
+#: templates/Questions/edit.php:200 templates/Questions/index.php:93
 msgid "Source Type"
-msgstr "Device Type"
+msgstr "Source Type"
 
 #: templates/AnswerTranslations/view.php:38 templates/Languages/view.php:95
 #: templates/Languages/view.php:178 templates/QuestionTranslations/view.php:38
-#: templates/Questions/add.php:61 templates/Questions/edit.php:71
-#, fuzzy
+#: templates/Questions/add.php:61 templates/Questions/edit.php:82
 msgid "Created By"
-msgstr "Created At"
+msgstr "Created By"
 
-#: templates/AnswerTranslations/view.php:47 templates/Answers/index.php:63
+#: templates/AnswerTranslations/view.php:47 templates/Answers/index.php:58
 #: templates/Answers/view.php:100 templates/Languages/view.php:93
 #: templates/Languages/view.php:175 templates/QuestionTranslations/view.php:47
-#: templates/Questions/index.php:62
+#: templates/Questions/index.php:137
 msgid "Content"
 msgstr "Content"
 
 #: templates/Answers/add.php:10 templates/Answers/add.php:15
-#, fuzzy
+#: templates/Questions/edit.php:110
 msgid "Add Answer"
-msgstr "Add User"
+msgstr "Add Answer"
 
 #: templates/Answers/add.php:16 templates/Answers/edit.php:25
-#: templates/Answers/view.php:32 templates/Categories/add.php:10
-#: templates/Categories/edit.php:16 templates/Categories/view.php:28
-#: templates/Difficulties/add.php:12 templates/Difficulties/edit.php:18
-#: templates/Difficulties/view.php:28 templates/Languages/add.php:10
-#: templates/Languages/edit.php:16 templates/Questions/add.php:18
-#: templates/Questions/edit.php:27 templates/Questions/view.php:28
+#: templates/Answers/view.php:32 templates/Categories/view.php:28
+#: templates/Difficulties/view.php:28 templates/Questions/add.php:18
+#: templates/Questions/edit.php:37 templates/Questions/view.php:28
 #: templates/Tests/view.php:33
-#, fuzzy
 msgid "Back to List"
-msgstr "Back to login"
+msgstr "Back to List"
 
 #: templates/Answers/add.php:27 templates/Answers/edit.php:37
-#: templates/Answers/index.php:62 templates/Answers/view.php:19
-#: templates/Answers/view.php:39 templates/Pages/home.php:96
+#: templates/Answers/index.php:57 templates/Answers/view.php:19
+#: templates/Answers/view.php:39 templates/Pages/home.php:93
 #: templates/QuestionTranslations/view.php:22 templates/Questions/view.php:9
 #: templates/Questions/view.php:15 templates/TestAttemptAnswers/view.php:26
-#: templates/Tests/review.php:120 templates/Tests/take.php:38
-#, fuzzy
+#: templates/Tests/review.php:148 templates/Tests/take.php:38
 msgid "Question"
-msgstr "Total Questions"
+msgstr "Question"
 
 #: templates/Answers/add.php:41 templates/Answers/edit.php:51
 #: templates/Answers/view.php:59 templates/TestAttemptAnswers/view.php:42
@@ -1619,84 +1927,83 @@ msgstr "Source Text"
 
 #: templates/Answers/add.php:57 templates/Answers/edit.php:67
 #: templates/Answers/view.php:70 templates/Questions/add.php:69
-#: templates/Questions/edit.php:79 templates/Questions/view.php:91
-#, fuzzy
+#: templates/Questions/edit.php:90 templates/Questions/edit.php:138
+#: templates/Questions/edit.php:212 templates/Questions/view.php:91
 msgid "Position"
-msgstr "Description"
+msgstr "Position"
 
 #: templates/Answers/edit.php:10 templates/Answers/edit.php:15
-#, fuzzy
 msgid "Edit Answer"
-msgstr "Edit User"
+msgstr "Edit Answer"
 
-#: templates/Answers/edit.php:74 templates/Questions/edit.php:93
-#: templates/Tests/edit.php:111 templates/Users/profile_edit.php:66
+#: templates/Answers/edit.php:74 templates/Questions/edit.php:186
+#: templates/Tests/edit.php:163 templates/Users/profile_edit.php:66
 msgid "Save Changes"
 msgstr "Save Changes"
 
-#: templates/Answers/index.php:9 templates/Answers/index.php:19
-#: templates/QuizCreator/Dashboard/index.php:37 templates/Tests/review.php:147
-#: templates/element/admin_sidebar.php:141
-#: templates/element/admin_sidebar.php:193
-#, fuzzy
+#: templates/Answers/index.php:9 templates/Answers/index.php:14
+#: templates/Questions/edit.php:107 templates/Tests/review.php:240
 msgid "Answers"
-msgstr "Correct Answers"
+msgstr "Answers"
 
-#: templates/Answers/index.php:44
-#, fuzzy
+#: templates/Answers/index.php:39 templates/Answers/index.php:132
 msgid "New Answer"
-msgstr "New User"
+msgstr "New Answer"
 
-#: templates/Answers/index.php:61 templates/Answers/view.php:98
-#: templates/Categories/index.php:61 templates/Difficulties/index.php:61
-#: templates/Difficulties/view.php:64 templates/Languages/index.php:61
-#: templates/Questions/index.php:61 templates/Tests/index.php:173
+#: templates/Answers/index.php:56 templates/Answers/view.php:98
+#: templates/Categories/index.php:104 templates/Difficulties/index.php:92
+#: templates/Difficulties/view.php:64 templates/Languages/index.php:86
+#: templates/Questions/index.php:136 templates/Tests/index.php:718
 #: templates/Tests/view.php:104
 msgid "ID"
 msgstr "ID"
 
-#: templates/Answers/index.php:64 templates/Tests/catalog_view.php:120
-#: templates/Tests/review.php:128 templates/Tests/review.php:185
-#: templates/element/users/stats.php:99
-#, fuzzy
+#: templates/Answers/index.php:59 templates/Questions/edit.php:162
+#: templates/Questions/edit.php:235 templates/Tests/catalog_view.php:125
+#: templates/Tests/catalog_view.php:196 templates/Tests/result.php:57
+#: templates/Tests/review.php:156 templates/Tests/review.php:231
+#: templates/Tests/review.php:278 templates/element/users/stats.php:108
 msgid "Correct"
-msgstr "Correct Answers"
+msgstr "Correct"
 
-#: templates/Answers/index.php:66 templates/Answers/view.php:80
-#: templates/Categories/index.php:65 templates/Categories/view.php:49
-#: templates/Questions/index.php:67 templates/Questions/view.php:101
-#: templates/Tests/index.php:180 templates/Tests/view.php:91
-#, fuzzy
+#: templates/Answers/index.php:61 templates/Answers/view.php:80
+#: templates/Categories/index.php:108 templates/Categories/view.php:49
+#: templates/Questions/index.php:144 templates/Questions/view.php:101
+#: templates/Tests/index.php:725 templates/Tests/view.php:91
 msgid "Updated"
-msgstr "Updated At"
+msgstr "Updated"
 
-#: templates/Answers/index.php:79
-#, fuzzy
+#: templates/Answers/index.php:74
 msgid "Select answer"
-msgstr "Correct Answers"
+msgstr "Select answer"
 
-#: templates/Answers/index.php:99 templates/Questions/index.php:91
-#: templates/Questions/index.php:100 templates/Questions/index.php:109
-#: templates/Tests/index.php:198 templates/Tests/index.php:201
-#: templates/Tests/index.php:204 templates/Tests/view.php:21
+#: templates/Answers/index.php:94 templates/Questions/index.php:168
+#: templates/Questions/index.php:177 templates/Questions/index.php:186
+#: templates/Questions/index.php:193 templates/Tests/index.php:743
+#: templates/Tests/index.php:746 templates/Tests/index.php:749
+#: templates/Tests/view.php:21
 msgid "N/A"
 msgstr "N/A"
 
-#: templates/Answers/index.php:103 templates/Answers/view.php:62
+#: templates/Answers/index.php:98 templates/Answers/view.php:62
 #: templates/Difficulties/view.php:73 templates/TestAttemptAnswers/view.php:43
-#: templates/TestTranslations/view.php:59 templates/Tests/index.php:210
+#: templates/TestTranslations/view.php:59 templates/Tests/index.php:756
 #: templates/Tests/view.php:78 templates/Users/view.php:72
 #: templates/Users/view.php:76
 msgid "Yes"
 msgstr "Yes"
 
-#: templates/Answers/index.php:105 templates/Answers/view.php:64
+#: templates/Answers/index.php:100 templates/Answers/view.php:64
 #: templates/Difficulties/view.php:73 templates/TestAttemptAnswers/view.php:43
-#: templates/TestTranslations/view.php:59 templates/Tests/index.php:210
+#: templates/TestTranslations/view.php:59 templates/Tests/index.php:758
 #: templates/Tests/view.php:80 templates/Users/view.php:72
 #: templates/Users/view.php:76
 msgid "No"
 msgstr "No"
+
+#: templates/Answers/index.php:130
+msgid "No answers found."
+msgstr "No answers found."
 
 #: templates/Answers/view.php:99 templates/Categories/view.php:62
 #: templates/Languages/view.php:43 templates/Languages/view.php:92
@@ -1706,95 +2013,94 @@ msgstr "No"
 msgid "Language Id"
 msgstr "Language ID"
 
-#: templates/Categories/add.php:9
-#, fuzzy
+#: templates/Categories/add.php:9 templates/Categories/add.php:15
 msgid "Add Category"
-msgstr "Category ID"
+msgstr "Add Category"
 
-#: templates/Categories/add.php:17 templates/Categories/edit.php:24
-#: templates/Categories/index.php:63 templates/Categories/index.php:94
-#: templates/Categories/view.php:38 templates/Questions/index.php:65
-#: templates/Questions/index.php:113 templates/Questions/view.php:83
-#: templates/Tests/view.php:106 templates/Tests/view.php:117
-#, fuzzy
-msgid "Active"
-msgstr "Is Active"
+#: templates/Categories/add.php:17
+msgid "Create a new quiz category with translations."
+msgstr "Create a new quiz category with translations."
 
-#: templates/Categories/add.php:22 templates/Categories/edit.php:29
+#: templates/Categories/add.php:38 templates/Categories/edit.php:49
 #: templates/Categories/view.php:16 templates/Categories/view.php:57
-#: templates/Difficulties/add.php:20 templates/Difficulties/edit.php:27
-#: templates/Pages/home.php:93 templates/Pages/home.php:165
-#: templates/Tests/add.php:63 templates/Tests/edit.php:68
+#: templates/Difficulties/add.php:40 templates/Difficulties/edit.php:51
+#: templates/Pages/home.php:90 templates/Pages/home.php:162
+#: templates/Tests/add.php:90 templates/Tests/edit.php:95
 msgid "Translations"
 msgstr "Translations"
 
-#: templates/Categories/add.php:35 templates/Categories/edit.php:41
+#: templates/Categories/add.php:52 templates/Categories/edit.php:64
 #: templates/Categories/view.php:63 templates/CategoryTranslations/view.php:30
-#: templates/Difficulties/add.php:30 templates/Difficulties/edit.php:50
-#: templates/Difficulties/edit.php:56 templates/Difficulties/index.php:62
-#: templates/Difficulties/view.php:35 templates/Languages/index.php:63
+#: templates/Difficulties/add.php:54 templates/Difficulties/edit.php:78
+#: templates/Difficulties/edit.php:84 templates/Difficulties/index.php:93
+#: templates/Difficulties/view.php:35 templates/Languages/add.php:39
+#: templates/Languages/edit.php:49 templates/Languages/index.php:88
 #: templates/Languages/view.php:26 templates/Languages/view.php:135
 #: templates/Roles/view.php:22
 msgid "Name"
 msgstr "Name"
 
-#: templates/Categories/add.php:44 templates/Categories/edit.php:50
+#: templates/Categories/add.php:61 templates/Categories/edit.php:73
 #: templates/Categories/view.php:64 templates/CategoryTranslations/view.php:43
 #: templates/Languages/view.php:136 templates/Languages/view.php:273
 #: templates/Roles/view.php:26 templates/TestTranslations/view.php:63
 msgid "Description"
 msgstr "Description"
 
-#: templates/Categories/edit.php:9
-#, fuzzy
+#: templates/Categories/edit.php:9 templates/Categories/edit.php:15
 msgid "Edit Category"
-msgstr "Category ID"
+msgstr "Edit Category"
 
-#: templates/Categories/index.php:9 templates/Categories/index.php:19
-#: templates/Pages/home.php:166 templates/QuizCreator/Dashboard/index.php:45
-#: templates/element/admin_sidebar.php:121
-#: templates/element/admin_sidebar.php:173
-#, fuzzy
+#: templates/Categories/edit.php:17
+msgid "Update category details and translations."
+msgstr "Update category details and translations."
+
+#: templates/Categories/index.php:9 templates/Categories/index.php:30
+#: templates/Pages/home.php:163 templates/element/admin_sidebar.php:107
+#: templates/element/admin_sidebar.php:149
+#: templates/element/admin_sidebar_links.php:54
+#: templates/element/admin_sidebar_links.php:72
 msgid "Categories"
-msgstr "Category ID"
+msgstr "Categories"
 
-#: templates/Categories/index.php:28 templates/Difficulties/index.php:28
+#: templates/Categories/index.php:33
+msgid "Organise quizzes into categories and manage their translations."
+msgstr "Organise quizzes into categories and manage their translations."
+
+#: templates/Categories/index.php:71 templates/Difficulties/index.php:59
 msgid "Search by name or id"
 msgstr "Search by name or id"
 
-#: templates/Categories/index.php:44
-#, fuzzy
+#: templates/Categories/index.php:87 templates/Categories/index.php:172
 msgid "New Category"
-msgstr "Category ID"
+msgstr "New Category"
 
-#: templates/Categories/index.php:62
-#, fuzzy
+#: templates/Categories/index.php:105
 msgid "Names"
-msgstr "Name"
+msgstr "Names"
 
-#: templates/Categories/index.php:78
+#: templates/Categories/index.php:121
 msgid "Select category"
 msgstr "Select category"
 
-#: templates/Categories/index.php:96 templates/Categories/view.php:40
-#: templates/Questions/index.php:115 templates/Questions/view.php:85
-#: templates/Tests/view.php:119
-#, fuzzy
-msgid "Inactive"
-msgstr "Is Active"
+#: templates/Categories/index.php:170
+msgid "No categories found."
+msgstr "No categories found."
 
 #: templates/Categories/view.php:9 templates/Categories/view.php:15
-#: templates/CategoryTranslations/view.php:22 templates/Questions/add.php:38
-#: templates/Questions/edit.php:48 templates/Questions/index.php:63
+#: templates/CategoryTranslations/view.php:22 templates/Dashboard/index.php:36
+#: templates/Questions/add.php:38 templates/Questions/edit.php:58
+#: templates/Questions/index.php:63 templates/Questions/index.php:138
 #: templates/Questions/view.php:50 templates/TestAttempts/view.php:30
-#: templates/Tests/index.php:175 templates/Tests/view.php:40
-#: templates/UserFavoriteCategories/view.php:26
-#, fuzzy
+#: templates/Tests/add.php:44 templates/Tests/edit.php:49
+#: templates/Tests/index.php:276 templates/Tests/index.php:347
+#: templates/Tests/index.php:720 templates/Tests/view.php:40
+#: templates/UserFavoriteCategories/view.php:26 templates/Users/stats.php:69
 msgid "Category"
-msgstr "Category ID"
+msgstr "Category"
 
 #: templates/Categories/view.php:35 templates/Questions/add.php:77
-#: templates/Questions/edit.php:87 templates/Questions/view.php:80
+#: templates/Questions/edit.php:98 templates/Questions/view.php:80
 #: templates/Roles/view.php:45 templates/Users/index.php:20
 #: templates/Users/view.php:71
 msgid "Is Active"
@@ -1828,97 +2134,122 @@ msgstr "Category Translations"
 msgid "Delete Category Translation"
 msgstr "Delete Category Translation"
 
-#: templates/Dashboard/index.php:2 templates/Dashboard/index.php:5
-#: templates/element/navbar.php:172
+#: templates/Dashboard/index.php:7 templates/Dashboard/index.php:15
+#: templates/element/navbar.php:204
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: templates/Dashboard/index.php:6
-msgid "Placeholder page (routing task A1-09)."
-msgstr "Placeholder page (routing task A1-09)."
+#: templates/Dashboard/index.php:16
+msgid "Track your latest quiz activity and jump back to results quickly."
+msgstr "Track your latest quiz activity and jump back to results quickly."
+
+#: templates/Dashboard/index.php:22
+msgid "Last 5 Attempts"
+msgstr "Last 5 Attempts"
+
+#: templates/Dashboard/index.php:24
+#: templates/QuizCreator/Dashboard/index.php:74
+msgid "Open Quizzes"
+msgstr "Open Quizzes"
+
+#: templates/Dashboard/index.php:38 templates/element/users/stats.php:138
+msgid "Result"
+msgstr "Result"
+
+#: templates/Dashboard/index.php:59 templates/Tests/index.php:228
+msgid "Open result"
+msgstr "Open result"
+
+#: templates/Dashboard/index.php:71 templates/Tests/index.php:239
+msgid "No attempts yet"
+msgstr "No attempts yet"
+
+#: templates/Dashboard/index.php:72
+msgid "Start your first quiz and your recent results will appear here."
+msgstr "Start your first quiz and your recent results will appear here."
+
+#: templates/Dashboard/index.php:74 templates/Tests/index.php:243
+msgid "Start test"
+msgstr "Start test"
 
 #: templates/DeviceLogs/add.php:12 templates/DeviceLogs/edit.php:17
 #: templates/DeviceLogs/view.php:13
-#, fuzzy
 msgid "List Device Logs"
-msgstr "Related Device Logs"
+msgstr "List Device Logs"
 
 #: templates/DeviceLogs/add.php:19
-#, fuzzy
 msgid "Add Device Log"
-msgstr "Related Device Logs"
+msgstr "Add Device Log"
 
 #: templates/DeviceLogs/edit.php:24 templates/DeviceLogs/view.php:11
-#, fuzzy
 msgid "Edit Device Log"
-msgstr "Related Device Logs"
+msgstr "Edit Device Log"
 
-#: templates/DeviceLogs/index.php:10 templates/DeviceLogs/index.php:26
-#: templates/element/admin_sidebar.php:157
-#, fuzzy
+#: templates/DeviceLogs/index.php:11 templates/DeviceLogs/index.php:28
+#: templates/element/admin_sidebar.php:133
+#: templates/element/admin_sidebar_links.php:64
 msgid "Device Logs"
-msgstr "Related Device Logs"
+msgstr "Device Logs"
 
-#: templates/DeviceLogs/index.php:18 templates/Users/view.php:189
-msgid "Mobile"
-msgstr "Mobile"
-
-#: templates/DeviceLogs/index.php:19 templates/Users/view.php:190
-msgid "Tablet"
-msgstr "Tablet"
-
-#: templates/DeviceLogs/index.php:20 templates/Users/view.php:191
-msgid "Desktop"
-msgstr "Desktop"
-
-#: templates/DeviceLogs/index.php:27
+#: templates/DeviceLogs/index.php:29
 msgid "Security & device activity signals"
 msgstr "Security & device activity signals"
 
-#: templates/DeviceLogs/index.php:34
-#, fuzzy
-msgid "Total logs"
-msgstr "Total Questions"
+#: templates/DeviceLogs/index.php:36
+msgid "Filtered: User #{0}"
+msgstr "Filtered: User #{0}"
 
-#: templates/DeviceLogs/index.php:46
+#: templates/DeviceLogs/index.php:39
+msgid "Clear filter"
+msgstr "Clear filter"
+
+#: templates/DeviceLogs/index.php:52
+msgid "Total logs"
+msgstr "Total logs"
+
+#: templates/DeviceLogs/index.php:70
 msgid "Unique users"
 msgstr "Unique users"
 
-#: templates/DeviceLogs/index.php:52
+#: templates/DeviceLogs/index.php:79
 msgid "Unique IPs (24h)"
 msgstr "Unique IPs (24h)"
 
-#: templates/DeviceLogs/index.php:92
-msgid "IP"
-msgstr "IP"
+#: templates/DeviceLogs/index.php:107
+msgid "From"
+msgstr "From"
 
-#: templates/DeviceLogs/index.php:93
-#, fuzzy
-msgid "Device"
-msgstr "Device Type"
+#: templates/DeviceLogs/index.php:115
+msgid "To"
+msgstr "To"
 
-#: templates/DeviceLogs/index.php:94
-#, fuzzy
+#: templates/DeviceLogs/index.php:131
+msgid "Search by IP, location, user agent, email"
+msgstr "Search by IP, location, user agent, email"
+
+#: templates/DeviceLogs/index.php:163
 msgid "Location"
-msgstr "Action"
+msgstr "Location"
 
-#: templates/DeviceLogs/index.php:118
+#: templates/DeviceLogs/index.php:187
 msgid "Select log"
 msgstr "Select log"
 
-#: templates/DeviceLogs/index.php:134
+#: templates/DeviceLogs/index.php:201
 msgid "Guest"
 msgstr "Guest"
 
+#: templates/DeviceLogs/index.php:232
+msgid "No device logs found."
+msgstr "No device logs found."
+
 #: templates/DeviceLogs/view.php:12
-#, fuzzy
 msgid "Delete Device Log"
-msgstr "Related Device Logs"
+msgstr "Delete Device Log"
 
 #: templates/DeviceLogs/view.php:14
-#, fuzzy
 msgid "New Device Log"
-msgstr "Related Device Logs"
+msgstr "New Device Log"
 
 #: templates/DeviceLogs/view.php:30 templates/Users/view.php:182
 msgid "Country"
@@ -1932,106 +2263,171 @@ msgstr "City"
 msgid "Device Type"
 msgstr "Device Type"
 
-#: templates/Difficulties/add.php:11
-#, fuzzy
+#: templates/Difficulties/add.php:9 templates/Difficulties/add.php:15
 msgid "Add Difficulty"
-msgstr "Difficulty ID"
+msgstr "Add Difficulty"
 
-#: templates/Difficulties/edit.php:11
-#, fuzzy
-msgid "Edit Difficulty"
-msgstr "Difficulty ID"
+#: templates/Difficulties/add.php:17
+msgid "Define a new difficulty level with translations."
+msgstr "Define a new difficulty level with translations."
 
-#: templates/Difficulties/index.php:9 templates/Difficulties/index.php:19
-#: templates/QuizCreator/Dashboard/index.php:53
-#: templates/element/admin_sidebar.php:126
-#: templates/element/admin_sidebar.php:178
-#, fuzzy
-msgid "Difficulties"
-msgstr "Difficulty ID"
-
-#: templates/Difficulties/index.php:44
-#, fuzzy
-msgid "New Difficulty"
-msgstr "Difficulty ID"
-
-#: templates/Difficulties/index.php:63 templates/Difficulties/view.php:39
+#: templates/Difficulties/add.php:33 templates/Difficulties/edit.php:44
+#: templates/Difficulties/index.php:94 templates/Difficulties/view.php:39
 msgid "Level"
 msgstr "Level"
 
-#: templates/Difficulties/index.php:77
+#: templates/Difficulties/edit.php:9 templates/Difficulties/edit.php:15
+msgid "Edit Difficulty"
+msgstr "Edit Difficulty"
+
+#: templates/Difficulties/edit.php:17
+msgid "Update difficulty level and translations."
+msgstr "Update difficulty level and translations."
+
+#: templates/Difficulties/index.php:9 templates/Difficulties/index.php:27
+#: templates/element/admin_sidebar.php:112
+#: templates/element/admin_sidebar.php:154
+#: templates/element/admin_sidebar_links.php:55
+#: templates/element/admin_sidebar_links.php:73
+msgid "Difficulties"
+msgstr "Difficulties"
+
+#: templates/Difficulties/index.php:30
+msgid "Define difficulty levels used when creating quizzes."
+msgstr "Define difficulty levels used when creating quizzes."
+
+#: templates/Difficulties/index.php:49
+msgid "Max level"
+msgstr "Max level"
+
+#: templates/Difficulties/index.php:75 templates/Difficulties/index.php:148
+msgid "New Difficulty"
+msgstr "New Difficulty"
+
+#: templates/Difficulties/index.php:108
 msgid "Not translated"
 msgstr "Not translated"
 
-#: templates/Difficulties/index.php:87
-#, fuzzy
+#: templates/Difficulties/index.php:118
 msgid "Select difficulty"
-msgstr "Difficulty ID"
+msgstr "Select difficulty"
+
+#: templates/Difficulties/index.php:146
+msgid "No difficulties found."
+msgstr "No difficulties found."
 
 #: templates/Difficulties/view.php:9 templates/Difficulties/view.php:15
-#: templates/Questions/add.php:47 templates/Questions/edit.php:57
-#: templates/Questions/index.php:64 templates/Questions/view.php:65
-#: templates/TestAttempts/view.php:34 templates/Tests/index.php:176
+#: templates/Questions/add.php:47 templates/Questions/edit.php:67
+#: templates/Questions/index.php:139 templates/Questions/view.php:65
+#: templates/TestAttempts/view.php:34 templates/Tests/creator_view.php:53
+#: templates/Tests/creator_view.php:56 templates/Tests/index.php:296
+#: templates/Tests/index.php:357 templates/Tests/index.php:721
 #: templates/Tests/view.php:55
-#, fuzzy
 msgid "Difficulty"
-msgstr "Difficulty ID"
+msgstr "Difficulty"
 
 #: templates/Difficulties/view.php:47 templates/Difficulties/view.php:59
-#: templates/Tests/index.php:14 templates/Tests/index.php:131
-#: templates/element/admin_sidebar.php:131
-#, fuzzy
+#: templates/Tests/index.php:43 templates/Tests/index.php:644
+#: templates/element/admin_sidebar.php:117
+#: templates/element/admin_sidebar_links.php:56
 msgid "Tests"
-msgstr "Test ID"
+msgstr "Tests"
 
 #: templates/Difficulties/view.php:51 templates/TestAttempts/index.php:9
-#, fuzzy
 msgid "Test Attempts"
-msgstr "Related Test Attempts"
+msgstr "Test Attempts"
 
-#: templates/Difficulties/view.php:65 templates/Tests/index.php:178
+#: templates/Difficulties/view.php:65
+#: templates/QuizCreator/Dashboard/index.php:57 templates/Tests/index.php:371
+#: templates/Tests/index.php:666 templates/Tests/index.php:723
 #: templates/Tests/view.php:75
 msgid "Public"
 msgstr "Public"
 
-#: templates/Languages/add.php:9
-#, fuzzy
+#: templates/Error/error400.php:33
+msgid "Page Not Found"
+msgstr "Page Not Found"
+
+#: templates/Error/error400.php:35
+msgid "The page you're looking for doesn't exist or has been moved."
+msgstr "The page you're looking for doesn't exist or has been moved."
+
+#: templates/Error/error400.php:40 templates/Error/error500.php:48
+msgid "Go Home"
+msgstr "Go Home"
+
+#: templates/Error/error400.php:43 templates/Error/error500.php:51
+msgid "Go Back"
+msgstr "Go Back"
+
+#: templates/Error/error500.php:41
+msgid "Something Went Wrong"
+msgstr "Something Went Wrong"
+
+#: templates/Error/error500.php:43
+msgid ""
+"An unexpected error occurred. Our team has been notified. Please try again "
+"later."
+msgstr ""
+"An unexpected error occurred. Our team has been notified. Please try again "
+"later."
+
+#: templates/Languages/add.php:8 templates/Languages/add.php:14
 msgid "Add Language"
-msgstr "Language ID"
+msgstr "Add Language"
 
-#: templates/Languages/edit.php:9 templates/Languages/view.php:11
-#, fuzzy
-msgid "Edit Language"
-msgstr "Language ID"
+#: templates/Languages/add.php:16
+msgid "Register a new supported language for the platform."
+msgstr "Register a new supported language for the platform."
 
-#: templates/Languages/index.php:9 templates/Languages/index.php:19
-#: templates/element/admin_sidebar.php:146
-#, fuzzy
-msgid "Languages"
-msgstr "Language ID"
-
-#: templates/Languages/index.php:44 templates/Languages/view.php:14
-#, fuzzy
-msgid "New Language"
-msgstr "Language ID"
-
-#: templates/Languages/index.php:62 templates/Languages/view.php:22
+#: templates/Languages/add.php:32 templates/Languages/edit.php:43
+#: templates/Languages/index.php:87 templates/Languages/view.php:22
 msgid "Code"
 msgstr "Code"
 
-#: templates/Languages/index.php:76
+#: templates/Languages/edit.php:8 templates/Languages/edit.php:14
+#: templates/Languages/view.php:11
+msgid "Edit Language"
+msgstr "Edit Language"
+
+#: templates/Languages/edit.php:16
+msgid "Update language code and display name."
+msgstr "Update language code and display name."
+
+#: templates/Languages/index.php:9 templates/Languages/index.php:21
+#: templates/element/admin_sidebar.php:122
+#: templates/element/admin_sidebar_links.php:57
+msgid "Languages"
+msgstr "Languages"
+
+#: templates/Languages/index.php:24
+msgid "Manage supported interface and content languages."
+msgstr "Manage supported interface and content languages."
+
+#: templates/Languages/index.php:43
+msgid "Codes"
+msgstr "Codes"
+
+#: templates/Languages/index.php:69 templates/Languages/index.php:131
+#: templates/Languages/view.php:14
+msgid "New Language"
+msgstr "New Language"
+
+#: templates/Languages/index.php:101
 msgid "Select language"
 msgstr "Select language"
 
+#: templates/Languages/index.php:129
+msgid "No languages found."
+msgstr "No languages found."
+
 #: templates/Languages/view.php:12
-#, fuzzy
 msgid "Delete Language"
-msgstr "Language ID"
+msgstr "Delete Language"
 
 #: templates/Languages/view.php:13
-#, fuzzy
 msgid "List Languages"
-msgstr "Language ID"
+msgstr "List Languages"
 
 #: templates/Languages/view.php:35 templates/Users/view.php:126
 msgid "Related Ai Requests"
@@ -2059,19 +2455,16 @@ msgid "Source Reference"
 msgstr "Source Reference"
 
 #: templates/Languages/view.php:85
-#, fuzzy
 msgid "Related Answer Translations"
-msgstr "Related User Tokens"
+msgstr "Related Answer Translations"
 
 #: templates/Languages/view.php:91 templates/TestAttempts/view.php:79
-#, fuzzy
 msgid "Answer Id"
-msgstr "User ID"
+msgstr "Answer Id"
 
 #: templates/Languages/view.php:127
-#, fuzzy
 msgid "Related Category Translations"
-msgstr "Related User Tokens"
+msgstr "Related Category Translations"
 
 #: templates/Languages/view.php:133 templates/Languages/view.php:219
 #: templates/Users/view.php:231
@@ -2083,9 +2476,8 @@ msgid "Related Question Translations"
 msgstr "Related Question Translations"
 
 #: templates/Languages/view.php:173 templates/TestAttempts/view.php:78
-#, fuzzy
 msgid "Question Id"
-msgstr "Total Questions"
+msgstr "Question Id"
 
 #: templates/Languages/view.php:176 templates/QuestionTranslations/view.php:53
 msgid "Explanation"
@@ -2109,12 +2501,6 @@ msgstr "Started At"
 msgid "Finished At"
 msgstr "Finished At"
 
-#: templates/Languages/view.php:224 templates/TestAttempts/view.php:46
-#: templates/Tests/result.php:40 templates/Tests/review.php:67
-#: templates/Users/view.php:236 templates/element/users/stats.php:98
-msgid "Score"
-msgstr "Score"
-
 #: templates/Languages/view.php:225 templates/TestAttempts/view.php:50
 #: templates/Users/view.php:237
 msgid "Total Questions"
@@ -2126,12 +2512,11 @@ msgid "Correct Answers"
 msgstr "Correct Answers"
 
 #: templates/Languages/view.php:263
-#, fuzzy
 msgid "Related Test Translations"
-msgstr "Related Test Attempts"
+msgstr "Related Test Translations"
 
 #: templates/Languages/view.php:271 templates/TestTranslations/view.php:30
-#: templates/Tests/index.php:174
+#: templates/Tests/index.php:719
 msgid "Title"
 msgstr "Title"
 
@@ -2148,9 +2533,8 @@ msgid "Is Complete"
 msgstr "Is Complete"
 
 #: templates/Languages/view.php:276 templates/TestTranslations/view.php:46
-#, fuzzy
 msgid "Translated At"
-msgstr "Created At"
+msgstr "Translated At"
 
 #: templates/Languages/view.php:278 templates/Roles/view.php:49
 #: templates/TestTranslations/view.php:54 templates/Users/index.php:24
@@ -2182,73 +2566,70 @@ msgstr ""
 "MindForge turns studying into a fast loop: build quizzes, test "
 "understanding, then sharpen weak spots with structured practice."
 
-#: templates/Pages/home.php:64 templates/Pages/home.php:197
-#: templates/Users/login.php:59 templates/Users/register.php:96
-#: templates/element/navbar.php:134
+#: templates/Pages/home.php:64 templates/Pages/home.php:195
+#: templates/Users/login.php:59 templates/Users/register.php:108
+#: templates/element/navbar.php:166
 msgid "Log In"
 msgstr "Log In"
 
-#: templates/Pages/home.php:67 templates/Pages/home.php:200
+#: templates/Pages/home.php:67 templates/Pages/home.php:198
 msgid "Create Account"
 msgstr "Create Account"
 
-#: templates/Pages/home.php:70
-msgid "No credit card. No fluff. Start in under a minute."
-msgstr "No credit card. No fluff. Start in under a minute."
-
-#: templates/Pages/home.php:74
+#: templates/Pages/home.php:71 templates/Pages/home.php:202
+#: templates/Tests/catalog_view.php:230
 msgid "Continue"
 msgstr "Continue"
 
-#: templates/Pages/home.php:76
+#: templates/Pages/home.php:73
 msgid "You are signed in."
 msgstr "You are signed in."
 
-#: templates/Pages/home.php:92
+#: templates/Pages/home.php:89
 msgid "Live preview"
 msgstr "Live preview"
 
-#: templates/Pages/home.php:101 templates/Pages/home.php:107
+#: templates/Pages/home.php:98 templates/Pages/home.php:104
 msgid "What drives long-term memory?"
 msgstr "What drives long-term memory?"
 
-#: templates/Pages/home.php:102
+#: templates/Pages/home.php:99
 msgid "Why does spaced repetition work?"
 msgstr "Why does spaced repetition work?"
 
-#: templates/Pages/home.php:103
+#: templates/Pages/home.php:100
 msgid "Which option best fits the definition?"
 msgstr "Which option best fits the definition?"
 
-#: templates/Pages/home.php:104
+#: templates/Pages/home.php:101
 msgid "What is the key idea in one sentence?"
 msgstr "What is the key idea in one sentence?"
 
-#: templates/Pages/home.php:111
+#: templates/Pages/home.php:108
 msgid "Spaced repetition"
 msgstr "Spaced repetition"
 
-#: templates/Pages/home.php:112
+#: templates/Pages/home.php:109
 msgid "Random guessing"
 msgstr "Random guessing"
 
-#: templates/Pages/home.php:113
+#: templates/Pages/home.php:110
 msgid "Passive reading"
 msgstr "Passive reading"
 
-#: templates/Pages/home.php:119 templates/Pages/home.php:137
+#: templates/Pages/home.php:116 templates/Pages/home.php:134
 msgid "AI assistance"
 msgstr "AI assistance"
 
-#: templates/Pages/home.php:120
+#: templates/Pages/home.php:117
 msgid "Built for safety"
 msgstr "Built for safety"
 
-#: templates/Pages/home.php:123
+#: templates/Pages/home.php:120
 msgid "Generate, translate, then review. Always structured. Always yours."
 msgstr "Generate, translate, then review. Always structured. Always yours."
 
-#: templates/Pages/home.php:138
+#: templates/Pages/home.php:135
 msgid ""
 "Generate drafts, translate content, and iterate quickly without breaking "
 "structure."
@@ -2256,27 +2637,27 @@ msgstr ""
 "Generate drafts, translate content, and iterate quickly without breaking "
 "structure."
 
-#: templates/Pages/home.php:143
+#: templates/Pages/home.php:140
 msgid "Mobile-ready auth"
 msgstr "Mobile-ready auth"
 
-#: templates/Pages/home.php:144
+#: templates/Pages/home.php:141
 msgid "Access + refresh tokens, rotation, revoke, and device-aware logging."
 msgstr "Access + refresh tokens, rotation, revoke, and device-aware logging."
 
-#: templates/Pages/home.php:149
+#: templates/Pages/home.php:146
 msgid "Speed"
 msgstr "Speed"
 
-#: templates/Pages/home.php:150
+#: templates/Pages/home.php:147
 msgid "Less clicking. More learning. Admin-style tools where they matter."
 msgstr "Less clicking. More learning. Admin-style tools where they matter."
 
-#: templates/Pages/home.php:159
+#: templates/Pages/home.php:156
 msgid "One place for quizzes, questions, answers, translations."
 msgstr "One place for quizzes, questions, answers, translations."
 
-#: templates/Pages/home.php:162
+#: templates/Pages/home.php:159
 msgid ""
 "Create multilingual content, keep consistency across difficulties and "
 "categories, and ship clean question banks for mobile and web."
@@ -2284,15 +2665,15 @@ msgstr ""
 "Create multilingual content, keep consistency across difficulties and "
 "categories, and ship clean question banks for mobile and web."
 
-#: templates/Pages/home.php:167
+#: templates/Pages/home.php:164
 msgid "Rotation & revoke"
 msgstr "Rotation & revoke"
 
-#: templates/Pages/home.php:174
+#: templates/Pages/home.php:171
 msgid "Fast loop"
 msgstr "Fast loop"
 
-#: templates/Pages/home.php:176
+#: templates/Pages/home.php:173
 msgid ""
 "Write once, test repeatedly, improve daily. AI helps generate and translate, "
 "you keep control and review."
@@ -2300,25 +2681,25 @@ msgstr ""
 "Write once, test repeatedly, improve daily. AI helps generate and translate, "
 "you keep control and review."
 
-#: templates/Pages/home.php:180 templates/Tests/add.php:141
-#: templates/Tests/edit.php:146
+#: templates/Pages/home.php:177 templates/Tests/add.php:185
+#: templates/Tests/edit.php:190
 msgid "Generate"
 msgstr "Generate"
 
-#: templates/Pages/home.php:181 templates/Tests/add.php:149
-#: templates/Tests/edit.php:154
+#: templates/Pages/home.php:178 templates/Tests/add.php:194
+#: templates/Tests/edit.php:199
 msgid "Translate"
 msgstr "Translate"
 
-#: templates/Pages/home.php:182
+#: templates/Pages/home.php:179
 msgid "Practice"
 msgstr "Practice"
 
-#: templates/Pages/home.php:192
+#: templates/Pages/home.php:189
 msgid "Ready to build your first quiz?"
 msgstr "Ready to build your first quiz?"
 
-#: templates/Pages/home.php:193
+#: templates/Pages/home.php:190
 msgid "Start with AI, then refine by hand. You stay in control."
 msgstr "Start with AI, then refine by hand. You stay in control."
 
@@ -2351,72 +2732,132 @@ msgid "Delete Question Translation"
 msgstr "Delete Question Translation"
 
 #: templates/Questions/add.php:12 templates/Questions/add.php:17
-#: templates/Tests/add.php:50 templates/Tests/edit.php:55
-#, fuzzy
+#: templates/Tests/add.php:77 templates/Tests/edit.php:82
 msgid "Add Question"
-msgstr "Total Questions"
+msgstr "Add Question"
 
-#: templates/Questions/add.php:30 templates/Questions/edit.php:40
-#: templates/Questions/view.php:35 templates/TestAttempts/view.php:26
-#: templates/TestTranslations/view.php:22 templates/Tests/view.php:9
-#: templates/Tests/view.php:20 templates/UserFavoriteTests/view.php:26
-#, fuzzy
-msgid "Test"
-msgstr "Test ID"
+#: templates/Questions/add.php:83
+msgid "Submitting…"
+msgstr "Submitting…"
 
-#: templates/Questions/edit.php:12 templates/Questions/edit.php:17
-#, fuzzy
+#: templates/Questions/edit.php:22 templates/Questions/edit.php:27
 msgid "Edit Question"
-msgstr "Total Questions"
+msgstr "Edit Question"
 
-#: templates/Questions/index.php:44
-#, fuzzy
+#: templates/Questions/edit.php:108
+msgid "At least one answer must be marked as correct."
+msgstr "At least one answer must be marked as correct."
+
+#: templates/Questions/edit.php:168 templates/Questions/edit.php:241
+msgid "Remove"
+msgstr "Remove"
+
+#: templates/Questions/edit.php:172 templates/Questions/edit.php:245
+msgid "Answer Text"
+msgstr "Answer Text"
+
+#: templates/Questions/index.php:53 templates/Questions/index.php:268
 msgid "New Question"
-msgstr "Total Questions"
+msgstr "New Question"
 
-#: templates/Questions/index.php:80
-#, fuzzy
+#: templates/Questions/index.php:73
+msgid "Question Type"
+msgstr "Question Type"
+
+#: templates/Questions/index.php:103
+msgid "Review Flag"
+msgstr "Review Flag"
+
+#: templates/Questions/index.php:157
 msgid "Select question"
-msgstr "Total Questions"
+msgstr "Select question"
 
-#: templates/QuizCreator/Dashboard/index.php:14
-msgid "Create and manage quizzes, questions and answers."
-msgstr "Create and manage quizzes, questions and answers."
+#: templates/Questions/index.php:205 templates/Tests/catalog_view.php:165
+#: templates/Tests/catalog_view.php:224 templates/Tests/review.php:16
+#: templates/Tests/review.php:35 templates/element/users/stats.php:143
+msgid "Review"
+msgstr "Review"
 
-#: templates/QuizCreator/Dashboard/index.php:21 templates/Tests/index.php:14
-#: templates/Tests/index.php:26 templates/element/admin_sidebar.php:183
-#: templates/element/navbar.php:179 templates/element/users/stats.php:43
-#: templates/element/users/stats.php:46
+#: templates/Questions/index.php:235 templates/Questions/index.php:296
+msgid "Deactivate"
+msgstr "Deactivate"
+
+#: templates/Questions/index.php:235 templates/Questions/index.php:291
+msgid "Activate"
+msgstr "Activate"
+
+#: templates/Questions/index.php:244 templates/Questions/index.php:306
+msgid "Clear Review"
+msgstr "Clear Review"
+
+#: templates/Questions/index.php:244 templates/Questions/index.php:301
+msgid "Flag Review"
+msgstr "Flag Review"
+
+#: templates/Questions/index.php:266
+msgid "No questions found."
+msgstr "No questions found."
+
+#: templates/QuizCreator/Dashboard/index.php:19
+msgid "Create quizzes and track their performance."
+msgstr "Create quizzes and track their performance."
+
+#: templates/QuizCreator/Dashboard/index.php:23 templates/Tests/add.php:26
+msgid "Create Quiz"
+msgstr "Create Quiz"
+
+#: templates/QuizCreator/Dashboard/index.php:39 templates/Tests/index.php:63
+msgid "My Quizzes"
+msgstr "My Quizzes"
+
+#: templates/QuizCreator/Dashboard/index.php:43
+#: templates/QuizCreator/Dashboard/index.php:46 templates/Tests/index.php:43
+#: templates/Tests/index.php:63 templates/element/admin_sidebar.php:159
+#: templates/element/admin_sidebar_links.php:74
+#: templates/element/navbar.php:212 templates/element/users/stats.php:46
+#: templates/element/users/stats.php:49
 msgid "Quizzes"
 msgstr "Quizzes"
 
-#: templates/QuizCreator/Dashboard/index.php:22
-msgid "Manage quizzes and generate content with AI."
-msgstr "Manage quizzes and generate content with AI."
-
-#: templates/QuizCreator/Dashboard/index.php:23
-#: templates/QuizCreator/Dashboard/index.php:31
-#: templates/QuizCreator/Dashboard/index.php:39
-#: templates/QuizCreator/Dashboard/index.php:47
-#: templates/QuizCreator/Dashboard/index.php:55
-msgid "Open"
-msgstr "Open"
-
-#: templates/QuizCreator/Dashboard/index.php:30
-msgid "Review and edit the question bank."
-msgstr "Review and edit the question bank."
-
-#: templates/QuizCreator/Dashboard/index.php:38
-msgid "Maintain answer choices and translations."
-msgstr "Maintain answer choices and translations."
-
-#: templates/QuizCreator/Dashboard/index.php:46
-msgid "Manage category taxonomy for filtering."
-msgstr "Manage category taxonomy for filtering."
-
 #: templates/QuizCreator/Dashboard/index.php:54
-msgid "Manage difficulty levels used by quizzes."
-msgstr "Manage difficulty levels used by quizzes."
+msgid "Public quizzes"
+msgstr "Public quizzes"
+
+#: templates/QuizCreator/Dashboard/index.php:59
+#: templates/QuizCreator/Dashboard/index.php:62
+#: templates/Tests/catalog_view.php:101 templates/Tests/catalog_view.php:104
+#: templates/Tests/creator_view.php:73 templates/Tests/creator_view.php:76
+#: templates/Tests/index.php:120 templates/Users/stats.php:70
+#: templates/element/users/stats.php:62 templates/element/users/stats.php:65
+msgid "Attempts"
+msgstr "Attempts"
+
+#: templates/QuizCreator/Dashboard/index.php:64
+msgid "Finished attempts"
+msgstr "Finished attempts"
+
+#: templates/QuizCreator/Dashboard/index.php:67
+#: templates/Tests/catalog_view.php:107 templates/Tests/catalog_view.php:110
+#: templates/Tests/catalog_view.php:122 templates/Tests/catalog_view.php:134
+#: templates/Tests/catalog_view.php:197 templates/Tests/catalog_view.php:210
+#: templates/Tests/creator_view.php:78 templates/Tests/creator_view.php:81
+#: templates/Tests/result.php:64 templates/Tests/result.php:67
+#: templates/element/users/stats.php:67 templates/element/users/stats.php:70
+#: templates/element/users/stats.php:109
+msgid "Finished"
+msgstr "Finished"
+
+#: templates/QuizCreator/Dashboard/index.php:82
+msgid "Quick Notes"
+msgstr "Quick Notes"
+
+#: templates/QuizCreator/Dashboard/index.php:83
+msgid "Only your own quizzes are shown in the list."
+msgstr "Only your own quizzes are shown in the list."
+
+#: templates/QuizCreator/Dashboard/index.php:84
+msgid "Open a quiz to see detailed stats for that specific quiz."
+msgstr "Open a quiz to see detailed stats for that specific quiz."
 
 #: templates/Roles/add.php:11 templates/Roles/edit.php:16
 #: templates/Roles/view.php:13
@@ -2474,87 +2915,71 @@ msgstr "Last Login At"
 #: templates/TestAttemptAnswers/add.php:14
 #: templates/TestAttemptAnswers/edit.php:19
 #: templates/TestAttemptAnswers/view.php:13
-#, fuzzy
 msgid "List Test Attempt Answers"
-msgstr "Related Test Attempts"
+msgstr "List Test Attempt Answers"
 
 #: templates/TestAttemptAnswers/add.php:21
-#, fuzzy
 msgid "Add Test Attempt Answer"
-msgstr "Related Test Attempts"
+msgstr "Add Test Attempt Answer"
 
 #: templates/TestAttemptAnswers/edit.php:26
 #: templates/TestAttemptAnswers/view.php:11
-#, fuzzy
 msgid "Edit Test Attempt Answer"
-msgstr "Related Test Attempts"
+msgstr "Edit Test Attempt Answer"
 
 #: templates/TestAttemptAnswers/index.php:8
 #: templates/TestAttemptAnswers/view.php:14
-#, fuzzy
 msgid "New Test Attempt Answer"
-msgstr "Related Test Attempts"
+msgstr "New Test Attempt Answer"
 
 #: templates/TestAttemptAnswers/index.php:9
-#, fuzzy
 msgid "Test Attempt Answers"
-msgstr "Related Test Attempts"
+msgstr "Test Attempt Answers"
 
 #: templates/TestAttemptAnswers/view.php:12
-#, fuzzy
 msgid "Delete Test Attempt Answer"
-msgstr "Related Test Attempts"
+msgstr "Delete Test Attempt Answer"
 
 #: templates/TestAttemptAnswers/view.php:22
-#, fuzzy
 msgid "Test Attempt"
-msgstr "Related Test Attempts"
+msgstr "Test Attempt"
 
 #: templates/TestAttemptAnswers/view.php:38 templates/TestAttempts/view.php:82
-#, fuzzy
 msgid "Answered At"
-msgstr "Used At"
+msgstr "Answered At"
 
 #: templates/TestAttemptAnswers/view.php:47 templates/TestAttempts/view.php:80
-#, fuzzy
 msgid "User Answer Text"
-msgstr "User Agent"
+msgstr "User Answer Text"
 
 #: templates/TestAttempts/add.php:16 templates/TestAttempts/edit.php:21
 #: templates/TestAttempts/view.php:13
-#, fuzzy
 msgid "List Test Attempts"
-msgstr "Related Test Attempts"
+msgstr "List Test Attempts"
 
 #: templates/TestAttempts/add.php:23
-#, fuzzy
 msgid "Add Test Attempt"
-msgstr "Related Test Attempts"
+msgstr "Add Test Attempt"
 
 #: templates/TestAttempts/edit.php:28 templates/TestAttempts/view.php:11
-#, fuzzy
 msgid "Edit Test Attempt"
-msgstr "Related Test Attempts"
+msgstr "Edit Test Attempt"
 
 #: templates/TestAttempts/index.php:8 templates/TestAttempts/view.php:14
-#, fuzzy
 msgid "New Test Attempt"
-msgstr "Related Test Attempts"
+msgstr "New Test Attempt"
 
 #: templates/TestAttempts/view.php:12
-#, fuzzy
 msgid "Delete Test Attempt"
-msgstr "Related Test Attempts"
+msgstr "Delete Test Attempt"
 
 #: templates/TestAttempts/view.php:71
-#, fuzzy
 msgid "Related Test Attempt Answers"
-msgstr "Related Test Attempts"
+msgstr "Related Test Attempt Answers"
 
 #: templates/TestAttempts/view.php:77
-#, fuzzy
 msgid "Test Attempt Id"
-msgstr "Related Test Attempts"
+msgstr "Test Attempt Id"
 
 #: templates/TestTranslations/add.php:14 templates/TestTranslations/edit.php:19
 #: templates/TestTranslations/view.php:13
@@ -2580,60 +3005,97 @@ msgid "Test Translations"
 msgstr "Test Translations"
 
 #: templates/TestTranslations/view.php:12
-#, fuzzy
 msgid "Delete Test Translation"
-msgstr "Delete User Token"
+msgstr "Delete Test Translation"
 
 #: templates/TestTranslations/view.php:38
 msgid "Translator"
 msgstr "Translator"
 
-#: templates/Tests/add.php:16
-#, fuzzy
-msgid "Add Test"
-msgstr "Add Role"
+#: templates/Tests/add.php:27
+msgid "Build questions, translations, and publishing settings in one flow."
+msgstr "Build questions, translations, and publishing settings in one flow."
 
-#: templates/Tests/add.php:18 templates/Tests/edit.php:18
-#, fuzzy
-msgid "List Tests"
-msgstr "List Roles"
+#: templates/Tests/add.php:30 templates/Tests/creator_view.php:113
+#: templates/Tests/edit.php:30
+msgid "Back to Tests"
+msgstr "Back to Tests"
 
-#: templates/Tests/add.php:27 templates/Tests/edit.php:32
+#: templates/Tests/add.php:39 templates/Tests/edit.php:44
 msgid "Basic Information"
 msgstr "Basic Information"
 
-#: templates/Tests/add.php:40 templates/Tests/edit.php:45
+#: templates/Tests/add.php:53 templates/Tests/edit.php:58
+#: templates/Tests/index.php:285
+msgid "Start typing category..."
+msgstr "Start typing category..."
+
+#: templates/Tests/add.php:67 templates/Tests/edit.php:72
 msgid "Is Public"
 msgstr "Is Public"
 
-#: templates/Tests/add.php:78 templates/Tests/edit.php:83
+#: templates/Tests/add.php:105 templates/Tests/edit.php:110
 msgid "Title ({0})"
 msgstr "Title ({0})"
 
-#: templates/Tests/add.php:79 templates/Tests/edit.php:84
-#, fuzzy
+#: templates/Tests/add.php:106 templates/Tests/edit.php:111
 msgid "Description ({0})"
-msgstr "Description"
+msgstr "Description ({0})"
 
-#: templates/Tests/add.php:96 templates/Tests/add.php:138
-#: templates/Tests/edit.php:143
+#: templates/Tests/add.php:116 templates/Tests/edit.php:121
+msgid "Optional source files for AI generation"
+msgstr "Optional source files for AI generation"
+
+#: templates/Tests/add.php:127 templates/Tests/edit.php:132
+msgid "Choose files"
+msgstr "Choose files"
+
+#: templates/Tests/add.php:129 templates/Tests/add.php:130
+#: templates/Tests/edit.php:134 templates/Tests/edit.php:135
+msgid "No files selected (optional)."
+msgstr "No files selected (optional)."
+
+#: templates/Tests/add.php:129 templates/Tests/edit.php:134
+msgid "selected files"
+msgstr "selected files"
+
+#: templates/Tests/add.php:134 templates/Tests/edit.php:139
+msgid ""
+"Optional. Upload PDFs, DOCX, or text-like files to help AI generate more "
+"accurate quiz content."
+msgstr ""
+"Optional. Upload PDFs, DOCX, or text-like files to help AI generate more "
+"accurate quiz content."
+
+#: templates/Tests/add.php:148 templates/Tests/add.php:182
+#: templates/Tests/edit.php:187
 msgid "Generate Test with AI"
 msgstr "Generate Test with AI"
 
-#: templates/Tests/add.php:100 templates/Tests/edit.php:105
+#: templates/Tests/add.php:152 templates/Tests/edit.php:157
 msgid "AI generations today: {0}/{1}"
 msgstr "AI generations today: {0}/{1}"
 
-#: templates/Tests/add.php:103 templates/Tests/add.php:148
-#: templates/Tests/edit.php:108 templates/Tests/edit.php:153
+#: templates/Tests/add.php:155 templates/Tests/add.php:193
+#: templates/Tests/edit.php:160 templates/Tests/edit.php:198
 msgid "Translate Test with AI"
 msgstr "Translate Test with AI"
 
-#: templates/Tests/add.php:106
+#: templates/Tests/add.php:158
 msgid "Save Test"
 msgstr "Save Test"
 
-#: templates/Tests/add.php:139
+#: templates/Tests/add.php:173 templates/Tests/edit.php:178
+#: templates/Tests/index.php:608
+msgid "No category found"
+msgstr "No category found"
+
+#: templates/Tests/add.php:174 templates/Tests/edit.php:179
+#: templates/Tests/index.php:609
+msgid "Please choose a category from the list."
+msgstr "Please choose a category from the list."
+
+#: templates/Tests/add.php:183
 msgid ""
 "Describe the test you want to create (topic, difficulty, number of "
 "questions, etc.)"
@@ -2641,7 +3103,7 @@ msgstr ""
 "Describe the test you want to create (topic, difficulty, number of "
 "questions, etc.)"
 
-#: templates/Tests/add.php:140 templates/Tests/edit.php:145
+#: templates/Tests/add.php:184 templates/Tests/edit.php:189
 msgid ""
 "E.g., Create a 10-question test about Ancient Rome history, focused on "
 "military battles, medium difficulty."
@@ -2649,118 +3111,196 @@ msgstr ""
 "E.g., Create a 10-question test about Ancient Rome history, focused on "
 "military battles, medium difficulty."
 
-#: templates/Tests/add.php:142 templates/Tests/edit.php:147
-#, fuzzy
+#: templates/Tests/add.php:186 templates/Tests/edit.php:191
 msgid "Please enter a prompt"
-msgstr "Please enter your password."
+msgstr "Please enter a prompt"
 
-#: templates/Tests/add.php:143 templates/Tests/edit.php:148
+#: templates/Tests/add.php:187 templates/Tests/edit.php:192
 msgid "Success!"
 msgstr "Success!"
 
-#: templates/Tests/add.php:144 templates/Tests/edit.php:149
+#: templates/Tests/add.php:188 templates/Tests/edit.php:193
 msgid "Test generated successfully."
 msgstr "Test generated successfully."
 
-#: templates/Tests/add.php:145 templates/Tests/edit.php:150
-#: templates/Error/error400.php:24 templates/Error/error500.php:34
+#: templates/Tests/add.php:189 templates/Tests/edit.php:194
+#: templates/layout/error.php:17
 msgid "Error"
 msgstr "Error"
 
-#: templates/Tests/add.php:146 templates/Tests/edit.php:151
+#: templates/Tests/add.php:190 templates/Tests/edit.php:195
+msgid "Request failed:"
+msgstr "Request failed:"
+
+#: templates/Tests/add.php:191 templates/Tests/edit.php:196
 msgid "Unknown error occurred"
 msgstr "Unknown error occurred"
 
-#: templates/Tests/add.php:150 templates/Tests/edit.php:155
+#: templates/Tests/add.php:195 templates/Tests/edit.php:200
 msgid ""
 "This will translate the current test content into all configured languages."
 msgstr ""
 "This will translate the current test content into all configured languages."
 
-#: templates/Tests/add.php:151 templates/Tests/edit.php:156
+#: templates/Tests/add.php:196 templates/Tests/edit.php:201
 msgid "Translations updated."
 msgstr "Translations updated."
 
-#: templates/Tests/add.php:152 templates/Tests/edit.php:157
+#: templates/Tests/add.php:197 templates/Tests/edit.php:202
 msgid "Translation in progress..."
 msgstr "Translation in progress..."
 
-#: templates/Tests/add.php:153 templates/Tests/edit.php:158
+#: templates/Tests/add.php:198 templates/Tests/edit.php:203
+msgid "AI is generating your quiz..."
+msgstr "AI is generating your quiz..."
+
+#: templates/Tests/add.php:199 templates/Tests/edit.php:204
+msgid ""
+"The AI is composing questions, answers and translations. This may take up to "
+"30 seconds."
+msgstr ""
+"The AI is composing questions, answers and translations. This may take up to "
+"30 seconds."
+
+#: templates/Tests/add.php:200 templates/Tests/edit.php:205
 msgid "True"
 msgstr "True"
 
-#: templates/Tests/add.php:154 templates/Tests/edit.php:159
+#: templates/Tests/add.php:201 templates/Tests/edit.php:206
 msgid "False"
 msgstr "False"
 
-#: templates/Tests/catalog_view.php:12 templates/Tests/take.php:32
-#: templates/element/users/stats.php:97
+#: templates/Tests/add.php:202 templates/Tests/edit.php:207
+msgid ""
+"The AI service is temporarily overloaded. Please try again in a few minutes."
+msgstr ""
+"The AI service is temporarily overloaded. Please try again in a few minutes."
+
+#: templates/Tests/add.php:203 templates/Tests/edit.php:208
+msgid "The AI service encountered an error. Please try again later."
+msgstr "The AI service encountered an error. Please try again later."
+
+#: templates/Tests/add.php:204 templates/Tests/edit.php:209
+msgid ""
+"Could not reach the AI service. Please check your connection and try again."
+msgstr ""
+"Could not reach the AI service. Please check your connection and try again."
+
+#: templates/Tests/add.php:205 templates/Tests/edit.php:210
+msgid "The AI service took too long to respond. Please try again."
+msgstr "The AI service took too long to respond. Please try again."
+
+#: templates/Tests/catalog_view.php:14 templates/Tests/index.php:209
+#: templates/Tests/take.php:32 templates/element/users/stats.php:106
 msgid "Quiz"
 msgstr "Quiz"
 
-#: templates/Tests/catalog_view.php:82 templates/Tests/index.php:95
+#: templates/Tests/catalog_view.php:87 templates/Tests/favorites.php:73
+#: templates/Tests/index.php:465
 msgid "questions"
 msgstr "questions"
 
-#: templates/Tests/catalog_view.php:90 templates/Users/profile.php:74
-#: templates/Users/stats.php:13 templates/Users/stats.php:20
-#: templates/element/users/stats.php:38
+#: templates/Tests/catalog_view.php:95 templates/Users/profile.php:76
+#: templates/Users/stats.php:15 templates/Users/stats.php:37
+#: templates/element/users/stats.php:41
 msgid "My Stats"
 msgstr "My Stats"
 
-#: templates/Tests/catalog_view.php:92 templates/Tests/index.php:104
-msgid "Untitled quiz"
-msgstr "Untitled quiz"
-
-#: templates/Tests/catalog_view.php:96 templates/Tests/catalog_view.php:99
-#: templates/element/users/stats.php:59 templates/element/users/stats.php:62
-msgid "Attempts"
-msgstr "Attempts"
-
-#: templates/Tests/catalog_view.php:102 templates/Tests/catalog_view.php:105
-#: templates/Tests/catalog_view.php:117 templates/Tests/catalog_view.php:129
-#: templates/Tests/result.php:46 templates/element/users/stats.php:64
-#: templates/element/users/stats.php:67 templates/element/users/stats.php:100
-#, fuzzy
-msgid "Finished"
-msgstr "Finished At"
-
-#: templates/Tests/catalog_view.php:108 templates/Tests/catalog_view.php:111
-#: templates/element/users/stats.php:48 templates/element/users/stats.php:51
+#: templates/Tests/catalog_view.php:113 templates/Tests/catalog_view.php:116
+#: templates/element/users/stats.php:51 templates/element/users/stats.php:54
 msgid "Best Result"
 msgstr "Best Result"
 
-#: templates/Tests/catalog_view.php:129 templates/element/users/stats.php:84
+#: templates/Tests/catalog_view.php:134 templates/Tests/catalog_view.php:186
+#: templates/element/users/stats.php:93
 msgid "Last {0}"
 msgstr "Last {0}"
 
-#: templates/Tests/catalog_view.php:137 templates/Tests/index.php:113
+#: templates/Tests/catalog_view.php:144 templates/Tests/favorites.php:87
+msgid "Remove from favorites"
+msgstr "Remove from favorites"
+
+#: templates/Tests/catalog_view.php:150
+msgid "Save to favorites"
+msgstr "Save to favorites"
+
+#: templates/Tests/catalog_view.php:158 templates/Tests/favorites.php:92
+#: templates/Tests/index.php:500
 msgid "Start quiz"
 msgstr "Start quiz"
 
-#: templates/Tests/catalog_view.php:144 templates/element/users/stats.php:129
-msgid "Result"
-msgstr "Result"
-
-#: templates/Tests/catalog_view.php:149 templates/Tests/review.php:14
-#: templates/Tests/review.php:33 templates/element/users/stats.php:134
-msgid "Review"
-msgstr "Review"
-
-#: templates/Tests/catalog_view.php:156
+#: templates/Tests/catalog_view.php:172
 msgid "Back to Quizzes"
 msgstr "Back to Quizzes"
 
-#: templates/Tests/edit.php:16
-#, fuzzy
-msgid "Edit Test"
-msgstr "Edit Role"
+#: templates/Tests/catalog_view.php:185
+msgid "My Attempts"
+msgstr "My Attempts"
 
-#: templates/Tests/edit.php:101
+#: templates/Tests/catalog_view.php:210
+msgid "In progress"
+msgstr "In progress"
+
+#: templates/Tests/creator_view.php:10
+msgid "Quiz stats"
+msgstr "Quiz stats"
+
+#: templates/Tests/creator_view.php:69
+msgid "Quiz Statistics"
+msgstr "Quiz Statistics"
+
+#: templates/Tests/creator_view.php:83
+msgid "Completion Rate"
+msgstr "Completion Rate"
+
+#: templates/Tests/creator_view.php:86
+msgid "Completion"
+msgstr "Completion"
+
+#: templates/Tests/creator_view.php:88
+msgid "Average Score"
+msgstr "Average Score"
+
+#: templates/Tests/creator_view.php:91 templates/Users/stats.php:71
+msgid "Avg Score"
+msgstr "Avg Score"
+
+#: templates/Tests/creator_view.php:93 templates/Tests/creator_view.php:96
+#: templates/Users/stats.php:72
+msgid "Best Score"
+msgstr "Best Score"
+
+#: templates/Tests/creator_view.php:98
+msgid "Average Correct Rate"
+msgstr "Average Correct Rate"
+
+#: templates/Tests/creator_view.php:101
+msgid "Correct Rate"
+msgstr "Correct Rate"
+
+#: templates/Tests/creator_view.php:103 templates/Tests/creator_view.php:106
+msgid "Unique Users"
+msgstr "Unique Users"
+
+#: templates/Tests/creator_view.php:113
+msgid "Back to My Quizzes"
+msgstr "Back to My Quizzes"
+
+#: templates/Tests/creator_view.php:118 templates/Tests/edit.php:26
+msgid "Edit Quiz"
+msgstr "Edit Quiz"
+
+#: templates/Tests/edit.php:27
+msgid ""
+"Update quiz details, questions, and translations with consistent styling."
+msgstr ""
+"Update quiz details, questions, and translations with consistent styling."
+
+#: templates/Tests/edit.php:153
 msgid "Generate Content with AI"
 msgstr "Generate Content with AI"
 
-#: templates/Tests/edit.php:144
+#: templates/Tests/edit.php:188
 msgid ""
 "Describe the test you want to create or update (topic, difficulty, number of "
 "questions, etc.)"
@@ -2768,113 +3308,319 @@ msgstr ""
 "Describe the test you want to create or update (topic, difficulty, number of "
 "questions, etc.)"
 
-#: templates/Tests/index.php:27
-msgid "Pick a quiz, skim the description, and start when you are ready."
-msgstr "Pick a quiz, skim the description, and start when you are ready."
+#: templates/Tests/favorites.php:9 templates/Tests/favorites.php:24
+msgid "My Favorite Quizzes"
+msgstr "My Favorite Quizzes"
 
-#: templates/Tests/index.php:107
+#: templates/Tests/favorites.php:25
+msgid "Saved public quizzes you can quickly open or start."
+msgstr "Saved public quizzes you can quickly open or start."
+
+#: templates/Tests/favorites.php:31
+msgid "No favorites yet"
+msgstr "No favorites yet"
+
+#: templates/Tests/favorites.php:32
+msgid "Open a quiz and click \"Save to favorites\" to collect it here."
+msgstr "Open a quiz and click \"Save to favorites\" to collect it here."
+
+#: templates/Tests/favorites.php:34
+msgid "Browse quizzes"
+msgstr "Browse quizzes"
+
+#: templates/Tests/favorites.php:82 templates/Tests/index.php:477
 msgid "No description yet."
 msgstr "No description yet."
 
-#: templates/Tests/index.php:118
+#: templates/Tests/favorites.php:97 templates/Tests/index.php:484
+#: templates/Tests/index.php:505
 msgid "Open details"
 msgstr "Open details"
 
-#: templates/Tests/index.php:156
+#: templates/Tests/favorites.php:108
+msgid "Showing {0} favorites"
+msgstr "Showing {0} favorites"
+
+#: templates/Tests/favorites.php:112 templates/Tests/index.php:574
+msgid "Previous"
+msgstr "Previous"
+
+#: templates/Tests/favorites.php:119 templates/Tests/index.php:592
+#: templates/Tests/review.php:329 templates/Tests/take.php:244
+msgid "Next"
+msgstr "Next"
+
+#: templates/Tests/index.php:66
+msgid "Manage your quizzes and open each one for detailed stats."
+msgstr "Manage your quizzes and open each one for detailed stats."
+
+#: templates/Tests/index.php:67
+msgid "Pick a quiz, skim the description, and start when you are ready."
+msgstr "Pick a quiz, skim the description, and start when you are ready."
+
+#: templates/Tests/index.php:76
+msgid "Top quizzes"
+msgstr "Top quizzes"
+
+#: templates/Tests/index.php:83
+msgid "Top 3 quizzes"
+msgstr "Top 3 quizzes"
+
+#: templates/Tests/index.php:84
+msgid "Most played"
+msgstr "Most played"
+
+#: templates/Tests/index.php:126
+msgid "Open"
+msgstr "Open"
+
+#: templates/Tests/index.php:142
+msgid "Top categories"
+msgstr "Top categories"
+
+#: templates/Tests/index.php:149
+msgid "Top 5 categories"
+msgstr "Top 5 categories"
+
+#: templates/Tests/index.php:150
+msgid "By attempts"
+msgstr "By attempts"
+
+#: templates/Tests/index.php:190
+msgid "Recent attempts"
+msgstr "Recent attempts"
+
+#: templates/Tests/index.php:191
+msgid "Quick snapshot of your latest quiz results."
+msgstr "Quick snapshot of your latest quiz results."
+
+#: templates/Tests/index.php:194 templates/Tests/index.php:248
+msgid "View all attempts"
+msgstr "View all attempts"
+
+#: templates/Tests/index.php:240
+msgid "Start your first test and your latest results will appear here."
+msgstr "Start your first test and your latest results will appear here."
+
+#: templates/Tests/index.php:271 templates/Tests/index.php:342
+msgid "Title or description"
+msgstr "Title or description"
+
+#: templates/Tests/index.php:307 templates/Tests/index.php:380
+msgid "Sort"
+msgstr "Sort"
+
+#: templates/Tests/index.php:310 templates/Tests/index.php:383
+msgid "Latest"
+msgstr "Latest"
+
+#: templates/Tests/index.php:311 templates/Tests/index.php:384
+msgid "Oldest"
+msgstr "Oldest"
+
+#: templates/Tests/index.php:312 templates/Tests/index.php:385
+msgid "Recently updated"
+msgstr "Recently updated"
+
+#: templates/Tests/index.php:324 templates/Tests/index.php:395
+msgid "Reset filters"
+msgstr "Reset filters"
+
+#: templates/Tests/index.php:367
+msgid "Visibility"
+msgstr "Visibility"
+
+#: templates/Tests/index.php:372 templates/Tests/index.php:675
+msgid "Private"
+msgstr "Private"
+
+#: templates/Tests/index.php:489 templates/Tests/index.php:770
+msgid "Stats"
+msgstr "Stats"
+
+#: templates/Tests/index.php:516
+msgid "No quizzes found"
+msgstr "No quizzes found"
+
+#: templates/Tests/index.php:519
+msgid "You have not created any quizzes yet."
+msgstr "You have not created any quizzes yet."
+
+#: templates/Tests/index.php:520
+msgid "There are no available quizzes right now."
+msgstr "There are no available quizzes right now."
+
+#: templates/Tests/index.php:523
+msgid "Create quiz"
+msgstr "Create quiz"
+
+#: templates/Tests/index.php:523
+msgid "Start a quiz"
+msgstr "Start a quiz"
+
+#: templates/Tests/index.php:542
+msgid "Showing {0} of {1}"
+msgstr "Showing {0} of {1}"
+
+#: templates/Tests/index.php:570
+msgid "Quizzes pagination"
+msgstr "Quizzes pagination"
+
+#: templates/Tests/index.php:607
+msgid "All categories"
+msgstr "All categories"
+
+#: templates/Tests/index.php:647
+msgid "Browse, edit and manage all quizzes in the system."
+msgstr "Browse, edit and manage all quizzes in the system."
+
+#: templates/Tests/index.php:701 templates/Tests/index.php:796
 msgid "New Test"
 msgstr "New Test"
 
-#: templates/Tests/index.php:193
+#: templates/Tests/index.php:738
 msgid "Select test"
 msgstr "Select test"
 
-#: templates/Tests/result.php:9 templates/Tests/result.php:19
-#, fuzzy
+#: templates/Tests/index.php:794
+msgid "No tests found."
+msgstr "No tests found."
+
+#: templates/Tests/result.php:9 templates/Tests/result.php:40
 msgid "Quiz results"
-msgstr "Quiz Creator"
+msgstr "Quiz results"
 
-#: templates/Tests/result.php:20 templates/Tests/review.php:36
+#: templates/Tests/result.php:41 templates/Tests/review.php:38
 #: templates/Tests/take.php:29
-#, fuzzy
 msgid "Attempt"
-msgstr "Related Test Attempts"
+msgstr "Attempt"
 
-#: templates/Tests/result.php:24 templates/Tests/review.php:44
-#: templates/Tests/take.php:46
-#, fuzzy
-msgid "Back to quizzes"
-msgstr "Back to login"
-
-#: templates/Tests/result.php:34 templates/Tests/review.php:61
-#, fuzzy
+#: templates/Tests/result.php:54 templates/Tests/review.php:63
 msgid "Correct answers"
-msgstr "Correct Answers"
+msgstr "Correct answers"
 
-#: templates/Tests/result.php:56 templates/Tests/review.php:50
+#: templates/Tests/result.php:59 templates/Tests/result.php:62
+msgid "Accuracy"
+msgstr "Accuracy"
+
+#: templates/Tests/result.php:74 templates/Tests/review.php:46
+#: templates/Tests/take.php:63
+msgid "Back to quizzes"
+msgstr "Back to quizzes"
+
+#: templates/Tests/result.php:81 templates/Tests/review.php:52
 msgid "Try again"
 msgstr "Try again"
 
-#: templates/Tests/result.php:61
-#, fuzzy
+#: templates/Tests/result.php:86
 msgid "Review answers"
-msgstr "Related Users"
+msgstr "Review answers"
 
-#: templates/Tests/result.php:66
+#: templates/Tests/result.php:91
 msgid "View quiz details"
 msgstr "View quiz details"
 
-#: templates/Tests/review.php:123 templates/Tests/take.php:72
-#, fuzzy
+#: templates/Tests/review.php:151 templates/Tests/take.php:101
 msgid "Untitled question"
-msgstr "Total Questions"
+msgstr "Untitled question"
 
-#: templates/Tests/review.php:130
+#: templates/Tests/review.php:158 templates/Tests/review.php:233
 msgid "Wrong"
 msgstr "Wrong"
 
-#: templates/Tests/review.php:137
-#, fuzzy
+#: templates/Tests/review.php:165
 msgid "Your answer"
-msgstr "Correct Answers"
+msgstr "Your answer"
 
-#: templates/Tests/review.php:139
+#: templates/Tests/review.php:167
 msgid "(no answer)"
 msgstr "(no answer)"
 
-#: templates/Tests/review.php:142
-#, fuzzy
+#: templates/Tests/review.php:170
 msgid "Correct answer"
-msgstr "Correct Answers"
+msgstr "Correct answer"
 
-#: templates/Tests/review.php:144
+#: templates/Tests/review.php:172 templates/Tests/review.php:215
 msgid "(not set)"
 msgstr "(not set)"
 
-#: templates/Tests/review.php:178 templates/Tests/take.php:106
+#: templates/Tests/review.php:191
+msgid "Matching pairs"
+msgstr "Matching pairs"
+
+#: templates/Tests/review.php:211 templates/Tests/review.php:214
+#: templates/Tests/review.php:220 templates/Tests/review.php:271
+#: templates/Tests/take.php:164 templates/Tests/take.php:176
+#: templates/Tests/take.php:225
 msgid "(empty)"
 msgstr "(empty)"
 
-#: templates/Tests/review.php:182
+#: templates/Tests/review.php:212
+msgid "(invalid selection)"
+msgstr "(invalid selection)"
+
+#: templates/Tests/review.php:212
+msgid "(no match selected)"
+msgstr "(no match selected)"
+
+#: templates/Tests/review.php:225
+msgid "Expected"
+msgstr "Expected"
+
+#: templates/Tests/review.php:275
 msgid "You"
 msgstr "You"
 
-#: templates/Tests/review.php:193
+#: templates/Tests/review.php:286
 msgid "You did not answer this question."
 msgstr "You did not answer this question."
 
-#: templates/Tests/review.php:205 templates/Tests/take.php:125
-msgid "Next"
-msgstr "Next"
+#: templates/Tests/review.php:292
+msgid "Correct answer explanation"
+msgstr "Correct answer explanation"
+
+#: templates/Tests/review.php:307
+msgid "Generating..."
+msgstr "Generating..."
+
+#: templates/Tests/review.php:311
+msgid "Explain with AI"
+msgstr "Explain with AI"
+
+#: templates/Tests/review.php:313
+msgid "Useful when you want to understand why your answer was wrong/right."
+msgstr "Useful when you want to understand why your answer was wrong/right."
 
 #: templates/Tests/take.php:13
 msgid "Take quiz"
 msgstr "Take quiz"
 
-#: templates/Tests/take.php:80
+#: templates/Tests/take.php:49 templates/Tests/take.php:51
+#: templates/Tests/take.php:54
+msgid "Abort attempt"
+msgstr "Abort attempt"
+
+#: templates/Tests/take.php:50
+msgid ""
+"Are you sure you want to abort this attempt? Your current progress will be "
+"lost."
+msgstr ""
+"Are you sure you want to abort this attempt? Your current progress will be "
+"lost."
+
+#: templates/Tests/take.php:109
 msgid "Type your answer…"
 msgstr "Type your answer…"
 
-#: templates/Tests/take.php:128
+#: templates/Tests/take.php:156
+msgid "Matching options are not configured for this question."
+msgstr "Matching options are not configured for this question."
+
+#: templates/Tests/take.php:172
+msgid "Choose a match"
+msgstr "Choose a match"
+
+#: templates/Tests/take.php:247
 msgid "Submit answers"
 msgstr "Submit answers"
 
@@ -2903,42 +3649,36 @@ msgid "User Favorite Categories"
 msgstr "User Favorite Categories"
 
 #: templates/UserFavoriteCategories/view.php:12
-#, fuzzy
 msgid "Delete User Favorite Category"
-msgstr "Delete User Token"
+msgstr "Delete User Favorite Category"
 
 #: templates/UserFavoriteTests/add.php:13
 #: templates/UserFavoriteTests/edit.php:18
 #: templates/UserFavoriteTests/view.php:13
-#, fuzzy
 msgid "List User Favorite Tests"
-msgstr "List User Tokens"
+msgstr "List User Favorite Tests"
 
 #: templates/UserFavoriteTests/add.php:20
-#, fuzzy
 msgid "Add User Favorite Test"
-msgstr "Add User Token"
+msgstr "Add User Favorite Test"
 
 #: templates/UserFavoriteTests/edit.php:25
 #: templates/UserFavoriteTests/view.php:11
-#, fuzzy
 msgid "Edit User Favorite Test"
-msgstr "Edit User Token"
+msgstr "Edit User Favorite Test"
 
 #: templates/UserFavoriteTests/index.php:8
 #: templates/UserFavoriteTests/view.php:14
-#, fuzzy
 msgid "New User Favorite Test"
-msgstr "New User Token"
+msgstr "New User Favorite Test"
 
 #: templates/UserFavoriteTests/index.php:9
 msgid "User Favorite Tests"
 msgstr "User Favorite Tests"
 
 #: templates/UserFavoriteTests/view.php:12
-#, fuzzy
 msgid "Delete User Favorite Test"
-msgstr "Delete User Token"
+msgstr "Delete User Favorite Test"
 
 #: templates/UserTokens/add.php:12 templates/UserTokens/edit.php:17
 #: templates/UserTokens/view.php:13
@@ -3000,7 +3740,7 @@ msgid "Email Address"
 msgstr "Email Address"
 
 #: templates/Users/forgot_password.php:32 templates/Users/login.php:33
-#: templates/Users/register.php:46
+#: templates/Users/register.php:51
 msgid "Please enter a valid email address."
 msgstr "Please enter a valid email address."
 
@@ -3011,10 +3751,6 @@ msgstr "Send Reset Link"
 #: templates/Users/forgot_password.php:40 templates/Users/reset_password.php:64
 msgid "Back to login"
 msgstr "Back to login"
-
-#: templates/Users/index.php:10 templates/Users/view.php:21
-msgid "New User"
-msgstr "New User"
 
 #: templates/Users/login.php:2
 msgid "Login"
@@ -3044,8 +3780,8 @@ msgstr "Please enter your password."
 msgid "Don't have an account?"
 msgstr "Don't have an account?"
 
-#: templates/Users/login.php:63 templates/Users/register.php:92
-#: templates/element/navbar.php:144
+#: templates/Users/login.php:63 templates/Users/register.php:104
+#: templates/element/navbar.php:176
 msgid "Sign Up"
 msgstr "Sign Up"
 
@@ -3063,22 +3799,20 @@ msgstr ""
 "AI-powered learning and testing, designed to help you master any subject "
 "faster and smarter."
 
-#: templates/Users/profile.php:48
+#: templates/Users/profile.php:50
 msgid "Joined"
 msgstr "Joined"
 
-#: templates/Users/profile.php:54
-#, fuzzy
+#: templates/Users/profile.php:56
 msgid "Last Login"
-msgstr "Last Login At"
+msgstr "Last Login"
 
-#: templates/Users/profile.php:62 templates/Users/profile_edit.php:7
+#: templates/Users/profile.php:64 templates/Users/profile_edit.php:7
 #: templates/Users/profile_edit.php:12
-#, fuzzy
 msgid "Edit Profile"
-msgstr "Edit Role"
+msgstr "Edit Profile"
 
-#: templates/Users/profile.php:75 templates/Users/stats.php:21
+#: templates/Users/profile.php:77 templates/Users/stats.php:38
 msgid "Your quiz history and performance overview."
 msgstr "Your quiz history and performance overview."
 
@@ -3114,19 +3848,19 @@ msgstr "Create an Account"
 msgid "Start your journey with MindForge today."
 msgstr "Start your journey with MindForge today."
 
-#: templates/Users/register.php:58 templates/Users/reset_password.php:33
+#: templates/Users/register.php:64 templates/Users/reset_password.php:33
 msgid "Create a strong password"
 msgstr "Create a strong password"
 
-#: templates/Users/register.php:76 templates/Users/reset_password.php:44
+#: templates/Users/register.php:88 templates/Users/reset_password.php:44
 msgid "Confirm Password"
 msgstr "Confirm Password"
 
-#: templates/Users/register.php:83 templates/Users/reset_password.php:51
+#: templates/Users/register.php:95 templates/Users/reset_password.php:51
 msgid "Confirm your password"
 msgstr "Confirm your password"
 
-#: templates/Users/register.php:95
+#: templates/Users/register.php:107
 msgid "Already have an account?"
 msgstr "Already have an account?"
 
@@ -3151,9 +3885,17 @@ msgstr "New Password"
 msgid "Update Password"
 msgstr "Update Password"
 
-#: templates/Users/stats.php:26
+#: templates/Users/stats.php:43
 msgid "Back to Profile"
 msgstr "Back to Profile"
+
+#: templates/Users/stats.php:59
+msgid "Category Breakdown"
+msgstr "Category Breakdown"
+
+#: templates/Users/stats.php:61
+msgid "Based on all finished attempts"
+msgstr "Based on all finished attempts"
 
 #: templates/Users/view.php:19
 msgid "Delete User"
@@ -3189,76 +3931,86 @@ msgid "Admin"
 msgstr "Admin"
 
 #: templates/element/admin_navbar.php:13
-#, fuzzy
 msgid "Super Admin"
-msgstr "Admin"
+msgstr "Super Admin"
 
-#: templates/element/admin_navbar.php:46 templates/element/navbar.php:210
+#: templates/element/admin_navbar.php:46 templates/element/navbar.php:249
 msgid "Logout"
 msgstr "Logout"
 
-#: templates/element/admin_sidebar.php:113
+#: templates/element/admin_sidebar.php:99
+#: templates/element/admin_sidebar_links.php:51
 msgid "Management"
 msgstr "Management"
 
-#: templates/element/admin_sidebar.php:114
-#, fuzzy
+#: templates/element/admin_sidebar.php:100
+#: templates/element/admin_sidebar_links.php:52
 msgid "Admin navigation"
-msgstr "Toggle navigation"
+msgstr "Admin navigation"
 
-#: templates/element/admin_sidebar.php:155
-#, fuzzy
+#: templates/element/admin_sidebar.php:131
+#: templates/element/admin_sidebar_links.php:63
 msgid "System navigation"
-msgstr "Toggle navigation"
+msgstr "System navigation"
 
-#: templates/element/admin_sidebar.php:170
+#: templates/element/admin_sidebar.php:146
+#: templates/element/admin_sidebar_links.php:70
 msgid "Quiz Tools"
 msgstr "Quiz Tools"
 
-#: templates/element/admin_sidebar.php:171
-#, fuzzy
+#: templates/element/admin_sidebar.php:147
+#: templates/element/admin_sidebar_links.php:71
 msgid "Quiz tools navigation"
-msgstr "Toggle navigation"
+msgstr "Quiz tools navigation"
 
-#: templates/element/admin_sidebar.php:216
-#, fuzzy
-msgid "Navigation"
-msgstr "Pagination"
+#: templates/element/functions/admin_empty_state.php:12
+msgid "No records found."
+msgstr "No records found."
 
-#: templates/element/admin_sidebar.php:217
-msgid "Close"
-msgstr "Close"
-
-#: templates/element/functions/scroll_to_top.php:32
-#: templates/element/functions/scroll_to_top.php:33
+#: templates/element/functions/scroll_to_top.php:36
+#: templates/element/functions/scroll_to_top.php:37
 msgid "Scroll to top"
 msgstr "Scroll to top"
 
-#: templates/element/navbar.php:118
-msgid "Toggle navigation"
-msgstr "Toggle navigation"
-
-#: templates/element/navbar.php:155 templates/element/navbar.php:198
+#: templates/element/navbar.php:137 templates/element/navbar.php:187
+#: templates/element/navbar.php:237
 msgid "English"
 msgstr "English"
 
-#: templates/element/navbar.php:160 templates/element/navbar.php:203
+#: templates/element/navbar.php:142 templates/element/navbar.php:192
+#: templates/element/navbar.php:242
 msgid "Hungarian"
 msgstr "Hungarian"
 
-#: templates/element/users/stats.php:69
+#: templates/element/navbar.php:149
+msgid "Toggle navigation"
+msgstr "Toggle navigation"
+
+#: templates/element/navbar.php:219
+msgid "Favorites"
+msgstr "Favorites"
+
+#: templates/element/users/stats.php:72
 msgid "Avg: {0}"
 msgstr "Avg: {0}"
 
-#: templates/element/users/stats.php:72
+#: templates/element/users/stats.php:75
 msgid "Avg"
 msgstr "Avg"
 
-#: templates/element/users/stats.php:83
+#: templates/element/users/stats.php:77
+msgid "Last 7 days"
+msgstr "Last 7 days"
+
+#: templates/element/users/stats.php:80
+msgid "Last 7d"
+msgstr "Last 7d"
+
+#: templates/element/users/stats.php:92
 msgid "Recent Attempts"
 msgstr "Recent Attempts"
 
-#: templates/element/users/stats.php:90
+#: templates/element/users/stats.php:99
 msgid "No finished attempts yet."
 msgstr "No finished attempts yet."
 
@@ -3326,26 +4078,63 @@ msgstr "You requested a password reset for your MindForge account."
 msgid "Use the link below to set a new password:"
 msgstr "Use the link below to set a new password:"
 
-#: templates/layout/admin.php:46
+#: templates/layout/admin.php:48
 msgid "Skip to content"
 msgstr "Skip to content"
 
-#: templates/layout/admin.php:65
-msgid "Menu"
-msgstr "Menu"
+#~ msgid "Avatar must be an image."
+#~ msgstr "Avatar must be an image."
 
-#: templates/Error/error400.php:25
-msgid "The requested address {0} was not found on this server."
-msgstr "The requested address {0} was not found on this server."
+#~ msgid "Unsupported avatar image type."
+#~ msgstr "Unsupported avatar image type."
 
-#: templates/Error/error500.php:32
-#, fuzzy
-msgid "An Internal Error Has Occurred."
-msgstr "Unknown error occurred"
+#~ msgid "Failed to upload avatar."
+#~ msgstr "Failed to upload avatar."
 
-#, fuzzy
-#~ msgid "Uncategorized"
-#~ msgstr "Category ID"
+#~ msgid "Invalid image format. Allowed: JPG, PNG, GIF, WEBP"
+#~ msgstr "Invalid image format. Allowed: JPG, PNG, GIF, WEBP"
+
+#~ msgid "Összes bejelölése"
+#~ msgstr "Összes bejelölése"
+
+#~ msgid "A kijelöltekkel végzendő művelet:"
+#~ msgstr "A kijelöltekkel végzendő művelet:"
+
+#~ msgid "Search username/email…"
+#~ msgstr "Search username/email…"
+
+#~ msgid "Placeholder page (routing task A1-09)."
+#~ msgstr "Placeholder page (routing task A1-09)."
+
+#~ msgid "No credit card. No fluff. Start in under a minute."
+#~ msgstr "No credit card. No fluff. Start in under a minute."
+
+#~ msgid "Review and edit the question bank."
+#~ msgstr "Review and edit the question bank."
+
+#~ msgid "Manage category taxonomy for filtering."
+#~ msgstr "Manage category taxonomy for filtering."
+
+#~ msgid "Add Test"
+#~ msgstr "Add Role"
+
+#~ msgid "List Tests"
+#~ msgstr "List Roles"
+
+#~ msgid "Edit Test"
+#~ msgstr "Edit Role"
+
+#~ msgid "Navigation"
+#~ msgstr "Pagination"
+
+#~ msgid "Menu"
+#~ msgstr "Menu"
+
+#~ msgid "The requested address {0} was not found on this server."
+#~ msgstr "The requested address {0} was not found on this server."
+
+#~ msgid "An Internal Error Has Occurred."
+#~ msgstr "Unknown error occurred"
 
 #~ msgid "Best Per Quiz"
 #~ msgstr "Best Per Quiz"
@@ -3353,48 +4142,33 @@ msgstr "Unknown error occurred"
 #~ msgid "By Category"
 #~ msgstr "By Category"
 
-#~ msgid "Best Score"
-#~ msgstr "Best Score"
-
-#, fuzzy
 #~ msgid "Delete Answer"
 #~ msgstr "Delete User"
 
-#, fuzzy
 #~ msgid "Delete Category"
 #~ msgstr "Delete User"
 
-#, fuzzy
 #~ msgid "List Categories"
 #~ msgstr "List Roles"
 
-#, fuzzy
 #~ msgid "Related Questions"
 #~ msgstr "Related AI Requests"
 
-#~ msgid "Question Type"
-#~ msgstr "Question Type"
-
-#, fuzzy
 #~ msgid "Original Language Id"
 #~ msgstr "Language ID"
 
-#, fuzzy
 #~ msgid "Related Tests"
 #~ msgstr "Related Users"
 
 #~ msgid "Number Of Questions"
 #~ msgstr "Number Of Questions"
 
-#, fuzzy
 #~ msgid "Related User Favorite Categories"
 #~ msgstr "Related User Tokens"
 
-#, fuzzy
 #~ msgid "Delete Difficulty"
 #~ msgstr "Difficulty ID"
 
-#, fuzzy
 #~ msgid "List Difficulties"
 #~ msgstr "Difficulty ID"
 
@@ -3433,11 +4207,9 @@ msgstr "Unknown error occurred"
 #~ "MindForge combines structured testing with AI to help you focus on what "
 #~ "actually matters."
 
-#, fuzzy
 #~ msgid "List Questions"
 #~ msgstr "Total Questions"
 
-#, fuzzy
 #~ msgid "Delete Question"
 #~ msgstr "Total Questions"
 
@@ -3452,11 +4224,9 @@ msgstr "Unknown error occurred"
 #~ msgstr ""
 #~ "Role-based access, token auth for mobile, and audit-friendly system logs."
 
-#, fuzzy
 #~ msgid "Delete Test"
 #~ msgstr "Delete Role"
 
-#, fuzzy
 #~ msgid "Related User Favorite Tests"
 #~ msgstr "Related User Tokens"
 
@@ -3488,225 +4258,35 @@ msgstr "Unknown error occurred"
 #~ msgid "Please activate your account using the link below:"
 #~ msgstr "Please activate your account using the link below:"
 
-msgid "Optional source files for AI generation"
-msgstr "Optional source files for AI generation"
+#~ msgid "Question #{0}"
+#~ msgstr "Question #{0}"
 
-msgid "No files selected (optional)."
-msgstr "No files selected (optional)."
+msgid "Action required"
+msgstr "Action required"
 
-msgid "Choose files"
-msgstr "Choose files"
+msgid "Confirm delete"
+msgstr "Confirm delete"
 
-msgid "selected files"
-msgstr "selected files"
+msgid "Log out"
+msgstr "Log out"
 
-msgid "Optional. Upload PDFs, DOCX, or text-like files to help AI generate more accurate quiz content."
-msgstr "Optional. Upload PDFs, DOCX, or text-like files to help AI generate more accurate quiz content."
+msgid "Processing…"
+msgstr "Processing…"
 
-msgid "(no match)"
-msgstr "(no match)"
+msgid "Sending…"
+msgstr "Sending…"
 
-msgid "Abort attempt"
-msgstr "Abort attempt"
+msgid "Applying…"
+msgstr "Applying…"
 
-msgid "AI explanation limit reached for today. Please try again tomorrow."
-msgstr "AI explanation limit reached for today. Please try again tomorrow."
+msgid "Updating…"
+msgstr "Updating…"
 
-msgid "Answer record not found."
-msgstr "Answer record not found."
+msgid "Deleting…"
+msgstr "Deleting…"
 
-msgid "Are you sure you want to abort this attempt? Your current progress will be lost."
-msgstr "Are you sure you want to abort this attempt? Your current progress will be lost."
+msgid "Are you sure you want to log out?"
+msgstr "Are you sure you want to log out?"
 
-msgid "Attempt aborted."
-msgstr "Attempt aborted."
-
-msgid "Back to Tests"
-msgstr "Back to Tests"
-
-msgid "Build questions, translations, and publishing settings in one flow."
-msgstr "Build questions, translations, and publishing settings in one flow."
-
-msgid "Choose a match"
-msgstr "Choose a match"
-
-msgid "Could not abort this attempt. Please try again."
-msgstr "Could not abort this attempt. Please try again."
-
-msgid "Create Quiz"
-msgstr "Create Quiz"
-
-msgid "Describe the test you want to create (topic, difficulty, number of questions, etc.)"
-msgstr "Describe the test you want to create (topic, difficulty, number of questions, etc.)"
-
-msgid "Describe the test you want to create or update (topic, difficulty, number of questions, etc.)"
-msgstr "Describe the test you want to create or update (topic, difficulty, number of questions, etc.)"
-
-msgid "E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty."
-msgstr "E.g., Create a 10-question test about Ancient Rome history, focused on military battles, medium difficulty."
-
-msgid "Edit Quiz"
-msgstr "Edit Quiz"
-
-msgid "Explain with AI"
-msgstr "Explain with AI"
-
-msgid "Explanation is available after submission."
-msgstr "Explanation is available after submission."
-
-msgid "Generating..."
-msgstr "Generating..."
-
-msgid "Matching options are not configured for this question."
-msgstr "Matching options are not configured for this question."
-
-msgid "Matching pairs"
-msgstr "Matching pairs"
-
-msgid "No category found"
-msgstr "No category found"
-
-msgid "Please choose a category from the list."
-msgstr "Please choose a category from the list."
-
-msgid "Please log in to manage attempts."
-msgstr "Please log in to manage attempts."
-
-msgid "Please log in."
-msgstr "Please log in."
-
-msgid "Question #{0}"
-msgstr "Question #{0}"
-
-msgid "Question not found."
-msgstr "Question not found."
-
-msgid "Request failed:"
-msgstr "Request failed:"
-
-msgid "Start typing category..."
-msgstr "Start typing category..."
-
-msgid "This attempt is already finished and cannot be aborted."
-msgstr "This attempt is already finished and cannot be aborted."
-
-msgid "This will translate the current test content into all configured languages."
-msgstr "This will translate the current test content into all configured languages."
-
-msgid "Update quiz details, questions, and translations with consistent styling."
-msgstr "Update quiz details, questions, and translations with consistent styling."
-
-msgid "Useful when you want to understand why your answer was wrong/right."
-msgstr "Useful when you want to understand why your answer was wrong/right."
-
-msgid "You do not have access to quiz statistics."
-msgstr "You do not have access to quiz statistics."
-
-
-msgid "AI is generating your quiz..."
-msgstr "AI is generating your quiz..."
-
-msgid "The AI is composing questions, answers and translations. This may take up to 30 seconds."
-msgstr "The AI is composing questions, answers and translations. This may take up to 30 seconds."
-
-
-msgid "Review Flag"
-msgstr "Review Flag"
-
-msgid "Needs Review"
-msgstr "Needs Review"
-
-msgid "Reviewed"
-msgstr "Reviewed"
-
-msgid "Flag Review"
-msgstr "Flag Review"
-
-msgid "Clear Review"
-msgstr "Clear Review"
-
-msgid "Review"
-msgstr "Review"
-
-msgid "The question has been flagged for review."
-msgstr "The question has been flagged for review."
-
-msgid "The review flag has been cleared."
-msgstr "The review flag has been cleared."
-
-msgid "The review flag could not be changed. Please, try again."
-msgstr "The review flag could not be changed. Please, try again."
-
-msgid "Flagged {0} item(s) for review."
-msgstr "Flagged {0} item(s) for review."
-
-msgid "Cleared review flag for {0} item(s)."
-msgstr "Cleared review flag for {0} item(s)."
-
-
-msgid "Total tokens used"
-msgstr "Total tokens used"
-
-msgid "Estimated cost (USD)"
-msgstr "Estimated cost (USD)"
-
-msgid "Filter by user"
-msgstr "Filter by user"
-
-msgid "All users"
-msgstr "All users"
-
-msgid "Tokens"
-msgstr "Tokens"
-
-msgid "Cost (USD)"
-msgstr "Cost (USD)"
-
-msgid "Prompt: {0} / Completion: {1}"
-msgstr "Prompt: {0} / Completion: {1}"
-
-msgid "AI Usage"
-msgstr "AI Usage"
-
-msgid "Total requests"
-msgstr "Total requests"
-
-msgid "Successful"
-msgstr "Successful"
-
-msgid "Failed"
-msgstr "Failed"
-
-msgid "View my AI requests"
-msgstr "View my AI requests"
-
-
-msgid "Change avatar"
-msgstr "Change avatar"
-
-msgid "Adjust your avatar"
-msgstr "Adjust your avatar"
-
-msgid "Drag to reposition  Scroll or pinch to zoom"
-msgstr "Drag to reposition  Scroll or pinch to zoom"
-
-msgid "Zoom in"
-msgstr "Zoom in"
-
-msgid "Zoom out"
-msgstr "Zoom out"
-
-msgid "Rotate left"
-msgstr "Rotate left"
-
-msgid "Rotate right"
-msgstr "Rotate right"
-
-msgid "Reset"
-msgstr "Reset"
-
-msgid "Apply"
-msgstr "Apply"
-
-msgid "Avatar image is too large."
-msgstr "Avatar image is too large."
+msgid "Test #{0}"
+msgstr "Test #{0}"

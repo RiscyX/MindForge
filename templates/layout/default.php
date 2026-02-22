@@ -65,6 +65,7 @@ $isAuthPage = $request->getParam('controller') === 'Users'
 
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js') ?>
     <?= $this->Html->script('https://cdn.jsdelivr.net/npm/sweetalert2@11') ?>
+    <?= $this->element('js_translations') ?>
     <?= $this->Html->script('flash.js?v=1') ?>
     <?= $this->Html->script('logout_confirmation.js?v=3') ?>
     <?= $this->Html->script('history_back.js?v=1') ?>

@@ -58,12 +58,12 @@ if ($status === 'success') {
                     <div>
                         <?php if ($aiRequest->user !== null) : ?>
                             <?= $this->Html->link(
-                                h((string)($aiRequest->user->email ?? ('User #' . (string)$aiRequest->user_id))),
+                                h((string)($aiRequest->user->email ?? __('User #{0}', (string)$aiRequest->user_id))),
                                 ['prefix' => 'Admin', 'controller' => 'Users', 'action' => 'edit', $aiRequest->user->id, 'lang' => $lang],
                                 ['class' => 'link-light link-underline-opacity-0 link-underline-opacity-100-hover'],
                             ) ?>
                         <?php elseif ($aiRequest->user_id !== null) : ?>
-                            <span class="mf-muted"><?= h('User #' . (string)$aiRequest->user_id) ?></span>
+                            <span class="mf-muted"><?= h(__('User #{0}', (string)$aiRequest->user_id)) ?></span>
                         <?php else : ?>
                             <span class="mf-muted"><?= __('System') ?></span>
                         <?php endif; ?>

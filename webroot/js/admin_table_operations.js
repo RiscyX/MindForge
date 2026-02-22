@@ -35,16 +35,16 @@
 
         const paginationContainer = cfg.paginationContainerId ? document.getElementById(cfg.paginationContainerId) : null;
 
-        const isHu = (document.documentElement.lang || '').toLowerCase().startsWith('hu');
+        const t = (key) => (window.MF && window.MF.t) ? window.MF.t(key) : key;
 
         const strings = Object.assign({
-            selectAtLeastOne: isHu ? 'Jelolj ki legalabb egy elemet.' : 'Select at least one item.',
-            confirmDelete: isHu ? 'Biztosan torolni szeretned a kijelolt elemeket?' : 'Are you sure you want to delete the selected items?',
-            actionRequiredTitle: isHu ? 'Szukseges muvelet' : 'Action required',
-            confirmDeleteTitle: isHu ? 'Torles megerositese' : 'Confirm delete',
+            selectAtLeastOne: t('selectAtLeastOne'),
+            confirmDelete: t('confirmDelete'),
+            actionRequiredTitle: t('actionRequiredTitle'),
+            confirmDeleteTitle: t('confirmDeleteTitle'),
             ok: 'OK',
-            delete: isHu ? 'Torles' : 'Delete',
-            cancel: isHu ? 'Megse' : 'Cancel',
+            delete: t('delete'),
+            cancel: t('cancel'),
         }, cfg.strings || {});
 
         const bulkDeleteValues = Array.isArray(cfg.bulkDeleteValues) ? cfg.bulkDeleteValues : ['delete'];
@@ -172,12 +172,12 @@
 
                     const actionLabel = (el.textContent || '').trim();
                     const intent = detectActionIntent(el, actionLabel);
-                    const confirmLabel = intent === 'danger'
-                        ? strings.delete
-                        : (actionLabel || strings.ok);
-                    const iconClass = intent === 'danger'
-                        ? 'bi-trash3'
-                        : 'bi-check2';
+                    const isDelete = intent === 'danger' && (
+                        (el.value || '').toLowerCase().includes('delete') ||
+                        actionLabel.toLowerCase().includes('delete')
+                    );
+                    const confirmLabel = isDelete ? strings.delete : (actionLabel || strings.ok);
+                    const iconClass = detectActionIcon(actionLabel, el.value || '', intent);
 
                     const dialog = runSwal({
                         title: strings.actionRequiredTitle,
@@ -343,6 +343,7 @@
                 columnDefs.push({ searchable: false, targets: dtCfg.nonSearchableTargets });
             }
 
+            const isHu = (document.documentElement.lang || '').toLowerCase().startsWith('hu');
             const dtLang = isHu ? {
                 emptyTable: 'Nincs elérhető adat',
                 info: '_TOTAL_ bejegyzésből _START_ - _END_ megjelenítése',
