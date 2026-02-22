@@ -3135,9 +3135,7 @@ class TestsController extends AppController
                 continue;
             }
 
-            if (mb_strlen($text) > $remainingChars) {
-                $text = mb_substr($text, 0, $remainingChars);
-            }
+            $text = $this->chunkExtractedText($text, $remainingChars);
             $remainingChars -= mb_strlen($text);
 
             $clientName = trim((string)$file->getClientFilename());
@@ -3262,28 +3260,18 @@ class TestsController extends AppController
             return '';
         }
 
-        $chunks = [];
-        foreach (
-            [
-                'word/document.xml',
-                'word/header1.xml',
-                'word/header2.xml',
-                'word/footer1.xml',
-                'word/footer2.xml',
-            ] as $entry
-        ) {
-            $xml = $zip->getFromName($entry);
-            if (!is_string($xml) || $xml === '') {
-                continue;
-            }
-            $chunks[] = trim(html_entity_decode(strip_tags($xml)));
-        }
+        // Only extract body content — skip headers/footers to avoid noise.
+        $xml = $zip->getFromName('word/document.xml');
         $zip->close();
         if (is_file($tmpPath)) {
             unlink($tmpPath);
         }
 
-        return implode("\n", array_filter($chunks, static fn($v) => $v !== ''));
+        if (!is_string($xml) || $xml === '') {
+            return '';
+        }
+
+        return trim(html_entity_decode(strip_tags($xml)));
     }
 
     /**
@@ -3351,6 +3339,49 @@ class TestsController extends AppController
         }
 
         return is_string($output) ? $output : '';
+    }
+
+    /**
+     * Split extracted text into paragraph chunks and return as much as fits within $maxChars.
+     * Uses paragraph boundaries to avoid cutting mid-sentence.
+     *
+     * @param string $text
+     * @param int $maxChars
+     * @return string
+     */
+    private function chunkExtractedText(string $text, int $maxChars): string
+    {
+        if ($maxChars <= 0) {
+            return '';
+        }
+        if (mb_strlen($text) <= $maxChars) {
+            return $text;
+        }
+
+        $paragraphs = preg_split('/\n{2,}/', $text);
+        if (!is_array($paragraphs)) {
+            return mb_substr($text, 0, $maxChars);
+        }
+
+        $result = '';
+        foreach ($paragraphs as $paragraph) {
+            $paragraph = trim($paragraph);
+            if ($paragraph === '') {
+                continue;
+            }
+            $separator = $result !== '' ? "\n\n" : '';
+            if (mb_strlen($result) + mb_strlen($separator) + mb_strlen($paragraph) > $maxChars) {
+                break;
+            }
+            $result .= $separator . $paragraph;
+        }
+
+        // Fallback: if even the first paragraph exceeds limit, hard-cut it.
+        if ($result === '') {
+            $result = mb_substr($text, 0, $maxChars);
+        }
+
+        return $result;
     }
 
     /**
