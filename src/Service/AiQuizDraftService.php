@@ -8,6 +8,13 @@ use RuntimeException;
 
 class AiQuizDraftService
 {
+    // Maximum character lengths for AI-generated content (enforce before DB write)
+    public const MAX_TEST_TITLE_LENGTH = 255;
+    public const MAX_TEST_DESCRIPTION_LENGTH = 2000;
+    public const MAX_QUESTION_CONTENT_LENGTH = 1000;
+    public const MAX_ANSWER_CONTENT_LENGTH = 500;
+    public const MAX_EXPLANATION_LENGTH = 500;
+
     /**
      * @param mixed $draft
      * @return array{draft: array, testData: array}
@@ -34,9 +41,19 @@ class AiQuizDraftService
             }
             $lid = (int)$langId;
             $title = trim((string)($t['title'] ?? ''));
-            $description = (string)($t['description'] ?? '');
+            $description = trim((string)($t['description'] ?? ''));
             if ($lid <= 0 || $title === '') {
                 continue;
+            }
+            if (mb_strlen($title) > self::MAX_TEST_TITLE_LENGTH) {
+                throw new RuntimeException(sprintf(
+                    'Test title exceeds maximum length of %d characters (lang %d).',
+                    self::MAX_TEST_TITLE_LENGTH,
+                    $lid,
+                ));
+            }
+            if (mb_strlen($description) > self::MAX_TEST_DESCRIPTION_LENGTH) {
+                $description = mb_substr($description, 0, self::MAX_TEST_DESCRIPTION_LENGTH);
             }
             $testTranslations[] = [
                 'language_id' => $lid,
@@ -87,7 +104,7 @@ class AiQuizDraftService
                     $content = trim((string)($translationPayload['content'] ?? ''));
                     $rawExplanation = trim((string)($translationPayload['explanation'] ?? ''));
                     if ($rawExplanation !== '') {
-                        $explanation = mb_substr($rawExplanation, 0, 500);
+                        $explanation = mb_substr($rawExplanation, 0, self::MAX_EXPLANATION_LENGTH);
                     }
                 } else {
                     $content = trim((string)$translationPayload);
@@ -96,6 +113,13 @@ class AiQuizDraftService
                 $c = $content;
                 if ($c === '') {
                     continue;
+                }
+                if (mb_strlen($c) > self::MAX_QUESTION_CONTENT_LENGTH) {
+                    throw new RuntimeException(sprintf(
+                        'Question content exceeds maximum length of %d characters (lang %d).',
+                        self::MAX_QUESTION_CONTENT_LENGTH,
+                        (int)$langId,
+                    ));
                 }
                 $entry = [
                     'language_id' => (int)$langId,
@@ -153,6 +177,13 @@ class AiQuizDraftService
                     $c = trim((string)$content);
                     if ($c === '') {
                         continue;
+                    }
+                    if (mb_strlen($c) > self::MAX_ANSWER_CONTENT_LENGTH) {
+                        throw new RuntimeException(sprintf(
+                            'Answer content exceeds maximum length of %d characters (lang %d).',
+                            self::MAX_ANSWER_CONTENT_LENGTH,
+                            (int)$langId,
+                        ));
                     }
                     $answerTranslations[] = [
                         'language_id' => (int)$langId,
