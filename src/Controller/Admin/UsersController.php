@@ -184,7 +184,17 @@ class UsersController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
-            $data = $this->applyAvatarUpload($data);
+
+            // Extract cropped image bytes without writing to disk yet
+            [$data, $pendingBytes, $pendingFilename] = $this->extractCroppedImageData($data);
+
+            // For Path B (legacy file upload): write happens inside applyAvatarUpload
+            if ($pendingBytes === null) {
+                $data = $this->applyAvatarUpload($data);
+            } else {
+                // Path A: set avatar_url tentatively; file written only after save succeeds
+                $data['avatar_url'] = '/img/avatars/' . $pendingFilename;
+            }
 
             $user = $usersTable->patchEntity(
                 $user,
@@ -193,6 +203,15 @@ class UsersController extends AppController
             );
 
             if ($usersTable->save($user)) {
+                // Write the cropped image file only after the DB update was successful
+                if ($pendingBytes !== null && $pendingFilename !== null) {
+                    $dir = WWW_ROOT . 'img' . DS . 'avatars' . DS;
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0775, true);
+                    }
+                    file_put_contents($dir . $pendingFilename, $pendingBytes);
+                }
+
                 $this->Flash->success(__('Your profile has been updated.'));
 
                 return $this->redirect([
@@ -201,7 +220,15 @@ class UsersController extends AppController
                 ]);
             }
 
-            $this->Flash->error(__('Unable to update your profile. Please try again.'));
+            // Show the first validation error to help the user
+            $errors = $user->getErrors();
+            if ($errors) {
+                $firstField = (string)array_key_first($errors);
+                $firstMsg   = (string)reset($errors[$firstField]);
+                $this->Flash->error($firstField . ': ' . $firstMsg);
+            } else {
+                $this->Flash->error(__('Unable to update your profile. Please try again.'));
+            }
         }
 
         $this->set(compact('user', 'lang'));
@@ -489,8 +516,54 @@ class UsersController extends AppController
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      */
+    /**
+     * Extracts and validates a cropped base64 image from POST data WITHOUT writing to disk.
+     *
+     * Returns [modifiedData, imageBytes|null, proposedFilename|null].
+     * The caller must write the file only after a successful DB save.
+     *
+     * @param array<string, mixed> $data
+     * @return array{0: array<string, mixed>, 1: string|null, 2: string|null}
+     */
+    private function extractCroppedImageData(array $data): array
+    {
+        $croppedData = isset($data['avatar_cropped_data']) ? (string)$data['avatar_cropped_data'] : '';
+        unset($data['avatar_cropped_data']);
+        unset($data['avatar_file_raw']);
+
+        if ($croppedData === '' || !str_starts_with($croppedData, 'data:image/')) {
+            return [$data, null, null];
+        }
+
+        $commaPos = strpos($croppedData, ',');
+        if ($commaPos === false) {
+            return [$data, null, null];
+        }
+
+        $imageBytes = base64_decode(substr($croppedData, $commaPos + 1), true);
+        if ($imageBytes === false || strlen($imageBytes) < 100) {
+            return [$data, null, null];
+        }
+
+        $maxBytes = (int)Configure::read('Uploads.avatarMaxBytes', 3 * 1024 * 1024);
+        if (strlen($imageBytes) > $maxBytes) {
+            $this->Flash->error(__('Avatar image is too large.'));
+
+            return [$data, null, null];
+        }
+
+        $filename = bin2hex(random_bytes(16)) . '.jpg';
+
+        return [$data, $imageBytes, $filename];
+    }
+
     private function applyAvatarUpload(array $data): array
     {
+        // Path A (cropped) is handled separately via extractCroppedImageData().
+        // This method handles Path B only: legacy plain file upload.
+        unset($data['avatar_cropped_data'], $data['avatar_file_raw']);
+
+        // --- Path B: legacy plain file upload (fallback) ---
         if (!isset($data['avatar_file'])) {
             return $data;
         }

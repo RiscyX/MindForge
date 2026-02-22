@@ -3641,3 +3641,34 @@ msgstr "Sikertelen"
 
 msgid "View my AI requests"
 msgstr "AI kéréseim megtekintése"
+
+
+msgid "Change avatar"
+msgstr "Profilkép módosítása"
+
+msgid "Adjust your avatar"
+msgstr "Profilkép igazítása"
+
+msgid "Drag to reposition  Scroll or pinch to zoom"
+msgstr "Húzd a képet  Görgesd vagy csípd a nagyításhoz"
+
+msgid "Zoom in"
+msgstr "Nagyítás"
+
+msgid "Zoom out"
+msgstr "Kicsinyítés"
+
+msgid "Rotate left"
+msgstr "Forgatás balra"
+
+msgid "Rotate right"
+msgstr "Forgatás jobbra"
+
+msgid "Reset"
+msgstr "Visszaállítás"
+
+msgid "Apply"
+msgstr "Alkalmaz"
+
+msgid "Avatar image is too large."
+msgstr "A profilkép túl nagy."
