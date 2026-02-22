@@ -3679,3 +3679,34 @@ msgstr "Failed"
 
 msgid "View my AI requests"
 msgstr "View my AI requests"
+
+
+msgid "Change avatar"
+msgstr "Change avatar"
+
+msgid "Adjust your avatar"
+msgstr "Adjust your avatar"
+
+msgid "Drag to reposition  Scroll or pinch to zoom"
+msgstr "Drag to reposition  Scroll or pinch to zoom"
+
+msgid "Zoom in"
+msgstr "Zoom in"
+
+msgid "Zoom out"
+msgstr "Zoom out"
+
+msgid "Rotate left"
+msgstr "Rotate left"
+
+msgid "Rotate right"
+msgstr "Rotate right"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Avatar image is too large."
+msgstr "Avatar image is too large."

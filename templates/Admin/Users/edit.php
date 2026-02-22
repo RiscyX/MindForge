@@ -27,7 +27,7 @@ $deviceTypeLabels = [
         <?= $this->Form->create($user, ['type' => 'file', 'novalidate' => false]) ?>
 
         <?php
-            $avatarSrc = $user->avatar_url ?: '/img/avatars/stockpfp.jpg';
+            $avatarSrc = ltrim($user->avatar_url ?: '/img/avatars/stockpfp.jpg', '/');
         ?>
 
         <div class="row g-4">

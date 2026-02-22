@@ -8,7 +8,9 @@
 
 $this->assign('title', __('My Profile'));
 
-$avatarSrc = $user->avatar_url ?: '/img/avatars/stockpfp.jpg';
+// Prepend app base path so the URL is correct on any subdirectory install (e.g. /MindForge/)
+$_base     = (string)($this->request->getAttribute('base') ?? '');
+$avatarSrc = $_base . ($user->avatar_url ?: '/img/avatars/stockpfp.jpg');
 ?>
 
 <div class="mf-admin-form-center">
@@ -91,29 +93,94 @@ $avatarSrc = $user->avatar_url ?: '/img/avatars/stockpfp.jpg';
 
             <div class="col-12 col-md-6 d-flex flex-column align-items-center">
                 <div class="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-                    <?= $this->Html->image(
-                        $avatarSrc,
-                        [
-                            'alt' => __('Avatar'),
-                            'class' => 'rounded-circle border',
-                            'style' => 'width:160px;height:160px;object-fit:cover;',
-                        ],
-                    ) ?>
+                    <div class="position-relative d-inline-block" id="mfAvatarPreviewWrap">
+                        <img
+                            id="mfAvatarPreview"
+                            src="<?= h($avatarSrc) ?>"
+                            alt="<?= h(__('Avatar')) ?>"
+                            class="rounded-circle border"
+                            style="width:160px;height:160px;object-fit:cover;"
+                        />
+                        <button
+                            type="button"
+                            id="mfAvatarChangeBtn"
+                            class="position-absolute bottom-0 end-0 btn btn-sm btn-primary rounded-circle d-flex align-items-center justify-content-center"
+                            style="width:36px;height:36px;padding:0;"
+                            title="<?= h(__('Change avatar')) ?>"
+                        >
+                            <i class="bi bi-camera-fill" style="font-size:1rem;"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="w-100 mt-auto pt-3">
-                    <?= $this->Form->control('avatar_file', [
-                        'label' => __('Avatar'),
-                        'type' => 'file',
-                        'accept' => 'image/*',
-                        'class' => 'form-control mf-admin-input',
-                        'required' => false,
-                    ]) ?>
+                <!-- Hidden real file input -->
+                <input
+                    type="file"
+                    id="mfAvatarFileInput"
+                    name="avatar_file_raw"
+                    accept="image/*"
+                    class="d-none"
+                />
+                <!-- Cropped base64 result sent to server -->
+                <input type="hidden" name="avatar_cropped_data" id="mfAvatarCroppedData" />
+
+                <div class="w-100 mt-3 text-center">
+                    <button
+                        type="button"
+                        id="mfAvatarChangeBtnText"
+                        class="btn btn-outline-light btn-sm"
+                    ><?= __('Change avatar') ?></button>
+                    <div id="mfAvatarFilename" class="mf-muted mt-1" style="font-size:0.82rem;"></div>
                 </div>
             </div>
         </div>
 
         <?= $this->Form->end() ?>
+    </div>
+</div>
+
+<!-- Avatar Crop Modal -->
+<div class="modal fade" id="mfAvatarCropModal" tabindex="-1" aria-labelledby="mfAvatarCropModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="mfAvatarCropModalLabel">
+                    <i class="bi bi-crop me-2"></i><?= __('Adjust your avatar') ?>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="<?= h(__('Close')) ?>"></button>
+            </div>
+            <div class="modal-body p-3" style="background:#1a1a2e;">
+                <div style="max-height:400px;overflow:hidden;">
+                    <img id="mfCropperImage" src="" alt="" style="max-width:100%;display:block;" />
+                </div>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <button type="button" id="mfCropZoomIn" class="btn btn-sm btn-outline-light" title="<?= h(__('Zoom in')) ?>">
+                        <i class="bi bi-zoom-in"></i>
+                    </button>
+                    <button type="button" id="mfCropZoomOut" class="btn btn-sm btn-outline-light" title="<?= h(__('Zoom out')) ?>">
+                        <i class="bi bi-zoom-out"></i>
+                    </button>
+                    <button type="button" id="mfCropRotateL" class="btn btn-sm btn-outline-light" title="<?= h(__('Rotate left')) ?>">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                    <button type="button" id="mfCropRotateR" class="btn btn-sm btn-outline-light" title="<?= h(__('Rotate right')) ?>">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                    <button type="button" id="mfCropReset" class="btn btn-sm btn-outline-secondary" title="<?= h(__('Reset')) ?>">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                </div>
+                <p class="text-center mf-muted mt-2 mb-0" style="font-size:0.82rem;">
+                    <?= __('Drag to reposition · Scroll or pinch to zoom') ?>
+                </p>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= __('Cancel') ?></button>
+                <button type="button" id="mfCropConfirmBtn" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i><?= __('Apply') ?>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -172,3 +239,99 @@ $avatarSrc = $user->avatar_url ?: '/img/avatars/stockpfp.jpg';
     </div>
 </div>
 <?php endif; ?>
+
+<?php $this->start('script'); ?>
+<!-- Cropper.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    const fileInput     = document.getElementById('mfAvatarFileInput');
+    const changeBtn     = document.getElementById('mfAvatarChangeBtn');
+    const changeBtnText = document.getElementById('mfAvatarChangeBtnText');
+    const cropperImg    = document.getElementById('mfCropperImage');
+    const preview       = document.getElementById('mfAvatarPreview');
+    const croppedInput  = document.getElementById('mfAvatarCroppedData');
+    const filenameEl    = document.getElementById('mfAvatarFilename');
+    const confirmBtn    = document.getElementById('mfCropConfirmBtn');
+    const modalEl       = document.getElementById('mfAvatarCropModal');
+
+    if (!fileInput || !modalEl) return;
+
+    const bsModal = new bootstrap.Modal(modalEl);
+    let cropper = null;
+
+    function openFilePicker() { fileInput.value = ''; fileInput.click(); }
+    changeBtn?.addEventListener('click', openFilePicker);
+    changeBtnText?.addEventListener('click', openFilePicker);
+
+    fileInput.addEventListener('change', function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            cropperImg.src = e.target.result;
+
+            // Destroy previous instance
+            if (cropper) { cropper.destroy(); cropper = null; }
+
+            bsModal.show();
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Init Cropper after modal is fully shown (avoids zero-size canvas)
+    modalEl.addEventListener('shown.bs.modal', function () {
+        cropper = new Cropper(cropperImg, {
+            aspectRatio: 1,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 0.85,
+            restore: false,
+            guides: false,
+            center: false,
+            highlight: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            toggleDragModeOnDblclick: false,
+        });
+    });
+
+    // Destroy cleanly when modal closes without saving
+    modalEl.addEventListener('hidden.bs.modal', function () {
+        if (cropper) { cropper.destroy(); cropper = null; }
+    });
+
+    // Toolbar buttons
+    document.getElementById('mfCropZoomIn')?.addEventListener('click',  () => cropper?.zoom(0.1));
+    document.getElementById('mfCropZoomOut')?.addEventListener('click', () => cropper?.zoom(-0.1));
+    document.getElementById('mfCropRotateL')?.addEventListener('click', () => cropper?.rotate(-90));
+    document.getElementById('mfCropRotateR')?.addEventListener('click', () => cropper?.rotate(90));
+    document.getElementById('mfCropReset')?.addEventListener('click',   () => cropper?.reset());
+
+    // Confirm crop
+    confirmBtn?.addEventListener('click', function () {
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas({ width: 400, height: 400, imageSmoothingQuality: 'high' });
+        if (!canvas) return;
+
+        canvas.toBlob(function (blob) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                croppedInput.value = e.target.result;
+                preview.src = e.target.result;
+                if (fileInput.files && fileInput.files[0]) {
+                    filenameEl.textContent = fileInput.files[0].name;
+                }
+                bsModal.hide();
+            };
+            reader.readAsDataURL(blob);
+        }, 'image/jpeg', 0.92);
+    });
+}());
+</script>
+<?php $this->end(); ?>
