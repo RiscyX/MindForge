@@ -3642,3 +3642,40 @@ msgstr "Flagged {0} item(s) for review."
 
 msgid "Cleared review flag for {0} item(s)."
 msgstr "Cleared review flag for {0} item(s)."
+
+
+msgid "Total tokens used"
+msgstr "Total tokens used"
+
+msgid "Estimated cost (USD)"
+msgstr "Estimated cost (USD)"
+
+msgid "Filter by user"
+msgstr "Filter by user"
+
+msgid "All users"
+msgstr "All users"
+
+msgid "Tokens"
+msgstr "Tokens"
+
+msgid "Cost (USD)"
+msgstr "Cost (USD)"
+
+msgid "Prompt: {0} / Completion: {1}"
+msgstr "Prompt: {0} / Completion: {1}"
+
+msgid "AI Usage"
+msgstr "AI Usage"
+
+msgid "Total requests"
+msgstr "Total requests"
+
+msgid "Successful"
+msgstr "Successful"
+
+msgid "Failed"
+msgstr "Failed"
+
+msgid "View my AI requests"
+msgstr "View my AI requests"

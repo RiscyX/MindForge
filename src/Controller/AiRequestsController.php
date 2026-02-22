@@ -37,6 +37,8 @@ class AiRequestsController extends AppController
             return $redirect;
         }
 
+        $filterUserId = (int)$this->request->getQuery('user_id', 0);
+
         $hasTestId = $this->AiRequests->getSchema()->hasColumn('test_id');
 
         $contain = ['Users', 'Languages'];
@@ -47,6 +49,10 @@ class AiRequestsController extends AppController
         $query = $this->AiRequests->find()
             ->contain($contain)
             ->orderByDesc('AiRequests.created_at');
+
+        if ($filterUserId > 0) {
+            $query->where(['AiRequests.user_id' => $filterUserId]);
+        }
 
         $aiRequests = $query->all();
 
@@ -98,6 +104,31 @@ class AiRequestsController extends AppController
             ->all()
             ->toList();
 
+        $totalTokensRow = $this->AiRequests->find()
+            ->select(['s' => $this->AiRequests->find()->func()->sum('AiRequests.total_tokens')])
+            ->enableHydration(false)
+            ->first();
+        $statsTotalTokens = $totalTokensRow ? (int)($totalTokensRow['s'] ?? 0) : 0;
+
+        $totalCostRow = $this->AiRequests->find()
+            ->select(['s' => $this->AiRequests->find()->func()->sum('AiRequests.cost_usd')])
+            ->enableHydration(false)
+            ->first();
+        $statsTotalCostUsd = $totalCostRow ? round((float)($totalCostRow['s'] ?? 0), 6) : 0.0;
+
+        // User options for the filter dropdown (users who have at least one ai_request)
+        $userOptions = $this->AiRequests->Users->find('list', [
+            'keyField' => 'id',
+            'valueField' => 'email',
+        ])
+            ->innerJoin(
+                ['AR' => 'ai_requests'],
+                ['AR.user_id = Users.id'],
+            )
+            ->distinct(['Users.id'])
+            ->orderByAsc('Users.email')
+            ->toArray();
+
         $stats = [
             'total' => $statsTotal,
             'last24h' => $statsLast24h,
@@ -106,9 +137,11 @@ class AiRequestsController extends AppController
             'uniqueUsers24h' => $statsUniqueUsers24h,
             'topTypes24h' => $topTypes24h,
             'topSources24h' => $topSources24h,
+            'totalTokens' => $statsTotalTokens,
+            'totalCostUsd' => $statsTotalCostUsd,
         ];
 
-        $this->set(compact('aiRequests', 'stats'));
+        $this->set(compact('aiRequests', 'stats', 'filterUserId', 'userOptions'));
     }
 
     /**

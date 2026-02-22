@@ -206,6 +206,35 @@ class UsersController extends AppController
 
         $this->set(compact('user', 'lang'));
 
+        // AI usage stats for the profile page (admin / quiz_creator roles only)
+        $roleName = strtolower((string)($user->role->name ?? ''));
+        $aiStats = null;
+        if (in_array($roleName, ['admin', 'quiz_creator', 'quiz-creator', 'creator'], true)) {
+            $aiRequestsTable = $this->fetchTable('AiRequests');
+            $total = (int)$aiRequestsTable->find()->where(['user_id' => $user->id])->count();
+            $success = (int)$aiRequestsTable->find()->where(['user_id' => $user->id, 'status' => 'success'])->count();
+            $tokensRow = $aiRequestsTable->find()
+                ->select(['s' => $aiRequestsTable->find()->func()->sum('total_tokens')])
+                ->where(['user_id' => $user->id])
+                ->enableHydration(false)
+                ->first();
+            $costRow = $aiRequestsTable->find()
+                ->select(['s' => $aiRequestsTable->find()->func()->sum('cost_usd')])
+                ->where(['user_id' => $user->id])
+                ->enableHydration(false)
+                ->first();
+
+            $aiStats = [
+                'total' => $total,
+                'success' => $success,
+                'failed' => $total - $success,
+                'totalTokens' => (int)($tokensRow['s'] ?? 0),
+                'totalCostUsd' => round((float)($costRow['s'] ?? 0), 6),
+            ];
+        }
+
+        $this->set(compact('aiStats'));
+
         return null;
     }
 

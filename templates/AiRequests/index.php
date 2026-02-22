@@ -3,9 +3,13 @@
  * @var \App\View\AppView $this
  * @var iterable<\App\Model\Entity\AiRequest> $aiRequests
  * @var array $stats
+ * @var int $filterUserId
+ * @var array<int, string> $userOptions
  */
 
 $lang = $this->request->getParam('lang', 'en');
+$filterUserId = (int)($filterUserId ?? 0);
+$userOptions = is_array($userOptions ?? null) ? $userOptions : [];
 
 $this->assign('title', __('AI Requests'));
 
@@ -65,6 +69,27 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
         </div>
     </div>
 
+    <div class="row g-3 mt-1">
+        <div class="col-6 col-md-6 col-xl-3">
+            <div class="mf-admin-card mf-kpi-card p-3 h-100">
+                <i class="bi bi-database mf-kpi-card__icon" aria-hidden="true"></i>
+                <div class="mf-kpi-card__body">
+                    <div class="mf-kpi-card__label"><?= __('Total tokens used') ?></div>
+                    <div class="mf-kpi-card__value"><?= $this->Number->format((int)($stats['totalTokens'] ?? 0)) ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-6 col-xl-3">
+            <div class="mf-admin-card mf-kpi-card p-3 h-100">
+                <i class="bi bi-currency-dollar mf-kpi-card__icon" aria-hidden="true"></i>
+                <div class="mf-kpi-card__body">
+                    <div class="mf-kpi-card__label"><?= __('Estimated cost (USD)') ?></div>
+                    <div class="mf-kpi-card__value">$<?= number_format((float)($stats['totalCostUsd'] ?? 0), 4) ?></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php if ($topTypes24h || $topSources24h) : ?>
         <div class="row g-3 mt-1">
             <div class="col-12 col-xl-6">
@@ -106,6 +131,27 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
         </div>
     <?php endif; ?>
 
+    <div class="mf-admin-card p-3 mt-3">
+        <?= $this->Form->create(null, ['type' => 'get', 'class' => 'row g-2 align-items-end']) ?>
+            <div class="col-12 col-md-4 col-lg-3">
+                <?= $this->Form->control('user_id', [
+                    'label' => __('Filter by user'),
+                    'type' => 'select',
+                    'empty' => __('All users'),
+                    'options' => $userOptions,
+                    'value' => $filterUserId ?: '',
+                    'class' => 'form-select',
+                ]) ?>
+            </div>
+            <div class="col-auto">
+                <?= $this->Form->button(__('Apply'), ['class' => 'btn btn-primary']) ?>
+            </div>
+            <div class="col-auto">
+                <?= $this->Html->link(__('Reset'), ['action' => 'index', 'lang' => $lang], ['class' => 'btn btn-outline-light']) ?>
+            </div>
+        <?= $this->Form->end() ?>
+    </div>
+
     <?= $this->element('functions/admin_list_controls', [
         'search' => [
             'id' => 'mfAiRequestsSearch',
@@ -146,6 +192,8 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
                         <th scope="col" class="mf-muted fs-6"><?= __('Source') ?></th>
                         <th scope="col" class="mf-muted fs-6"><?= __('Ref') ?></th>
                         <th scope="col" class="mf-muted fs-6"><?= __('Payload') ?></th>
+                        <th scope="col" class="mf-muted fs-6"><?= __('Tokens') ?></th>
+                        <th scope="col" class="mf-muted fs-6"><?= __('Cost (USD)') ?></th>
                         <th scope="col" class="mf-muted fs-6"><?= __('Actions') ?></th>
                     </tr>
                 </thead>
@@ -212,6 +260,27 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
                             </td>
                             <td class="mf-muted" data-order="<?= h((string)($inputLen + $outputLen)) ?>">
                                 <?= __('in {0} / out {1}', $this->Number->format($inputLen), $this->Number->format($outputLen)) ?>
+                            </td>
+                            <td class="mf-muted" data-order="<?= h((string)($aiRequest->total_tokens ?? 0)) ?>">
+                                <?php
+                                    $totalTok = $aiRequest->total_tokens !== null ? (int)$aiRequest->total_tokens : null;
+                                    $promptTok = $aiRequest->prompt_tokens !== null ? (int)$aiRequest->prompt_tokens : null;
+                                    $completionTok = $aiRequest->completion_tokens !== null ? (int)$aiRequest->completion_tokens : null;
+                                ?>
+                                <?php if ($totalTok !== null) : ?>
+                                    <span title="<?= h(__('Prompt: {0} / Completion: {1}', $promptTok ?? '—', $completionTok ?? '—')) ?>">
+                                        <?= $this->Number->format($totalTok) ?>
+                                    </span>
+                                <?php else : ?>
+                                    <span class="mf-muted">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="mf-muted" data-order="<?= h($aiRequest->cost_usd !== null ? (string)$aiRequest->cost_usd : '0') ?>">
+                                <?php if ($aiRequest->cost_usd !== null) : ?>
+                                    $<?= number_format((float)$aiRequest->cost_usd, 6) ?>
+                                <?php else : ?>
+                                    <span class="mf-muted">—</span>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
@@ -306,7 +375,7 @@ $topSources24h = (array)($stats['topSources24h'] ?? []);
             'vanilla' => [
                 'defaultSortCol' => 1,
                 'defaultSortDir' => 'desc',
-                'excludedSortCols' => [0, 9],
+                'excludedSortCols' => [0, 11],
                 'searchCols' => [1, 2, 3, 4, 5, 6, 7, 8],
             ],
         ],

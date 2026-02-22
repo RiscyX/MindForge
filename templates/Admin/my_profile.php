@@ -3,6 +3,7 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\User $user
  * @var string $lang
+ * @var array<string, mixed>|null $aiStats
  */
 
 $this->assign('title', __('My Profile'));
@@ -115,3 +116,59 @@ $avatarSrc = $user->avatar_url ?: '/img/avatars/stockpfp.jpg';
         <?= $this->Form->end() ?>
     </div>
 </div>
+
+<?php if ($aiStats !== null) : ?>
+<div class="mf-admin-form-center mt-4">
+    <div class="mf-admin-card p-4 w-100" style="max-width: 720px;">
+        <h2 class="h5 mb-3">
+            <i class="bi bi-cpu me-2 text-primary" aria-hidden="true"></i>
+            <?= __('AI Usage') ?>
+        </h2>
+        <div class="row g-3">
+            <div class="col-6 col-sm-4">
+                <div class="mf-admin-card p-3 h-100 text-center">
+                    <div class="mf-muted" style="font-size:0.8rem;"><?= __('Total requests') ?></div>
+                    <div class="fw-bold fs-5 text-white"><?= $this->Number->format((int)($aiStats['total'] ?? 0)) ?></div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4">
+                <div class="mf-admin-card p-3 h-100 text-center">
+                    <div class="mf-muted" style="font-size:0.8rem;"><?= __('Successful') ?></div>
+                    <div class="fw-bold fs-5 text-success"><?= $this->Number->format((int)($aiStats['success'] ?? 0)) ?></div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4">
+                <div class="mf-admin-card p-3 h-100 text-center">
+                    <div class="mf-muted" style="font-size:0.8rem;"><?= __('Failed') ?></div>
+                    <div class="fw-bold fs-5 text-warning"><?= $this->Number->format((int)($aiStats['failed'] ?? 0)) ?></div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-6">
+                <div class="mf-admin-card p-3 h-100 text-center">
+                    <div class="mf-muted" style="font-size:0.8rem;"><?= __('Total tokens used') ?></div>
+                    <div class="fw-bold fs-5 text-white"><?= $this->Number->format((int)($aiStats['totalTokens'] ?? 0)) ?></div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-6">
+                <div class="mf-admin-card p-3 h-100 text-center">
+                    <div class="mf-muted" style="font-size:0.8rem;"><?= __('Estimated cost (USD)') ?></div>
+                    <div class="fw-bold fs-5 text-white">$<?= number_format((float)($aiStats['totalCostUsd'] ?? 0), 4) ?></div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <?= $this->Html->link(
+                '<i class="bi bi-arrow-right me-1" aria-hidden="true"></i>' . __('View my AI requests'),
+                [
+                    'prefix' => false,
+                    'controller' => 'AiRequests',
+                    'action' => 'index',
+                    'lang' => $lang,
+                    '?' => ['user_id' => $user->id],
+                ],
+                ['class' => 'btn btn-outline-primary btn-sm', 'escape' => false],
+            ) ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

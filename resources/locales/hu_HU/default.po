@@ -3604,3 +3604,40 @@ msgstr "{0} elem felülvizsgálatra jelölve."
 
 msgid "Cleared review flag for {0} item(s)."
 msgstr "{0} elem felülvizsgálati jelölése törölve."
+
+
+msgid "Total tokens used"
+msgstr "Összes felhasznált token"
+
+msgid "Estimated cost (USD)"
+msgstr "Becsült költség (USD)"
+
+msgid "Filter by user"
+msgstr "Szűrés felhasználóra"
+
+msgid "All users"
+msgstr "Minden felhasználó"
+
+msgid "Tokens"
+msgstr "Tokenek"
+
+msgid "Cost (USD)"
+msgstr "Költség (USD)"
+
+msgid "Prompt: {0} / Completion: {1}"
+msgstr "Prompt: {0} / Válasz: {1}"
+
+msgid "AI Usage"
+msgstr "AI Használat"
+
+msgid "Total requests"
+msgstr "Összes kérés"
+
+msgid "Successful"
+msgstr "Sikeres"
+
+msgid "Failed"
+msgstr "Sikertelen"
+
+msgid "View my AI requests"
+msgstr "AI kéréseim megtekintése"
