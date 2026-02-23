@@ -61,3 +61,7 @@ yarn-error.log
 # Uploaded/generated assets
 webroot/img/avatars/*
 !webroot/img/avatars/stockpfp.jpg
+
+# Local documentation generator and output
+/generate_docs.php
+/MindForge_dokumentacio_2026.docx

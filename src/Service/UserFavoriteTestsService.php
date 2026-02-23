@@ -11,6 +11,9 @@ class UserFavoriteTestsService
 {
     use LocatorAwareTrait;
 
+    /** Maximum number of favorite tests allowed per user. */
+    public const MAX_FAVORITES = 10;
+
     /**
      * @param int $userId
      * @param int $testId
@@ -47,6 +50,13 @@ class UserFavoriteTestsService
                 'is_favorited' => true,
                 'already_favorited' => true,
             ];
+        }
+
+        $currentCount = $favoriteTests->find()
+            ->where(['UserFavoriteTests.user_id' => $userId])
+            ->count();
+        if ($currentCount >= self::MAX_FAVORITES) {
+            throw new RuntimeException('FAVORITES_LIMIT_REACHED');
         }
 
         $entity = $favoriteTests->newEntity([
