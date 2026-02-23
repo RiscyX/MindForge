@@ -595,6 +595,111 @@ class TestsController extends AppController
      * @param string|null $id Test id.
      * @return void
      */
+    #[OA\Get(
+        path: '/api/v1/tests/{id}/edit-detail',
+        summary: 'Get full test data for editing (creator/admin only)',
+        tags: ['Tests'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                description: 'ID of the test to load for editing',
+                required: true,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Full test data including all translations, questions, and answers',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'test',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer'),
+                                new OA\Property(property: 'is_public', type: 'boolean'),
+                                new OA\Property(property: 'category_id', type: 'integer', nullable: true),
+                                new OA\Property(property: 'difficulty_id', type: 'integer', nullable: true),
+                                new OA\Property(property: 'created_by', type: 'integer'),
+                                new OA\Property(
+                                    property: 'test_translations',
+                                    type: 'object',
+                                    description: 'Keyed by language_id (1=HU, 2=EN)',
+                                    example: [
+                                        '1' => ['title' => 'Cím', 'description' => null],
+                                        '2' => ['title' => 'Title', 'description' => null],
+                                    ],
+                                ),
+                                new OA\Property(
+                                    property: 'questions',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'id', type: 'integer'),
+                                            new OA\Property(
+                                                property: 'question_type',
+                                                type: 'string',
+                                                example: 'multiple_choice',
+                                            ),
+                                            new OA\Property(property: 'position', type: 'integer'),
+                                            new OA\Property(property: 'is_active', type: 'boolean'),
+                                            new OA\Property(property: 'source_type', type: 'string', example: 'human'),
+                                            new OA\Property(
+                                                property: 'question_translations',
+                                                type: 'object',
+                                                description: 'Keyed by language_id',
+                                                example: [
+                                                    '1' => ['content' => 'Kérdés?', 'explanation' => null],
+                                                    '2' => ['content' => 'Question?', 'explanation' => null],
+                                                ],
+                                            ),
+                                            new OA\Property(
+                                                property: 'answers',
+                                                type: 'array',
+                                                items: new OA\Items(
+                                                    properties: [
+                                                        new OA\Property(property: 'id', type: 'integer'),
+                                                        new OA\Property(property: 'is_correct', type: 'boolean'),
+                                                        new OA\Property(property: 'position', type: 'integer'),
+                                                        new OA\Property(
+                                                            property: 'match_side',
+                                                            type: 'string',
+                                                            nullable: true,
+                                                            example: 'left',
+                                                        ),
+                                                        new OA\Property(
+                                                            property: 'match_group',
+                                                            type: 'integer',
+                                                            nullable: true,
+                                                            example: 1,
+                                                        ),
+                                                        new OA\Property(
+                                                            property: 'answer_translations',
+                                                            type: 'object',
+                                                            description: 'Keyed by language_id',
+                                                            example: [
+                                                                '1' => ['content' => 'Válasz'],
+                                                                '2' => ['content' => 'Answer'],
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden – not owner or insufficient role'),
+            new OA\Response(response: 404, description: 'Test not found'),
+        ],
+    )]
     public function viewForEdit(?string $id = null): void
     {
         $this->request->allowMethod(['get']);
