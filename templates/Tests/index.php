@@ -44,10 +44,10 @@ $this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
 $this->Html->css('tests_catalog.css?v=5', ['block' => 'css']);
 
 if (!$this->request->getParam('prefix')) {
-    $this->Html->css('https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css', ['block' => 'css']);
-    $this->Html->script('https://code.jquery.com/jquery-3.7.1.min.js', ['block' => 'script']);
-    $this->Html->script('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', ['block' => 'script']);
-    $this->Html->script('https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js', ['block' => 'script']);
+    $this->Html->css('vendor/datatables/dataTables.bootstrap5.min.css', ['block' => 'css']);
+    $this->Html->script('vendor/jquery/jquery-3.7.1.min.js', ['block' => 'script']);
+    $this->Html->script('vendor/datatables/jquery.dataTables.min.js', ['block' => 'script']);
+    $this->Html->script('vendor/datatables/dataTables.bootstrap5.min.js', ['block' => 'script']);
 }
 ?>
 

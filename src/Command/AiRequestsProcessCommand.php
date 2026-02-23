@@ -8,6 +8,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\I18n\DateTime;
 use Throwable;
 
 class AiRequestsProcessCommand extends Command
@@ -62,6 +63,9 @@ class AiRequestsProcessCommand extends Command
                 );
             } catch (Throwable $e) {
                 $io->err('Failed request #' . (int)$req->id . ': ' . $e->getMessage());
+                if ($this->shouldRetryRateLimit($e->getMessage())) {
+                    $this->requeueWithBackoff((int)$req->id, $io);
+                }
             }
         }
 
@@ -84,5 +88,71 @@ class AiRequestsProcessCommand extends Command
         ]);
 
         return $parser;
+    }
+
+    /**
+     * Determines if a failed request should be retried based on rate limit error message.
+     *
+     * @param string $message The error message to check.
+     * @return bool True if the request should be retried.
+     */
+    private function shouldRetryRateLimit(string $message): bool
+    {
+        return str_contains($message, '429')
+            || str_contains(strtolower($message), 'rate limit');
+    }
+
+    /**
+     * Re-queues a rate-limited request with exponential backoff.
+     *
+     * @param int $requestId The ID of the AI request to requeue.
+     * @param \Cake\Console\ConsoleIo $io The console IO instance.
+     * @return void
+     */
+    private function requeueWithBackoff(int $requestId, ConsoleIo $io): void
+    {
+        $aiRequests = $this->fetchTable('AiRequests');
+        $request = $aiRequests->find()->where(['id' => $requestId])->first();
+        if ($request === null) {
+            return;
+        }
+
+        $meta = [];
+        if (is_string($request->meta) && $request->meta !== '') {
+            $decoded = json_decode($request->meta, true);
+            if (is_array($decoded)) {
+                $meta = $decoded;
+            }
+        }
+
+        $retryCount = (int)($meta['retry_count'] ?? 0) + 1;
+        if ($retryCount > 3) {
+            $io->warning('Request #' . $requestId . ' reached retry limit after rate limiting.');
+
+            return;
+        }
+
+        $meta['retry_count'] = $retryCount;
+        $meta['last_retry_reason'] = 'rate_limited';
+        $meta['last_retry_at'] = DateTime::now()->format('c');
+
+        $request->status = 'pending';
+        $request->started_at = null;
+        $request->finished_at = null;
+        $request->error_code = null;
+        $request->error_message = null;
+        $request->meta = json_encode($meta, JSON_UNESCAPED_SLASHES);
+        $request->updated_at = DateTime::now();
+        $aiRequests->save($request, ['validate' => false]);
+
+        $sleepSeconds = min(20, 3 * $retryCount);
+        $msg = sprintf(
+            'Re-queued request #%d after rate limit (retry %d/3). Sleeping %ds.',
+            $requestId,
+            $retryCount,
+            $sleepSeconds,
+        );
+        $io->warning($msg);
+        sleep($sleepSeconds);
     }
 }
