@@ -585,4 +585,55 @@ class TestsController extends AppController
 
         $this->jsonSuccess(['test' => $testResult]);
     }
+
+    /**
+     * Load full test data for the edit screen (creator/admin only).
+     *
+     * Returns all translations for all languages, is_public flag, and
+     * full question/answer data including is_correct and match fields.
+     *
+     * @param string|null $id Test id.
+     * @return void
+     */
+    public function viewForEdit(?string $id = null): void
+    {
+        $this->request->allowMethod(['get']);
+
+        // 1. Authentication
+        $apiUser = $this->request->getAttribute('apiUser');
+        if ($apiUser === null) {
+            $this->jsonError(401, 'TOKEN_INVALID', 'Access token is required.');
+
+            return;
+        }
+
+        // 2. Role check
+        $roleId = (int)$apiUser->role_id;
+        if (!in_array($roleId, [Role::ADMIN, Role::CREATOR], true)) {
+            $this->jsonError(403, 'FORBIDDEN', 'You do not have permission to view test edit data.');
+
+            return;
+        }
+
+        // 3. Load test with full nested data
+        $testPersistence = new TestPersistenceService();
+        try {
+            $test = $testPersistence->loadForEdit((int)$id);
+        } catch (RecordNotFoundException) {
+            $this->jsonError(404, 'TEST_NOT_FOUND', 'Test not found.');
+
+            return;
+        }
+
+        // 4. Ownership check for CREATORs
+        if ($roleId === Role::CREATOR && (int)$test->created_by !== (int)$apiUser->id) {
+            $this->jsonError(403, 'FORBIDDEN', 'You do not have permission to edit this test.');
+
+            return;
+        }
+
+        // 5. Serialize
+        $testService = new ApiTestService();
+        $this->jsonSuccess(['test' => $testService->serializeTestForEdit($test)]);
+    }
 }

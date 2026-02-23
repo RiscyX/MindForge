@@ -119,6 +119,105 @@ class ApiTestService
     }
 
     /**
+     * Serialize a test entity with ALL translations and full question/answer data
+     * for the creator/admin edit screen.
+     *
+     * Unlike serializeTestDetail, this:
+     * - Returns is_public and created_by
+     * - Returns all language translations (not just one)
+     * - Returns is_correct, match_side, match_group on answers
+     *
+     * @param \Cake\Datasource\EntityInterface $test
+     * @return array<string, mixed>
+     */
+    public function serializeTestForEdit(object $test): array
+    {
+        // Build test_translations keyed by language_id
+        $testTranslations = [];
+        if (!empty($test->test_translations)) {
+            foreach ($test->test_translations as $tt) {
+                $testTranslations[] = [
+                    'id' => $tt->id ?? null,
+                    'language_id' => $tt->language_id,
+                    'title' => $tt->title ?? '',
+                    'description' => $tt->description ?? '',
+                ];
+            }
+        }
+
+        $questions = [];
+        if (!empty($test->questions)) {
+            foreach ($test->questions as $question) {
+                // All question translations
+                $questionTranslations = [];
+                if (!empty($question->question_translations)) {
+                    foreach ($question->question_translations as $qt) {
+                        $questionTranslations[] = [
+                            'id' => $qt->id ?? null,
+                            'language_id' => $qt->language_id,
+                            'content' => $qt->content ?? '',
+                            'explanation' => $qt->explanation ?? null,
+                        ];
+                    }
+                }
+
+                // All answers with full data
+                $answers = [];
+                if (!empty($question->answers)) {
+                    foreach ($question->answers as $answer) {
+                        $answerTranslations = [];
+                        if (!empty($answer->answer_translations)) {
+                            foreach ($answer->answer_translations as $at) {
+                                $answerTranslations[] = [
+                                    'id' => $at->id ?? null,
+                                    'language_id' => $at->language_id,
+                                    'content' => $at->content ?? '',
+                                ];
+                            }
+                        }
+
+                        $answerRow = [
+                            'id' => $answer->id,
+                            'is_correct' => (bool)$answer->is_correct,
+                            'position' => $answer->position,
+                            'answer_translations' => $answerTranslations,
+                        ];
+
+                        $matchSide = trim((string)($answer->match_side ?? ''));
+                        if ($matchSide !== '') {
+                            $answerRow['match_side'] = $matchSide;
+                            $answerRow['match_group'] = $answer->match_group;
+                        }
+
+                        $answers[] = $answerRow;
+                    }
+                }
+
+                $questions[] = [
+                    'id' => $question->id,
+                    'question_type' => $question->question_type,
+                    'position' => $question->position,
+                    'is_active' => (bool)$question->is_active,
+                    'source_type' => $question->source_type,
+                    'question_translations' => $questionTranslations,
+                    'answers' => $answers,
+                ];
+            }
+        }
+
+        return [
+            'id' => $test->id,
+            'category_id' => $test->category_id,
+            'difficulty_id' => $test->difficulty_id,
+            'is_public' => (bool)$test->is_public,
+            'created_by' => $test->created_by,
+            'number_of_questions' => $test->number_of_questions,
+            'test_translations' => $testTranslations,
+            'questions' => $questions,
+        ];
+    }
+
+    /**
      * Serialize a test entity with questions and answers into an API-friendly array.
      *
      * @param \Cake\Datasource\EntityInterface $test
