@@ -10,11 +10,76 @@ use App\Service\AttemptReviewService;
 use App\Service\AttemptSubmissionService;
 use App\Service\AttemptViewPayloadService;
 use App\Service\LanguageResolverService;
+use App\Service\OfflineAttemptSyncService;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(name: 'Attempts', description: 'Quiz attempt endpoints')]
 class AttemptsController extends AppController
 {
+    /**
+     * Sync offline-completed attempts from mobile queue.
+     *
+     * @return void
+     */
+    #[OA\Post(
+        path: '/api/v1/me/attempts/offline-sync',
+        summary: 'Sync offline attempt results',
+        tags: ['Attempts'],
+        security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'items',
+                        type: 'array',
+                        items: new OA\Items(type: 'object'),
+                    ),
+                ],
+            ),
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Sync result'),
+            new OA\Response(response: 401, description: 'Missing/invalid token'),
+            new OA\Response(response: 422, description: 'Invalid payload'),
+        ],
+    )]
+    public function offlineSync(): void
+    {
+        $this->request->allowMethod(['post']);
+
+        $user = $this->request->getAttribute('apiUser');
+        $userId = $user ? (int)$user->id : null;
+        if ($userId === null) {
+            $this->jsonError(401, 'TOKEN_INVALID', 'Access token is required.');
+
+            return;
+        }
+
+        $payload = $this->request->getData();
+        $items = [];
+        if (is_array($payload) && array_is_list($payload)) {
+            $items = $payload;
+        } elseif (is_array($payload)) {
+            $rawItems = $payload['items'] ?? ($payload['attempts'] ?? null);
+            if (is_array($rawItems)) {
+                $items = $rawItems;
+            }
+        }
+
+        if (empty($items)) {
+            $this->jsonError(422, 'INVALID_SYNC_PAYLOAD', 'Expected a non-empty items array.');
+
+            return;
+        }
+
+        $defaultLangCode = strtolower(trim((string)$this->request->getQuery('lang', 'en')));
+        $service = new OfflineAttemptSyncService();
+        $result = $service->syncBatch($userId, $items, $defaultLangCode);
+
+        $this->jsonSuccess($result);
+    }
+
     /**
      * Get attempt payload for quiz taking.
      *

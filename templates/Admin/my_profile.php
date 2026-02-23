@@ -242,8 +242,8 @@ $avatarSrc = $_base . ($user->avatar_url ?: '/img/avatars/stockpfp.jpg');
 
 <?php $this->start('script'); ?>
 <!-- Cropper.js -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
-<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+<link rel="stylesheet" href="<?= $this->Url->build('/css/vendor/cropperjs/cropper.min.css') ?>">
+<script src="<?= $this->Url->build('/js/vendor/cropperjs/cropper.min.js') ?>"></script>
 <script>
 (function () {
     'use strict';

@@ -167,8 +167,8 @@ $this->Html->css('tests_builder', ['block' => 'css']);
 <?= $this->Form->end() ?>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<?= $this->Url->build('/js/vendor/sortablejs/Sortable.min.js') ?>"></script>
+<script src="<?= $this->Url->build('/js/vendor/sweetalert2/sweetalert2.all.min.js') ?>"></script>
 <?php
 $builderConfig = [
     'languages' => $languages,

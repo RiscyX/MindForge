@@ -10,7 +10,7 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use RuntimeException;
 
 // phpcs:disable Generic.Files.LineLength.TooLong,Generic.PHP.NoSilencedErrors.Discouraged
@@ -68,7 +68,7 @@ class SeedAiQuizzesCommand extends Command
 
         $runToken = trim((string)$args->getOption('run_token'));
         if ($runToken === '') {
-            $runToken = FrozenTime::now()->format('YmdHis') . '-r' . random_int(1000, 9999);
+            $runToken = DateTime::now()->format('YmdHis') . '-r' . random_int(1000, 9999);
         }
 
         $creatorId = $this->resolveCreatorId($connection, $args->getOption('creator_id'));
@@ -109,10 +109,7 @@ class SeedAiQuizzesCommand extends Command
             return static::CODE_SUCCESS;
         }
 
-        $phpBin = trim((string)$args->getOption('php_bin'));
-        if ($phpBin === '') {
-            $phpBin = PHP_BINARY;
-        }
+        $phpBin = $this->resolvePhpBinary((string)$args->getOption('php_bin'));
 
         $this->processQueuedRequests($connection, $io, $sourceReference, $phpBin, $processLimit, $maxCycles);
 
@@ -303,7 +300,7 @@ class SeedAiQuizzesCommand extends Command
         array $difficulties,
     ): array {
         $aiRequests = $this->fetchTable('AiRequests');
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
         $rows = [];
         for ($i = 1; $i <= $count; $i++) {
@@ -317,6 +314,7 @@ class SeedAiQuizzesCommand extends Command
                 $difficulty['name'],
                 $style,
             );
+            $prompt .= ' If you include matching questions, each matching question must contain at least 3 distinct pairs.';
 
             $inputPayload = json_encode([
                 'prompt' => $prompt,
@@ -408,7 +406,7 @@ class SeedAiQuizzesCommand extends Command
             exec($cmd, $output, $code);
 
             if ($code !== 0) {
-                $io->err('ai_requests_process failed with exit code ' . $code);
+                $io->err('ai_requests_process failed with exit code ' . $code . ' (php_bin=' . $phpBin . ')');
                 foreach (array_slice($output, -10) as $line) {
                     $io->err('  ' . $line);
                 }
@@ -418,6 +416,40 @@ class SeedAiQuizzesCommand extends Command
         }
 
         $io->warning('Reached max cycles before full completion.');
+    }
+
+    /**
+     * Resolve a usable PHP CLI binary path.
+     */
+    private function resolvePhpBinary(?string $explicit): string
+    {
+        $explicit = trim((string)$explicit);
+        if ($explicit !== '') {
+            return $explicit;
+        }
+
+        $candidates = [
+            trim((string)PHP_BINARY),
+            '/opt/lampp/bin/php',
+            '/usr/bin/php',
+            'php',
+        ];
+
+        foreach ($candidates as $candidate) {
+            if ($candidate === '') {
+                continue;
+            }
+
+            if ($candidate === 'php') {
+                return $candidate;
+            }
+
+            if (is_file($candidate) && is_executable($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return 'php';
     }
 
     /**

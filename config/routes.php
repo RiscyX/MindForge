@@ -119,6 +119,8 @@ return function (RouteBuilder $routes): void {
             ->setPatterns(['id' => '\\d+'])
             ->setPass(['id'])
             ->setMethods(['GET']);
+        $builder->connect('/me/attempts/offline-sync', ['controller' => 'Attempts', 'action' => 'offlineSync'])
+            ->setMethods(['POST']);
 
         // Stats for the authenticated user
         $builder->connect('/me/stats/quizzes', ['controller' => 'Stats', 'action' => 'quizzes'])
