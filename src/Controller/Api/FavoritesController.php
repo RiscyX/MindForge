@@ -95,7 +95,7 @@ class FavoritesController extends AppController
             new OA\Response(response: 200, description: 'Favorited'),
             new OA\Response(response: 401, description: 'Missing/invalid token'),
             new OA\Response(response: 404, description: 'Test not found'),
-            new OA\Response(response: 422, description: 'Test cannot be favorited'),
+            new OA\Response(response: 422, description: 'Test cannot be favorited or favorites limit reached (max 10)'),
         ],
     )]
     public function addTest(?string $id = null): void
@@ -123,6 +123,11 @@ class FavoritesController extends AppController
             }
             if ($message === 'TEST_NOT_FAVORITABLE') {
                 $this->jsonError(422, 'TEST_NOT_FAVORITABLE', 'Only public tests can be favorited.');
+
+                return;
+            }
+            if ($message === 'FAVORITES_LIMIT_REACHED') {
+                $this->jsonError(422, 'FAVORITES_LIMIT_REACHED', 'Favorites limit reached (max 10).');
 
                 return;
             }
