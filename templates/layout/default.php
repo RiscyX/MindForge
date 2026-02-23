@@ -74,5 +74,6 @@ $isAuthPage = $request->getParam('controller') === 'Users'
     <?php endif; ?>
     <?= $this->fetch('script') ?>
     <?= $this->fetch('scriptBottom') ?>
+    <?= $this->Html->script('mobile_app_banner.js?v=1') ?>
 </body>
 </html>
