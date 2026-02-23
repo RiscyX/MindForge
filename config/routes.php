@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Routes configuration.
  *
@@ -152,6 +153,10 @@ return function (RouteBuilder $routes): void {
             ->setPass(['id'])
             ->setMethods(['POST']);
 
+        $builder->connect('/tests/{id}/edit-detail', ['controller' => 'Tests', 'action' => 'viewForEdit'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['GET']);
         $builder->resources('Tests');
         $builder->fallbacks(DashedRoute::class);
     });
