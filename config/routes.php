@@ -234,6 +234,13 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/favorites', ['controller' => 'Tests', 'action' => 'favorites'])
             ->setPatterns(['lang' => 'en|hu']);
 
+        // Infinity Training
+        $builder->connect('/training', ['controller' => 'Training', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/training/questions', ['controller' => 'Training', 'action' => 'questions'])
+            ->setPatterns(['lang' => 'en|hu'])
+            ->setMethods(['GET']);
+
         $builder->connect('/tests/{attemptId}/review/{questionId}/explain', ['controller' => 'Tests', 'action' => 'explainAnswer'])
             ->setPatterns(['lang' => 'en|hu', 'attemptId' => '\\d+', 'questionId' => '\\d+'])
             ->setPass(['attemptId', 'questionId'])

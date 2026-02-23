@@ -4296,3 +4296,67 @@ msgstr "Biztosan ki szeretne jelentkezni?"
 
 msgid "Test #{0}"
 msgstr "#{0}. teszt"
+
+
+msgid "Training Mode"
+msgstr "Gyakorlás mód"
+
+msgid "Pick a category and practice endlessly. Questions will keep coming until you decide to stop."
+msgstr "Válassz egy kategóriát és gyakorolj végtelenül. A kérdések addig jönnek, amíg le nem állítod."
+
+msgid "No categories with questions available yet."
+msgstr "Még nincsenek elérhető kérdéseket tartalmazó kategóriák."
+
+msgid "Selected"
+msgstr "Kiválasztva"
+
+msgid "Start Training"
+msgstr "Gyakorlás indítása"
+
+msgid "Training"
+msgstr "Gyakorlás"
+
+msgid "End training"
+msgstr "Gyakorlás befejezése"
+
+msgid "Loading questions"
+msgstr "Kérdések betöltése"
+
+msgid "Training Complete"
+msgstr "Gyakorlás befejezve"
+
+msgid "Train again"
+msgstr "Újra gyakorlás"
+
+msgid "Correct!"
+msgstr "Helyes!"
+
+msgid "Wrong!"
+msgstr "Helytelen!"
+
+msgid "No questions found for this category."
+msgstr "Nincs kérdés ebben a kategóriában."
+
+msgid "Failed to load questions. Please try again."
+msgstr "Nem sikerült betölteni a kérdéseket. Próbáld újra."
+
+msgid "End this training session?"
+msgstr "Befejezed a gyakorlást?"
+
+msgid "Yes"
+msgstr "Igen"
+
+msgid "No"
+msgstr "Nem"
+
+msgid "Check"
+msgstr "Ellenőrzés"
+
+msgid "Matching options not configured."
+msgstr "A párosítási lehetőségek nincsenek beállítva."
+
+msgid "Choose a match"
+msgstr "Válassz párt"
+
+msgid "Please log in to use training mode."
+msgstr "Kérjük, jelentkezz be a gyakorlás használatához."

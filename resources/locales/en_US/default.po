@@ -4290,3 +4290,67 @@ msgstr "Are you sure you want to log out?"
 
 msgid "Test #{0}"
 msgstr "Test #{0}"
+
+
+msgid "Training Mode"
+msgstr "Training Mode"
+
+msgid "Pick a category and practice endlessly. Questions will keep coming until you decide to stop."
+msgstr "Pick a category and practice endlessly. Questions will keep coming until you decide to stop."
+
+msgid "No categories with questions available yet."
+msgstr "No categories with questions available yet."
+
+msgid "Selected"
+msgstr "Selected"
+
+msgid "Start Training"
+msgstr "Start Training"
+
+msgid "Training"
+msgstr "Training"
+
+msgid "End training"
+msgstr "End training"
+
+msgid "Loading questions"
+msgstr "Loading questions"
+
+msgid "Training Complete"
+msgstr "Training Complete"
+
+msgid "Train again"
+msgstr "Train again"
+
+msgid "Correct!"
+msgstr "Correct!"
+
+msgid "Wrong!"
+msgstr "Wrong!"
+
+msgid "No questions found for this category."
+msgstr "No questions found for this category."
+
+msgid "Failed to load questions. Please try again."
+msgstr "Failed to load questions. Please try again."
+
+msgid "End this training session?"
+msgstr "End this training session?"
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "No"
+msgstr "No"
+
+msgid "Check"
+msgstr "Check"
+
+msgid "Matching options not configured."
+msgstr "Matching options not configured."
+
+msgid "Choose a match"
+msgstr "Choose a match"
+
+msgid "Please log in to use training mode."
+msgstr "Please log in to use training mode."
