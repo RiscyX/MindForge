@@ -148,7 +148,9 @@ class AiQuizDraftService
                     continue;
                 }
 
-                $isCorrect = (bool)($a['is_correct'] ?? false);
+                // For text questions all answers are accepted answers — force is_correct=true
+                // regardless of what the AI returned, since the model occasionally omits the flag.
+                $isCorrect = $type === Question::TYPE_TEXT ? true : (bool)($a['is_correct'] ?? false);
                 $matchSide = $a['match_side'] ?? null;
                 $matchGroup = $a['match_group'] ?? null;
 
