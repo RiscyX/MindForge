@@ -45,8 +45,8 @@ MindForge is a full-stack quiz and practice platform built with CakePHP 5. Users
 
 ## Creators
 
-- Balazs Barat
-- Richard Vass
+- [Balazs Barat](https://github.com/I3axy)
+- [Richard Vass](https://github.com/RiscyX)
 
 ---
 
