@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Model\Entity\Role;
-use Cake\Log\Log;
-use Cake\ORM\TableRegistry;
 
 /**
  * Handles web login/logout workflow: rate limiting, account gate checks,
@@ -70,11 +68,6 @@ class WebLoginService
                 'flash_message' => __('Too many login attempts. Please try again in a minute.'),
             ];
         }
-
-        // Debug log for user lookup
-        $usersTable = TableRegistry::getTableLocator()->get('Users');
-        $u = $usersTable->find()->where(['email' => $email])->first();
-        Log::debug('User lookup: ' . ($u ? 'FOUND id=' . $u->id : 'NOT FOUND'));
 
         // Successfully authenticated
         if ($isAuthenticated && $identityData !== null) {
@@ -203,7 +196,7 @@ class WebLoginService
             ];
         }
 
-        if ($queryRedirect) {
+        if ($this->isSafeRelativeRedirect($queryRedirect)) {
             return $queryRedirect;
         }
 
@@ -213,5 +206,38 @@ class WebLoginService
             'action' => 'index',
             'lang' => $lang,
         ];
+    }
+
+    /**
+     * Accept only local, absolute-path redirects (e.g. /en/tests).
+     *
+     * @param string|null $redirect
+     * @return bool
+     */
+    private function isSafeRelativeRedirect(?string $redirect): bool
+    {
+        if ($redirect === null) {
+            return false;
+        }
+
+        $redirect = trim($redirect);
+        if ($redirect === '' || !str_starts_with($redirect, '/')) {
+            return false;
+        }
+
+        if (str_starts_with($redirect, '//')) {
+            return false;
+        }
+
+        $parts = parse_url($redirect);
+        if ($parts === false) {
+            return false;
+        }
+
+        if (isset($parts['scheme']) || isset($parts['host'])) {
+            return false;
+        }
+
+        return true;
     }
 }

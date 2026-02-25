@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Middleware\ConditionalCsrfMiddleware;
+use App\Middleware\SecurityHeadersMiddleware;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
@@ -35,6 +36,7 @@ use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\Routing\Router;
 use Psr\Http\Message\ServerRequestInterface;
+use function Cake\Core\env;
 
 /**
  * Application setup class.
@@ -144,6 +146,8 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // and make an error page/response
             ->add(new ErrorHandlerMiddleware(Configure::read('Error'), $this))
 
+            ->add(new SecurityHeadersMiddleware())
+
             // Handle plugin/theme assets like CakePHP normally does.
             ->add(new AssetMiddleware([
                 'cacheTime' => Configure::read('Asset.cacheTime'),
@@ -166,7 +170,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
             // https://book.cakephp.org/5/en/security/csrf.html#cross-site-request-forgery-csrf-middleware
             ->add(new ConditionalCsrfMiddleware(new CsrfProtectionMiddleware([
                 'httponly' => true,
-                'secure' => false,
+                'secure' => filter_var((string)env('CSRF_COOKIE_SECURE', 'true'), FILTER_VALIDATE_BOOL),
                 'samesite' => 'Lax',
             ])));
 

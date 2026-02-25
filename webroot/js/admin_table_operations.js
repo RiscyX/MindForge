@@ -713,6 +713,8 @@
                 });
             }
 
+            applyView();
+            window.requestAnimationFrame(syncSelectAll);
             applyCellLabels();
             return;
         }
