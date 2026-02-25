@@ -6,13 +6,22 @@ MindForge is a full-stack quiz and practice platform built with CakePHP 5. Users
 
 ---
 
+## Live demo
+
+**[https://undefined.stud.vts.su.ac.rs](https://undefined.stud.vts.su.ac.rs)**
+
+> [!NOTE]
+> If the link is not working, the university server is likely down. The project can be run locally — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions.
+
+---
+
 ## Features
 
 - **Quiz catalog** — browse, filter, and search public quizzes by category and difficulty
 - **Quiz engine** — multiple choice, true/false, text, and matching question types with EN/HU translations
 - **Infinity Training** — endless practice mode: pick a category and keep answering until you stop
 - **Results & stats** — per-attempt result review, score history, and creator-level quiz analytics
-- **Favorites** — save quizzes and categories for quick access
+- **Favorites** — save quizzes for quick access
 - **AI quiz generation** — generate quizzes via an AI pipeline with automatic translation
 - **Quiz Creator panel** — dedicated UI for creating and managing quizzes and questions
 - **Admin panel** — user, category, difficulty, and role management
