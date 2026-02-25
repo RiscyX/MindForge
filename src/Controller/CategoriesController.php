@@ -85,7 +85,7 @@ class CategoriesController extends AppController
         } else {
             $scaffoldService = new TranslationScaffoldService();
             $category->category_translations = $scaffoldService->buildNewTranslations(
-                $this->Categories->CategoryTranslations,
+                $this->Categories->CategoryTranslations->getTarget(),
             );
         }
         $this->set(compact('category', 'languages'));
@@ -121,7 +121,7 @@ class CategoriesController extends AppController
         } else {
             $scaffoldService = new TranslationScaffoldService();
             $category->category_translations = $scaffoldService->mergeTranslations(
-                $this->Categories->CategoryTranslations,
+                $this->Categories->CategoryTranslations->getTarget(),
                 $category->category_translations,
             );
         }
