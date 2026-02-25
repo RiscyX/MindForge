@@ -45,10 +45,14 @@ class TrainingController extends AppController
         $langCode = strtolower(trim($lang));
         $languageId = (new LanguageResolverService())->resolveId($langCode);
 
+        // Pagination params
+        $perPage = 12;
+        $page = max(1, (int)($this->request->getQuery('page') ?? 1));
+
         // Fetch active categories that have at least one active, public test
         // with at least one active question.
         $categoriesTable = $this->fetchTable('Categories');
-        $categories = $categoriesTable->find()
+        $allCategories = $categoriesTable->find()
             ->where(['Categories.is_active' => true])
             ->contain([
                 'CategoryTranslations' => function (SelectQuery $q) use ($languageId) {
@@ -72,7 +76,12 @@ class TrainingController extends AppController
             ->all()
             ->toList();
 
-        $this->set(compact('categories', 'lang', 'languageId'));
+        $totalCategories = count($allCategories);
+        $totalPages = max(1, (int)ceil($totalCategories / $perPage));
+        $page = min($page, $totalPages);
+        $categories = array_slice($allCategories, ($page - 1) * $perPage, $perPage);
+
+        $this->set(compact('categories', 'lang', 'languageId', 'page', 'totalPages', 'totalCategories'));
     }
 
     /**
