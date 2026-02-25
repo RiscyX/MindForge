@@ -11,6 +11,9 @@
  * @var list<\App\Model\Entity\Category> $categories
  * @var string $lang
  * @var int|null $languageId
+ * @var int $page
+ * @var int $totalPages
+ * @var int $totalCategories
  */
 
 use App\Model\Entity\Question;
@@ -72,6 +75,41 @@ $this->assign('title', __('Training'));
                 <i class="bi bi-play-fill me-1"></i><?= __('Start Training') ?>
             </button>
         </div>
+
+        <?php if ($totalPages > 1) : ?>
+            <nav class="d-flex justify-content-center align-items-center gap-2 mt-4 flex-wrap" aria-label="<?= h(__('Category pages')) ?>">
+                <?php if ($page > 1) : ?>
+                    <?= $this->Html->link(
+                        '<i class="bi bi-chevron-left" aria-hidden="true"></i>',
+                        ['controller' => 'Training', 'action' => 'index', 'lang' => $lang, '?' => ['page' => $page - 1]],
+                        ['class' => 'btn btn-sm btn-outline-light', 'escape' => false, 'aria-label' => __('Previous page')],
+                    ) ?>
+                <?php else : ?>
+                    <button class="btn btn-sm btn-outline-light" disabled aria-label="<?= h(__('Previous page')) ?>"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+                <?php endif; ?>
+
+                <?php for ($p = 1; $p <= $totalPages; $p++) : ?>
+                    <?= $this->Html->link(
+                        (string)$p,
+                        ['controller' => 'Training', 'action' => 'index', 'lang' => $lang, '?' => ['page' => $p]],
+                        ['class' => 'btn btn-sm ' . ($p === $page ? 'btn-primary' : 'btn-outline-light'), 'aria-current' => $p === $page ? 'page' : false],
+                    ) ?>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages) : ?>
+                    <?= $this->Html->link(
+                        '<i class="bi bi-chevron-right" aria-hidden="true"></i>',
+                        ['controller' => 'Training', 'action' => 'index', 'lang' => $lang, '?' => ['page' => $page + 1]],
+                        ['class' => 'btn btn-sm btn-outline-light', 'escape' => false, 'aria-label' => __('Next page')],
+                    ) ?>
+                <?php else : ?>
+                    <button class="btn btn-sm btn-outline-light" disabled aria-label="<?= h(__('Next page')) ?>"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+                <?php endif; ?>
+            </nav>
+            <p class="text-center mf-muted small mt-2">
+                <?= sprintf(__('Page %d of %d'), $page, $totalPages) ?>
+            </p>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
 

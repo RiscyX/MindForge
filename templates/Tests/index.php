@@ -41,7 +41,7 @@ $catalogTests = $isCatalog
     : [];
 
 $this->assign('title', $isCatalog ? __('Quizzes') : __('Tests'));
-$this->Html->css('tests_catalog.css?v=5', ['block' => 'css']);
+$this->Html->css('tests_catalog.css?v=6', ['block' => 'css']);
 
 if (!$this->request->getParam('prefix')) {
     $this->Html->css('vendor/datatables/dataTables.bootstrap5.min.css', ['block' => 'css']);
@@ -70,190 +70,109 @@ if (!$this->request->getParam('prefix')) {
         </div>
 
         <?php if (!$isCreatorCatalog) : ?>
-            <div class="row g-3 mt-4">
+            <div class="mf-summary-bar mt-4">
+
                 <?php if ($topQuizzes) : ?>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <section class="mf-quiz-card mf-top-quizzes h-100" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.14;" aria-label="<?= h(__('Top quizzes')) ?>">
-                            <div class="mf-quiz-card__cover">
-                                <div class="mf-quiz-card__cover-inner">
-                                    <div class="mf-quiz-card__icon" aria-hidden="true">
-                                        <i class="bi bi-trophy-fill"></i>
-                                    </div>
-                                    <div class="mf-quiz-card__cover-meta">
-                                        <h2 class="h5 text-white mb-1"><?= __('Top 3 quizzes') ?></h2>
-                                        <div class="mf-muted small"><?= __('Most played') ?></div>
-                                    </div>
-                                    <div class="mf-quiz-card__rightmeta">
-                                        <span class="mf-top-quizzes__count">
-                                            <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
-                                            <?= h((string)count($topQuizzes)) ?>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mf-quiz-card__content pt-0">
-                                <div class="mf-top-quizzes__list">
-                                <?php foreach ($topQuizzes as $idx => $topQuiz) : ?>
-                                    <?php
-                                    $topTitle = (string)($topQuiz['title'] ?? __('Untitled quiz'));
-                                    $topCategory = (string)($topQuiz['category_name'] ?? __('Uncategorized'));
-                                    $topDifficulty = trim((string)($topQuiz['difficulty_name'] ?? ''));
-                                    $topAttempts = (int)($topQuiz['attempt_count'] ?? 0);
-                                    $topQuizId = (int)($topQuiz['id'] ?? 0);
-                                    ?>
-                                    <article class="mf-top-quiz-item">
-                                        <div class="mf-top-quiz-item__left">
-                                            <span class="mf-top-quiz-item__rank">#<?= h((string)($idx + 1)) ?></span>
-                                            <div class="mf-top-quiz-item__meta">
-                                                <div class="mf-top-quiz-item__title" title="<?= h($topTitle) ?>"><?= h($topTitle) ?></div>
-                                                <div class="mf-top-quiz-item__sub">
-                                                    <span><i class="bi bi-tag" aria-hidden="true"></i> <?= h($topCategory) ?></span>
-                                                    <?php if ($topDifficulty !== '') : ?>
-                                                        <span><i class="bi bi-speedometer2" aria-hidden="true"></i> <?= h($topDifficulty) ?></span>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mf-top-quiz-item__right">
-                                            <span class="mf-top-quiz-item__attempts" title="<?= h(__('Attempts')) ?>">
-                                                <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
-                                                <?= h((string)$topAttempts) ?>
-                                            </span>
-                                            <?php if ($topQuizId > 0) : ?>
-                                                <?= $this->Html->link(
-                                                    __('Open'),
-                                                    ['controller' => 'Tests', 'action' => 'details', $topQuizId, 'lang' => $lang],
-                                                    ['class' => 'btn btn-sm btn-outline-light'],
-                                                ) ?>
-                                            <?php endif; ?>
-                                        </div>
-                                    </article>
-                                <?php endforeach; ?>
-                                </div>
-                            </div>
-                        </section>
+                <section class="mf-summary-bar__section" aria-label="<?= h(__('Top quizzes')) ?>">
+                    <div class="mf-summary-bar__heading">
+                        <i class="bi bi-trophy-fill" aria-hidden="true"></i>
+                        <?= __('Top quizzes') ?>
                     </div>
+                    <div class="mf-summary-bar__body">
+                        <?php foreach ($topQuizzes as $idx => $topQuiz) : ?>
+                            <?php
+                            $topTitle = (string)($topQuiz['title'] ?? __('Untitled quiz'));
+                            $topAttempts = (int)($topQuiz['attempt_count'] ?? 0);
+                            $topQuizId = (int)($topQuiz['id'] ?? 0);
+                            ?>
+                            <?php if ($topQuizId > 0) : ?>
+                                <?= $this->Html->link(
+                                    '<span class="mf-summary-bar__rank">#' . h((string)($idx + 1)) . '</span>'
+                                    . '<span class="mf-summary-bar__quiz-title" title="' . h($topTitle) . '">' . h($topTitle) . '</span>'
+                                    . '<span class="mf-summary-bar__quiz-attempts"><i class="bi bi-bar-chart-line" aria-hidden="true"></i> ' . h((string)$topAttempts) . '</span>',
+                                    ['controller' => 'Tests', 'action' => 'details', $topQuizId, 'lang' => $lang],
+                                    ['class' => 'mf-summary-bar__quiz-row', 'escape' => false],
+                                ) ?>
+                            <?php else : ?>
+                                <div class="mf-summary-bar__quiz-row mf-summary-bar__quiz-row--nolink">
+                                    <span class="mf-summary-bar__rank">#<?= h((string)($idx + 1)) ?></span>
+                                    <span class="mf-summary-bar__quiz-title" title="<?= h($topTitle) ?>"><?= h($topTitle) ?></span>
+                                    <span class="mf-summary-bar__quiz-attempts"><i class="bi bi-bar-chart-line" aria-hidden="true"></i> <?= h((string)$topAttempts) ?></span>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
                 <?php endif; ?>
 
                 <?php if ($topCategories) : ?>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <section class="mf-quiz-card mf-top-categories h-100" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.12;" aria-label="<?= h(__('Top categories')) ?>">
-                            <div class="mf-quiz-card__cover">
-                                <div class="mf-quiz-card__cover-inner">
-                                    <div class="mf-quiz-card__icon" aria-hidden="true">
-                                        <i class="bi bi-tags-fill"></i>
-                                    </div>
-                                    <div class="mf-quiz-card__cover-meta">
-                                        <h2 class="h5 text-white mb-1"><?= __('Top 5 categories') ?></h2>
-                                        <div class="mf-muted small"><?= __('By attempts') ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mf-quiz-card__content pt-0">
-                                <div class="mf-top-categories__list">
-                                    <?php foreach ($topCategories as $idx => $topCategory) : ?>
-                                        <?php
-                                        $categoryName = (string)($topCategory['name'] ?? __('Uncategorized'));
-                                        $attemptCount = (int)($topCategory['attempt_count'] ?? 0);
-                                        ?>
-                                        <article class="mf-top-category-item">
-                                            <div class="mf-top-category-item__left">
-                                                <span class="mf-top-category-item__rank">#<?= h((string)($idx + 1)) ?></span>
-                                                <div class="mf-top-category-item__name" title="<?= h($categoryName) ?>"><?= h($categoryName) ?></div>
-                                            </div>
-                                            <span class="mf-top-category-item__attempts">
-                                                <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
-                                                <?= h((string)$attemptCount) ?>
-                                            </span>
-                                        </article>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        </section>
+                <section class="mf-summary-bar__section" aria-label="<?= h(__('Top categories')) ?>">
+                    <div class="mf-summary-bar__heading">
+                        <i class="bi bi-tags-fill" aria-hidden="true"></i>
+                        <?= __('Top categories') ?>
                     </div>
+                    <div class="mf-summary-bar__body mf-summary-bar__body--pills">
+                        <?php foreach ($topCategories as $idx => $topCategory) : ?>
+                            <?php
+                            $categoryName = (string)($topCategory['name'] ?? __('Uncategorized'));
+                            $attemptCount = (int)($topCategory['attempt_count'] ?? 0);
+                            ?>
+                            <span class="mf-summary-bar__category-pill">
+                                <span class="mf-summary-bar__rank">#<?= h((string)($idx + 1)) ?></span>
+                                <span class="mf-summary-bar__category-name" title="<?= h($categoryName) ?>"><?= h($categoryName) ?></span>
+                                <span class="mf-summary-bar__category-count"><i class="bi bi-bar-chart-line" aria-hidden="true"></i> <?= h((string)$attemptCount) ?></span>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
                 <?php endif; ?>
 
-                <?php
-                $attemptsCol = 'col-12';
-                if ($topQuizzes && $topCategories) {
-                    $attemptsCol .= ' col-lg-4';
-                } elseif ($topQuizzes || $topCategories) {
-                    $attemptsCol .= ' col-md-6 col-lg-4';
-                }
-                ?>
-                <div class="<?= $attemptsCol ?>">
-                    <div class="mf-quiz-card mf-attempt-widget h-100" style="--mf-quiz-accent-rgb: var(--mf-primary-rgb); --mf-quiz-accent-a: 0.12;">
-                        <div class="mf-attempt-widget__head">
-                            <div>
-                                <h2 class="h5 mb-1 text-white"><?= __('Recent attempts') ?></h2>
-                                <div class="mf-muted small"><?= __('Quick snapshot of your latest quiz results.') ?></div>
-                            </div>
-                            <?= $this->Html->link(
-                                __('View all attempts'),
-                                ['controller' => 'Users', 'action' => 'stats', 'lang' => $lang],
-                                ['class' => 'btn btn-sm btn-outline-light'],
-                            ) ?>
-                        </div>
-
+                <section class="mf-summary-bar__section mf-summary-bar__section--attempts" aria-label="<?= h(__('Recent attempts')) ?>">
+                    <div class="mf-summary-bar__heading">
+                        <i class="bi bi-clock-history" aria-hidden="true"></i>
+                        <?= __('Recent attempts') ?>
+                        <?= $this->Html->link(
+                            __('View all'),
+                            ['controller' => 'Users', 'action' => 'stats', 'lang' => $lang],
+                            ['class' => 'mf-summary-bar__viewall'],
+                        ) ?>
+                    </div>
+                    <div class="mf-summary-bar__body">
                         <?php if ($recentAttempts) : ?>
-                            <div class="mf-attempt-list mt-3">
-                                <?php foreach ($recentAttempts as $attempt) : ?>
-                                    <?php
-                                    $categoryName = $attempt->hasValue('category') && !empty($attempt->category->category_translations)
-                                        ? (string)$attempt->category->category_translations[0]->name
-                                        : __('Uncategorized');
-                                    $quizTitle = $attempt->hasValue('test') && !empty($attempt->test->test_translations)
-                                        ? (string)$attempt->test->test_translations[0]->title
-                                        : __('Quiz');
-                                    $scoreValue = $attempt->score !== null ? (float)$attempt->score : 0.0;
-                                    $scoreLabel = $attempt->score !== null
-                                        ? rtrim(rtrim((string)$attempt->score, '0'), '.') . '%'
-                                        : '—';
-                                    $scoreTone = $scoreValue >= 80 ? 'good' : ($scoreValue >= 50 ? 'mid' : 'low');
-                                    ?>
-                                    <article class="mf-attempt-item mf-attempt-item--<?= h($scoreTone) ?>">
-                                        <div class="mf-attempt-item__left">
-                                            <div class="mf-attempt-item__title"><?= h($quizTitle) ?></div>
-                                            <div class="mf-attempt-item__meta">
-                                                <span><i class="bi bi-calendar3" aria-hidden="true"></i> <?= $attempt->finished_at ? h($attempt->finished_at->i18nFormat('yyyy-MM-dd HH:mm')) : '—' ?></span>
-                                                <span><i class="bi bi-tag" aria-hidden="true"></i> <?= h($categoryName) ?></span>
-                                            </div>
-                                        </div>
-
-                                        <div class="mf-attempt-item__right">
-                                            <div class="mf-attempt-item__score" title="<?= h(__('Score')) ?>"><?= h($scoreLabel) ?></div>
-                                            <?= $this->Html->link(
-                                                __('Open result'),
-                                                ['controller' => 'Tests', 'action' => 'result', $attempt->id, 'lang' => $lang],
-                                                ['class' => 'btn btn-sm btn-primary'],
-                                            ) ?>
-                                        </div>
-                                    </article>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php else : ?>
-                            <div class="mf-attempt-empty mt-3">
-                                <i class="bi bi-clipboard2-x mf-attempt-empty__icon" aria-hidden="true"></i>
-                                <div class="mf-attempt-empty__title"><?= __('No attempts yet') ?></div>
-                                <div class="mf-muted mb-3"><?= __('Start your first test and your latest results will appear here.') ?></div>
-                                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                            <?php foreach ($recentAttempts as $attempt) : ?>
+                                <?php
+                                $quizTitle = $attempt->hasValue('test') && !empty($attempt->test->test_translations)
+                                    ? (string)$attempt->test->test_translations[0]->title
+                                    : __('Quiz');
+                                $scoreValue = $attempt->score !== null ? (float)$attempt->score : 0.0;
+                                $scoreLabel = $attempt->score !== null
+                                    ? rtrim(rtrim((string)$attempt->score, '0'), '.') . '%'
+                                    : '—';
+                                $scoreTone = $scoreValue >= 80 ? 'good' : ($scoreValue >= 50 ? 'mid' : 'low');
+                                ?>
+                                <div class="mf-summary-bar__attempt-row">
+                                    <span class="mf-summary-bar__attempt-score mf-summary-bar__attempt-score--<?= h($scoreTone) ?>" title="<?= h(__('Score')) ?>"><?= h($scoreLabel) ?></span>
+                                    <span class="mf-summary-bar__attempt-title"><?= h($quizTitle) ?></span>
                                     <?= $this->Html->link(
-                                        __('Start test'),
-                                        '#mf-catalog-quizzes',
-                                        ['class' => 'btn btn-primary'],
-                                    ) ?>
-                                    <?= $this->Html->link(
-                                        __('View all attempts'),
-                                        ['controller' => 'Users', 'action' => 'stats', 'lang' => $lang],
-                                        ['class' => 'btn btn-outline-light'],
+                                        __('Open result'),
+                                        ['controller' => 'Tests', 'action' => 'result', $attempt->id, 'lang' => $lang],
+                                        ['class' => 'btn btn-sm btn-primary ms-auto'],
                                     ) ?>
                                 </div>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <div class="mf-summary-bar__attempt-empty">
+                                <i class="bi bi-clipboard2-x" aria-hidden="true"></i>
+                                <span><?= __('No attempts yet') ?></span>
+                                <?= $this->Html->link(
+                                    __('Start a quiz'),
+                                    '#mf-catalog-quizzes',
+                                    ['class' => 'btn btn-sm btn-primary'],
+                                ) ?>
                             </div>
                         <?php endif; ?>
                     </div>
-                </div>
+                </section>
 
             </div>
         <?php endif; ?>

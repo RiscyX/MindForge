@@ -252,10 +252,12 @@ class ApiTestService
                 $answerRow = [
                     'id' => $answer->id,
                     'content' => $aTrans?->content ?? 'No content',
+                    'is_correct' => (bool)$answer->is_correct,
                 ];
                 $matchSide = trim((string)($answer->match_side ?? ''));
                 if ($matchSide !== '') {
                     $answerRow['match_side'] = $matchSide;
+                    $answerRow['match_group'] = $answer->match_group;
                 }
                 $answers[] = $answerRow;
             }
