@@ -69,7 +69,12 @@ class CategoriesController extends AppController
 
         if ($this->request->is('post')) {
             $category = $this->Categories->patchEntity($category, $this->request->getData(), [
-                'associated' => ['CategoryTranslations'],
+                'fields' => ['is_active', 'category_translations'],
+                'associated' => [
+                    'CategoryTranslations' => [
+                        'fields' => ['id', 'language_id', 'name', 'description'],
+                    ],
+                ],
             ]);
             if ($this->Categories->save($category)) {
                 $this->Flash->success(__('The category has been saved.'));
@@ -100,7 +105,12 @@ class CategoriesController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $category = $this->Categories->patchEntity($category, $this->request->getData(), [
-                'associated' => ['CategoryTranslations'],
+                'fields' => ['is_active', 'category_translations'],
+                'associated' => [
+                    'CategoryTranslations' => [
+                        'fields' => ['id', 'language_id', 'name', 'description'],
+                    ],
+                ],
             ]);
             if ($this->Categories->save($category)) {
                 $this->Flash->success(__('The category has been saved.'));

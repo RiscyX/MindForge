@@ -48,9 +48,25 @@ $strings = [
 
     // login.js / register.js
     'invalidEmail'               => __('Please enter a valid email address.'),
+
+    // mobile_app_banner.js
+    'mobileAppBannerTitle'                  => __('Get the App'),
+    'mobileAppBannerAndroidText'            => __('Download the MindForge Android app for a better experience.'),
+    'mobileAppBannerAndroidConfirm'         => __('Download APK'),
+    'mobileAppBannerCancel'                 => __('Not now'),
+    'mobileAppBannerIosTitle'               => __('iOS App Not Available'),
+    'mobileAppBannerIosText'                => __("Unfortunately we don't have an iOS app yet - we're a bit too broke for a MacBook :D"),
+    'mobileAppBannerIosConfirm'             => __('OK'),
+    'mobileAppBannerAndroidUnavailableTitle' => __('Android App Not Available'),
+    'mobileAppBannerAndroidUnavailableText' => __("The Android app isn't available yet. Check back later!"),
 ];
 
 $json = json_encode($strings, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+
+$mfConfig = json_encode([
+    'androidAppUrl' => env('MOBILE_APP_ANDROID_URL', ''),
+    'iosAppUrl'     => env('MOBILE_APP_IOS_URL', ''),
+], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
 ?>
 <script>
 window.MF = window.MF || {};
@@ -58,4 +74,5 @@ window.MF.strings = <?= $json ?>;
 window.MF.t = function(key) {
     return (window.MF.strings && window.MF.strings[key] != null) ? window.MF.strings[key] : key;
 };
+window.MF.config = <?= $mfConfig ?>;
 </script>

@@ -158,7 +158,6 @@ return function (RouteBuilder $routes): void {
             ->setPass(['id'])
             ->setMethods(['GET']);
         $builder->resources('Tests');
-        $builder->fallbacks(DashedRoute::class);
     });
 
     // Admin prefix: /{lang}/admin/*
@@ -256,6 +255,10 @@ return function (RouteBuilder $routes): void {
 
         $builder->connect('/confirm', ['controller' => 'Users', 'action' => 'confirm'])
             ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/resend-activation', ['controller' => 'Users', 'action' => 'resendActivation'])
+            ->setPatterns(['lang' => 'en|hu'])
+            ->setMethods(['GET', 'POST']);
 
         $builder->connect('/profile', ['controller' => 'Users', 'action' => 'profile'])
             ->setPatterns(['lang' => 'en|hu']);
