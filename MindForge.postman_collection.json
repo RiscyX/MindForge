@@ -1,0 +1,1306 @@
+{
+  "info": {
+    "name": "MindForge API",
+    "description": "Auto-generated from https://undefined.stud.vts.su.ac.rs/swagger/json",
+    "_postman_id": "b8a6d8d9-3c30-4d95-9b3f-2232df0057aa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Attempts",
+      "item": [
+        {
+          "name": "MindForge Attempts GET Attempts ById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attempts/{{attemptId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "attempts",
+                "{{attemptId}}"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{attemptId}}",
+                  "description": "Attempt id. Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Get an attempt with questions (no correct answers)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge Attempts GET Attempts ById Review",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attempts/{{attemptId}}/review",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "attempts",
+                "{{attemptId}}",
+                "review"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{attemptId}}",
+                  "description": "Attempt id. Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Get a review payload for a finished attempt",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge Attempts POST Attempts ById Submit",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attempts/{{attemptId}}/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "attempts",
+                "{{attemptId}}",
+                "submit"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{attemptId}}",
+                  "description": "Attempt id. Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Submit answers for an attempt (finalizes score)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge Attempts POST Me Attempts OfflineSync",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/attempts/offline-sync",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "attempts",
+                "offline-sync"
+              ]
+            },
+            "description": "Sync offline attempt results",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"attempt_id\": \"{{attemptId}}\",\n      \"answers\": []\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "MindForge Auth GET Auth Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Current authenticated user profile"
+          }
+        },
+        {
+          "name": "MindForge Auth PATCH Auth Me",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Update current authenticated user profile",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "username",
+                  "value": "mindforge_user",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "avatar_file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge Auth POST Auth ForgotPassword",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "description": "Request password reset email",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"lang\": \"{{lang}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "MindForge Auth POST Auth Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login with email and password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login status is success', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (e) {}",
+                  "if (data.access_token) pm.collectionVariables.set('accessToken', data.access_token);",
+                  "if (data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
+                  "if (data.user && data.user.id) pm.collectionVariables.set('userId', String(data.user.id));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MindForge Auth POST Auth Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Logout current session or all devices",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"all_devices\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "MindForge Auth POST Auth Refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Rotate refresh token and issue new pair",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Refresh status is success', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (e) {}",
+                  "if (data.access_token) pm.collectionVariables.set('accessToken', data.access_token);",
+                  "if (data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MindForge Auth POST Auth Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a mobile account",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"password_confirm\": \"{{password}}\",\n  \"lang\": \"{{lang}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "MindForge Auth POST Auth ResetPassword",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "Reset password with reset token",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"{{newPassword}}\",\n  \"password_confirm\": \"{{newPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CreatorAi",
+      "item": [
+        {
+          "name": "MindForge CreatorAi GET Creator Ai Requests ById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/creator/ai/requests/{{aiRequestId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "creator",
+                "ai",
+                "requests",
+                "{{aiRequestId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{aiRequestId}}",
+                  "description": "AI request id. Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Get status/result of an AI generation request",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge CreatorAi POST Creator Ai Requests ById Apply",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/creator/ai/requests/{{aiRequestId}}/apply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "creator",
+                "ai",
+                "requests",
+                "{{aiRequestId}}",
+                "apply"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{aiRequestId}}",
+                  "description": "AI request id. Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Apply a successful AI draft into a real Test",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge CreatorAi POST Creator Ai TestGeneration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/creator/ai/test-generation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "creator",
+                "ai",
+                "test-generation"
+              ]
+            },
+            "description": "Create an async AI test generation request (prompt + optional assets)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "prompt",
+                  "value": "Generate a beginner JavaScript quiz focused on arrays.",
+                  "type": "text"
+                },
+                {
+                  "key": "category_id",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "difficulty_id",
+                  "value": "{{difficultyId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "question_count",
+                  "value": "10",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "is_public",
+                  "value": "true",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "language_id",
+                  "value": "{{languageId}}",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documents",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('AI request accepted', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (e) {}",
+                  "const rid = data.request_id || data.id || (data.request && data.request.id);",
+                  "if (rid) pm.collectionVariables.set('aiRequestId', String(rid));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CreatorTests",
+      "item": [
+        {
+          "name": "MindForge CreatorTests GET Creator Tests Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/creator/tests/metadata",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "creator",
+                "tests",
+                "metadata"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Get active categories and difficulties for creator flows",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "MindForge Favorites DELETE Me Favorites Tests ById",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/favorites/tests/{{testId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "favorites",
+                "tests",
+                "{{testId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{testId}}",
+                  "description": "Test ID. Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Remove a test from favorites",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge Favorites GET Me Favorites Tests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/favorites/tests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "favorites",
+                "tests"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "List favorite public tests for current user",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge Favorites POST Me Favorites Tests ById",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/favorites/tests/{{testId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "favorites",
+                "tests",
+                "{{testId}}"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{testId}}",
+                  "description": "Test ID. Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Add a public test to favorites",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "MindForge Stats GET Me Stats Quizzes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/me/stats/quizzes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me",
+                "stats",
+                "quizzes"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "Language code (en, hu)",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Get quiz stats for the current user (best attempt per quiz)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tests",
+      "item": [
+        {
+          "name": "MindForge Tests GET Tests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tests"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "Language code (e.g. en, hu)",
+                  "disabled": false
+                },
+                {
+                  "key": "category_id",
+                  "value": "",
+                  "description": "Filter by category id",
+                  "disabled": true
+                },
+                {
+                  "key": "difficulty_id",
+                  "value": "",
+                  "description": "Filter by difficulty id",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "List all tests"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('List tests returns success', function () { pm.expect(pm.response.code).to.be.oneOf([200]); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (e) {}",
+                  "const first = (data.tests && data.tests[0]) ? data.tests[0] : null;",
+                  "if (first && first.id) {",
+                  "  pm.collectionVariables.set('testId', String(first.id));",
+                  "  pm.collectionVariables.set('favoriteTestId', String(first.id));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MindForge Tests GET Tests ById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tests/{{testId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tests",
+                "{{testId}}"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "Language code (e.g. en, hu)",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{testId}}",
+                  "description": "ID of test to fetch Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Get details of a specific test"
+          }
+        },
+        {
+          "name": "MindForge Tests GET Tests ById EditDetail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tests/{{testId}}/edit-detail",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tests",
+                "{{testId}}",
+                "edit-detail"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{testId}}",
+                  "description": "ID of the test to load for editing Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Get full test data for editing (creator/admin only)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "MindForge Tests PATCH Tests ById",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tests/{{testId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tests",
+                "{{testId}}"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "Language code used to resolve translations (e.g. en, hu)",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{testId}}",
+                  "description": "ID of the test to update Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Update a test (partial update)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 2,\n  \"difficulty_id\": 1,\n  \"is_public\": true,\n  \"test_translations\": [\n    {\n      \"language_id\": 1,\n      \"title\": \"My Quiz\",\n      \"description\": \"A short description\"\n    }\n  ],\n  \"questions\": [\n    {\n      \"id\": 0,\n      \"question_type\": \"single_choice\",\n      \"position\": 1,\n      \"question_translations\": [\n        {\n          \"language_id\": 0,\n          \"content\": \"\",\n          \"explanation\": \"\"\n        }\n      ],\n      \"answers\": [\n        {\n          \"id\": 0,\n          \"is_correct\": false,\n          \"answer_translations\": [\n            {\n              \"language_id\": 0,\n              \"content\": \"\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "MindForge Tests POST Tests ById Start",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tests/{{testId}}/start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tests",
+                "{{testId}}",
+                "start"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{testId}}",
+                  "description": "ID of test to start Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Start a test (creates an attempt)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lang\": \"{{lang}}\",\n  \"language_id\": \"{{languageId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Start test returns success', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (e) {}",
+                  "const attempt = data.attempt || data.data || {};",
+                  "const aid = attempt.id || data.attempt_id || data.id;",
+                  "if (aid) pm.collectionVariables.set('attemptId', String(aid));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MindForge Tests PUT Tests ById",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tests/{{testId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tests",
+                "{{testId}}"
+              ],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "{{lang}}",
+                  "description": "Language code used to resolve translations (e.g. en, hu)",
+                  "disabled": false
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{testId}}",
+                  "description": "ID of the test to update Auto-filled from collection variable."
+                }
+              ]
+            },
+            "description": "Update a test (full replace)",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 2,\n  \"difficulty_id\": 1,\n  \"is_public\": true,\n  \"test_translations\": [\n    {\n      \"language_id\": 1,\n      \"title\": \"My Quiz\",\n      \"description\": \"A short description\"\n    }\n  ],\n  \"questions\": [\n    {\n      \"id\": 0,\n      \"question_type\": \"single_choice\",\n      \"position\": 1,\n      \"question_translations\": [\n        {\n          \"language_id\": 0,\n          \"content\": \"\",\n          \"explanation\": \"\"\n        }\n      ],\n      \"answers\": [\n        {\n          \"id\": 0,\n          \"is_correct\": false,\n          \"answer_translations\": [\n            {\n              \"language_id\": 0,\n              \"content\": \"\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "aiRequestId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "attemptId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://undefined.stud.vts.su.ac.rs",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "difficultyId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "demo@example.com",
+      "type": "string"
+    },
+    {
+      "key": "favoriteTestId",
+      "value": "{{testId}}",
+      "type": "string"
+    },
+    {
+      "key": "lang",
+      "value": "en",
+      "type": "string"
+    },
+    {
+      "key": "languageId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "newPassword",
+      "value": "Password123!",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "Password123!",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "resetToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "username",
+      "value": "mindforge_user",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const b = (pm.collectionVariables.get('baseUrl') || '').replace(/\\/$/, '');",
+          "if (b) pm.collectionVariables.set('baseUrl', b);"
+        ]
+      }
+    }
+  ]
+}
