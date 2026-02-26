@@ -2155,6 +2155,14 @@ body.mf-admin-body {
         backdrop-filter: blur(10px);
     }
 
+    /* The mobile language picker lives OUTSIDE the collapsible menu,
+       so its dropdown must stay absolutely positioned. */
+    .mf-mobile-lang .dropdown-menu {
+        position: absolute;
+        width: auto;
+        min-width: 9rem;
+    }
+
     .mf-navbar .dropdown-item {
         border-radius: 0.6rem;
         padding: 0.7rem 0.9rem;

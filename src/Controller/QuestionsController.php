@@ -107,7 +107,36 @@ class QuestionsController extends AppController
     {
         $question = $this->Questions->newEmptyEntity();
         if ($this->request->is('post')) {
-            $question = $this->Questions->patchEntity($question, $this->request->getData());
+            $question = $this->Questions->patchEntity($question, $this->request->getData(), [
+                'fields' => [
+                    'test_id',
+                    'category_id',
+                    'difficulty_id',
+                    'question_type',
+                    'source_type',
+                    'is_active',
+                    'needs_review',
+                    'position',
+                    'question_translations',
+                    'answers',
+                ],
+                'associated' => [
+                    'QuestionTranslations' => [
+                        'fields' => ['id', 'language_id', 'content', 'explanation'],
+                    ],
+                    'Answers' => [
+                        'fields' => [
+                            'id', 'is_correct', 'source_type',
+                            'match_side', 'match_group', 'position', 'answer_translations',
+                        ],
+                        'associated' => [
+                            'AnswerTranslations' => [
+                                'fields' => ['id', 'language_id', 'content'],
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
             if ($this->Questions->save($question)) {
                 $this->Flash->success(__('The question has been saved.'));
 
@@ -159,8 +188,33 @@ class QuestionsController extends AppController
             $data['answers'] = $editorService->normalizeAnswersPayload((array)($data['answers'] ?? []));
 
             $question = $this->Questions->patchEntity($question, $data, [
+                'fields' => [
+                    'test_id',
+                    'category_id',
+                    'difficulty_id',
+                    'question_type',
+                    'source_type',
+                    'is_active',
+                    'needs_review',
+                    'position',
+                    'question_translations',
+                    'answers',
+                ],
                 'associated' => [
-                    'Answers',
+                    'QuestionTranslations' => [
+                        'fields' => ['id', 'language_id', 'content', 'explanation'],
+                    ],
+                    'Answers' => [
+                        'fields' => [
+                            'id', 'is_correct', 'source_type',
+                            'match_side', 'match_group', 'position', 'answer_translations',
+                        ],
+                        'associated' => [
+                            'AnswerTranslations' => [
+                                'fields' => ['id', 'language_id', 'content'],
+                            ],
+                        ],
+                    ],
                 ],
             ]);
 

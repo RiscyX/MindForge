@@ -14,6 +14,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: templates/element/js_translations.php
+msgid "Get the App"
+msgstr "Get the App"
+
+#: templates/element/js_translations.php
+msgid "Download the MindForge Android app for a better experience."
+msgstr "Download the MindForge Android app for a better experience."
+
+#: templates/element/js_translations.php
+msgid "Download APK"
+msgstr "Download APK"
+
+#: templates/element/js_translations.php
+msgid "Not now"
+msgstr "Not now"
+
+#: templates/element/js_translations.php
+msgid "iOS App Not Available"
+msgstr "iOS App Not Available"
+
+#: templates/element/js_translations.php
+msgid "Unfortunately we don't have an iOS app yet - we're a bit too broke for a MacBook :D"
+msgstr "Unfortunately we don't have an iOS app yet - we're a bit too broke for a MacBook :D"
+
+#: templates/element/js_translations.php
+msgid "OK"
+msgstr "OK"
+
+#: templates/element/js_translations.php
+msgid "Android App Not Available"
+msgstr "Android App Not Available"
+
+#: templates/element/js_translations.php
+msgid "The Android app isn't available yet. Check back later!"
+msgstr "The Android app isn't available yet. Check back later!"
+
+#: templates/element/js_translations.php
+msgid "Are you sure you want to abort this attempt?"
+msgstr "Are you sure you want to abort this attempt?"
+
+#: templates/element/js_translations.php
+msgid "Matching"
+msgstr "Matching"
+
+#: templates/AiRequests/index.php templates/AiRequests/view.php
+#: templates/DeviceLogs/index.php
+msgid "User #{0}"
+msgstr "User #{0}"
+
+#: src/Controller/AppController.php
+msgid "Your account has been suspended. Please contact support."
+msgstr "Your account has been suspended. Please contact support."
+
+#: src/Service/AvatarUploadService.php
+msgid "Unsupported image type."
+msgstr "Unsupported image type."
+
+#: src/Service/AvatarUploadService.php
+msgid "Uploaded file is not a valid image."
+msgstr "Uploaded file is not a valid image."
+
+#: src/Controller/UsersController.php
+msgid "Registration successful but activation email could not be sent. Please contact support."
+msgstr "Registration successful but activation email could not be sent. Please contact support."
+
 #: src/Controller/ActivityLogsController.php:53
 #: src/Controller/ActivityLogsController.php:76
 msgid "The activity log has been saved."
@@ -637,6 +702,30 @@ msgid "The user could not be deleted. Please, try again."
 msgstr "The user could not be deleted. Please, try again."
 
 #: src/Controller/UsersController.php:169
+#: src/Controller/UsersController.php
+msgid "Too many registration attempts. Please try again later."
+msgstr "Too many registration attempts. Please try again later."
+
+#: src/Controller/UsersController.php
+msgid "Request a new activation email."
+msgstr "Request a new activation email."
+
+#: src/Controller/UsersController.php
+msgid "If the email exists and is awaiting activation, we sent a new activation link."
+msgstr "If the email exists and is awaiting activation, we sent a new activation link."
+
+#: templates/Users/resend_activation.php
+msgid "Resend Activation Email"
+msgstr "Resend Activation Email"
+
+#: templates/Users/resend_activation.php
+msgid "Enter your email address and we'll send you a new activation link."
+msgstr "Enter your email address and we'll send you a new activation link."
+
+#: templates/Users/resend_activation.php
+msgid "Send Activation Link"
+msgstr "Send Activation Link"
+
 #: src/Controller/UsersController.php:371
 #: src/Controller/UsersController.php:384 templates/Users/register.php:100
 #: templates/Users/reset_password.php:56
@@ -4290,3 +4379,58 @@ msgstr "Are you sure you want to log out?"
 
 msgid "Test #{0}"
 msgstr "Test #{0}"
+
+
+msgid "Training Mode"
+msgstr "Training Mode"
+
+msgid "Pick a category and practice endlessly. Questions will keep coming until you decide to stop."
+msgstr "Pick a category and practice endlessly. Questions will keep coming until you decide to stop."
+
+msgid "No categories with questions available yet."
+msgstr "No categories with questions available yet."
+
+msgid "Selected"
+msgstr "Selected"
+
+msgid "Start Training"
+msgstr "Start Training"
+
+msgid "Training"
+msgstr "Training"
+
+msgid "End training"
+msgstr "End training"
+
+msgid "Loading questions"
+msgstr "Loading questions"
+
+msgid "Training Complete"
+msgstr "Training Complete"
+
+msgid "Train again"
+msgstr "Train again"
+
+msgid "Correct!"
+msgstr "Correct!"
+
+msgid "Wrong!"
+msgstr "Wrong!"
+
+msgid "No questions found for this category."
+msgstr "No questions found for this category."
+
+msgid "Failed to load questions. Please try again."
+msgstr "Failed to load questions. Please try again."
+
+msgid "End this training session?"
+msgstr "End this training session?"
+
+msgid "Check"
+msgstr "Check"
+
+msgid "Matching options not configured."
+msgstr "Matching options not configured."
+
+msgid "Please log in to use training mode."
+msgstr "Please log in to use training mode."

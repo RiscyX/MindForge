@@ -69,7 +69,12 @@ class CategoriesController extends AppController
 
         if ($this->request->is('post')) {
             $category = $this->Categories->patchEntity($category, $this->request->getData(), [
-                'associated' => ['CategoryTranslations'],
+                'fields' => ['is_active', 'category_translations'],
+                'associated' => [
+                    'CategoryTranslations' => [
+                        'fields' => ['id', 'language_id', 'name', 'description'],
+                    ],
+                ],
             ]);
             if ($this->Categories->save($category)) {
                 $this->Flash->success(__('The category has been saved.'));
@@ -80,7 +85,7 @@ class CategoriesController extends AppController
         } else {
             $scaffoldService = new TranslationScaffoldService();
             $category->category_translations = $scaffoldService->buildNewTranslations(
-                $this->Categories->CategoryTranslations,
+                $this->Categories->CategoryTranslations->getTarget(),
             );
         }
         $this->set(compact('category', 'languages'));
@@ -100,7 +105,12 @@ class CategoriesController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $category = $this->Categories->patchEntity($category, $this->request->getData(), [
-                'associated' => ['CategoryTranslations'],
+                'fields' => ['is_active', 'category_translations'],
+                'associated' => [
+                    'CategoryTranslations' => [
+                        'fields' => ['id', 'language_id', 'name', 'description'],
+                    ],
+                ],
             ]);
             if ($this->Categories->save($category)) {
                 $this->Flash->success(__('The category has been saved.'));
@@ -111,7 +121,7 @@ class CategoriesController extends AppController
         } else {
             $scaffoldService = new TranslationScaffoldService();
             $category->category_translations = $scaffoldService->mergeTranslations(
-                $this->Categories->CategoryTranslations,
+                $this->Categories->CategoryTranslations->getTarget(),
                 $category->category_translations,
             );
         }

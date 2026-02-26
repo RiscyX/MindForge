@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Routes configuration.
  *
@@ -152,8 +153,11 @@ return function (RouteBuilder $routes): void {
             ->setPass(['id'])
             ->setMethods(['POST']);
 
+        $builder->connect('/tests/{id}/edit-detail', ['controller' => 'Tests', 'action' => 'viewForEdit'])
+            ->setPatterns(['id' => '\\d+'])
+            ->setPass(['id'])
+            ->setMethods(['GET']);
         $builder->resources('Tests');
-        $builder->fallbacks(DashedRoute::class);
     });
 
     // Admin prefix: /{lang}/admin/*
@@ -234,6 +238,13 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/favorites', ['controller' => 'Tests', 'action' => 'favorites'])
             ->setPatterns(['lang' => 'en|hu']);
 
+        // Infinity Training
+        $builder->connect('/training', ['controller' => 'Training', 'action' => 'index'])
+            ->setPatterns(['lang' => 'en|hu']);
+        $builder->connect('/training/questions', ['controller' => 'Training', 'action' => 'questions'])
+            ->setPatterns(['lang' => 'en|hu'])
+            ->setMethods(['GET']);
+
         $builder->connect('/tests/{attemptId}/review/{questionId}/explain', ['controller' => 'Tests', 'action' => 'explainAnswer'])
             ->setPatterns(['lang' => 'en|hu', 'attemptId' => '\\d+', 'questionId' => '\\d+'])
             ->setPass(['attemptId', 'questionId'])
@@ -244,6 +255,10 @@ return function (RouteBuilder $routes): void {
 
         $builder->connect('/confirm', ['controller' => 'Users', 'action' => 'confirm'])
             ->setPatterns(['lang' => 'en|hu']);
+
+        $builder->connect('/resend-activation', ['controller' => 'Users', 'action' => 'resendActivation'])
+            ->setPatterns(['lang' => 'en|hu'])
+            ->setMethods(['GET', 'POST']);
 
         $builder->connect('/profile', ['controller' => 'Users', 'action' => 'profile'])
             ->setPatterns(['lang' => 'en|hu']);

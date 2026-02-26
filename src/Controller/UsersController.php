@@ -60,7 +60,9 @@ class UsersController extends AppController
     {
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user = $this->Users->patchEntity($user, $this->request->getData(), [
+                'fields' => ['email', 'username', 'password', 'avatar_url'],
+            ]);
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -83,7 +85,9 @@ class UsersController extends AppController
     {
         $user = $this->Users->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user = $this->Users->patchEntity($user, $this->request->getData(), [
+                'fields' => ['email', 'username', 'password', 'avatar_url'],
+            ]);
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -128,7 +132,7 @@ class UsersController extends AppController
             'logout',
             'register',
             'confirm',
-            'activation',
+            'resendActivation',
             'forgotPassword',
             'resetPassword',
         ]);
@@ -165,7 +169,9 @@ class UsersController extends AppController
         if (!$result['ok']) {
             $user = $result['user'];
 
-            if ($result['code'] === 'PASSWORD_MISMATCH') {
+            if ($result['code'] === 'RATE_LIMITED') {
+                $this->Flash->error(__('Too many registration attempts. Please try again later.'));
+            } elseif ($result['code'] === 'PASSWORD_MISMATCH') {
                 $this->Flash->error(__('Passwords do not match.'));
             } else {
                 $this->Flash->error(__('Registration failed.'));
@@ -179,10 +185,9 @@ class UsersController extends AppController
         if ($result['email_sent'] ?? false) {
             $this->Flash->success(__('Check your email to activate your account.'));
         } else {
-            $activationUrl = $result['activation_url'] ?? '';
-            $this->Flash->warning(
-                __('Registration successful but email failed. Activation link: {0}', $activationUrl),
-            );
+            $this->Flash->warning(__(
+                'Registration successful but activation email could not be sent. Please contact support.',
+            ));
         }
 
         return $this->redirect(['action' => 'login', 'lang' => $lang]);
@@ -205,7 +210,12 @@ class UsersController extends AppController
         $userToken = $tokenService->validateActivationToken($token);
 
         if ($userToken === null) {
-            $this->Flash->error(__('Invalid or expired activation token.'));
+            $resendUrl = $this->Url->build(['action' => 'resendActivation', 'lang' => $lang]);
+            $this->Flash->error(
+                __('Invalid or expired activation token.') .
+                ' <a href="' . h($resendUrl) . '">' . __('Request a new activation email.') . '</a>',
+                ['escape' => false],
+            );
 
             return $this->redirect(['action' => 'login', 'lang' => $lang]);
         }
@@ -223,6 +233,42 @@ class UsersController extends AppController
         }
 
         $this->Flash->error(__('Failed to activate your account. Please try again.'));
+
+        return $this->redirect(['action' => 'login', 'lang' => $lang]);
+    }
+
+    /**
+     * Resend an activation email to an unactivated account.
+     *
+     * Accepts GET (show form) and POST (process request).
+     * Always returns a generic success response to prevent email enumeration.
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function resendActivation(): ?Response
+    {
+        $this->request->allowMethod(['get', 'post']);
+
+        $lang = (string)$this->request->getParam('lang', 'en');
+        $this->set(compact('lang'));
+
+        if (!$this->request->is('post')) {
+            return null;
+        }
+
+        $email = trim((string)$this->request->getData('email'));
+        $baseUrl = rtrim((string)env('BASE_URL', Router::url('/', true)), '/');
+
+        $registrationService = new WebUserRegistrationService();
+        $registrationService->resendActivation(
+            email: $email,
+            lang: $lang,
+            baseUrl: $baseUrl,
+            ipAddress: (string)$this->request->clientIp(),
+        );
+
+        // Always show a generic success message (no enumeration)
+        $this->Flash->success(__('If the email exists and is awaiting activation, we sent a new activation link.'));
 
         return $this->redirect(['action' => 'login', 'lang' => $lang]);
     }
@@ -288,7 +334,7 @@ class UsersController extends AppController
      */
     public function logout(): Response
     {
-        $this->request->allowMethod(['post', 'get']);
+        $this->request->allowMethod(['post']);
 
         $user = $this->Authentication->getIdentity();
         $ip = (string)$this->request->clientIp();
@@ -455,7 +501,9 @@ class UsersController extends AppController
             }
             unset($data['avatar_file']); // Remove file object from data to avoid patching issues if not handled by table
 
-            $user = $this->Users->patchEntity($user, $data);
+            $user = $this->Users->patchEntity($user, $data, [
+                'fields' => ['username', 'avatar_url'],
+            ]);
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('Your profile has been updated.'));
                 $lang = $this->request->getParam('lang', 'en');

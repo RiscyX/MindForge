@@ -55,13 +55,19 @@ class AttemptViewPayloadService
     public function questionPayload(object $question, bool $includeCorrect, ?int $attemptId = null): array
     {
         $content = '';
+        $explanation = null;
         if (!empty($question->question_translations)) {
-            $content = (string)($question->question_translations[0]->content ?? '');
+            $qt = $question->question_translations[0];
+            $content = (string)($qt->content ?? '');
+            $explanation = isset($qt->explanation) && $qt->explanation !== ''
+                ? (string)$qt->explanation
+                : null;
         }
 
         $payload = [
             'id' => (int)$question->id,
             'content' => $content,
+            'explanation' => $explanation,
             'type' => (string)$question->question_type,
             'position' => $question->position,
             'answers' => [],

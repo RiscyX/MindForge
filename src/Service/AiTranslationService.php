@@ -246,8 +246,8 @@ class AiTranslationService
             'source_medium' => 'test_payload',
             'source_reference' => $testId ? 'test:' . $testId : 'test:unsaved',
             'type' => 'test_translation',
-            'input_payload' => $inputPayload,
-            'output_payload' => $outputPayload,
+            'input_payload' => $this->normalizeJsonPayload($inputPayload),
+            'output_payload' => $this->normalizeJsonPayload($outputPayload),
             'status' => $status,
         ];
         if ($errorCode !== null) {
@@ -260,5 +260,27 @@ class AiTranslationService
         $entity = $aiRequestsTable->newEmptyEntity();
         $entity = $aiRequestsTable->patchEntity($entity, $data);
         $aiRequestsTable->save($entity);
+    }
+
+    /**
+     * @param mixed $payload
+     * @return string
+     */
+    private function normalizeJsonPayload(mixed $payload): string
+    {
+        if (is_string($payload)) {
+            json_decode($payload, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $payload;
+            }
+
+            $wrapped = json_encode(['raw' => $payload], JSON_UNESCAPED_SLASHES);
+
+            return is_string($wrapped) ? $wrapped : '{}';
+        }
+
+        $encoded = json_encode($payload, JSON_UNESCAPED_SLASHES);
+
+        return is_string($encoded) ? $encoded : '{}';
     }
 }

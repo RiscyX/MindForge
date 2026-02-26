@@ -60,6 +60,17 @@ $isFavoritesActive = ($currentPrefix === null || $currentPrefix === '')
     && $currentController === 'Tests'
     && $currentAction === 'favorites';
 
+$trainingUrl = [
+    'prefix' => false,
+    'controller' => 'Training',
+    'action' => 'index',
+    'lang' => $lang,
+];
+
+$isTrainingActive = ($currentPrefix === null || $currentPrefix === '')
+    && $currentController === 'Training'
+    && $currentAction === 'index';
+
 $profileUrl = [
     'prefix' => false,
     'controller' => 'Users',
@@ -210,6 +221,13 @@ $langRouteHu = $buildLangRoute('hu');
                         <a class="nav-link<?= $isFavoritesActive ? ' active' : '' ?>"
                            href="<?= $this->Url->build($favoritesUrl) ?>">
                             <?= __('Favorites') ?>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link<?= $isTrainingActive ? ' active' : '' ?>"
+                           href="<?= $this->Url->build($trainingUrl) ?>">
+                            <i class="bi bi-infinity me-1"></i><?= __('Training') ?>
                         </a>
                     </li>
 

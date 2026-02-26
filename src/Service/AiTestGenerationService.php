@@ -83,6 +83,7 @@ class AiTestGenerationService
 
             $aiRequestsTable = TableRegistry::getTableLocator()->get('AiRequests');
             $aiRequest = $aiRequestsTable->newEmptyEntity();
+            $successOutputPayload = $this->normalizeJsonPayload($responseContent);
             $aiRequest = $aiRequestsTable->patchEntity($aiRequest, [
                 'user_id' => $userId,
                 'language_id' => $currentLanguageId,
@@ -94,7 +95,7 @@ class AiTestGenerationService
                     'question_count' => $questionCount,
                     'final_prompt' => $finalPrompt,
                 ]),
-                'output_payload' => $responseContent,
+                'output_payload' => $successOutputPayload,
                 'status' => 'success',
             ]);
             $aiRequestsTable->save($aiRequest);
@@ -126,6 +127,9 @@ class AiTestGenerationService
 
             $aiRequestsTable = TableRegistry::getTableLocator()->get('AiRequests');
             $failedReq = $aiRequestsTable->newEmptyEntity();
+            $failedOutputPayload = $this->normalizeJsonPayload([
+                'error' => $e->getMessage(),
+            ]);
             $failedReq = $aiRequestsTable->patchEntity($failedReq, [
                 'user_id' => $userId,
                 'source_medium' => 'user_prompt',
@@ -135,7 +139,7 @@ class AiTestGenerationService
                     'prompt' => $prompt,
                     'question_count' => $questionCount,
                 ]),
-                'output_payload' => $e->getMessage(),
+                'output_payload' => $failedOutputPayload,
                 'status' => 'failed',
                 'error_code' => $errorCode,
                 'error_message' => $e->getMessage(),
@@ -290,5 +294,27 @@ class AiTestGenerationService
             'user_agent' => $userAgent,
         ]);
         $activityLogsTable->save($activityLog);
+    }
+
+    /**
+     * @param mixed $payload
+     * @return string
+     */
+    private function normalizeJsonPayload(mixed $payload): string
+    {
+        if (is_string($payload)) {
+            json_decode($payload, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $payload;
+            }
+
+            $wrapped = json_encode(['raw' => $payload], JSON_UNESCAPED_SLASHES);
+
+            return is_string($wrapped) ? $wrapped : '{}';
+        }
+
+        $encoded = json_encode($payload, JSON_UNESCAPED_SLASHES);
+
+        return is_string($encoded) ? $encoded : '{}';
     }
 }

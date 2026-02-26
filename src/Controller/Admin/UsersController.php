@@ -238,7 +238,9 @@ class UsersController extends AppController
                 $data['is_blocked'] = false;
             }
 
-            $user = $usersTable->patchEntity($user, $data);
+            $user = $usersTable->patchEntity($user, $data, [
+                'fields' => ['email', 'username', 'password', 'avatar_url', 'role_id', 'is_active', 'is_blocked'],
+            ]);
 
             if ($usersTable->save($user)) {
                 $this->Flash->success(__('The user has been created.'));
@@ -279,7 +281,9 @@ class UsersController extends AppController
 
             $data = $this->applyAvatarUpload($data);
 
-            $user = $usersTable->patchEntity($user, $data);
+            $user = $usersTable->patchEntity($user, $data, [
+                'fields' => ['email', 'username', 'password', 'avatar_url', 'role_id', 'is_active', 'is_blocked'],
+            ]);
 
             if ($usersTable->save($user)) {
                 $this->Flash->success(__('The user has been updated.'));
@@ -397,7 +401,32 @@ class UsersController extends AppController
             return [$data, null, null];
         }
 
-        $filename = bin2hex(random_bytes(16)) . '.jpg';
+        set_error_handler(static function (): bool {
+            return true;
+        });
+        $imageInfo = getimagesizefromstring($imageBytes);
+        restore_error_handler();
+
+        if (!is_array($imageInfo)) {
+            $this->Flash->error(__('Uploaded file is not a valid image.'));
+
+            return [$data, null, null];
+        }
+
+        $mime = strtolower((string)($imageInfo['mime'] ?? ''));
+        $allowedByMime = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp',
+        ];
+        if (!isset($allowedByMime[$mime])) {
+            $this->Flash->error(__('Unsupported image type.'));
+
+            return [$data, null, null];
+        }
+
+        $filename = bin2hex(random_bytes(16)) . '.' . $allowedByMime[$mime];
 
         return [$data, $imageBytes, $filename];
     }
@@ -439,7 +468,11 @@ class UsersController extends AppController
             return $data;
         }
 
-        $data['avatar_url'] = '/img/' . $result['avatar_url'];
+        $avatarUrl = ltrim((string)$result['avatar_url'], '/');
+        if (str_starts_with($avatarUrl, 'img/')) {
+            $avatarUrl = substr($avatarUrl, 4);
+        }
+        $data['avatar_url'] = '/img/' . $avatarUrl;
 
         return $data;
     }

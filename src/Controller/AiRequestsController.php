@@ -146,7 +146,32 @@ class AiRequestsController extends AppController
 
         $aiRequest = $this->AiRequests->newEmptyEntity();
         if ($this->request->is('post')) {
-            $aiRequest = $this->AiRequests->patchEntity($aiRequest, $this->request->getData());
+            $aiRequest = $this->AiRequests->patchEntity($aiRequest, $this->request->getData(), [
+                'fields' => [
+                    'user_id',
+                    'language_id',
+                    'source_medium',
+                    'source_reference',
+                    'type',
+                    'prompt_version',
+                    'provider',
+                    'model',
+                    'duration_ms',
+                    'prompt_tokens',
+                    'completion_tokens',
+                    'total_tokens',
+                    'cost_usd',
+                    'input_payload',
+                    'output_payload',
+                    'status',
+                    'test_id',
+                    'started_at',
+                    'finished_at',
+                    'error_code',
+                    'error_message',
+                    'meta',
+                ],
+            ]);
             if ($this->AiRequests->save($aiRequest)) {
                 $this->Flash->success(__('The ai request has been saved.'));
 
@@ -178,7 +203,32 @@ class AiRequestsController extends AppController
 
         $aiRequest = $this->AiRequests->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $aiRequest = $this->AiRequests->patchEntity($aiRequest, $this->request->getData());
+            $aiRequest = $this->AiRequests->patchEntity($aiRequest, $this->request->getData(), [
+                'fields' => [
+                    'user_id',
+                    'language_id',
+                    'source_medium',
+                    'source_reference',
+                    'type',
+                    'prompt_version',
+                    'provider',
+                    'model',
+                    'duration_ms',
+                    'prompt_tokens',
+                    'completion_tokens',
+                    'total_tokens',
+                    'cost_usd',
+                    'input_payload',
+                    'output_payload',
+                    'status',
+                    'test_id',
+                    'started_at',
+                    'finished_at',
+                    'error_code',
+                    'error_message',
+                    'meta',
+                ],
+            ]);
             if ($this->AiRequests->save($aiRequest)) {
                 $this->Flash->success(__('The ai request has been saved.'));
 

@@ -609,6 +609,33 @@ class TestsController extends AppController
             return;
         }
 
+        // Quiz creator prefix: show the creator details view.
+        if ($this->request->getParam('prefix') === 'QuizCreator') {
+            $lang = (string)$this->request->getParam('lang', 'en');
+            $langCode = strtolower(trim($lang));
+            $languageId = (new LanguageResolverService())->resolveId($langCode);
+            $userId = $identity ? (int)$identity->getIdentifier() : null;
+
+            $details = (new TestDetailsPageService())->buildCreatorDetails(
+                is_numeric($id) ? (int)$id : 0,
+                (int)$userId,
+                $languageId,
+            );
+
+            if (($details['test'] ?? null) === null) {
+                $this->Flash->error(__('Quiz not found.'));
+
+                return $this->redirect(['action' => 'index', 'lang' => $lang]);
+            }
+
+            $this->set($details);
+            $this->viewBuilder()
+                ->setTemplatePath('Tests')
+                ->setTemplate('creator_view');
+
+            return;
+        }
+
         $test = $this->Tests->get($id, contain: [
             'Categories',
             'Difficulties',

@@ -328,6 +328,19 @@ if (document.readyState === 'loading') {
     initTestBuilderAiTools();
 }
 
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function escapeAttribute(value) {
+    return escapeHtml(value).replace(/`/g, '&#96;');
+}
+
 function buildTranslatePayload() {
     const sourceLanguageId = (config.currentLanguageId && Number.isFinite(Number(config.currentLanguageId)))
         ? Number(config.currentLanguageId)
@@ -573,6 +586,8 @@ function addQuestion(data = null) {
     }
 
     const questionSourceType = (data && data.source_type) ? data.source_type : 'human';
+    const safeQuestionSourceType = escapeAttribute(questionSourceType);
+    const safeQuestionId = data && data.id ? escapeAttribute(data.id) : '';
 
     let html = `
     <div class="card mb-3 question-card mf-test-builder__question" id="question-${index}" data-index="${index}">
@@ -586,8 +601,8 @@ function addQuestion(data = null) {
             </button>
         </div>
         <div class="card-body">
-            ${data && data.id ? `<input type="hidden" name="questions[${index}][id]" value="${data.id}">` : ''}
-            <input type="hidden" name="questions[${index}][source_type]" value="${questionSourceType}">
+            ${safeQuestionId ? `<input type="hidden" name="questions[${index}][id]" value="${safeQuestionId}">` : ''}
+            <input type="hidden" name="questions[${index}][source_type]" value="${safeQuestionSourceType}">
             <input type="hidden" class="question-position" name="questions[${index}][position]" value="${index}">
             <input type="hidden" name="questions[${index}][is_active]" value="1">
 
@@ -666,12 +681,17 @@ function generateTranslationInputs(baseName, index, subName, fieldName, values =
             }
         }
 
+        const safeLangName = escapeHtml(langName);
+        const safeTranslationId = escapeAttribute(translationId);
+        const safeLangId = escapeAttribute(langId);
+        const safeVal = escapeAttribute(val);
+
         html += `
         <div class="input-group mb-2">
-            <span class="input-group-text" style="width: 100px;">${langName}</span>
-            ${translationId ? `<input type="hidden" name="${baseName}[${index}][${subName}][${langId}][id]" value="${translationId}">` : ''}
-            <input type="hidden" name="${baseName}[${index}][${subName}][${langId}][language_id]" value="${langId}">
-            <input type="text" class="form-control" name="${baseName}[${index}][${subName}][${langId}][${fieldName}]" placeholder="Translation for ${langName}" value="${val}">
+            <span class="input-group-text" style="width: 100px;">${safeLangName}</span>
+            ${safeTranslationId ? `<input type="hidden" name="${baseName}[${index}][${subName}][${safeLangId}][id]" value="${safeTranslationId}">` : ''}
+            <input type="hidden" name="${baseName}[${index}][${subName}][${safeLangId}][language_id]" value="${safeLangId}">
+            <input type="text" class="form-control" name="${baseName}[${index}][${subName}][${safeLangId}][${fieldName}]" placeholder="Translation for ${safeLangName}" value="${safeVal}">
         </div>
         `;
     }
@@ -695,14 +715,20 @@ function generateQuestionTranslationInputs(index, values = null) {
             }
         }
 
+        const safeLangName = escapeHtml(langName);
+        const safeLangId = escapeAttribute(langId);
+        const safeTranslationId = escapeAttribute(translationId);
+        const safeContent = escapeAttribute(content);
+        const safeExplanation = escapeHtml(explanation);
+
         html += `
         <div class="border rounded p-2 mb-2">
-            <div class="fw-semibold mb-2">${langName}</div>
-            ${translationId ? `<input type="hidden" name="questions[${index}][question_translations][${langId}][id]" value="${translationId}">` : ''}
-            <input type="hidden" name="questions[${index}][question_translations][${langId}][language_id]" value="${langId}">
-            <input type="text" class="form-control mb-2" name="questions[${index}][question_translations][${langId}][content]" placeholder="Question text..." value="${content}">
+            <div class="fw-semibold mb-2">${safeLangName}</div>
+            ${safeTranslationId ? `<input type="hidden" name="questions[${index}][question_translations][${safeLangId}][id]" value="${safeTranslationId}">` : ''}
+            <input type="hidden" name="questions[${index}][question_translations][${safeLangId}][language_id]" value="${safeLangId}">
+            <input type="text" class="form-control mb-2" name="questions[${index}][question_translations][${safeLangId}][content]" placeholder="Question text..." value="${safeContent}">
             <label class="form-label small mb-1">Correct answer explanation</label>
-            <textarea class="form-control" rows="2" name="questions[${index}][question_translations][${langId}][explanation]" placeholder="Explain why the correct answer is correct (optional)...">${explanation}</textarea>
+            <textarea class="form-control" rows="2" name="questions[${index}][question_translations][${safeLangId}][explanation]" placeholder="Explain why the correct answer is correct (optional)...">${safeExplanation}</textarea>
         </div>
         `;
     }
@@ -729,12 +755,17 @@ function generateAnswerTranslationInputs(qIndex, aIndex, values = null) {
             }
         }
 
+        const safeLangName = escapeHtml(langName);
+        const safeLangId = escapeAttribute(langId);
+        const safeTranslationId = escapeAttribute(translationId);
+        const safeVal = escapeAttribute(val);
+
         html += `
         <div class="input-group input-group-sm mb-1">
-            <span class="input-group-text" style="width: 80px;">${langName}</span>
-            ${translationId ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][id]" value="${translationId}">` : ''}
-            <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][language_id]" value="${langId}">
-            <input type="text" class="form-control" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${langId}][content]" placeholder="Answer text..." value="${val}">
+            <span class="input-group-text" style="width: 80px;">${safeLangName}</span>
+            ${safeTranslationId ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${safeLangId}][id]" value="${safeTranslationId}">` : ''}
+            <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${safeLangId}][language_id]" value="${safeLangId}">
+            <input type="text" class="form-control" name="questions[${qIndex}][answers][${aIndex}][answer_translations][${safeLangId}][content]" placeholder="Answer text..." value="${safeVal}">
         </div>
         `;
     }
@@ -883,6 +914,10 @@ function addMatchingPair(qIndex, pairData = null, questionSourceType = 'human', 
     const rightId = right && right.id ? right.id : '';
     const leftSourceType = left && left.source_type ? left.source_type : questionSourceType;
     const rightSourceType = right && right.source_type ? right.source_type : questionSourceType;
+    const safeLeftId = escapeAttribute(leftId);
+    const safeRightId = escapeAttribute(rightId);
+    const safeLeftSourceType = escapeAttribute(leftSourceType);
+    const safeRightSourceType = escapeAttribute(rightSourceType);
     const leftTranslations = left && left.translations ? left.translations : null;
     const rightTranslations = right && right.translations ? right.translations : null;
 
@@ -902,8 +937,8 @@ function addMatchingPair(qIndex, pairData = null, questionSourceType = 'human', 
             <div class="row g-2">
                 <div class="col-md-6">
                     <div class="text-muted mb-1">Left side</div>
-                    ${leftId ? `<input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][id]" value="${leftId}">` : ''}
-                    <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][source_type]" value="${leftSourceType}">
+                    ${safeLeftId ? `<input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][id]" value="${safeLeftId}">` : ''}
+                    <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][source_type]" value="${safeLeftSourceType}">
                     <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][is_correct]" value="0">
                     <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][match_side]" value="left">
                     <input type="hidden" name="questions[${qIndex}][answers][${leftIndex}][match_group]" value="${pairGroup}">
@@ -911,8 +946,8 @@ function addMatchingPair(qIndex, pairData = null, questionSourceType = 'human', 
                 </div>
                 <div class="col-md-6">
                     <div class="text-muted mb-1">Right side</div>
-                    ${rightId ? `<input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][id]" value="${rightId}">` : ''}
-                    <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][source_type]" value="${rightSourceType}">
+                    ${safeRightId ? `<input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][id]" value="${safeRightId}">` : ''}
+                    <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][source_type]" value="${safeRightSourceType}">
                     <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][is_correct]" value="0">
                     <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][match_side]" value="right">
                     <input type="hidden" name="questions[${qIndex}][answers][${rightIndex}][match_group]" value="${pairGroup}">
@@ -938,6 +973,8 @@ function addTextAcceptedAnswer(qIndex, data = null, questionSourceType = null) {
     const effectiveQuestionSourceType = questionSourceType || fallbackQuestionSourceType;
     const answerSourceType = (data && data.source_type) ? data.source_type : effectiveQuestionSourceType;
     const id = data ? data.id : null;
+    const safeId = escapeAttribute(id ?? '');
+    const safeAnswerSourceType = escapeAttribute(answerSourceType);
 
     const html = `
     <div class="card mb-2 mf-test-builder__answer" id="q${qIndex}-a${aIndex}">
@@ -948,9 +985,9 @@ function addTextAcceptedAnswer(qIndex, data = null, questionSourceType = null) {
                      <i class="bi bi-trash3" aria-hidden="true"></i>
                  </button>
              </div>
-             ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${id}">` : ''}
+             ${safeId ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${safeId}">` : ''}
              <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][is_correct]" value="1">
-             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${answerSourceType}">
+             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${safeAnswerSourceType}">
              ${generateAnswerTranslationInputs(qIndex, aIndex, data ? data.translations : null)}
         </div>
     </div>
@@ -972,12 +1009,16 @@ function addFixedAnswer(qIndex, aIndex, defaultText, isCorrect, translations = n
     // Determine checkbox state
     const checked = isCorrect ? 'checked' : '';
 
+    const safeDefaultText = escapeHtml(defaultText);
+    const safeId = escapeAttribute(id ?? '');
+    const safeSourceType = escapeAttribute(sourceType);
+
     let html = `
     <div class="card mb-2 mf-test-builder__answer">
          <div class="card-body p-2">
              <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="d-flex align-items-center">
-                    <strong class="me-3">Option: ${defaultText}</strong>
+                    <strong class="me-3">Option: ${safeDefaultText}</strong>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="questions[${qIndex}][correct_answer_index]" value="${aIndex}" ${checked} 
                                onchange="updateFixedAnswerCorrectness(${qIndex}, ${aIndex})">
@@ -985,9 +1026,9 @@ function addFixedAnswer(qIndex, aIndex, defaultText, isCorrect, translations = n
                     </div>
                 </div>
                 <!-- Hidden input that actually submits the 1/0 value -->
-                ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${id}">` : ''}
+                ${safeId ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${safeId}">` : ''}
                 <input type="hidden" class="fixed-answer-correct-input" name="questions[${qIndex}][answers][${aIndex}][is_correct]" value="${isCorrect ? 1 : 0}">
-                <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${sourceType}">
+                <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${safeSourceType}">
              </div>
              ${generateAnswerTranslationInputs(qIndex, aIndex, translations)}
          </div>
@@ -1036,6 +1077,7 @@ function addAnswer(qIndex, data = null, questionSourceType = null) {
     const fallbackQuestionSourceType = sourceTypeInput ? sourceTypeInput.value : 'human';
     const effectiveQuestionSourceType = questionSourceType || fallbackQuestionSourceType;
     const answerSourceType = (data && data.source_type) ? data.source_type : effectiveQuestionSourceType;
+    const safeAnswerSourceType = escapeAttribute(answerSourceType);
 
     let html = `
     <div class="card mb-2 mf-test-builder__answer" id="q${qIndex}-a${aIndex}">
@@ -1050,8 +1092,8 @@ function addAnswer(qIndex, data = null, questionSourceType = null) {
                     <i class="bi bi-trash3" aria-hidden="true"></i>
                 </button>
              </div>
-             ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${id}">` : ''}
-             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${answerSourceType}">
+             ${id ? `<input type="hidden" name="questions[${qIndex}][answers][${aIndex}][id]" value="${escapeAttribute(id)}">` : ''}
+             <input type="hidden" name="questions[${qIndex}][answers][${aIndex}][source_type]" value="${safeAnswerSourceType}">
              ${generateAnswerTranslationInputs(qIndex, aIndex, data ? data.translations : null)}
         </div>
     </div>

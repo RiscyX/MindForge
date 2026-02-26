@@ -37,6 +37,10 @@ class RoleRouteGuardService
             return true;
         }
 
+        if ($controller === 'Training') {
+            return true;
+        }
+
         if ($controller === 'Users') {
             return in_array(
                 $action,
@@ -81,6 +85,10 @@ class RoleRouteGuardService
         }
 
         if ($controller === 'Tests') {
+            return true;
+        }
+
+        if ($controller === 'Training') {
             return true;
         }
 

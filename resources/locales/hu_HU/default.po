@@ -13,6 +13,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: templates/element/js_translations.php
+msgid "Get the App"
+msgstr "Töltsd le az appot"
+
+#: templates/element/js_translations.php
+msgid "Download the MindForge Android app for a better experience."
+msgstr "Töltsd le a MindForge Android appot a jobb élményért."
+
+#: templates/element/js_translations.php
+msgid "Download APK"
+msgstr "APK letöltése"
+
+#: templates/element/js_translations.php
+msgid "Not now"
+msgstr "Most nem"
+
+#: templates/element/js_translations.php
+msgid "iOS App Not Available"
+msgstr "iOS app még nincs"
+
+#: templates/element/js_translations.php
+msgid "Unfortunately we don't have an iOS app yet - we're a bit too broke for a MacBook :D"
+msgstr "Sajnos iOS appunk még nincs - egyelőre túl drága nekünk egy MacBook :D"
+
+#: templates/element/js_translations.php
+msgid "OK"
+msgstr "Rendben"
+
+#: templates/element/js_translations.php
+msgid "Android App Not Available"
+msgstr "Android app még nincs"
+
+#: templates/element/js_translations.php
+msgid "The Android app isn't available yet. Check back later!"
+msgstr "Az Android app még nem érhető el. Nézz vissza később!"
+
+#: templates/element/js_translations.php
+msgid "Are you sure you want to abort this attempt?"
+msgstr "Biztosan megszakítod ezt a próbálkozást?"
+
+#: templates/element/js_translations.php
+msgid "Matching"
+msgstr "Párosítás"
+
+#: templates/AiRequests/index.php templates/AiRequests/view.php
+#: templates/DeviceLogs/index.php
+msgid "User #{0}"
+msgstr "Felhasználó #{0}"
+
+#: src/Controller/AppController.php
+msgid "Your account has been suspended. Please contact support."
+msgstr "A fiókodat felfüggesztettük. Kérjük, vedd fel a kapcsolatot a támogatással."
+
+#: src/Service/AvatarUploadService.php
+msgid "Unsupported image type."
+msgstr "Nem támogatott képtípus."
+
+#: src/Service/AvatarUploadService.php
+msgid "Uploaded file is not a valid image."
+msgstr "A feltöltött fájl nem érvényes kép."
+
+#: src/Controller/UsersController.php
+msgid "Registration successful but activation email could not be sent. Please contact support."
+msgstr "A regisztráció sikeres volt, de az aktiváló e-mailt nem sikerült elküldeni. Kérjük, lépj kapcsolatba a támogatással."
+
 #: src/Controller/ActivityLogsController.php:53
 #: src/Controller/ActivityLogsController.php:76
 msgid "The activity log has been saved."
@@ -634,6 +699,30 @@ msgstr "A felhasználó törölve lett."
 #: src/Service/AdminUserManagementService.php:202
 msgid "The user could not be deleted. Please, try again."
 msgstr "A felhasználó törlése sikertelen. Próbáld újra."
+
+#: src/Controller/UsersController.php
+msgid "Too many registration attempts. Please try again later."
+msgstr "Túl sok regisztrációs kísérlet. Kérjük, próbáld újra később."
+
+#: src/Controller/UsersController.php
+msgid "Request a new activation email."
+msgstr "Kérj új aktiváló emailt."
+
+#: src/Controller/UsersController.php
+msgid "If the email exists and is awaiting activation, we sent a new activation link."
+msgstr "Ha az e-mail cím létezik és még nem lett aktiválva, elküldtük az új aktiváló linket."
+
+#: templates/Users/resend_activation.php
+msgid "Resend Activation Email"
+msgstr "Aktiváló email újraküldése"
+
+#: templates/Users/resend_activation.php
+msgid "Enter your email address and we'll send you a new activation link."
+msgstr "Add meg az e-mail címedet és küldünk egy új aktiváló linket."
+
+#: templates/Users/resend_activation.php
+msgid "Send Activation Link"
+msgstr "Aktiváló link küldése"
 
 #: src/Controller/UsersController.php:169
 #: src/Controller/UsersController.php:371
@@ -4296,3 +4385,58 @@ msgstr "Biztosan ki szeretne jelentkezni?"
 
 msgid "Test #{0}"
 msgstr "#{0}. teszt"
+
+
+msgid "Training Mode"
+msgstr "Gyakorlás mód"
+
+msgid "Pick a category and practice endlessly. Questions will keep coming until you decide to stop."
+msgstr "Válassz egy kategóriát és gyakorolj végtelenül. A kérdések addig jönnek, amíg le nem állítod."
+
+msgid "No categories with questions available yet."
+msgstr "Még nincsenek elérhető kérdéseket tartalmazó kategóriák."
+
+msgid "Selected"
+msgstr "Kiválasztva"
+
+msgid "Start Training"
+msgstr "Gyakorlás indítása"
+
+msgid "Training"
+msgstr "Gyakorlás"
+
+msgid "End training"
+msgstr "Gyakorlás befejezése"
+
+msgid "Loading questions"
+msgstr "Kérdések betöltése"
+
+msgid "Training Complete"
+msgstr "Gyakorlás befejezve"
+
+msgid "Train again"
+msgstr "Újra gyakorlás"
+
+msgid "Correct!"
+msgstr "Helyes!"
+
+msgid "Wrong!"
+msgstr "Helytelen!"
+
+msgid "No questions found for this category."
+msgstr "Nincs kérdés ebben a kategóriában."
+
+msgid "Failed to load questions. Please try again."
+msgstr "Nem sikerült betölteni a kérdéseket. Próbáld újra."
+
+msgid "End this training session?"
+msgstr "Befejezed a gyakorlást?"
+
+msgid "Check"
+msgstr "Ellenőrzés"
+
+msgid "Matching options not configured."
+msgstr "A párosítási lehetőségek nincsenek beállítva."
+
+msgid "Please log in to use training mode."
+msgstr "Kérjük, jelentkezz be a gyakorlás használatához."

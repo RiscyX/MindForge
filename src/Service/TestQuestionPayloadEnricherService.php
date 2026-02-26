@@ -36,6 +36,15 @@ class TestQuestionPayloadEnricherService
             if (empty($question['id']) && $userId !== null) {
                 $question['created_by'] = $userId;
             }
+            // Ensure new questions always have is_active and source_type defaults
+            if (empty($question['id'])) {
+                if (!isset($question['is_active'])) {
+                    $question['is_active'] = true;
+                }
+                if (empty($question['source_type'])) {
+                    $question['source_type'] = 'human';
+                }
+            }
 
             if (empty($question['answers']) || !is_array($question['answers'])) {
                 continue;
