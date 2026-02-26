@@ -30,20 +30,38 @@ class TestQuestionPayloadEnricherService
                 continue;
             }
 
+            $question['source_type'] = $this->normalizeSourceType($question['source_type'] ?? null);
+
             if ($categoryId !== null) {
                 $question['category_id'] = $categoryId;
             }
             if (empty($question['id']) && $userId !== null) {
                 $question['created_by'] = $userId;
             }
-            // Ensure new questions always have is_active and source_type defaults
+            // Ensure new questions always have is_active defaults
             if (empty($question['id'])) {
                 if (!isset($question['is_active'])) {
                     $question['is_active'] = true;
                 }
-                if (empty($question['source_type'])) {
-                    $question['source_type'] = 'human';
+            }
+
+            $questionTranslations = $question['question_translations'] ?? null;
+            if (is_array($questionTranslations) && $questionTranslations) {
+                foreach ($questionTranslations as &$translation) {
+                    if (!is_array($translation)) {
+                        continue;
+                    }
+                    $translation['source_type'] = $this->normalizeSourceType(
+                        $translation['source_type'] ?? null,
+                        (string)$question['source_type'],
+                    );
+                    if ($userId !== null && empty($translation['created_by'])) {
+                        $translation['created_by'] = $userId;
+                    }
                 }
+                unset($translation);
+
+                $question['question_translations'] = $questionTranslations;
             }
 
             if (empty($question['answers']) || !is_array($question['answers'])) {
@@ -58,12 +76,13 @@ class TestQuestionPayloadEnricherService
                     continue;
                 }
 
+                $answer['source_type'] = $this->normalizeSourceType(
+                    $answer['source_type'] ?? null,
+                    $questionSourceType,
+                );
+
                 $answer['position'] = $position;
                 $position += 1;
-
-                if (empty($answer['source_type'])) {
-                    $answer['source_type'] = $questionSourceType;
-                }
 
                 $sourceText = '';
                 $translations = $answer['answer_translations'] ?? null;
@@ -93,9 +112,10 @@ class TestQuestionPayloadEnricherService
                         if (!is_array($translation)) {
                             continue;
                         }
-                        if (empty($translation['source_type'])) {
-                            $translation['source_type'] = (string)$answer['source_type'];
-                        }
+                        $translation['source_type'] = $this->normalizeSourceType(
+                            $translation['source_type'] ?? null,
+                            (string)$answer['source_type'],
+                        );
                         if ($userId !== null && empty($translation['created_by'])) {
                             $translation['created_by'] = $userId;
                         }
@@ -110,5 +130,18 @@ class TestQuestionPayloadEnricherService
             unset($answer);
         }
         unset($question);
+    }
+
+    /**
+     * @param mixed $value Source type candidate value.
+     * @param string $fallback Fallback source type.
+     * @return string
+     */
+    private function normalizeSourceType(mixed $value, string $fallback = 'human'): string
+    {
+        $normalizedFallback = in_array($fallback, ['human', 'ai'], true) ? $fallback : 'human';
+        $candidate = strtolower(trim((string)$value));
+
+        return in_array($candidate, ['human', 'ai'], true) ? $candidate : $normalizedFallback;
     }
 }
