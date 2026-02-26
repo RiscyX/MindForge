@@ -388,13 +388,15 @@ class TestsController extends AppController
 
         // 7. Response
         if (!$result['ok']) {
+            $details = is_array($result['errors'] ?? null) ? $result['errors'] : [];
             $this->response = $this->response->withStatus(422);
             $this->set([
                 'ok' => false,
                 'error' => [
                     'code' => 'TEST_UPDATE_FAILED',
                     'message' => 'Unable to update test.',
-                    'details' => $result['errors'] ?? [],
+                    'details' => $details,
+                    'detail_paths' => $this->flattenValidationErrorPaths($details),
                 ],
             ]);
             $this->viewBuilder()->setOption('serialize', ['ok', 'error']);
@@ -502,6 +504,48 @@ class TestsController extends AppController
                 'total_questions' => $attempt->total_questions,
             ],
         ]);
+    }
+
+    /**
+     * Flattens nested Cake validation errors into dot-path keys.
+     *
+     * @param array<string|int, mixed> $errors Validation errors.
+     * @return list<string>
+     */
+    private function flattenValidationErrorPaths(array $errors): array
+    {
+        $paths = [];
+        $this->collectErrorPaths($errors, '', $paths);
+
+        return array_values(array_unique($paths));
+    }
+
+    /**
+     * @param array<string|int, mixed> $node
+     * @param string $prefix
+     * @param array<int, string> $paths
+     * @return void
+     */
+    private function collectErrorPaths(array $node, string $prefix, array &$paths): void
+    {
+        foreach ($node as $key => $value) {
+            $segment = is_int($key) ? (string)$key : $key;
+            $path = $prefix === '' ? $segment : $prefix . '.' . $segment;
+
+            if (is_string($value) && $value !== '') {
+                $paths[] = $path;
+
+                continue;
+            }
+
+            if (is_array($value)) {
+                if (array_key_exists('_empty', $value) || array_key_exists('_required', $value)) {
+                    $paths[] = $path;
+                }
+
+                $this->collectErrorPaths($value, $path, $paths);
+            }
+        }
     }
 
     /**
