@@ -18,4 +18,4 @@ if ($encodedConfig === false) {
 }
 ?>
 <script type="application/json" data-mf-admin-table-config><?= $encodedConfig ?></script>
-<?= $this->Html->script('admin_table_operations') ?>
+<?= $this->Html->script('admin_table_operations.js?v=2') ?>
