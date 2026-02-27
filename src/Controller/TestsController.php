@@ -36,6 +36,17 @@ class TestsController extends AppController
 {
     /**
      * @param \Cake\Event\EventInterface $event
+     * @return void
+     */
+    public function beforeFilter(EventInterface $event): void
+    {
+        parent::beforeFilter($event);
+
+        $this->Authentication->allowUnauthenticated(['index', 'details']);
+    }
+
+    /**
+     * @param \Cake\Event\EventInterface $event
      * @return \Cake\Http\Response|null|void
      */
     public function beforeRender(EventInterface $event)

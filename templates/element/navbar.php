@@ -161,6 +161,12 @@ $langRouteHu = $buildLangRoute('hu');
                 <?php if (!$isLoggedIn) : ?>
                     <!-- Guest -->
                     <li class="nav-item">
+                        <a class="nav-link<?= $isQuizzesActive ? ' active' : '' ?>"
+                           href="<?= $this->Url->build($quizzesUrl) ?>">
+                            <?= __('Quizzes') ?>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link<?= $currentAction === 'login' ? ' active' : '' ?>"
                            href="<?= $this->Url->build([
                                'controller' => 'Users',
