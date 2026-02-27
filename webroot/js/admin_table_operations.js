@@ -331,231 +331,293 @@
             nonSearchableTargets: [],
         }, cfg.dataTables || {});
 
+        // --- Info text helper (Showing X – Y of Z) ---
+        const infoContainerId = cfg.infoContainerId || null;
+        let infoContainer = infoContainerId ? document.getElementById(infoContainerId) : null;
+        if (!infoContainer && paginationContainer) {
+            // Auto-create info container next to pagination
+            infoContainer = document.createElement('span');
+            infoContainer.className = 'mf-muted mf-admin-info-text';
+            infoContainer.style.fontSize = '0.85rem';
+            paginationContainer.parentElement?.insertBefore(infoContainer, paginationContainer);
+        }
+
+        const renderInfoText = (start, end, total, filtered) => {
+            if (!infoContainer) return;
+            if (total === 0) {
+                infoContainer.textContent = '';
+                return;
+            }
+            const isHuLang = (document.documentElement.lang || '').toLowerCase().startsWith('hu');
+            if (filtered < total) {
+                infoContainer.textContent = isHuLang
+                    ? `${start}–${end} / ${filtered} (összesen ${total})`
+                    : `${start}–${end} of ${filtered} (${total} total)`;
+            } else {
+                infoContainer.textContent = isHuLang
+                    ? `${start}–${end} / ${total}`
+                    : `${start}–${end} of ${total}`;
+            }
+        };
+
+        // --- DataTables path ---
+        let dtInitSuccess = false;
+
         if (hasDataTables && dtCfg.enabled) {
-            const $ = window.jQuery;
-            const $table = $(tableEl);
+            try {
+                const $ = window.jQuery;
+                const $table = $(tableEl);
 
-            const columnDefs = [];
-            if (Array.isArray(dtCfg.nonOrderableTargets) && dtCfg.nonOrderableTargets.length) {
-                columnDefs.push({ orderable: false, searchable: false, targets: dtCfg.nonOrderableTargets });
-            }
-            if (Array.isArray(dtCfg.nonSearchableTargets) && dtCfg.nonSearchableTargets.length) {
-                columnDefs.push({ searchable: false, targets: dtCfg.nonSearchableTargets });
-            }
-
-            const isHu = (document.documentElement.lang || '').toLowerCase().startsWith('hu');
-            const dtLang = isHu ? {
-                emptyTable: 'Nincs elérhető adat',
-                info: '_TOTAL_ bejegyzésből _START_ - _END_ megjelenítése',
-                infoEmpty: 'Nincs megjeleníthető bejegyzés',
-                infoFiltered: '(szűrve _MAX_ összes bejegyzésből)',
-                lengthMenu: '_MENU_ bejegyzés megjelenítése',
-                loadingRecords: 'Betöltés...',
-                processing: 'Feldolgozás...',
-                search: 'Keresés:',
-                zeroRecords: 'Nincs egyező bejegyzés',
-                paginate: { first: 'Első', last: 'Utolsó', next: 'Következő', previous: 'Előző' },
-                aria: { sortAscending: ': növekvő rendezés', sortDescending: ': csökkenő rendezés' },
-            } : {};
-
-            const dt = $table.DataTable({
-                searching: !!dtCfg.searching,
-                lengthChange: !!dtCfg.lengthChange,
-                pageLength: Number.isFinite(dtCfg.pageLength) ? dtCfg.pageLength : 10,
-                order: dtCfg.order || [[1, 'asc']],
-                columnDefs,
-                autoWidth: false,
-                language: dtLang,
-                dom: paginationContainer ? 'rt' : dtCfg.dom,
-            });
-
-            const adjustColumns = () => {
-                if (typeof dt.columns?.adjust !== 'function') {
-                    return;
+                const columnDefs = [];
+                if (Array.isArray(dtCfg.nonOrderableTargets) && dtCfg.nonOrderableTargets.length) {
+                    columnDefs.push({ orderable: false, searchable: false, targets: dtCfg.nonOrderableTargets });
                 }
-                dt.columns.adjust();
-            };
+                if (Array.isArray(dtCfg.nonSearchableTargets) && dtCfg.nonSearchableTargets.length) {
+                    columnDefs.push({ searchable: false, targets: dtCfg.nonSearchableTargets });
+                }
 
-            const scheduleAdjustColumns = () => {
-                requestAnimationFrame(() => {
-                    adjustColumns();
+                const isHu = (document.documentElement.lang || '').toLowerCase().startsWith('hu');
+                const dtLang = isHu ? {
+                    emptyTable: 'Nincs elérhető adat',
+                    info: '_TOTAL_ bejegyzésből _START_ - _END_ megjelenítése',
+                    infoEmpty: 'Nincs megjeleníthető bejegyzés',
+                    infoFiltered: '(szűrve _MAX_ összes bejegyzésből)',
+                    lengthMenu: '_MENU_ bejegyzés megjelenítése',
+                    loadingRecords: 'Betöltés...',
+                    processing: 'Feldolgozás...',
+                    search: 'Keresés:',
+                    zeroRecords: 'Nincs egyező bejegyzés',
+                    paginate: { first: 'Első', last: 'Utolsó', next: 'Következő', previous: 'Előző' },
+                    aria: { sortAscending: ': növekvő rendezés', sortDescending: ': csökkenő rendezés' },
+                } : {};
+
+                const initPageLength = Number.isFinite(dtCfg.pageLength) ? dtCfg.pageLength : 10;
+
+                const dt = $table.DataTable({
+                    searching: !!dtCfg.searching,
+                    lengthChange: !!dtCfg.lengthChange,
+                    pageLength: initPageLength,
+                    order: dtCfg.order || [[1, 'asc']],
+                    columnDefs,
+                    autoWidth: false,
+                    language: dtLang,
+                    dom: paginationContainer ? 'rt' : dtCfg.dom,
                 });
-                setTimeout(adjustColumns, 120);
-            };
 
-            const renderPagination = () => {
-                if (!paginationContainer) return;
+                dtInitSuccess = true;
 
-                const info = dt.page.info();
-                const totalPages = Number(info.pages || 0);
-                const currentPage = Number(info.page || 0);
-
-                if (!Number.isFinite(totalPages) || totalPages <= 1) {
-                    paginationContainer.innerHTML = '';
-                    paginationContainer.style.display = 'none';
-                    return;
-                }
-
-                paginationContainer.style.display = '';
-
-                const windowSize = Number.isFinite(cfg.pagination?.windowSize)
-                    ? Math.max(1, parseInt(cfg.pagination.windowSize, 10))
-                    : 3;
-                const jumpSize = Number.isFinite(cfg.pagination?.jumpSize)
-                    ? Math.max(1, parseInt(cfg.pagination.jumpSize, 10))
-                    : windowSize;
-
-                const current1 = currentPage + 1;
-
-                let start = current1 - Math.floor(windowSize / 2);
-                let end = start + windowSize - 1;
-
-                if (start < 1) {
-                    start = 1;
-                    end = Math.min(totalPages, start + windowSize - 1);
-                }
-                if (end > totalPages) {
-                    end = totalPages;
-                    start = Math.max(1, end - windowSize + 1);
-                }
-
-                const pages = [];
-                for (let p = start; p <= end; p += 1) pages.push(p);
-
-                const mkBtn = (label, page1, { active = false, disabled = false } = {}) => {
-                    const li = document.createElement('li');
-                    li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
-
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = `page-link${active ? ' fw-semibold' : ''}`;
-                    btn.textContent = label;
-                    btn.disabled = !!disabled;
-
-                    if (!disabled && typeof page1 === 'number') {
-                        btn.addEventListener('click', () => {
-                            dt.page(page1 - 1).draw('page');
-                        });
+                const adjustColumns = () => {
+                    if (typeof dt.columns?.adjust !== 'function') {
+                        return;
                     }
-
-                    li.appendChild(btn);
-                    return li;
+                    dt.columns.adjust();
                 };
 
-                const mkEllipsis = (dir) => {
-                    const li = document.createElement('li');
-                    li.className = 'page-item';
-
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'page-link';
-                    btn.textContent = '...';
-                    btn.addEventListener('click', () => {
-                        const nextPage = dir === 'right'
-                            ? Math.min(totalPages, current1 + jumpSize)
-                            : Math.max(1, current1 - jumpSize);
-                        dt.page(nextPage - 1).draw('page');
+                const scheduleAdjustColumns = () => {
+                    requestAnimationFrame(() => {
+                        adjustColumns();
                     });
-
-                    li.appendChild(btn);
-                    return li;
+                    setTimeout(adjustColumns, 120);
                 };
 
-                const ul = document.createElement('ul');
-                ul.className = 'pagination pagination-sm mb-0 mf-admin-pagination';
+                const renderDtInfo = () => {
+                    try {
+                        const info = dt.page.info();
+                        renderInfoText(info.start + 1, info.end, info.recordsTotal, info.recordsDisplay);
+                    } catch { /* ignore */ }
+                };
 
-                if (start > 1) {
-                    ul.appendChild(mkEllipsis('left'));
-                }
+                const renderPagination = () => {
+                    if (!paginationContainer) return;
 
-                for (const p of pages) {
-                    ul.appendChild(mkBtn(String(p), p, { active: p === current1 }));
-                }
+                    const info = dt.page.info();
+                    const totalPages = Number(info.pages || 0);
+                    const currentPage = Number(info.page || 0);
 
-                if (end < totalPages) {
-                    ul.appendChild(mkEllipsis('right'));
-                }
+                    renderDtInfo();
 
-                paginationContainer.innerHTML = '';
-                paginationContainer.appendChild(ul);
-            };
-
-            if (limitSelect) {
-                limitSelect.addEventListener('change', () => {
-                    const len = parseInt(limitSelect.value, 10);
-                    dt.page.len(Number.isFinite(len) ? len : 10).draw();
-                });
-            }
-
-            if (searchInput) {
-                searchInput.addEventListener('input', () => {
-                    dt.search(searchInput.value || '').draw();
-                });
-            }
-
-            if (paginationContainer) {
-                dt.on('draw', renderPagination);
-                renderPagination();
-            }
-
-            if (selectAll) {
-                selectAll.addEventListener('change', () => {
-                    const checked = !!selectAll.checked;
-                    const nodes = dt.rows({ page: 'current', search: 'applied' }).nodes().toArray();
-                    for (const row of nodes) {
-                        const cb = row.querySelector(rowCheckboxSelector);
-                        if (cb) cb.checked = checked;
-                    }
-                });
-
-                dt.on('draw', () => {
-                    if (!selectAll) return;
-                    const nodes = dt.rows({ page: 'current', search: 'applied' }).nodes().toArray();
-                    const cbs = nodes
-                        .map((row) => row.querySelector(rowCheckboxSelector))
-                        .filter((cb) => cb instanceof HTMLInputElement);
-
-                    if (cbs.length === 0) {
-                        selectAll.checked = false;
-                        selectAll.indeterminate = false;
+                    if (!Number.isFinite(totalPages) || totalPages <= 1) {
+                        paginationContainer.innerHTML = '';
+                        paginationContainer.style.display = 'none';
                         return;
                     }
 
-                    const checkedCount = cbs.filter((cb) => cb.checked).length;
-                    selectAll.checked = checkedCount === cbs.length;
-                    selectAll.indeterminate = checkedCount > 0 && checkedCount < cbs.length;
-                });
+                    paginationContainer.style.display = '';
 
-                tableEl.addEventListener('change', (e) => {
-                    const target = e.target;
-                    if (!(target instanceof HTMLInputElement)) return;
-                    if (!target.matches(rowCheckboxSelector)) return;
-                    dt.draw(false);
-                });
+                    const windowSize = Number.isFinite(cfg.pagination?.windowSize)
+                        ? Math.max(1, parseInt(cfg.pagination.windowSize, 10))
+                        : 3;
+                    const jumpSize = Number.isFinite(cfg.pagination?.jumpSize)
+                        ? Math.max(1, parseInt(cfg.pagination.jumpSize, 10))
+                        : windowSize;
+
+                    const current1 = currentPage + 1;
+
+                    let start = current1 - Math.floor(windowSize / 2);
+                    let end = start + windowSize - 1;
+
+                    if (start < 1) {
+                        start = 1;
+                        end = Math.min(totalPages, start + windowSize - 1);
+                    }
+                    if (end > totalPages) {
+                        end = totalPages;
+                        start = Math.max(1, end - windowSize + 1);
+                    }
+
+                    const pages = [];
+                    for (let p = start; p <= end; p += 1) pages.push(p);
+
+                    const mkBtn = (label, page1, { active = false, disabled = false } = {}) => {
+                        const li = document.createElement('li');
+                        li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
+
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = `page-link${active ? ' fw-semibold' : ''}`;
+                        btn.textContent = label;
+                        btn.disabled = !!disabled;
+
+                        if (!disabled && typeof page1 === 'number') {
+                            btn.addEventListener('click', () => {
+                                dt.page(page1 - 1).draw('page');
+                            });
+                        }
+
+                        li.appendChild(btn);
+                        return li;
+                    };
+
+                    const mkEllipsis = (dir) => {
+                        const li = document.createElement('li');
+                        li.className = 'page-item';
+
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'page-link';
+                        btn.textContent = '...';
+                        btn.addEventListener('click', () => {
+                            const nextPage = dir === 'right'
+                                ? Math.min(totalPages, current1 + jumpSize)
+                                : Math.max(1, current1 - jumpSize);
+                            dt.page(nextPage - 1).draw('page');
+                        });
+
+                        li.appendChild(btn);
+                        return li;
+                    };
+
+                    const ul = document.createElement('ul');
+                    ul.className = 'pagination pagination-sm mb-0 mf-admin-pagination';
+
+                    if (start > 1) {
+                        ul.appendChild(mkEllipsis('left'));
+                    }
+
+                    for (const p of pages) {
+                        ul.appendChild(mkBtn(String(p), p, { active: p === current1 }));
+                    }
+
+                    if (end < totalPages) {
+                        ul.appendChild(mkEllipsis('right'));
+                    }
+
+                    paginationContainer.innerHTML = '';
+                    paginationContainer.appendChild(ul);
+                };
+
+                if (limitSelect) {
+                    limitSelect.addEventListener('change', () => {
+                        const raw = parseInt(limitSelect.value, 10);
+                        const len = (Number.isFinite(raw) && raw > 0) ? raw : -1;
+                        dt.page.len(len).draw();
+                    });
+
+                    // Synchronise initial DataTables page length with the select
+                    const selectVal = parseInt(limitSelect.value, 10);
+                    if (Number.isFinite(selectVal) && selectVal !== initPageLength) {
+                        const syncLen = selectVal > 0 ? selectVal : -1;
+                        dt.page.len(syncLen).draw(false);
+                    }
+                }
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', () => {
+                        dt.search(searchInput.value || '').draw();
+                    });
+                }
+
+                if (paginationContainer) {
+                    dt.on('draw', renderPagination);
+                    renderPagination();
+                } else {
+                    dt.on('draw', renderDtInfo);
+                    renderDtInfo();
+                }
+
+                if (selectAll) {
+                    selectAll.addEventListener('change', () => {
+                        const checked = !!selectAll.checked;
+                        const nodes = dt.rows({ page: 'current', search: 'applied' }).nodes().toArray();
+                        for (const row of nodes) {
+                            const cb = row.querySelector(rowCheckboxSelector);
+                            if (cb) cb.checked = checked;
+                        }
+                    });
+
+                    dt.on('draw', () => {
+                        if (!selectAll) return;
+                        const nodes = dt.rows({ page: 'current', search: 'applied' }).nodes().toArray();
+                        const cbs = nodes
+                            .map((row) => row.querySelector(rowCheckboxSelector))
+                            .filter((cb) => cb instanceof HTMLInputElement);
+
+                        if (cbs.length === 0) {
+                            selectAll.checked = false;
+                            selectAll.indeterminate = false;
+                            return;
+                        }
+
+                        const checkedCount = cbs.filter((cb) => cb.checked).length;
+                        selectAll.checked = checkedCount === cbs.length;
+                        selectAll.indeterminate = checkedCount > 0 && checkedCount < cbs.length;
+                    });
+
+                    tableEl.addEventListener('change', (e) => {
+                        const target = e.target;
+                        if (!(target instanceof HTMLInputElement)) return;
+                        if (!target.matches(rowCheckboxSelector)) return;
+                        dt.draw(false);
+                    });
+                }
+
+                applyCellLabels();
+                dt.on('draw.labels', applyCellLabels);
+                dt.on('draw.mfActions', decorateActionButtons);
+                decorateActionButtons();
+                dt.on('draw.mfConfirms', bindRowActionConfirms);
+                bindRowActionConfirms();
+                dt.on('draw.adjust', scheduleAdjustColumns);
+
+                let resizeTimer = null;
+                const handleResize = () => {
+                    if (resizeTimer !== null) {
+                        clearTimeout(resizeTimer);
+                    }
+                    resizeTimer = setTimeout(() => {
+                        scheduleAdjustColumns();
+                        resizeTimer = null;
+                    }, 120);
+                };
+                window.addEventListener('resize', handleResize);
+                scheduleAdjustColumns();
+
+            } catch (err) {
+                console.warn('[MF] DataTables init failed for #' + tableId + ', falling back to vanilla mode.', err);
+                dtInitSuccess = false;
             }
 
-            applyCellLabels();
-            dt.on('draw.labels', applyCellLabels);
-            dt.on('draw.mfActions', decorateActionButtons);
-            decorateActionButtons();
-            dt.on('draw.mfConfirms', bindRowActionConfirms);
-            bindRowActionConfirms();
-            dt.on('draw.adjust', scheduleAdjustColumns);
-
-            let resizeTimer = null;
-            const handleResize = () => {
-                if (resizeTimer !== null) {
-                    clearTimeout(resizeTimer);
-                }
-                resizeTimer = setTimeout(() => {
-                    scheduleAdjustColumns();
-                    resizeTimer = null;
-                }, 120);
-            };
-            window.addEventListener('resize', handleResize);
-            scheduleAdjustColumns();
-
-            return;
+            if (dtInitSuccess) return;
         }
 
         const tbody = tableEl.tBodies[0];
@@ -573,6 +635,7 @@
 
         let sortCol = vanillaCfg.defaultSortCol;
         let sortDir = vanillaCfg.defaultSortDir;
+        let vanillaCurrentPage = 0;
 
         const getCellKey = (row, colIndex) => {
             const cell = row.cells[colIndex];
@@ -581,6 +644,89 @@
             if (order !== null) return order;
             const txt = (cell.textContent || '').trim();
             return txt === '-' ? '' : txt;
+        };
+
+        const renderVanillaPagination = (totalFiltered, pageSize, currentPage) => {
+            if (!paginationContainer) return;
+
+            const showAll = !Number.isFinite(pageSize) || pageSize <= 0;
+            const totalPages = showAll ? 1 : Math.ceil(totalFiltered / pageSize);
+
+            renderInfoText(
+                totalFiltered === 0 ? 0 : (currentPage * (showAll ? totalFiltered : pageSize)) + 1,
+                Math.min((currentPage + 1) * (showAll ? totalFiltered : pageSize), totalFiltered),
+                allRows.length,
+                totalFiltered,
+            );
+
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            paginationContainer.style.display = '';
+
+            const windowSize = Number.isFinite(cfg.pagination?.windowSize)
+                ? Math.max(1, parseInt(cfg.pagination.windowSize, 10))
+                : 3;
+            const jumpSize = Number.isFinite(cfg.pagination?.jumpSize)
+                ? Math.max(1, parseInt(cfg.pagination.jumpSize, 10))
+                : windowSize;
+
+            const current1 = currentPage + 1;
+
+            let rangeStart = current1 - Math.floor(windowSize / 2);
+            let rangeEnd = rangeStart + windowSize - 1;
+            if (rangeStart < 1) { rangeStart = 1; rangeEnd = Math.min(totalPages, rangeStart + windowSize - 1); }
+            if (rangeEnd > totalPages) { rangeEnd = totalPages; rangeStart = Math.max(1, rangeEnd - windowSize + 1); }
+
+            const pageNums = [];
+            for (let p = rangeStart; p <= rangeEnd; p += 1) pageNums.push(p);
+
+            const mkBtn = (label, page1, { active = false, disabled = false } = {}) => {
+                const li = document.createElement('li');
+                li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `page-link${active ? ' fw-semibold' : ''}`;
+                btn.textContent = label;
+                btn.disabled = !!disabled;
+                if (!disabled && typeof page1 === 'number') {
+                    btn.addEventListener('click', () => {
+                        vanillaCurrentPage = page1 - 1;
+                        applyView();
+                    });
+                }
+                li.appendChild(btn);
+                return li;
+            };
+
+            const mkEllipsis = (dir) => {
+                const li = document.createElement('li');
+                li.className = 'page-item';
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'page-link';
+                btn.textContent = '...';
+                btn.addEventListener('click', () => {
+                    vanillaCurrentPage = (dir === 'right'
+                        ? Math.min(totalPages, current1 + jumpSize)
+                        : Math.max(1, current1 - jumpSize)) - 1;
+                    applyView();
+                });
+                li.appendChild(btn);
+                return li;
+            };
+
+            const ul = document.createElement('ul');
+            ul.className = 'pagination pagination-sm mb-0 mf-admin-pagination';
+            if (rangeStart > 1) ul.appendChild(mkEllipsis('left'));
+            for (const p of pageNums) ul.appendChild(mkBtn(String(p), p, { active: p === current1 }));
+            if (rangeEnd < totalPages) ul.appendChild(mkEllipsis('right'));
+
+            paginationContainer.innerHTML = '';
+            paginationContainer.appendChild(ul);
         };
 
         const applyView = () => {
@@ -615,29 +761,40 @@
                 }
             }
 
-            const limit = parseInt(limitSelect?.value || String(dtCfg.pageLength || 10), 10);
-            let shown = 0;
+            const rawLimit = parseInt(limitSelect?.value || String(dtCfg.pageLength || 10), 10);
+            const limit = (Number.isFinite(rawLimit) && rawLimit > 0) ? rawLimit : filtered.length;
+
+            // Clamp current page
+            const totalPages = Math.max(1, Math.ceil(filtered.length / limit));
+            if (vanillaCurrentPage >= totalPages) vanillaCurrentPage = totalPages - 1;
+            if (vanillaCurrentPage < 0) vanillaCurrentPage = 0;
+
+            const pageStart = vanillaCurrentPage * limit;
+            const pageEnd = pageStart + limit;
+
+            let idx = 0;
             for (const row of filtered) {
-                if (Number.isFinite(limit) && limit > 0 && shown >= limit) {
+                if (idx >= pageStart && idx < pageEnd) {
+                    row.style.display = '';
+                } else {
                     row.style.display = 'none';
-                    continue;
                 }
-                row.style.display = '';
-                shown += 1;
+                idx += 1;
             }
 
-            headers.forEach((th, idx) => {
-                if (Array.isArray(vanillaCfg.excludedSortCols) && vanillaCfg.excludedSortCols.includes(idx)) {
+            headers.forEach((th, colIdx) => {
+                if (Array.isArray(vanillaCfg.excludedSortCols) && vanillaCfg.excludedSortCols.includes(colIdx)) {
                     th.removeAttribute('aria-sort');
                     return;
                 }
-                if (idx === sortCol) {
+                if (colIdx === sortCol) {
                     th.setAttribute('aria-sort', sortDir === 'asc' ? 'ascending' : 'descending');
                 } else {
                     th.removeAttribute('aria-sort');
                 }
             });
 
+            renderVanillaPagination(filtered.length, limit, vanillaCurrentPage);
             decorateActionButtons();
             bindRowActionConfirms();
         };
@@ -654,15 +811,22 @@
                     sortCol = idx;
                     sortDir = 'asc';
                 }
+                vanillaCurrentPage = 0;
                 applyView();
             });
         });
 
         if (searchInput) {
-            searchInput.addEventListener('input', applyView);
+            searchInput.addEventListener('input', () => {
+                vanillaCurrentPage = 0;
+                applyView();
+            });
         }
         if (limitSelect) {
-            limitSelect.addEventListener('change', applyView);
+            limitSelect.addEventListener('change', () => {
+                vanillaCurrentPage = 0;
+                applyView();
+            });
         }
 
         if (selectAll) {
@@ -748,4 +912,10 @@
     } else {
         init();
     }
+
+    // Safety net: re-run init after a short delay in case of race conditions
+    // (e.g. scripts loaded async, browser extensions injecting late, etc.)
+    setTimeout(() => {
+        try { init(); } catch { /* ignore */ }
+    }, 150);
 })();

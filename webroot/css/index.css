@@ -1170,6 +1170,12 @@ body.mf-admin-body {
     box-shadow: none;
 }
 
+.mf-admin-info-text {
+    font-size: 0.85rem;
+    white-space: nowrap;
+    user-select: none;
+}
+
 
 /* Navbar Styling */
 .mf-navbar {
